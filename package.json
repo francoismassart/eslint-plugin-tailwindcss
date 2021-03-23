@@ -1,0 +1,28 @@
+{
+  "name": "eslint-plugin-tailwindcss",
+  "version": "0.0.0",
+  "description": "Rules enforcing best practices while using Tailwind CSS",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "tailwind",
+    "tailwindcss"
+  ],
+  "author": "François Massart",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha tests --recursive"
+  },
+  "dependencies": {
+    "requireindex": "~1.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.1.0",
+    "mocha": "^7.2.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "license": "MIT"
+}
