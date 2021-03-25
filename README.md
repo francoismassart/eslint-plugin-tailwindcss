@@ -55,7 +55,7 @@ Learn more about [Configuring Rules](https://eslint.org/docs/user-guide/configur
 
 ## Alternatives
 
-I wrote this plugin after searching for existing tools which perform the same task but didn't satisfed my needs:
+I wrote this plugin after searching for existing tools which perform the same task but didn't satisfied my needs:
 
 * [eslint-plugin-tailwind](https://www.npmjs.com/package/eslint-plugin-tailwind), not bad but no support (yet) for variants sorting
 * [Headwind](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind), only works within Visual Studio Code
