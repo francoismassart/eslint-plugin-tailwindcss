@@ -52,7 +52,7 @@ ruleTester.run('classnames-order', rule, {
         },
         {
             code: `<div class="grid grid-cols-1 sm:grid-cols-2 sm:px-8 sm:py-12 sm:gap-x-8 md:py-16">...</div>`,
-            output: `<div class="p-4 lg:p-8 sm:py-5 sm:px-7">...</div>`,
+            output: `<div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:py-12 md:py-16 sm:px-8">...</div>`,
             errors: errors,
         },
     ],
