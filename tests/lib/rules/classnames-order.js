@@ -8,9 +8,8 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require('../../../lib/rules/classnames-order'),
-
-  RuleTester = require('eslint').RuleTester;
+var rule = require('../../../lib/rules/classnames-order');
+var RuleTester = require('eslint').RuleTester;
 
 
 //------------------------------------------------------------------------------
@@ -28,7 +27,7 @@ var parserOptions = {
 var ruleTester = new RuleTester({ parserOptions });
 
 var errors = [{
-  message: 'Invalid Tailwind CSS classenames order',
+  messageId: 'invalidOrder',
 }];
 
 ruleTester.run('classnames-order', rule, {
