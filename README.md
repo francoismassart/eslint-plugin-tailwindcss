@@ -45,11 +45,11 @@ Learn more about [Configuring Rules](https://eslint.org/docs/user-guide/configur
 
 ## Supported Rules
 
-* `classnames-order`: order classnames by target properties then by variants (`[size:][theme:][state:]`)
+* [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
+* [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS
 
 ## Upcoming Rules
 
-* `no-custom-classname`: only allow classnames from Tailwind CSS
 * `no-contradicting-classname`: e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property
 * `no-redundant-variant`: e.g. avoid `mx-5 sm:mx-5`, no need to redefine `mx` in `sm:` variant as it uses the same value (`5`)
 
