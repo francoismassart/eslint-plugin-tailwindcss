@@ -36,7 +36,8 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "tailwindcss/classnames-order": 2
+        "tailwindcss/classnames-order": 2,
+        "tailwindcss/no-custom-classname": 2,
     }
 }
 ```
