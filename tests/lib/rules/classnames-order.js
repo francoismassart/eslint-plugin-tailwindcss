@@ -85,5 +85,10 @@ ruleTester.run('classnames-order', rule, {
       output: `<div class="w-12 w-12 lg:w-6">removeDuplicates: false</div>`,
       errors: errors,
     },
+    {
+      code: `<div class="w-12  lg:w-6   w-12">Multiple spaces</div>`,
+      output: `<div class="w-12 lg:w-6">Multiple spaces</div>`,
+      errors: errors,
+    },
   ],
 });
