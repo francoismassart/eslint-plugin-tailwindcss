@@ -38,6 +38,7 @@ Then configure the rules you want to use under the rules section.
     "rules": {
         "tailwindcss/classnames-order": 2,
         "tailwindcss/no-custom-classname": 2,
+        "tailwindcss/no-contradicting-classname": 2,
     }
 }
 ```
@@ -48,10 +49,10 @@ Learn more about [Configuring Rules](https://eslint.org/docs/user-guide/configur
 
 * [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
 * [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS
+* [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 
 ## Upcoming Rules
 
-* `no-contradicting-classname`: e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property
 * `no-redundant-variant`: e.g. avoid `mx-5 sm:mx-5`, no need to redefine `mx` in `sm:` variant as it uses the same value (`5`)
 
 ## Alternatives
