@@ -42,7 +42,7 @@ ruleTester.run('no-custom-classname', rule, {
         data: {
           classname: 'my-custom'
         }
-    }]
+      }]
     },
     {
       code: `<div class="hello world">2 classnames are not defined in Tailwind CSS!</div>`,
