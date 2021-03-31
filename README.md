@@ -16,9 +16,10 @@ $ npm i eslint --save-dev
 Next, install `eslint-plugin-tailwindcss`:
 
 ```
-$ npm install eslint-plugin-tailwindcss --save-dev
+$ npm i eslint-plugin-tailwindcss --save-dev
 ```
 
+[eslint-plugin-tailwindcss on npm](https://www.npmjs.com/package/eslint-plugin-tailwindcss)
 
 ## Usage
 
