@@ -1,6 +1,8 @@
 # eslint-plugin-tailwindcss
 ![npm (scoped)](https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge) ![npm bundle size (scoped)](https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge)
 
+![eslint-plugin-tailwindcss logo](https://repository-images.githubusercontent.com/350840995/d9bbe080-9211-11eb-8148-0a9167a8b3ff)
+
 Rules enforcing best practices and consitency using [Tailwind CSS](https://tailwindcss.com/) v2.0.3
 
 ## Installation
