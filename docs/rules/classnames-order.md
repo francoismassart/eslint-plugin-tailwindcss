@@ -2,7 +2,7 @@
 
 Enforces a consistent order of the Tailwind CSS classnames and its variants.
 
-> **Note**: By default, it uses the same order as the official [Tailwind CSS documentation](https://tailwindcss.com/docs/container) **v2.0.3**
+> **Note**: By default, it uses the same order as the official [Tailwind CSS documentation](https://tailwindcss.com/docs/container) **v2.1.0**
 
 ## Rule Details
 
