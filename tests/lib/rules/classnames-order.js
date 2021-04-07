@@ -52,8 +52,8 @@ ruleTester.run("classnames-order", rule, {
         container
         flex
         w-12
-        sm:-6
-        lg:4
+        sm:w-6
+        lg:w-4
       \`)`,
     },
   ],
@@ -105,19 +105,22 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `ctl(\`
-        sm:-6
+        invalid
+        sm:w-6
         container
         w-12
         flex
-        lg:4
-      \`)`,
+        lg:w-4
+      \`);`,
       output: `ctl(\`
         container
         flex
         w-12
-        sm:-6
-        lg:4
-      \`)`,
+        sm:w-6
+        lg:w-4
+        invalid
+      \`);`,
+      errors: errors,
     },
   ],
 });
