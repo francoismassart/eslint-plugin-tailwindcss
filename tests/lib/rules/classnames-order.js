@@ -2,15 +2,14 @@
  * @fileoverview Use a consistent orders for the Tailwind CSS classnames, based on property then on variants
  * @author François Massart
  */
-'use strict';
+"use strict";
 
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require('../../../lib/rules/classnames-order');
-var RuleTester = require('eslint').RuleTester;
-
+var rule = require("../../../lib/rules/classnames-order");
+var RuleTester = require("eslint").RuleTester;
 
 //------------------------------------------------------------------------------
 // Tests
@@ -18,7 +17,7 @@ var RuleTester = require('eslint').RuleTester;
 
 var parserOptions = {
   ecmaVersion: 2019,
-  sourceType: 'module',
+  sourceType: "module",
   ecmaFeatures: {
     jsx: true,
   },
@@ -26,11 +25,13 @@ var parserOptions = {
 
 var ruleTester = new RuleTester({ parserOptions });
 
-var errors = [{
-  messageId: 'invalidOrder',
-}];
+var errors = [
+  {
+    messageId: "invalidOrder",
+  },
+];
 
-ruleTester.run('classnames-order', rule, {
+ruleTester.run("classnames-order", rule, {
   valid: [
     {
       code: `<div class="container box-content lg:box-border custom">Simple, basic</div>`,
@@ -40,9 +41,20 @@ ruleTester.run('classnames-order', rule, {
     },
     {
       code: `<div class="custom another-custom w-12 lg:w-6">prependCustom: true</div>`,
-      options: [{
-        prependCustom: true,
-      }],
+      options: [
+        {
+          prependCustom: true,
+        },
+      ],
+    },
+    {
+      code: `ctl(\`
+        container
+        flex
+        w-12
+        sm:-6
+        lg:4
+      \`)`,
     },
   ],
   invalid: [
@@ -77,9 +89,11 @@ ruleTester.run('classnames-order', rule, {
       errors: errors,
     },
     {
-      options: [{
-        removeDuplicates: false,
-      }],
+      options: [
+        {
+          removeDuplicates: false,
+        },
+      ],
       code: `<div class="w-12 lg:w-6 w-12">removeDuplicates: false</div>`,
       output: `<div class="w-12 w-12 lg:w-6">removeDuplicates: false</div>`,
       errors: errors,
@@ -88,6 +102,22 @@ ruleTester.run('classnames-order', rule, {
       code: `<div class="w-12  lg:w-6   w-12">Multiple spaces</div>`,
       output: `<div class="w-12 lg:w-6">Multiple spaces</div>`,
       errors: errors,
+    },
+    {
+      code: `ctl(\`
+        sm:-6
+        container
+        w-12
+        flex
+        lg:4
+      \`)`,
+      output: `ctl(\`
+        container
+        flex
+        w-12
+        sm:-6
+        lg:4
+      \`)`,
     },
   ],
 });
