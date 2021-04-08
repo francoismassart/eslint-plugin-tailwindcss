@@ -37,6 +37,9 @@ ruleTester.run("classnames-order", rule, {
       code: `<div class="container box-content lg:box-border custom">Simple, basic</div>`,
     },
     {
+      code: `<div class='box-content lg:box-border'>Simple quotes</div>`,
+    },
+    {
       code: `<div class="p-5 lg:p-4 md:py-2 sm:px-3 xl:px-6">'p', then 'py' then 'px'</div>`,
     },
     {
@@ -86,6 +89,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="sm:line-clamp-3 line-clamp-2"></div>`,
       output: `<div class="line-clamp-2 sm:line-clamp-3"></div>`,
+      errors: errors,
+    },
+    {
+      code: `<div class='lg:box-border box-content'>Simple quotes</div>`,
+      output: `<div class='box-content lg:box-border'>Simple quotes</div>`,
       errors: errors,
     },
     {
