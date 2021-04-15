@@ -25,6 +25,7 @@ Examples of **correct** code for this rule:
 ```js
 ...
 "tailwindcss/classnames-order": [<enabled>, {
+  "callees": Array<string>,
   "groups": Array<object>,
   "prependCustom": <boolean>,
   "removeDuplicates": <boolean>
@@ -32,13 +33,19 @@ Examples of **correct** code for this rule:
 ...
 ```
 
+### `callees` (default: `["ctl"]`)
+
+If you use some utility library like [@netlify/classnames-template-literals](https://github.com/netlify/classnames-template-literals), you can add its name to the list to make sure it gets parsed by this rule.
+
+For best results, gather the declarative classnames together, avoid mixing conditional classnames in between, move them at the end.
+
 ### `groups` (default defined in [groups.js](../../lib/config/groups.js))
 
 If you really need to, you can write your own configuration.
 
 `groups` is a fairly long configuration array which defines the hierarchical orders to apply to your classnames prior to variants sorting.
 
-I would recommend you to duplicate the `groups.js` file, move it in your own config location and move items as you wish. At its deepest, it is a list of patterns that will be used inside a regular expression. 
+I would recommend you to duplicate the `groups.js` file, move it in your own config location and move items as you wish. At its deepest, it is a list of patterns that will be used inside a regular expression.
 
 ```js
 // custom-groups.js
@@ -89,34 +96,34 @@ Duplicate classnames are automatically removed but you can always disable this b
 1. Groups classnames by property
 2. Sorts each group based on configuration
 3. Within each group, it sorts the variants:
-    1. Responsive:
-        1. (empty)
-        2. `sm:`
-        3. `md:`
-        4. `lg:`
-        5. `xl:`
-        6. `2xl:`
-    2. Theme
-        1. (empty)
-        2. `dark:`
-    3. State
-        1. (empty)
-        2. `hover:`
-        3. `focus:`
-        4. `active:`
-        5. `group-hover:`
-        6. `group-focus:`
-        7. `focus-within:`
-        8. `focus-visible:`
-        9. `motion-safe:`
-        10. `motion-reduce:`
-        11. `disabled:`
-        12. `visited:`
-        13. `checked:`
-        13. `first:`
-        13. `last:`
-        13. `odd:`
-        13. `even:`
+   1. Responsive:
+      1. (empty)
+      2. `sm:`
+      3. `md:`
+      4. `lg:`
+      5. `xl:`
+      6. `2xl:`
+   2. Theme
+      1. (empty)
+      2. `dark:`
+   3. State
+      1. (empty)
+      2. `hover:`
+      3. `focus:`
+      4. `active:`
+      5. `group-hover:`
+      6. `group-focus:`
+      7. `focus-within:`
+      8. `focus-visible:`
+      9. `motion-safe:`
+      10. `motion-reduce:`
+      11. `disabled:`
+      12. `visited:`
+      13. `checked:`
+      14. `first:`
+      15. `last:`
+      16. `odd:`
+      17. `even:`
 
 ### Default groups
 
