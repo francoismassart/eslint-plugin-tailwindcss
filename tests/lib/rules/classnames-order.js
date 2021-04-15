@@ -112,7 +112,8 @@ ruleTester.run("classnames-order", rule, {
       errors: errors,
     },
     {
-      code: `ctl(\`
+      code: `
+      ctl(\`
         invalid
         sm:w-6
         container
@@ -120,15 +121,67 @@ ruleTester.run("classnames-order", rule, {
         flex
         lg:w-4
       \`);`,
-      output: `ctl(\`
+      output: `
+      ctl(\`
         container
         flex
         w-12
         sm:w-6
         lg:w-4
         invalid
+       \`);`,
+      errors: errors,
+    },
+    {
+      code: `
+      const buttonClasses = ctl(\`
+        \${fullWidth ? "w-12" : "w-6"}
+        container
+        \${fullWidth ? "sm:w-12" : "sm:w-4"}
+        lg:w-4
+        flex
+        \${hasError && "bg-red"}
+      \`);`,
+      output: `
+      const buttonClasses = ctl(\`
+        \${fullWidth ? "w-12" : "w-6"}
+        container
+        \${fullWidth ? "sm:w-12" : "sm:w-4"}
+        flex
+        lg:w-4
+        \${hasError && "bg-red"}
       \`);`,
       errors: errors,
+    },
+    {
+      code: `
+      const buttonClasses = ctl(\`
+        \${fullWidth ? "w-12" : "w-6"}
+        flex
+        container
+        \${fullWidth ? "sm:w-12" : "sm:w-4"}
+        lg:py-4
+        sm:py-6
+        \${hasError && "bg-red"}
+      \`);`,
+      output: `
+      const buttonClasses = ctl(\`
+        \${fullWidth ? "w-12" : "w-6"}
+        container
+        flex
+        \${fullWidth ? "sm:w-12" : "sm:w-4"}
+        sm:py-6
+        lg:py-4
+        \${hasError && "bg-red"}
+      \`);`,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+        {
+          messageId: "invalidOrder",
+        },
+      ],
     },
   ],
 });
