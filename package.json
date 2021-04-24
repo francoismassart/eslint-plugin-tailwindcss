@@ -25,6 +25,9 @@
     "tailwindcss": "^2.1.1"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.2.0",
+    "@tailwindcss/line-clamp": "^0.2.0",
+    "@tailwindcss/typography": "^0.4.0",
     "eslint": "^7.1.0",
     "mocha": "^7.2.0"
   },
