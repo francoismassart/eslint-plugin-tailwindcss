@@ -59,6 +59,14 @@ ruleTester.run("classnames-order", rule, {
         lg:w-4
       \`)`,
     },
+    {
+      code: `<div class="lorem-w-12 lg_lorem-w-6">Custom prefix and separator</div>`,
+      options: [
+        {
+          config: { prefix: "lorem-", separator: "_" },
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -84,11 +92,25 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="md:prose-2xl prose-xl prose sm:prose-sm"></div>`,
       output: `<div class="prose prose-xl sm:prose-sm md:prose-2xl"></div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
       errors: errors,
     },
     {
       code: `<div class="sm:line-clamp-3 line-clamp-2"></div>`,
       output: `<div class="line-clamp-2 sm:line-clamp-3"></div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/line-clamp")],
+          },
+        },
+      ],
       errors: errors,
     },
     {

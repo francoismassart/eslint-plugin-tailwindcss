@@ -2,11 +2,9 @@
 
 Enforces a consistent order of the Tailwind CSS classnames and its variants.
 
-> **Note**: By default, it uses the same order as the official [Tailwind CSS documentation](https://tailwindcss.com/docs/container) **v2.1.0**
+> **Note**: By default, it uses the same order as the official [Tailwind CSS documentation](https://tailwindcss.com/docs/container) **v2.1.1**
 
 ## Rule Details
-
-This rule aims to...
 
 Examples of **incorrect** code for this rule:
 
@@ -26,6 +24,7 @@ Examples of **correct** code for this rule:
 ...
 "tailwindcss/classnames-order": [<enabled>, {
   "callees": Array<string>,
+  "config": <string>|<object>,
   "groups": Array<object>,
   "prependCustom": <boolean>,
   "removeDuplicates": <boolean>
@@ -38,6 +37,20 @@ Examples of **correct** code for this rule:
 If you use some utility library like [@netlify/classnames-template-literals](https://github.com/netlify/classnames-template-literals), you can add its name to the list to make sure it gets parsed by this rule.
 
 For best results, gather the declarative classnames together, avoid mixing conditional classnames in between, move them at the end.
+
+### `config` (default: `"tailwind.config.js"`)
+
+By default the plugin will try to load the file `tailwind.config.js` at the root of your project.
+
+This allows the plugin to use your customized `colors`, `spacing`, `screens`...
+
+You can provide another path or filename for your Tailwind CSS config file like `"config/tailwind.js"`.
+
+If the external file cannot be loaded (e.g. incorrect path or deleted file), an empty object `{}` will be used instead.
+
+It is also possible to directly inject a configuration as plain `object` like `{ prefix: "tw-", theme: { ... } }`.
+
+Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
 
 ### `groups` (default defined in [groups.js](../../lib/config/groups.js))
 
@@ -96,34 +109,11 @@ Duplicate classnames are automatically removed but you can always disable this b
 1. Groups classnames by property
 2. Sorts each group based on configuration
 3. Within each group, it sorts the variants:
-   1. Responsive:
-      1. (empty)
-      2. `sm:`
-      3. `md:`
-      4. `lg:`
-      5. `xl:`
-      6. `2xl:`
+   1. Responsive (e.g. `sm:` ... `2xl:`, the order is based on the breakpoints defined in `theme.screens`)
    2. Theme
       1. (empty)
       2. `dark:`
-   3. State
-      1. (empty)
-      2. `hover:`
-      3. `focus:`
-      4. `active:`
-      5. `group-hover:`
-      6. `group-focus:`
-      7. `focus-within:`
-      8. `focus-visible:`
-      9. `motion-safe:`
-      10. `motion-reduce:`
-      11. `disabled:`
-      12. `visited:`
-      13. `checked:`
-      14. `first:`
-      15. `last:`
-      16. `odd:`
-      17. `even:`
+   3. State (e.g. `hover:`... the order is based on `variantOrder`)
 
 ### Default groups
 
@@ -133,10 +123,12 @@ Each line represents a group (based on property).
 
 ```
 LAYOUT > Container
+LAYOUT > Box Decoration Break
 LAYOUT > Box Sizing
 LAYOUT > Display
 LAYOUT > Floats
 LAYOUT > Clear
+LAYOUT > Isolation
 LAYOUT > Object Fit
 LAYOUT > Object Position
 LAYOUT > Overflow > overflow
@@ -270,6 +262,28 @@ BORDERS > Ring Offset Width
 BORDERS > Ring Offset Color
 EFFECTS > Box Shadow
 EFFECTS > Opacity
+EFFECTS > Mix Blend Mode
+EFFECTS > Background Blend Mode
+FILTERS > Filter
+FILTERS > Blur
+FILTERS > Brightness
+FILTERS > Contrast
+FILTERS > Drop Shadow
+FILTERS > Grayscale
+FILTERS > Hue Rotate
+FILTERS > Invert
+FILTERS > Saturate
+FILTERS > Sepia
+FILTERS > Backdrop Filter
+FILTERS > Backdrop Blur
+FILTERS > Backdrop Brightness
+FILTERS > Backdrop Contrast
+FILTERS > Backdrop Grayscale
+FILTERS > Backdrop Hue Rotate
+FILTERS > Backdrop Invert
+FILTERS > Backdrop Opacity
+FILTERS > Backdrop Saturate
+FILTERS > Backdrop Sepia
 TABLES > Border Collapse
 TABLES > Table Layout
 TRANSITIONS AND ANIMATION > Transition Property
