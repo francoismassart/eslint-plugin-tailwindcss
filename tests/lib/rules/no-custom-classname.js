@@ -30,6 +30,25 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div class="container box-content lg:box-border">Only Tailwind CSS classnames</div>`,
     },
+    {
+      code: `
+      ctl(\`
+        sm:w-6
+        w-8
+        container
+        w-12
+        flex
+        lg:w-4
+      \`);`,
+    },
+    {
+      code: `<div class="tw-container tw-box-content lg_tw-box-border">Only Tailwind CSS classnames</div>`,
+      options: [
+        {
+          config: { prefix: "tw-", separator: "_" },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -46,6 +65,55 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `<div class="hello world">2 classnames are not defined in Tailwind CSS!</div>`,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "hello",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "world",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      ctl(\`
+        sm:w-6
+        hello
+        w-8
+        container
+        w-12
+        world
+        flex
+        lg:w-4
+      \`);`,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "hello",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "world",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="hello tw-container tw-box-content lg_tw-box-border world">Only Tailwind CSS classnames</div>`,
+      options: [
+        {
+          config: { prefix: "tw-", separator: "_" },
+        },
+      ],
       errors: [
         {
           messageId: "customClassnameDetected",
