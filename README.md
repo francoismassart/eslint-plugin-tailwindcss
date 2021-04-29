@@ -4,7 +4,9 @@
 
 ![eslint-plugin-tailwindcss logo](https://repository-images.githubusercontent.com/350840995/d9bbe080-9211-11eb-8148-0a9167a8b3ff)
 
-Rules enforcing best practices and consitency using [Tailwind CSS](https://tailwindcss.com/) v2.1.0
+Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/) v2.1.0
+
+**The plugin will parse the `tailwind.config.js` file and use the correct values based on your own settings. 👍**
 
 ## Installation
 
