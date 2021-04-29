@@ -75,6 +75,16 @@ ruleTester.run("classnames-order", rule, {
         },
       ],
     },
+    {
+      code: `<div class="dark:focus:hover:bg-black md:dark:disabled:focus:hover:bg-gray-400">Stackable variants</div>`,
+      options: [
+        {
+          config: {
+            mode: "jit",
+          },
+        },
+      ],
+    },
   ],
   invalid: [
     {
