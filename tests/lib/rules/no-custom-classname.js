@@ -50,7 +50,7 @@ ruleTester.run("no-custom-classname", rule, {
       ],
     },
     {
-      code: `<div class="arbitrary-inset-[123px]">Allow arbitrary value support</div>`,
+      code: `<div class="!arbitrary-inset-[123px]">Allow arbitrary value support + Built-in important modifier</div>`,
       options: [
         {
           config: {
