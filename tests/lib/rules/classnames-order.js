@@ -59,6 +59,32 @@ ruleTester.run("classnames-order", rule, {
         lg:w-4
       \`)`,
     },
+    {
+      code: `<div class="lorem-w-12 lg_lorem-w-6">Custom prefix and separator</div>`,
+      options: [
+        {
+          config: { prefix: "lorem-", separator: "_" },
+        },
+      ],
+    },
+    {
+      code: `<div class="w-12 lg:w-[500px]">Allowed arbitrary value</div>`,
+      options: [
+        {
+          config: { mode: "jit" },
+        },
+      ],
+    },
+    {
+      code: `<div class="dark:focus:hover:bg-black md:dark:disabled:focus:hover:bg-gray-400">Stackable variants</div>`,
+      options: [
+        {
+          config: {
+            mode: "jit",
+          },
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -84,11 +110,25 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="md:prose-2xl prose-xl prose sm:prose-sm"></div>`,
       output: `<div class="prose prose-xl sm:prose-sm md:prose-2xl"></div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
       errors: errors,
     },
     {
       code: `<div class="sm:line-clamp-3 line-clamp-2"></div>`,
       output: `<div class="line-clamp-2 sm:line-clamp-3"></div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/line-clamp")],
+          },
+        },
+      ],
       errors: errors,
     },
     {
@@ -182,6 +222,16 @@ ruleTester.run("classnames-order", rule, {
           messageId: "invalidOrder",
         },
       ],
+    },
+    {
+      code: `<div class="sm:w-12 w-[320px]">Allowed arbitrary value but incorrect order</div>`,
+      output: `<div class="w-[320px] sm:w-12">Allowed arbitrary value but incorrect order</div>`,
+      options: [
+        {
+          config: { mode: "jit" },
+        },
+      ],
+      errors: errors,
     },
   ],
 });
