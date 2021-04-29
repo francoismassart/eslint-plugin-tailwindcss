@@ -43,6 +43,15 @@ ruleTester.run("no-contradicting-classname", rule, {
         },
       ],
     },
+    {
+      code:
+        '<div class="p-[10px] px-2 sm:px-3 sm:pt-[5%]">Still works with different separator</div>',
+      options: [
+        {
+          config: { mode: "jit" },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -107,6 +116,22 @@ ruleTester.run("no-contradicting-classname", rule, {
           messageId: "conflictingClassnames",
           data: {
             classnames: "w-8, w-12",
+          },
+        },
+      ],
+    },
+    {
+      code: '<div class="container sm:w-3 sm:w-[40%] lg:w-6"></div>',
+      options: [
+        {
+          config: { mode: "jit" },
+        },
+      ],
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "sm:w-3, sm:w-[40%]",
           },
         },
       ],

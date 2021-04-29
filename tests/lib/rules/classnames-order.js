@@ -67,6 +67,14 @@ ruleTester.run("classnames-order", rule, {
         },
       ],
     },
+    {
+      code: `<div class="w-12 lg:w-[500px]">Allowed arbitrary value</div>`,
+      options: [
+        {
+          config: { mode: "jit" },
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -204,6 +212,16 @@ ruleTester.run("classnames-order", rule, {
           messageId: "invalidOrder",
         },
       ],
+    },
+    {
+      code: `<div class="sm:w-12 w-[320px]">Allowed arbitrary value but incorrect order</div>`,
+      output: `<div class="w-[320px] sm:w-12">Allowed arbitrary value but incorrect order</div>`,
+      options: [
+        {
+          config: { mode: "jit" },
+        },
+      ],
+      errors: errors,
     },
   ],
 });

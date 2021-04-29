@@ -49,6 +49,17 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `<div class="arbitrary-inset-[123px]">Allow arbitrary value support</div>`,
+      options: [
+        {
+          config: {
+            mode: "jit",
+            prefix: "arbitrary-",
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -125,6 +136,25 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "world",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="arbitrary-inset-[123px]">No arbitrary value support without JIT</div>`,
+      options: [
+        {
+          config: {
+            prefix: "arbitrary-",
+            theme: { inset: {} },
+          },
+        },
+      ],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "arbitrary-inset-[123px]",
           },
         },
       ],
