@@ -35,8 +35,7 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: '<div class="p-1 px-2 sm:px-3 sm:pt-0">Accepts shorthands</div>',
     },
     {
-      code:
-        '<div class="p-1 px-2 sm_px-3 sm_pt-0">Still works with different separator</div>',
+      code: '<div class="p-1 px-2 sm_px-3 sm_pt-0">Still works with different separator</div>',
       options: [
         {
           config: { separator: "_" },
@@ -44,8 +43,7 @@ ruleTester.run("no-contradicting-classname", rule, {
       ],
     },
     {
-      code:
-        '<div class="p-[10px] px-2 sm:px-3 sm:pt-[5%]">Still works with different separator</div>',
+      code: '<div class="p-[10px] px-2 sm:px-3 sm:pt-[5%]">Still works with different separator</div>',
       options: [
         {
           config: { mode: "jit" },
@@ -83,8 +81,7 @@ ruleTester.run("no-contradicting-classname", rule, {
       ],
     },
     {
-      code:
-        '<div class="flex-1 order-first order-11 sm:order-last flex-none"></div>',
+      code: '<div class="flex-1 order-first order-11 sm:order-last flex-none"></div>',
       errors: [
         {
           messageId: "conflictingClassnames",
