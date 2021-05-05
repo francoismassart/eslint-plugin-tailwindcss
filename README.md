@@ -6,7 +6,8 @@
 
 Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/) v2.1.1
 
-> **🎉 Since v1.5.0, the plugin will parse the `tailwind.config.js` file and use the correct values based on your own settings. 👍**
+> **🎉 Since v1.5.0, the plugin will parse the `tailwind.config.js` file and use the correct values based on your own settings.**
+> 👍 Most of [the new JIT mode features](https://tailwindcss.com/docs/just-in-time-mode#new-features) are also supported.
  
 ![detected-errors](https://user-images.githubusercontent.com/704026/117103443-ac1b0780-ad7a-11eb-9c17-41f0de3e4dc4.png)
 
@@ -48,9 +49,11 @@ Configure the rules you want to use under the rules section.
 }
 ```
 
-Learn more about [Configuring Rules](https://eslint.org/docs/user-guide/configuring/rules).
+Learn more about [Configuring Rules in ESLint](https://eslint.org/docs/user-guide/configuring/rules).
 
 ## Supported Rules
+
+Learn more about each supported rules by reading their documentation:
 
 - [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS
