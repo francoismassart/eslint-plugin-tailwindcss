@@ -28,7 +28,7 @@ var ruleTester = new RuleTester({ parserOptions });
 ruleTester.run("no-custom-classname", rule, {
   valid: [
     {
-      code: `<div class="container box-content lg:box-border">Only Tailwind CSS classnames</div>`,
+      code: `<div class="container box-content lg:box-border max-h-24">Only Tailwind CSS classnames</div>`,
     },
     {
       code: `
