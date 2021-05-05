@@ -70,6 +70,20 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `<div class="bg-custom-color">Using dash in custom color name</div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                "custom-color": "#B4D4AA",
+              },
+            },
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
