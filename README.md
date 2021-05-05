@@ -2,7 +2,7 @@
 
 ![npm (scoped)](https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge) ![npm bundle size (scoped)](https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge)
 
-![eslint-plugin-tailwindcss logo](https://user-images.githubusercontent.com/704026/116742948-7a134980-a9f8-11eb-9953-4eb5d0c93cc1.png)
+![eslint-plugin-tailwindcss logo](https://user-images.githubusercontent.com/704026/117105634-bd661300-ad7e-11eb-9cf1-a05ba130da34.png)
 
 Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/) v2.1.1
 
