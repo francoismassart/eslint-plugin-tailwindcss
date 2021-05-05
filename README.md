@@ -7,6 +7,7 @@
 Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/) v2.1.1
 
 > **🎉 Since v1.5.0, the plugin will parse the `tailwind.config.js` file and use the correct values based on your own settings.**
+>
 > 👍 Most of [the new JIT mode features](https://tailwindcss.com/docs/just-in-time-mode#new-features) are also supported.
  
 ![detected-errors](https://user-images.githubusercontent.com/704026/117103443-ac1b0780-ad7a-11eb-9c17-41f0de3e4dc4.png)
