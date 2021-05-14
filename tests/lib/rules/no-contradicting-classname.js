@@ -28,8 +28,7 @@ var ruleTester = new RuleTester({ parserOptions });
 ruleTester.run("no-contradicting-classname", rule, {
   valid: [
     {
-      code:
-        '<div class="overflow-auto overflow-x-hidden lg:overflow-x-auto lg:dark:overflow-x-visible lg:dark:active:overflow-x-visible active:overflow-auto"></div>',
+      code: '<div class="overflow-auto overflow-x-hidden lg:overflow-x-auto lg:dark:overflow-x-visible lg:dark:active:overflow-x-visible active:overflow-auto"></div>',
     },
     {
       code: '<div class="p-1 px-2 sm:px-3 sm:pt-0">Accepts shorthands</div>',
@@ -129,6 +128,22 @@ ruleTester.run("no-contradicting-classname", rule, {
           messageId: "conflictingClassnames",
           data: {
             classnames: "sm:w-3, sm:w-[40%]",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div className={clsx(\`container sm:w-3 sm:w-2 lg:w-6\`)}>clsx</div>`,
+      options: [
+        {
+          callees: ["clsx"],
+        },
+      ],
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "sm:w-3, sm:w-2",
           },
         },
       ],

@@ -84,6 +84,14 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `<div className={clsx(\`flex w-full\`)}>clsx</div>`,
+      options: [
+        {
+          callees: ["clsx"],
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -179,6 +187,22 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "arbitrary-inset-[123px]",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div className={clsx(\`hello-world flex w-full\`)}>clsx</div>`,
+      options: [
+        {
+          callees: ["clsx"],
+        },
+      ],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "hello-world",
           },
         },
       ],
