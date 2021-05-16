@@ -86,7 +86,7 @@ ruleTester.run("classnames-order", rule, {
       ],
     },
     {
-      code: `<div className={clsx(\`flex flex-col absolute bottom-0 w-full h-[270px]\`)}>clsx</div>`,
+      code: `<div className={clsx(\`flex absolute bottom-0 flex-col w-full h-[270px]\`)}>clsx</div>`,
       options: [
         {
           callees: ["clsx"],
@@ -246,7 +246,7 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div className='absolute bottom-0 w-full h-[270px] flex flex-col'>clsx</div>`,
-      output: `<div className='flex flex-col absolute bottom-0 w-full h-[270px]'>clsx</div>`,
+      output: `<div className='flex absolute bottom-0 flex-col w-full h-[270px]'>clsx</div>`,
       options: [
         {
           config: {
@@ -258,7 +258,7 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `clsx(\`absolute bottom-0 w-full h-[70px] flex flex-col\`);`,
-      output: `clsx(\`flex flex-col absolute bottom-0 w-full h-[70px]\`);`,
+      output: `clsx(\`flex absolute bottom-0 flex-col w-full h-[70px]\`);`,
       options: [
         {
           callees: ["clsx"],
@@ -271,7 +271,7 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `clsx(\`absolute bottom-0 w-full h-[270px] flex flex-col\`);`,
-      output: `clsx(\`flex flex-col absolute bottom-0 w-full h-[270px]\`);`,
+      output: `clsx(\`flex absolute bottom-0 flex-col w-full h-[270px]\`);`,
       options: [
         {
           callees: ["clsx"],
@@ -284,7 +284,7 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div className={clsx(\`absolute bottom-0 w-full h-[270px] flex flex-col\`)}>clsx</div>`,
-      output: `<div className={clsx(\`flex flex-col absolute bottom-0 w-full h-[270px]\`)}>clsx</div>`,
+      output: `<div className={clsx(\`flex absolute bottom-0 flex-col w-full h-[270px]\`)}>clsx</div>`,
       options: [
         {
           callees: ["clsx"],
