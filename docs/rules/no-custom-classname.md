@@ -24,7 +24,8 @@ Examples of **correct** code for this rule:
 ...
 "tailwindcss/classnames-order": [<enabled>, {
   "callees": Array<string>,
-  "config": <string>|<object>
+  "config": <string>|<object>,
+  "whitelist": Array<string>
 }]
 ...
 ```
@@ -48,6 +49,14 @@ If the external file cannot be loaded (e.g. incorrect path or deleted file), an 
 It is also possible to directly inject a configuration as plain `object` like `{ prefix: "tw-", theme: { ... } }`.
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
+
+### `whitelist` (default: `[]`)
+
+The `whitelist` is empty by default but you can add custom regular expressions to this array to avoid getting warnings or errors while using your custom classes.
+
+For example, imagine we are using the following custom classnames: `skin-summer`, `skin-xmas`, `custom-1`, `custom-2`, `custom-3`.
+
+The `whitelist` options should be set to `['skin\-(summer|xmas)', 'custom\-[1-3]']`
 
 ## Further Reading
 
