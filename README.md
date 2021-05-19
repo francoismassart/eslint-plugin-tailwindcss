@@ -61,7 +61,7 @@ You should also specify settings that will be shared across all the plugin rules
 
 All these settings have nice default values that are explained in each rules' documentation. I'm listing them in the code below just to show them.
 
-```json
+```json5
 {
   "settings": {
     "tailwindcss": {
