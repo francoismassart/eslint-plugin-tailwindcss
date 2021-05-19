@@ -30,7 +30,7 @@ Examples of **correct** code for this rule:
 ...
 ```
 
-### `callees` (default: `["ctl"]`)
+### `callees` (default: `["classnames", "clsx", "ctl"]`)
 
 If you use some utility library like [@netlify/classnames-template-literals](https://github.com/netlify/classnames-template-literals), you can add its name to the list to make sure it gets parsed by this rule.
 
@@ -56,7 +56,11 @@ The `whitelist` is empty by default but you can add custom regular expressions t
 
 For example, imagine we are using the following custom classnames: `skin-summer`, `skin-xmas`, `custom-1`, `custom-2`, `custom-3`.
 
-The `whitelist` options should be set to `['skin\-(summer|xmas)', 'custom\-[1-3]']`
+The `whitelist` options should be set to:
+
+- `['skin\\-(summer|xmas)', 'custom\\-[1-3]']`
+- or if you don't like regular expressions (but you should):
+  `['skin\\-summer', 'skin\\-xmas', 'custom\\-1', 'custom\\-2', 'custom\\-3']`
 
 ## Further Reading
 

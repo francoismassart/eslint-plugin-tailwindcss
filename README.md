@@ -43,21 +43,52 @@ Configure the rules you want to use under the rules section.
 ```json
 {
   "rules": {
-    "tailwindcss/classnames-order": 2,
-    "tailwindcss/no-custom-classname": 2,
-    "tailwindcss/no-contradicting-classname": 2
+    "tailwindcss/classnames-order": "warn",
+    "tailwindcss/no-custom-classname": "warn",
+    "tailwindcss/no-contradicting-classname": "error"
   }
 }
 ```
 
 Learn more about [Configuring Rules in ESLint](https://eslint.org/docs/user-guide/configuring/rules).
 
+## Optional shared settings
+
+Most rules shares the same settings, instead of duplicating some options...
+
+You should also specify settings that will be shared across all the plugin rules.
+[More about eslint shared settings](https://eslint.org/docs/user-guide/configuring#adding-shared-settings).
+
+All these settings have nice default values that are explained in each rules' documentation. I'm listing them in the code below just to show them.
+
+```json
+{
+  "settings": {
+    "tailwindcss": {
+      // These are the default values but feel free to customize
+      "callees": ["classnames", "clsx", "ctl"],
+      "config": "tailwind.config.js",
+      "groups": defaultGroups, // imported from groups.js
+      "prependCustom": false,
+      "removeDuplicates": true,
+      "whitelist": []
+    }
+  }
+}
+```
+
+The plugin will look for each setting value in this order and stop looking as soon as it finds the settings:
+
+1. In the rule option argument (rule level)
+2. In the shared settings (plugin level)
+3. Default value of the requested setting (plugin level)...
+
 ## Supported Rules
 
 Learn more about each supported rules by reading their documentation:
 
 - [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
-- [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS
+- [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 
 ## Upcoming Rules

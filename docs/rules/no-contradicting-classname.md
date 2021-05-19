@@ -30,7 +30,7 @@ Examples of **correct** code for this rule:
 ...
 ```
 
-### `callees` (default: `["ctl"]`)
+### `callees` (default: `["classnames", "clsx", "ctl"]`)
 
 If you use some utility library like [@netlify/classnames-template-literals](https://github.com/netlify/classnames-template-literals), you can add its name to the list to make sure it gets parsed by this rule.
 

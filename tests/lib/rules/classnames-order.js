@@ -96,6 +96,27 @@ ruleTester.run("classnames-order", rule, {
         },
       ],
     },
+    {
+      code: `<div class="opts-w-12 lg:opts-w-6">Options override shared settings</div>`,
+      options: [
+        {
+          config: { prefix: "opts-" },
+        },
+      ],
+      settings: {
+        tailwindcss: {
+          config: { prefix: "sttgs-" },
+        },
+      },
+    },
+    {
+      code: `<div class="sttgs-w-12 lg_sttgs-w-6">Use settings</div>`,
+      settings: {
+        tailwindcss: {
+          config: { prefix: "sttgs-", separator: "_" },
+        },
+      },
+    },
   ],
   invalid: [
     {
