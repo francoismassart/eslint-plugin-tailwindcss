@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "requireindex": "~1.1.0",
-    "tailwindcss": "^2.1.1"
+    "tailwindcss": "^2.1.2"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.2.0",
