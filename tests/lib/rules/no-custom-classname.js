@@ -100,6 +100,14 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `<div className="text-foo border-bar">defined in textColor</div>`,
+      options: [
+        {
+          config: { theme: { textColor: { foo: "#123456" }, borderColor: { bar: "#654321" } } },
+        },
+      ],
+    },
   ],
 
   invalid: [
