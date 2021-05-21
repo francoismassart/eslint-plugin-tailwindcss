@@ -151,5 +151,58 @@ ruleTester.run("no-contradicting-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      ctl(\`
+        px-2
+        px-4
+        \${
+          !isDisabled &&
+          \`
+            py-1
+            py-2
+          \`
+        }
+        \${
+          isDisabled &&
+          \`
+            w-1
+            w-2
+          \`
+        }
+      \`)
+      `,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "py-1, py-2",
+          },
+        },
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "px-2, px-4",
+          },
+        },
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "w-1, w-2",
+          },
+        },
+      ],
+    },
+    {
+      code: `ctl(\`\${enabled && "px-2 px-0"}\`)`,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "px-2, px-0",
+          },
+        },
+      ],
+    },
   ],
 });

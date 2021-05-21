@@ -21,7 +21,6 @@
     "test": "mocha tests --recursive"
   },
   "dependencies": {
-    "requireindex": "~1.1.0",
     "tailwindcss": "^2.1.2"
   },
   "devDependencies": {

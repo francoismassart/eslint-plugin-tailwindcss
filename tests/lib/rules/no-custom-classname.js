@@ -224,6 +224,51 @@ ruleTester.run("no-custom-classname", rule, {
       ],
     },
     {
+      code: `
+      ctl(\`
+        px-4
+        custom-1
+        py-1
+        \${
+          !isDisabled &&
+          \`
+            lg:focus:ring-1
+            custom-2
+            focus:ring-2
+          \`
+        }
+        \${
+          isDisabled &&
+          \`
+            lg:opacity-25
+            custom-3
+            opacity-50
+          \`
+        }
+      \`)
+      `,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-1",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-2",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-3",
+          },
+        },
+      ],
+    },
+    {
       code: `<div className="flex skin-summer custom-2 custom-not-whitelisted">incomplete whitelist</div>`,
       options: [
         {
@@ -235,6 +280,17 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "custom-not-whitelisted",
+          },
+        },
+      ],
+    },
+    {
+      code: `ctl(\`\${enabled && "px-2 yo flex"}\`)`,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "yo",
           },
         },
       ],

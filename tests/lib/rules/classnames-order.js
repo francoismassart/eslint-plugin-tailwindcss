@@ -209,8 +209,8 @@ ruleTester.run("classnames-order", rule, {
       const buttonClasses = ctl(\`
         \${fullWidth ? "w-12" : "w-6"}
         container
-        \${fullWidth ? "sm:w-12" : "sm:w-4"}
-        lg:w-4
+        \${fullWidth ? "sm:w-8" : "sm:w-4"}
+        lg:w-9
         flex
         \${hasError && "bg-red"}
       \`);`,
@@ -218,9 +218,9 @@ ruleTester.run("classnames-order", rule, {
       const buttonClasses = ctl(\`
         \${fullWidth ? "w-12" : "w-6"}
         container
-        \${fullWidth ? "sm:w-12" : "sm:w-4"}
+        \${fullWidth ? "sm:w-8" : "sm:w-4"}
         flex
-        lg:w-4
+        lg:w-9
         \${hasError && "bg-red"}
       \`);`,
       errors: errors,
@@ -231,7 +231,7 @@ ruleTester.run("classnames-order", rule, {
         \${fullWidth ? "w-12" : "w-6"}
         flex
         container
-        \${fullWidth ? "sm:w-12" : "sm:w-4"}
+        \${fullWidth ? "sm:w-7" : "sm:w-4"}
         lg:py-4
         sm:py-6
         \${hasError && "bg-red"}
@@ -241,7 +241,7 @@ ruleTester.run("classnames-order", rule, {
         \${fullWidth ? "w-12" : "w-6"}
         container
         flex
-        \${fullWidth ? "sm:w-12" : "sm:w-4"}
+        \${fullWidth ? "sm:w-7" : "sm:w-4"}
         sm:py-6
         lg:py-4
         \${hasError && "bg-red"}
@@ -315,6 +315,107 @@ ruleTester.run("classnames-order", rule, {
         },
       ],
       errors: errors,
+    },
+    {
+      code: `
+      ctl(\`
+        px-2
+        flex
+        \${
+          !isDisabled &&
+          \`
+            top-0
+            flex
+            border-0
+          \`
+        }
+        \${
+          isDisabled &&
+          \`
+            border-0
+            mx-0
+          \`
+        }
+      \`)
+      `,
+      output: `
+      ctl(\`
+        flex
+        px-2
+        \${
+          !isDisabled &&
+          \`
+            flex
+            top-0
+            border-0
+           \`
+        }
+        \${
+          isDisabled &&
+          \`
+            mx-0
+            border-0
+           \`
+        }
+      \`)
+      `,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+        {
+          messageId: "invalidOrder",
+        },
+        {
+          messageId: "invalidOrder",
+        },
+      ],
+    },
+    {
+      code: `<div className="px-2 flex">...</div>`,
+      output: `<div className="flex px-2">...</div>`,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+      ],
+    },
+    {
+      code: `ctl(\`\${enabled && "px-2 flex"}\`)`,
+      output: `ctl(\`\${enabled && "flex px-2"}\`)`,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+      ],
+    },
+    {
+      code: `ctl(\`px-2 flex\`)`,
+      output: `ctl(\`flex px-2\`)`,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+      ],
+    },
+    {
+      code: `
+      ctl(\`
+        px-2
+        flex
+      \`)
+      `,
+      output: `
+      ctl(\`
+        flex
+        px-2
+       \`)
+      `,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+      ],
     },
   ],
 });
