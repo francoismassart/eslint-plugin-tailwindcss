@@ -295,5 +295,25 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      <div
+        className={clsx(
+          "w-full h-10 rounded",
+          name === "white"
+            ? "ring-black azerty flex"
+            : undefined
+        )}
+      />
+      `,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "azerty",
+          },
+        },
+      ],
+    },
   ],
 });

@@ -454,5 +454,32 @@ ruleTester.run("classnames-order", rule, {
         },
       ],
     },
+    {
+      code: `
+      <div
+        className={clsx(
+          "w-full h-10 rounded",
+          name === "white"
+            ? "ring-black flex"
+            : undefined
+        )}
+      />
+      `,
+      output: `
+      <div
+        className={clsx(
+          "w-full h-10 rounded",
+          name === "white"
+            ? "flex ring-black"
+            : undefined
+        )}
+      />
+      `,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+      ],
+    },
   ],
 });
