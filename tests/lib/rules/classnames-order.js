@@ -201,7 +201,7 @@ ruleTester.run("classnames-order", rule, {
         sm:w-6
         lg:w-4
         invalid
-       \`);`,
+      \`);`,
       errors: errors,
     },
     {
@@ -348,14 +348,14 @@ ruleTester.run("classnames-order", rule, {
             flex
             top-0
             border-0
-           \`
+          \`
         }
         \${
           isDisabled &&
           \`
             mx-0
             border-0
-           \`
+          \`
         }
       \`)
       `,
@@ -409,7 +409,44 @@ ruleTester.run("classnames-order", rule, {
       ctl(\`
         flex
         px-2
-       \`)
+      \`)
+      `,
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
+      ],
+    },
+    {
+      code: `
+      <div
+        className="
+          fixed
+          right-0
+          top-0
+          bottom-0
+          left-0
+          transition-all
+          transform
+        "
+      >
+        #19
+      </div>
+      `,
+      output: `
+      <div
+        className="
+          fixed
+          top-0
+          right-0
+          bottom-0
+          left-0
+          transition-all
+          transform
+        "
+      >
+        #19
+      </div>
       `,
       errors: [
         {
