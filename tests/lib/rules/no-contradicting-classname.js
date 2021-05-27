@@ -52,6 +52,32 @@ ruleTester.run("no-contradicting-classname", rule, {
     {
       code: '<div class="grid grid-cols-3"></div>',
     },
+    {
+      code: `
+      ctl(\`
+        text-white
+        rounded-md
+        py-5
+        px-10
+        text-sm
+        \${
+          type === 'primary' &&
+          \`
+            bg-black
+            hover:bg-blue
+          \`
+        }
+        \${
+          type === 'secondary' &&
+          \`
+            bg-transparent
+            hover:bg-green
+          \`
+        }
+        disabled:cursor-not-allowed
+      \`)
+      `,
+    },
   ],
 
   invalid: [
@@ -182,13 +208,13 @@ ruleTester.run("no-contradicting-classname", rule, {
         {
           messageId: "conflictingClassnames",
           data: {
-            classnames: "px-2, px-4",
+            classnames: "w-1, w-2",
           },
         },
         {
           messageId: "conflictingClassnames",
           data: {
-            classnames: "w-1, w-2",
+            classnames: "px-2, px-4",
           },
         },
       ],

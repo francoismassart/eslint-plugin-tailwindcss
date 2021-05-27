@@ -251,12 +251,6 @@ ruleTester.run("no-custom-classname", rule, {
         {
           messageId: "customClassnameDetected",
           data: {
-            classname: "custom-1",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
             classname: "custom-2",
           },
         },
@@ -264,6 +258,12 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "custom-3",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-1",
           },
         },
       ],
