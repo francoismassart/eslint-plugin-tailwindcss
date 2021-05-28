@@ -108,6 +108,13 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      <div class="group border-indigo-500 hover:bg-white hover:shadow-lg hover:border-transparent">
+      <p class="text-indigo-600 group-hover:text-gray-900">New Project</p>
+      <p class="text-indigo-500 group-hover:text-gray-500">Create a new project from a variety of starting templates.</p>
+      </div>`,
+    },
   ],
 
   invalid: [
