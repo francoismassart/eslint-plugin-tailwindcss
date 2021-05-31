@@ -10,7 +10,6 @@
 
 var rule = require("../../../lib/rules/no-custom-classname");
 var RuleTester = require("eslint").RuleTester;
-var plugin = require("tailwindcss/plugin");
 
 //------------------------------------------------------------------------------
 // Tests
@@ -115,46 +114,6 @@ ruleTester.run("no-custom-classname", rule, {
       <p class="text-indigo-600 group-hover:text-gray-900">New Project</p>
       <p class="text-indigo-500 group-hover:text-gray-500">Create a new project from a variety of starting templates.</p>
       </div>`,
-    },
-    {
-      code: `<div class="w-full custom-utilities md:custom-utilities">with custom utilities</div>`,
-      options: [
-        {
-          config: {
-            plugins: [
-              plugin(({ addUtilities }) => {
-                const customUtilities = {
-                  ".custom-utilities": {
-                    "text-align": "center",
-                  },
-                };
-                return addUtilities(customUtilities, ["responsive"]);
-              }),
-            ],
-          },
-        },
-      ],
-    },
-    {
-      code: `<div class="tw-w-full tw-custom-utilities md_tw-custom-utilities">custom utilities with prefix</div>`,
-      options: [
-        {
-          config: {
-            prefix: "tw-",
-            separator: "_",
-            plugins: [
-              plugin(({ addUtilities }) => {
-                const customUtilities = {
-                  ".custom-utilities": {
-                    "text-align": "center",
-                  },
-                };
-                return addUtilities(customUtilities, ["responsive"]);
-              }),
-            ],
-          },
-        },
-      ],
     },
   ],
 
