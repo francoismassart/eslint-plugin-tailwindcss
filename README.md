@@ -30,6 +30,16 @@ $ npm i eslint-plugin-tailwindcss --save-dev
 
 ## Usage
 
+Use our preset to get reasonable defaults:
+
+```
+  "extends": [
+    "plugin:tailwindcss/recommended"
+  ]
+```
+
+If you do not use a preset you will need to specify individual rules and add extra configuration:
+
 Add `tailwindcss` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
 ```json
