@@ -10,7 +10,18 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 >
 > 👍 Most of [the new JIT mode features](https://tailwindcss.com/docs/just-in-time-mode#new-features) are also supported.
 
+## Supported Rules
+
+Learn more about each supported rules by reading their documentation:
+
+- [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
+- [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
+- [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
+
+Using ESLint extension for Visual Studio Code, you will get these messages
 ![detected-errors](https://user-images.githubusercontent.com/704026/120854472-83567f80-c57d-11eb-9eaa-18d33b98c60c.png)
+
+You can can the same information on your favorite command line software as well.
 
 ## Installation
 
@@ -26,10 +37,6 @@ Next, install `eslint-plugin-tailwindcss`:
 $ npm i eslint-plugin-tailwindcss --save-dev
 ```
 
-[eslint-plugin-tailwindcss on npm](https://www.npmjs.com/package/eslint-plugin-tailwindcss)
-
-## Usage
-
 Add `tailwindcss` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
 ```json
@@ -38,7 +45,21 @@ Add `tailwindcss` to the plugins section of your `.eslintrc` configuration file.
 }
 ```
 
+## Configuration
+
+Use our preset to get reasonable defaults:
+
+```
+  "extends": [
+    "plugin:tailwindcss/recommended"
+  ]
+```
+
+If you do not use a preset you will need to specify individual rules and add extra configuration:
+
 Configure the rules you want to use under the rules section.
+
+> The following lines are matching the configuration saved `recommended` preset...
 
 ```json
 {
@@ -82,14 +103,6 @@ The plugin will look for each setting value in this order and stop looking as so
 1. In the rule option argument (rule level)
 2. In the shared settings (plugin level)
 3. Default value of the requested setting (plugin level)...
-
-## Supported Rules
-
-Learn more about each supported rules by reading their documentation:
-
-- [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
-- [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
-- [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 
 ## Upcoming Rules
 
