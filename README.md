@@ -59,7 +59,7 @@ If you do not use a preset you will need to specify individual rules and add ext
 
 Configure the rules you want to use under the rules section.
 
-> The following lines are matching the configuration saved `recommended` preset...
+> The following lines are matching the configuration saved in the `recommended` preset...
 
 ```json
 {
