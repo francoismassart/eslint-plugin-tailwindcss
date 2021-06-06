@@ -34,6 +34,16 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: '<div class="p-1 px-2 sm:px-3 sm:pt-0">Accepts shorthands</div>',
     },
     {
+      code: '<template><div class="overflow-auto overflow-x-hidden lg:overflow-x-auto lg:dark:overflow-x-visible lg:dark:active:overflow-x-visible active:overflow-auto"></div></template>',
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: '<template><div class="p-1 px-2 sm:px-3 sm:pt-0">Accepts shorthands</div></template>',
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
       code: '<div class="p-1 px-2 sm_px-3 sm_pt-0">Still works with different separator</div>',
       options: [
         {
@@ -107,6 +117,37 @@ ruleTester.run("no-contradicting-classname", rule, {
           },
         },
       ],
+    },
+    {
+      code: '<template><div class="container w-1 w-2"></div></template>',
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "w-1, w-2",
+          },
+        },
+      ],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: '<template><div class="container sm_w-3 sm_w-4 lg_w-6"></div></template>',
+      options: [
+        {
+          config: { separator: "_" },
+        },
+      ],
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "sm_w-3, sm_w-4",
+          },
+        },
+      ],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
     },
     {
       code: '<div class="flex-1 order-first order-11 sm:order-last flex-none"></div>',

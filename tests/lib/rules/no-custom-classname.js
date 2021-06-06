@@ -31,6 +31,11 @@ ruleTester.run("no-custom-classname", rule, {
       code: `<div class="container box-content lg:box-border max-h-24 self-end">Only Tailwind CSS classnames</div>`,
     },
     {
+      code: `<template><div class="container box-content lg:box-border max-h-24 self-end">Only Tailwind CSS classnames</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
       code: `
       ctl(\`
         sm:w-6
@@ -128,6 +133,19 @@ ruleTester.run("no-custom-classname", rule, {
           },
         },
       ],
+    },
+    {
+      code: `<template><div class="w-12 my-custom">my-custom is not defined in Tailwind CSS!</div></template>`,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "my-custom",
+          },
+        },
+      ],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
     },
     {
       code: `<div class="hello world">2 classnames are not defined in Tailwind CSS!</div>`,
