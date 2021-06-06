@@ -10,6 +10,12 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 >
 > 👍 Most of [the new JIT mode features](https://tailwindcss.com/docs/just-in-time-mode#new-features) are also supported.
 
+## Latest changelog
+
+- Basic [support for Vue SFC](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases/tag/v1.11.0) (Single File Components) in `v1.11.0`
+
+[View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
+
 ## Supported Rules
 
 Learn more about each supported rules by reading their documentation:
