@@ -12,7 +12,7 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
-- Basic [support for Vue SFC](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases/tag/v1.11.0) (Single File Components) in `v1.11.0`
+- [Include class names from .css as valid custom classes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases/tag/v1.12.0) in `v1.12.0`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
@@ -95,6 +95,7 @@ All these settings have nice default values that are explained in each rules' do
       // These are the default values but feel free to customize
       "callees": ["classnames", "clsx", "ctl"],
       "config": "tailwind.config.js",
+      "cssFiles": ["**/*.css", "!**/node_modules"],
       "groups": defaultGroups, // imported from groups.js
       "prependCustom": false,
       "removeDuplicates": true,

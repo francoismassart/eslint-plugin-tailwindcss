@@ -1,0 +1,45 @@
+/* Only used for running tests */
+.some {
+  color: black;
+}
+.white-listed {
+  color: yellow;
+}
+.classnames {
+  color: red;
+}
+.one,
+.two {
+  color: red;
+}
+
+@media screen and (min-width: 480px) {
+  body {
+    background-color: lightgreen;
+  }
+}
+
+#main {
+  border: 1px solid black;
+}
+@layer base {
+  ul li {
+    padding: 5px;
+  }
+  .base {
+    display: block;
+  }
+}
+
+@tailwind utilities;
+
+.btn {
+  @apply border-red;
+}
+
+.parent {
+  .child,
+  .btn {
+    background: none;
+  }
+}

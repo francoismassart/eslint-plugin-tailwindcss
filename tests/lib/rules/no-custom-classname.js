@@ -120,6 +120,17 @@ ruleTester.run("no-custom-classname", rule, {
       <p class="text-indigo-500 group-hover:text-gray-500">Create a new project from a variety of starting templates.</p>
       </div>`,
     },
+    {
+      code: `
+      <div class="some base white-listed classnames">
+        from css file
+      </div>`,
+      options: [
+        {
+          cssFiles: ["./tests/**/*.css"],
+        },
+      ],
+    },
   ],
 
   invalid: [

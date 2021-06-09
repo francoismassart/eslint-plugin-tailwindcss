@@ -50,6 +50,12 @@ It is also possible to directly inject a configuration as plain `object` like `{
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
 
+### `cssFiles` (default: `["**/*.css", "!**/node_modules"]`)
+
+By default the plugin will now look for any `css` files and ignore the `node_modules/` folder.
+
+Each `css` files will be processed in order to extract the declared classnames in order to accept them.
+
 ### `whitelist` (default: `[]`)
 
 The `whitelist` is empty by default but you can add custom regular expressions to this array to avoid getting warnings or errors while using your custom classes.
