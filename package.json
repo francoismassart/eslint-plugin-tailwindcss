@@ -20,7 +20,12 @@
   "scripts": {
     "test": "mocha tests --recursive"
   },
+  "files": [
+    "lib"
+  ],
   "dependencies": {
+    "fast-glob": "^3.2.5",
+    "postcss": "^8.3.0",
     "tailwindcss": "^2.1.2"
   },
   "devDependencies": {
