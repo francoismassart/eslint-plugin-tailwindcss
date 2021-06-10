@@ -25,6 +25,7 @@ Examples of **correct** code for this rule:
 "tailwindcss/classnames-order": [<enabled>, {
   "callees": Array<string>,
   "config": <string>|<object>,
+  "groupByResponsive": <boolean>,
   "groups": Array<object>,
   "prependCustom": <boolean>,
   "removeDuplicates": <boolean>
@@ -51,6 +52,20 @@ If the external file cannot be loaded (e.g. incorrect path or deleted file), an 
 It is also possible to directly inject a configuration as plain `object` like `{ prefix: "tw-", theme: { ... } }`.
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
+
+### `groupByResponsive` (default: `false`)
+
+Linting this code:
+
+`<div class="rounded sm:rounded-lg lg:rounded-2xl p-4 sm:p-6 lg:p-8">...</div>`
+
+By default, the ordering process will group the classnames by properties, then by variants:
+
+`<div class="p-4 sm:p-6 lg:p-8 rounded sm:rounded-lg lg:rounded-2xl">...</div>`
+
+Set `groupByResponsive` to `true` and the ordering and you will get:
+
+`<div class="p-4 rounded sm:p-6 sm:rounded-lg lg:p-8 lg:rounded-2xl">...</div>`
 
 ### `groups` (default defined in [groups.js](../../lib/config/groups.js))
 

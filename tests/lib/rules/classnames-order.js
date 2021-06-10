@@ -40,6 +40,14 @@ ruleTester.run("classnames-order", rule, {
       code: `<div class='box-content lg:box-border'>Simple quotes</div>`,
     },
     {
+      code: `<div class="p-4 rounded sm:p-6 sm:rounded-lg lg:p-8 lg:rounded-2xl">groupByResponsive</div>`,
+      options: [
+        {
+          groupByResponsive: true,
+        },
+      ],
+    },
+    {
       code: `<div class="p-5 lg:p-4 md:py-2 sm:px-3 xl:px-6">'p', then 'py' then 'px'</div>`,
     },
     {
