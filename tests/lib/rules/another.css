@@ -1,4 +1,37 @@
-/* Only used for running tests */
-.another {
-  display: block;
+/* .custom-carousel li:first-child {
+  padding-left: 20vw;
+} */
+
+:global(.slide:not(.selected)) {
+  opacity: 0.2;
+}
+
+.gallery-snackbar {
+  @apply w-full;
+}
+
+.custom-slide {
+  height: 70vh;
+}
+
+@media (min-width: 768px) {
+  .custom-carousel li:not(:first-child) {
+    @apply pl-16;
+  }
+
+  .custom-carousel li:not(:last-child) {
+    @apply pr-16;
+  }
+
+  .custom-carousel :global(.carousel-root) {
+    padding: 0 calc(10vw + 16px);
+  }
+
+  .gallery-snackbar {
+    width: calc(80vw - 32px);
+  }
+
+  .indicator {
+    margin-left: calc(10vw + 16px);
+  }
 }
