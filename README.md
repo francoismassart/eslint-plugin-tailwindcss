@@ -96,6 +96,7 @@ All these settings have nice default values that are explained in each rules' do
       "callees": ["classnames", "clsx", "ctl"],
       "config": "tailwind.config.js",
       "cssFiles": ["**/*.css", "!**/node_modules"],
+      "groupByResponsive": false,
       "groups": defaultGroups, // imported from groups.js
       "prependCustom": false,
       "removeDuplicates": true,
