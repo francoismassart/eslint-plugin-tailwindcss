@@ -12,7 +12,7 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
-- [Include class names from .css as valid custom classes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases/tag/v1.12.0) in `v1.12.0`
+- Add [`groupByResponsive`](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/master/docs/rules/classnames-order.md#groupbyresponsive-default-false) option (default: `false`) in `v1.13.0`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
