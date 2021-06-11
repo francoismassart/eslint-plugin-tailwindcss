@@ -1,3 +1,11 @@
+/* override input always getting focus styling from package "focus-visible" */
+.focus-outline[data-focus-visible-added].focus-visible.focus,
+.focus-outline[data-focus-visible-added].focus-visible.focus:focus,
+input[type="text"].focus\:outline-none[data-focus-visible-added]:focus,
+input[type="email"].focus\:outline-none[data-focus-visible-added]:focus {
+  box-shadow: none;
+  outline-width: 0;
+}
 /* .custom-carousel li:first-child {
   padding-left: 20vw;
 } */
