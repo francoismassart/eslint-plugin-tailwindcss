@@ -2,7 +2,7 @@
 
 ![npm (scoped)](https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge) ![npm bundle size (scoped)](https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge)
 
-![eslint-plugin-tailwindcss logo](https://user-images.githubusercontent.com/704026/117105634-bd661300-ad7e-11eb-9cf1-a05ba130da34.png)
+![eslint-plugin-tailwindcss logo](.github/logo.png)
 
 Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/) v2.1.2
 
@@ -25,7 +25,7 @@ Learn more about each supported rules by reading their documentation:
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 
 Using ESLint extension for Visual Studio Code, you will get these messages
-![detected-errors](https://user-images.githubusercontent.com/704026/120854472-83567f80-c57d-11eb-9eaa-18d33b98c60c.png)
+![detected-errors](.github/output.png)
 
 You can can the same information on your favorite command line software as well.
 
