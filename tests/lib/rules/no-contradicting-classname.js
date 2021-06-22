@@ -88,6 +88,19 @@ ruleTester.run("no-contradicting-classname", rule, {
       \`)
       `,
     },
+    {
+      code: `
+      <div class="text-[11px] text-[#b3b3b3]">
+        same prefix, different arbitrary values
+      </div>`,
+      options: [
+        {
+          config: {
+            mode: "jit",
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
