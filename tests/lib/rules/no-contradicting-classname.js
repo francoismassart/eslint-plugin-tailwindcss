@@ -88,6 +88,37 @@ ruleTester.run("no-contradicting-classname", rule, {
       \`)
       `,
     },
+    {
+      code: `
+      myTag\`
+        text-white
+        rounded-md
+        py-5
+        px-10
+        text-sm
+        \${
+          type === 'primary' &&
+          \`
+            bg-black
+            hover:bg-blue
+          \`
+        }
+        \${
+          type === 'secondary' &&
+          \`
+            bg-transparent
+            hover:bg-green
+          \`
+        }
+        disabled:cursor-not-allowed
+      \`
+      `,
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -262,6 +293,83 @@ ruleTester.run("no-contradicting-classname", rule, {
     },
     {
       code: `ctl(\`\${enabled && "px-2 px-0"}\`)`,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "px-2, px-0",
+          },
+        },
+      ],
+    },
+
+    {
+      code: `
+      myTag\`
+        invalid bis
+        sm:w-6
+        w-8
+        container
+        w-12
+        flex
+        lg:w-4
+      \`;`,
+      options: [{ tags: ["myTag"] }],
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "w-8, w-12",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      myTag\`
+        px-2
+        px-4
+        \${
+          !isDisabled &&
+          \`
+            py-1
+            py-2
+          \`
+        }
+        \${
+          isDisabled &&
+          \`
+            w-1
+            w-2
+          \`
+        }
+      \`
+      `,
+      options: [{ tags: ["myTag"] }],
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "py-1, py-2",
+          },
+        },
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "w-1, w-2",
+          },
+        },
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "px-2, px-4",
+          },
+        },
+      ],
+    },
+    {
+      code: `myTag\`\${enabled && "px-2 px-0"}\``,
+      options: [{ tags: ["myTag"] }],
       errors: [
         {
           messageId: "conflictingClassnames",
