@@ -114,6 +114,14 @@ ruleTester.run("no-custom-classname", rule, {
       ],
     },
     {
+      code: `<div className="dark">dark should be allowed in class mode</div>`,
+      options: [
+        {
+          config: { darkMode: "class" },
+        },
+      ],
+    },
+    {
       code: `
       <div class="group border-indigo-500 hover:bg-white hover:shadow-lg hover:border-transparent">
       <p class="text-indigo-600 group-hover:text-gray-900">New Project</p>
@@ -131,7 +139,6 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
-
     {
       code: `
       myTag\`
@@ -364,7 +371,22 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
-
+    {
+      code: `<div className="dark">dark is invalid without darkMode in class</div>`,
+      options: [
+        {
+          config: { darkMode: "media" },
+        },
+      ],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "dark",
+          },
+        },
+      ],
+    },
     {
       code: `
       myTag\`
