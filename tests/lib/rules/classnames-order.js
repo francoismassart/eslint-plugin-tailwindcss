@@ -140,6 +140,20 @@ ruleTester.run("classnames-order", rule, {
         },
       },
     },
+    {
+      code: `myTag\`
+        container
+        flex
+        w-12
+        sm:w-6
+        lg:w-4
+      \``,
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -520,6 +534,93 @@ ruleTester.run("classnames-order", rule, {
       />
       `,
       errors: [
+        {
+          messageId: "invalidOrder",
+        },
+      ],
+    },
+    {
+      code: `
+      myTag\`
+        invalid
+        sm:w-6
+        container
+        w-12
+        flex
+        lg:w-4
+      \`;`,
+      output: `
+      myTag\`
+        container
+        flex
+        w-12
+        sm:w-6
+        lg:w-4
+        invalid
+      \`;`,
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+      errors: errors,
+    },
+    {
+      code: `
+      const buttonClasses = myTag\`
+        \${fullWidth ? "w-12" : "w-6"}
+        container
+        \${fullWidth ? "sm:w-8" : "sm:w-4"}
+        lg:w-9
+        flex
+        \${hasError && "bg-red"}
+      \`;`,
+      output: `
+      const buttonClasses = myTag\`
+        \${fullWidth ? "w-12" : "w-6"}
+        container
+        \${fullWidth ? "sm:w-8" : "sm:w-4"}
+        flex
+        lg:w-9
+        \${hasError && "bg-red"}
+      \`;`,
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+      errors: errors,
+    },
+    {
+      code: `
+      const buttonClasses = myTag\`
+        \${fullWidth ? "w-12" : "w-6"}
+        flex
+        container
+        \${fullWidth ? "sm:w-7" : "sm:w-4"}
+        lg:py-4
+        sm:py-6
+        \${hasError && "bg-red"}
+      \`;`,
+      output: `
+      const buttonClasses = myTag\`
+        \${fullWidth ? "w-12" : "w-6"}
+        container
+        flex
+        \${fullWidth ? "sm:w-7" : "sm:w-4"}
+        sm:py-6
+        lg:py-4
+        \${hasError && "bg-red"}
+      \`;`,
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+      errors: [
+        {
+          messageId: "invalidOrder",
+        },
         {
           messageId: "invalidOrder",
         },

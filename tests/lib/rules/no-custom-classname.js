@@ -131,6 +131,19 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+
+    {
+      code: `
+      myTag\`
+        sm:w-6
+        w-8
+        container
+        w-12
+        flex
+        lg:w-4
+      \`;`,
+      options: [{ tags: ["myTag"] }],
+    },
   ],
 
   invalid: [
@@ -347,6 +360,81 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "azerty",
+          },
+        },
+      ],
+    },
+
+    {
+      code: `
+      myTag\`
+        sm:w-6
+        hello
+        w-8
+        container
+        w-12
+        world
+        flex
+        lg:w-4
+      \`;`,
+      options: [{ tags: ["myTag"] }],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "hello",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "world",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      myTag\`
+        px-4
+        custom-1
+        py-1
+        \${
+          !isDisabled &&
+          \`
+            lg:focus:ring-1
+            custom-2
+            focus:ring-2
+          \`
+        }
+        \${
+          isDisabled &&
+          \`
+            lg:opacity-25
+            custom-3
+            opacity-50
+          \`
+        }
+      \`
+      `,
+      options: [{ tags: ["myTag"] }],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-2",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-3",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-1",
           },
         },
       ],
