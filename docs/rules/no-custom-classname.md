@@ -22,9 +22,10 @@ Examples of **correct** code for this rule:
 
 ```js
 ...
-"tailwindcss/classnames-order": [<enabled>, {
+"tailwindcss/no-custom-classname": [<enabled>, {
   "callees": Array<string>,
   "config": <string>|<object>,
+  "cssFiles": Array<string>,
   "whitelist": Array<string>
 }]
 ...
