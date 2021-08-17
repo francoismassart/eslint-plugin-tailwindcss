@@ -114,6 +114,14 @@ ruleTester.run("no-custom-classname", rule, {
       ],
     },
     {
+      code: `<div className="dark">dark should be allowed in class mode</div>`,
+      options: [
+        {
+          config: { darkMode: "class" },
+        },
+      ],
+    },
+    {
       code: `
       <div class="group border-indigo-500 hover:bg-white hover:shadow-lg hover:border-transparent">
       <p class="text-indigo-600 group-hover:text-gray-900">New Project</p>
@@ -130,6 +138,26 @@ ruleTester.run("no-custom-classname", rule, {
           cssFiles: ["./tests/**/*.css"],
         },
       ],
+    },
+    {
+      code: `
+      myTag\`
+        sm:w-6
+        w-8
+        container
+        w-12
+        flex
+        lg:w-4
+      \`;`,
+      options: [{ tags: ["myTag"] }],
+    },
+    {
+      code: `
+      <div class="flex flex-row-reverse space-x-4 space-x-reverse">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </div>`,
     },
   ],
 
@@ -347,6 +375,96 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "azerty",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div className="dark">dark is invalid without darkMode in class</div>`,
+      options: [
+        {
+          config: { darkMode: "media" },
+        },
+      ],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "dark",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      myTag\`
+        sm:w-6
+        hello
+        w-8
+        container
+        w-12
+        world
+        flex
+        lg:w-4
+      \`;`,
+      options: [{ tags: ["myTag"] }],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "hello",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "world",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      myTag\`
+        px-4
+        custom-1
+        py-1
+        \${
+          !isDisabled &&
+          \`
+            lg:focus:ring-1
+            custom-2
+            focus:ring-2
+          \`
+        }
+        \${
+          isDisabled &&
+          \`
+            lg:opacity-25
+            custom-3
+            opacity-50
+          \`
+        }
+      \`
+      `,
+      options: [{ tags: ["myTag"] }],
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-2",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-3",
+          },
+        },
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "custom-1",
           },
         },
       ],

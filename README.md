@@ -12,7 +12,13 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
-- Add [`groupByResponsive`](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/master/docs/rules/classnames-order.md#groupbyresponsive-default-false) option (default: `false`) in `v1.13.0`
+- [Performance gains](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/42) on `no-custom-classname` and `no-contradicting-classname` (by [larrifax](https://github.com/larrifax) 🙏)
+
+- Add support for [tagged templates](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/41) (by [larrifax](https://github.com/larrifax) 🙏)
+
+- [Include "plugins": ["tailwindcss"]](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/44) in the `recommended` preset(by [kripod](https://github.com/kripod) 🙏)
+
+- [Support dark class](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/43) when `darkMode` is set to `class`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
