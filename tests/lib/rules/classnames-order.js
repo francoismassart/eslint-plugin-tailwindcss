@@ -40,6 +40,9 @@ ruleTester.run("classnames-order", rule, {
       code: `<div class='box-content lg:box-border'>Simple quotes</div>`,
     },
     {
+      code: `<div class="space-y-0.5 ">Extra space at the end</div>`,
+    },
+    {
       code: `<div class="p-4 rounded sm:p-6 sm:rounded-lg lg:p-8 lg:rounded-2xl">groupByResponsive</div>`,
       options: [
         {
@@ -159,6 +162,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="sm:w-6 container w-12">Classnames will be ordered</div>`,
       output: `<div class="container w-12 sm:w-6">Classnames will be ordered</div>`,
+      errors: errors,
+    },
+    {
+      code: `<div class="   flex  space-y-0.5   ">Extra spaces</div>`,
+      output: `<div class="flex space-y-0.5">Extra spaces</div>`,
       errors: errors,
     },
     {
