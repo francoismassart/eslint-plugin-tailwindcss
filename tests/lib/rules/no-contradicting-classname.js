@@ -23,6 +23,24 @@ var parserOptions = {
   },
 };
 
+var config = [
+  {
+    config: {
+      mode: "jit",
+      theme: {
+        order: {
+          "-1": "-1",
+          0: "0",
+        },
+        zIndex: {
+          "-1": "-1",
+          0: "0",
+        },
+      },
+    },
+  },
+];
+
 var ruleTester = new RuleTester({ parserOptions });
 
 ruleTester.run("no-contradicting-classname", rule, {
@@ -53,11 +71,7 @@ ruleTester.run("no-contradicting-classname", rule, {
     },
     {
       code: '<div class="p-[10px] px-2 sm:px-3 sm:pt-[5%]">Still works with different separator</div>',
-      options: [
-        {
-          config: { mode: "jit" },
-        },
-      ],
+      options: config,
     },
     {
       code: '<div class="grid grid-cols-3"></div>',
@@ -87,6 +101,13 @@ ruleTester.run("no-contradicting-classname", rule, {
         disabled:cursor-not-allowed
       \`)
       `,
+    },
+    {
+      code: `
+      <div class="text-[11px] text-[#b3b3b3]">
+        same prefix, different arbitrary values
+      </div>`,
+      options: config,
     },
     {
       code: `
@@ -125,6 +146,12 @@ ruleTester.run("no-contradicting-classname", rule, {
         <div>1</div>
         <div>2</div>
         <div>3</div>
+      </div>`,
+    },
+    {
+      code: `
+      <div class="text-[11px] text-[#b3b3b3] border-[length:var(--foo)] border-[color:var(--bar)] ring-[0.5px] ring-[rgb(48,151,255)] ring-offset-[#1234] ring-offset-[length:var(--guess-who)] stroke-[red] stroke-[2vh] bg-[color:var(--donno)]">
+        Same class prefix, type prefix may be required for resolving ambiguous values
       </div>`,
     },
   ],
@@ -226,13 +253,15 @@ ruleTester.run("no-contradicting-classname", rule, {
       ],
     },
     {
-      code: '<div class="container sm:w-3 sm:w-[40%] lg:w-6"></div>',
-      options: [
-        {
-          config: { mode: "jit" },
-        },
-      ],
+      code: '<div class="container sm:w-3 sm:w-[40%] lg:w-6 z-0 z-[var(--some)]"></div>',
+      options: config,
       errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "z-0, z-[var(--some)]",
+          },
+        },
         {
           messageId: "conflictingClassnames",
           data: {
@@ -383,6 +412,88 @@ ruleTester.run("no-contradicting-classname", rule, {
           messageId: "conflictingClassnames",
           data: {
             classnames: "px-2, px-0",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="flex-shrink flex-shrink-0 flex-shrink-[inherit] flex-shrink-[initial] flex-shrink-[unset] flex-shrink-[var(--some)] flex-shrink-[0.5] flex-shrink-[5]">
+        Arbitrary values for positive integers
+      </div>
+      `,
+      options: config,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames:
+              "flex-shrink, flex-shrink-0, flex-shrink-[inherit], flex-shrink-[initial], flex-shrink-[unset], flex-shrink-[var(--some)], flex-shrink-[0.5], flex-shrink-[5]",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="order-0 -order-1 order-[inherit] order-[initial] order-[unset] order-[var(--some)] order-[2] order-[-3]">
+        Arbitrary values for order
+      </div>
+      `,
+      options: config,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames:
+              "order-0, -order-1, order-[inherit], order-[initial], order-[unset], order-[var(--some)], order-[2], order-[-3]",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="z-0 -z-1 z-[auto] z-[inherit] z-[initial] z-[unset] z-[var(--some)] z-[2] z-[-3]">
+        Arbitrary values for zIndex
+      </div>
+      `,
+      options: config,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "z-0, -z-1, z-[auto], z-[inherit], z-[initial], z-[unset], z-[var(--some)], z-[2], z-[-3]",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="flex-auto flex-[2,2,10%] flex-[var(--some)]">
+        Arbitrary values for flex
+      </div>
+      `,
+      options: config,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "flex-auto, flex-[2,2,10%], flex-[var(--some)]",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="rounded-xl rounded-[50%/10%] rounded-[10%,30%,50%,70%] rounded-[var(--some)]">
+        Arbitrary values for border-radius
+      </div>
+      `,
+      options: config,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "rounded-xl, rounded-[50%/10%], rounded-[10%,30%,50%,70%], rounded-[var(--some)]",
           },
         },
       ],

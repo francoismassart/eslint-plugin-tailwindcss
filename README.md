@@ -12,13 +12,9 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
-- [Performance gains](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/42) on `no-custom-classname` and `no-contradicting-classname` (by [larrifax](https://github.com/larrifax) 🙏)
+- Better support for [JIT mode arbitrary values](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/40)
 
-- Add support for [tagged templates](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/41) (by [larrifax](https://github.com/larrifax) 🙏)
-
-- [Include "plugins": ["tailwindcss"]](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/44) in the `recommended` preset(by [kripod](https://github.com/kripod) 🙏)
-
-- [Support dark class](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/43) when `darkMode` is set to `class`
+- Support for [color opacity shorthand](https://tailwindcss.com/docs/just-in-time-mode#color-opacity-shorthand)
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
@@ -121,6 +117,10 @@ The plugin will look for each setting value in this order and stop looking as so
 ## Upcoming Rules
 
 - `no-redundant-variant`: e.g. avoid `mx-5 sm:mx-5`, no need to redefine `mx` in `sm:` variant as it uses the same value (`5`)
+
+- `only-valid-arbitrary-values`:
+  - e.g. avoid `top-[42]`, only `0` value can be unitless.
+  - e.g. avoid `text-[rgba(10%,20%,30,50%)]`, can't mix `%` and `0-255`.
 
 ## Alternatives
 
