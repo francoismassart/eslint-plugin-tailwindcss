@@ -512,7 +512,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="transform translate-y-6 translate-y-[10px] translate-y-[-10px]  translate-y-[1%]">translate</div>
+      <div class="transform translate-y-6 translate-y-[10px] translate-y-[-10px] translate-y-[1%]">translate</div>
       `,
       options: config,
     },
@@ -762,7 +762,7 @@ ruleTester.run("arbitrary-values", rule, {
     {
       code: `
       <div class="rotate-[angle:5deg] rotate-[66]">
-      Invalid arbitrary values for rotate
+        Invalid arbitrary values for rotate
       </div>
       `,
       options: config,
