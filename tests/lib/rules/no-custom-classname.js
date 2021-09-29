@@ -181,6 +181,13 @@ ruleTester.run("no-custom-classname", rule, {
       </div>
       `,
     },
+    {
+      code: `
+      <div class="bg-red-600 p-10">
+        <p class="text-yellow-400 border-2 border-green-600 border-t-current p-2">border-t-current</p>
+      </div>
+      `,
+    },
   ],
 
   invalid: [
