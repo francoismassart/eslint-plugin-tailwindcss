@@ -187,6 +187,13 @@ ruleTester.run("no-custom-classname", rule, {
         <p class="text-yellow-400 border-2 border-green-600 border-t-current p-2">border-t-current</p>
       </div>
       `,
+      options: [
+        {
+          config: {
+            mode: "jit",
+          },
+        },
+      ],
     },
   ],
 
@@ -494,6 +501,21 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "custom-1",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="bg-red-600 p-10">
+        <p class="text-yellow-400 border-2 border-green-600 border-t-current p-2">border-t-current</p>
+      </div>
+      `,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "border-t-current",
           },
         },
       ],
