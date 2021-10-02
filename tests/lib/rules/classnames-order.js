@@ -37,6 +37,26 @@ ruleTester.run("classnames-order", rule, {
       code: `<div class="container box-content lg:box-border custom">Simple, basic</div>`,
     },
     {
+      code: "<div className={ctl(`p-10 w-full ${live && 'bg-blue-100 dark:bg-purple-400 sm:rounded-lg'}`)}>div</div>",
+    },
+    {
+      code: "<div className={ctl(`w-48 h-48 bg-blue-500 rounded-full ${className}`)}>div</div>",
+    },
+    {
+      code: "<div className={ctl(`p-10 w-full ${live && 'bg-white dark:bg-black'}`)}>Space trim issue</div>",
+    },
+    {
+      code: `
+      ctl(\`
+        flex justify-center items-center
+        \${variant === SpinnerVariant.OVERLAY && \`px-4 bg-gray-400 rounded border-2 z-60 \${widthClass} \${heightClass}\`}
+        \${
+          variant === SpinnerVariant.FULLSCREEN &&
+          \`fixed top-0 right-0 bottom-0 left-0 px-4 bg-white dark:bg-purple-900 bg-opacity-60 dark:bg-opacity-60 z-60\`
+        }
+      \`)`,
+    },
+    {
       code: `<div class='box-content lg:box-border'>Simple quotes</div>`,
     },
     {
@@ -203,6 +223,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="bg-gradient-to-r from-green-400 to-blue-500 focus:from-pink-500 focus:to-yellow-500"></div>`,
       output: `<div class="bg-gradient-to-r from-green-400 focus:from-pink-500 to-blue-500 focus:to-yellow-500"></div>`,
+      errors: errors,
+    },
+    {
+      code: "<div className={ctl(`w-full p-10 ${live && 'bg-white dark:bg-black'}`)}>Space trim issue with fix</div>",
+      output: "<div className={ctl(`p-10 w-full ${live && 'bg-white dark:bg-black'}`)}>Space trim issue with fix</div>",
       errors: errors,
     },
     {

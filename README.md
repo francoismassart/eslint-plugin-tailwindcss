@@ -12,6 +12,8 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
+- FIX: issue with trim and `TemplateLiteral` causing unwanted concatenation of classnames
+
 - Support for [per-side border-color in JIT](https://github.com/tailwindlabs/tailwindcss/pull/4404)
 
 - Better support for [JIT mode arbitrary values](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/40)
