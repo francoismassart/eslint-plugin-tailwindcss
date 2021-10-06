@@ -12,6 +12,8 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
+- Handling `Literal` attribute values (e.g. `className={'...'}` mind the curly brackets) instead of ignoring them
+
 - FIX: issue with trim and `TemplateLiteral` causing unwanted concatenation of classnames
 
 - Support for [per-side border-color in JIT](https://github.com/tailwindlabs/tailwindcss/pull/4404)
