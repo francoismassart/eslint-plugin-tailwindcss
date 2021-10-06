@@ -180,6 +180,48 @@ ruleTester.run("classnames-order", rule, {
   ],
   invalid: [
     {
+      code: `
+      export interface FakePropsInterface {
+        readonly name?: string;
+      }
+      
+      function Fake({
+        name = 'yolo'
+      }: FakeProps) {
+      
+        return (
+          <>
+            <h1 className={"absolute bottom-0 w-full flex flex-col"}>Welcome {name}</h1>
+            <p>Bye {name}</p>
+          </>
+        );
+      }
+      
+      export default Fake;
+      `,
+      output: `
+      export interface FakePropsInterface {
+        readonly name?: string;
+      }
+      
+      function Fake({
+        name = 'yolo'
+      }: FakeProps) {
+      
+        return (
+          <>
+            <h1 className={"flex absolute bottom-0 flex-col w-full"}>Welcome {name}</h1>
+            <p>Bye {name}</p>
+          </>
+        );
+      }
+      
+      export default Fake;
+      `,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: errors,
+    },
+    {
       code: `<div class="sm:w-6 container w-12">Classnames will be ordered</div>`,
       output: `<div class="container w-12 sm:w-6">Classnames will be ordered</div>`,
       errors: errors,

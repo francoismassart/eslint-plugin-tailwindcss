@@ -199,6 +199,36 @@ ruleTester.run("no-custom-classname", rule, {
 
   invalid: [
     {
+      code: `
+      export interface FakePropsInterface {
+        readonly name?: string;
+      }
+      
+      function Fake({
+        name = 'yolo'
+      }: FakeProps) {
+      
+        return (
+          <>
+            <h1 className={"w-12 my-custom"}>Welcome {name}</h1>
+            <p>Bye {name}</p>
+          </>
+        );
+      }
+      
+      export default Fake;
+      `,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "my-custom",
+          },
+        },
+      ],
+    },
+    {
       code: `<div class="w-12 my-custom">my-custom is not defined in Tailwind CSS!</div>`,
       errors: [
         {

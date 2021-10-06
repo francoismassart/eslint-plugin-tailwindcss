@@ -158,6 +158,36 @@ ruleTester.run("no-contradicting-classname", rule, {
 
   invalid: [
     {
+      code: `
+      export interface FakePropsInterface {
+        readonly name?: string;
+      }
+      
+      function Fake({
+        name = 'yolo'
+      }: FakeProps) {
+      
+        return (
+          <>
+            <h1 className={"container w-1 w-2"}>Welcome {name}</h1>
+            <p>Bye {name}</p>
+          </>
+        );
+      }
+      
+      export default Fake;
+      `,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "w-1, w-2",
+          },
+        },
+      ],
+    },
+    {
       code: '<div class="container w-1 w-2"></div>',
       errors: [
         {
