@@ -195,6 +195,12 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      <div class="aspect-none">
+        aspect-none is a valid classname
+      </div>`,
+    },
   ],
 
   invalid: [

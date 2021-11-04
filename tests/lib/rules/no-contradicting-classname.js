@@ -28,6 +28,11 @@ var config = [
     config: {
       mode: "jit",
       theme: {
+        aspectRatio: {
+          1: "1",
+          9: "9",
+          16: "16",
+        },
         order: {
           "-1": "-1",
           0: "0",
@@ -524,6 +529,18 @@ ruleTester.run("no-contradicting-classname", rule, {
           messageId: "conflictingClassnames",
           data: {
             classnames: "rounded-xl, rounded-[50%/10%], rounded-[10%,30%,50%,70%], rounded-[var(--some)]",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="aspect-none aspect-w-16 aspect-w-10 aspect-h-9">aspect</div>`,
+      options: config,
+      errors: [
+        {
+          messageId: "conflictingClassnames",
+          data: {
+            classnames: "aspect-none, aspect-w-16",
           },
         },
       ],
