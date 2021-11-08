@@ -12,6 +12,10 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
+- FIX: [classname `aspect-none` should be valid](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/63)
+
+- FIX: [Invalid regular expression](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/62)
+
 - Handling `Literal` attribute values (e.g. `className={'...'}` mind the curly brackets) instead of ignoring them
 
 - FIX: issue with trim and `TemplateLiteral` causing unwanted concatenation of classnames
