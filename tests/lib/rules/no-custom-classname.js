@@ -201,6 +201,12 @@ ruleTester.run("no-custom-classname", rule, {
         aspect-none is a valid classname
       </div>`,
     },
+    {
+      code: `
+      <div class="font-mono">
+        font-mono is a valid classname
+      </div>`,
+    },
   ],
 
   invalid: [
