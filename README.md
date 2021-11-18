@@ -28,6 +28,12 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
+## Sponsors
+
+<a href="https://daily.dev/" target="_blank">
+  <img width="150px" src="https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/master/sponsors/daily.dev.jpg">
+</a>
+
 ## Supported Rules
 
 Learn more about each supported rules by reading their documentation:
