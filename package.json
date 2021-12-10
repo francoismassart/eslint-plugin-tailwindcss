@@ -25,14 +25,16 @@
   ],
   "dependencies": {
     "fast-glob": "^3.2.5",
-    "postcss": "^8.3.0",
-    "tailwindcss": "^2.1.2"
+    "postcss": "^8.4.4",
+    "tailwindcss": "^3.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/aspect-ratio": "^0.2.0",
-    "@tailwindcss/line-clamp": "^0.2.0",
-    "@tailwindcss/typography": "^0.4.0",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.4.0",
+    "@tailwindcss/line-clamp": "^0.3.0",
+    "@tailwindcss/typography": "^0.5.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "autoprefixer": "^10.4.0",
     "eslint": "^7.1.0",
     "mocha": "^7.2.0",
     "typescript": "4.3.5",
