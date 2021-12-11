@@ -59,7 +59,6 @@ ruleTester.run("no-custom-classname", rule, {
       options: [
         {
           config: {
-            mode: "jit",
             prefix: "arbitrary-",
           },
         },
@@ -67,13 +66,6 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `<div class="dark:focus:hover:bg-black md:dark:disabled:focus:hover:bg-gray-400">Stackable variants</div>`,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
     },
     {
       code: `<div class="bg-custom-color">Using dash in custom color name</div>`,
@@ -162,7 +154,7 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `
       <div class="text-red-700 border-2 border-current bg-current p-10">
-        <input class="bg-gray-500 text-white placeholder-current" placeholder="placeholder-current" />
+        <input class="bg-gray-500 text-white placeholder:text-black" placeholder="placeholder color" />
         <div class="text-yellow-400">
           <div class="divide-current divide-y-4">
             <button class="ring-2 p-2 focus:ring-current ring-offset-current ring-offset-2 outline-none">button with ringColor</button>
@@ -187,13 +179,6 @@ ruleTester.run("no-custom-classname", rule, {
         <p class="text-yellow-400 border-2 border-green-600 border-t-current p-2">border-t-current</p>
       </div>
       `,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
     },
     {
       code: `
@@ -236,6 +221,17 @@ ruleTester.run("no-custom-classname", rule, {
           messageId: "customClassnameDetected",
           data: {
             classname: "my-custom",
+          },
+        },
+      ],
+    },
+    {
+      code: `<input class="bg-gray-500 text-white placeholder-current" placeholder="placeholder-current not valid anymore" />`,
+      errors: [
+        {
+          messageId: "customClassnameDetected",
+          data: {
+            classname: "placeholder-current",
           },
         },
       ],
@@ -550,14 +546,14 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `
       <div class="bg-red-600 p-10">
-        <p class="text-yellow-400 border-2 border-green-600 border-t-current p-2">border-t-current</p>
+        <p class="text-yellow-400 border-2 border-green-600 border-t-nada p-2">border-t-nada</p>
       </div>
       `,
       errors: [
         {
           messageId: "customClassnameDetected",
           data: {
-            classname: "border-t-current",
+            classname: "border-t-nada",
           },
         },
       ],

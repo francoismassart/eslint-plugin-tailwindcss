@@ -115,30 +115,15 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div class="w-12 lg:w-[500px]">Allowed arbitrary value</div>`,
-      options: [
-        {
-          config: { mode: "jit" },
-        },
-      ],
     },
     {
       code: `<div class="dark:focus:hover:bg-black md:dark:disabled:focus:hover:bg-gray-400">Stackable variants</div>`,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
     },
     {
       code: `<div className={clsx(\`flex absolute bottom-0 flex-col w-full h-[270px]\`)}>clsx</div>`,
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
     },
@@ -391,23 +376,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="sm:w-12 w-[320px]">Allowed arbitrary value but incorrect order</div>`,
       output: `<div class="w-[320px] sm:w-12">Allowed arbitrary value but incorrect order</div>`,
-      options: [
-        {
-          config: { mode: "jit" },
-        },
-      ],
       errors: errors,
     },
     {
       code: `<div className='absolute bottom-0 w-full h-[270px] flex flex-col'>clsx</div>`,
       output: `<div className='flex absolute bottom-0 flex-col w-full h-[270px]'>clsx</div>`,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
       errors: errors,
     },
     {
@@ -416,9 +389,6 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
       errors: errors,
@@ -429,9 +399,6 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
       errors: errors,
@@ -442,9 +409,6 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
       errors: errors,

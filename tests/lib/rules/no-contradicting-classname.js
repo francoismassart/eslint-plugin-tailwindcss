@@ -26,7 +26,6 @@ var parserOptions = {
 var config = [
   {
     config: {
-      mode: "jit",
       theme: {
         aspectRatio: {
           1: "1",
