@@ -27,16 +27,7 @@ var parserOptions = {
 var config = [
   {
     config: {
-      theme: {
-        order: {
-          "-1": "-1",
-          0: "0",
-        },
-        zIndex: {
-          "-1": "-1",
-          0: "0",
-        },
-      },
+      darkMode: "class",
     },
   },
 ];
@@ -60,6 +51,24 @@ ruleTester.run("arbitrary-values", rule, {
   valid: [
     {
       code: `
+      <div class="dark">
+        <span class="dark:text-white">
+          TailwindCSS V3: dark is valid when
+          <code>config.darkMode === 'class'</code>
+        </span>
+      </div>
+      `,
+      options: config,
+    },
+    {
+      code: `
+      <div class="aspect-[4/3]">
+        Aspect Ratio accepts arbitrary values
+      </div>
+      `,
+    },
+    {
+      code: `
       <div class="object-center object-[0%,10%] object-[10px,-66vh]">
         Valid object-position
       </div>
@@ -68,13 +77,13 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="top-[-325px] right-[50%] w-[762px] h-[0] flex-grow-[var(--some-grow)] flex-shrink-[12] z-[var(--some-z-index)]">
+      <div class="top-[-325px] right-[50%] w-[762px] h-[0] grow-[var(--some-grow)] shrink-[12] z-[var(--some-z-index)]">
         Should accept the arbitrary values
       </div>`,
     },
     {
       code: `
-      <div class="z-0 -z-1 z-[auto] z-[inherit] z-[initial] z-[unset] z-[var(--some)] z-[2] z-[-3]">
+      <div class="z-0 -z-10 z-[auto] z-[inherit] z-[initial] z-[unset] z-[var(--some)] z-[2] z-[-3]">
         Arbitrary values for zIndex
       </div>
       `,
@@ -90,7 +99,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="flex-shrink flex-shrink-0 flex-shrink-[inherit] flex-shrink-[initial] flex-shrink-[unset] flex-shrink-[var(--some)] flex-shrink-[0.5] flex-shrink-[5]">
+      <div class="shrink shrink-0 shrink-[inherit] shrink-[initial] shrink-[unset] shrink-[var(--some)] shrink-[0.5] shrink-[5]">
         Arbitrary values for positive integers
       </div>
       `,
@@ -98,7 +107,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="order-0 -order-1 order-[inherit] order-[initial] order-[unset] order-[var(--some)] order-[calc(1+1)] order-[2] order-[-3]">
+      <div class="order-2 -order-1 order-[inherit] order-[initial] order-[unset] order-[var(--some)] order-[calc(1+1)] order-[2] order-[-3]">
         Arbitrary values for order
       </div>
       `,
@@ -526,6 +535,25 @@ ruleTester.run("arbitrary-values", rule, {
   ],
 
   invalid: [
+    {
+      code: `
+      <div class="dark">
+        <span class="dark:text-white">
+          TailwindCSS V3: dark is not valid unless
+          <code>config.darkMode === 'class'</code>
+        </span>
+      </div>
+      `,
+      errors: generateErrors("dark"),
+    },
+    {
+      code: `
+      <div class="aspect-ko">
+        Aspect Ratio
+      </div>
+      `,
+      errors: generateErrors("aspect-ko"),
+    },
     {
       code: `
       <div class="placeholder:text-white placeholder:text-[var(--some)] placeholder:text-[color:var(--some)]">
