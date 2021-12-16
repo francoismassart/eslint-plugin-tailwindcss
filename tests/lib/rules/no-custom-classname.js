@@ -87,7 +87,7 @@ ruleTester.run("no-custom-classname", rule, {
       code: `<div class="object-right object-[center_bottom]">Object Position</div>`,
     },
     {
-      code: `<div class="inset-x-0 top-2 bottom-[3px]">Top / Right / Bottom / Left</div>`,
+      code: `<div class="inset-x-0 top-2 -left-2 bottom-[3px] right-[-3px]">Top / Right / Bottom / Left</div>`,
     },
     {
       code: `<div class="z-0 sm:z-1000 md:-z-1000 lg:z-[100] dark:-z-0 sm:dark:z-1000 md:dark:-z-1000 lg:dark:z-[100] xl:dark:-z-666">Z-Index</div>`,
