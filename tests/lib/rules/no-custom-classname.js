@@ -174,9 +174,9 @@ ruleTester.run("no-custom-classname", rule, {
         <div class="list-none sm:list-disc md:list-decimal lg:list-[upper-roman]">List Style Type</div>
         <div class="list-inside sm:list-outside">List Style Position</div>
         <div class="text-left sm:text-center md:text-right lg:text-justify">Text Alignment</div>
-        <div class="text-inherit sm:text-current md:text-transparent lg:text-black xl:text-white 2xl:text-slate-200 dark:text-[#50d71e] sm:dark:text-[color:var(--yolo)]">Text Color</div>
+        <div class="text-inherit sm:text-current md:text-transparent lg:text-black xl:text-white 2xl:text-slate-200 dark:text-[#50d71e] sm:dark:text-[color:var(--yolo)] first:text-black/50 last:text-[#F005] even:text-[#F0F5F6B8] odd:text-[rgba(100,10,140,.5)]">Text Color</div>
         <div class="underline sm:overline md:line-through lg:no-underline">Text Decoration</div>
-        <div class="decoration-inherit sm:decoration-current md:decoration-transparent lg:text-black xl:decoration-white 2xl:decoration-slate-200 dark:decoration-[#50d71e] sm:dark:decoration-[color:var(--yolo)]">Text Decoration Color</div>
+        <div class="decoration-inherit sm:decoration-current md:decoration-transparent lg:text-black xl:decoration-white 2xl:decoration-slate-200 dark:decoration-[#50d71e] sm:dark:decoration-[color:var(--yolo)] first:decoration-black/50 last:decoration-[#F005] even:decoration-[#F0F5F6B8] odd:decoration-[rgba(100,10,140,.5)]">Text Decoration Color</div>
         <div class="decoration-solid sm:decoration-double md:decoration-dotted lg:decoration-dashed xl:decoration-wavy">Text Decoration Style</div>
         <div class="decoration-auto sm:decoration-from-font md:decoration-0 lg:decoration-8 xl:decoration-[3px] 2xl:decoration-[length:var(--yolo)]">Text Decoration Thickness</div>
         <div class="underline-offset-auto sm:underline-offset-0 md:underline-offset-8 underline-offset-[3px]">Text Underline Offset</div>
@@ -201,7 +201,7 @@ ruleTester.run("no-custom-classname", rule, {
         <div class="bg-repeat sm:bg-no-repeat md:bg-repeat-x lg:bg-repeat-y xl:bg-repeat-round 2xl:bg-repeat-space">Background Repeat</div>
         <div class="bg-auto sm:bg-cover md:bg-contain lg:bg-[length:200px_100px]">Background Size</div>
         <div class="bg-none sm:bg-gradient-to-tr md:bg-[url('/img/hero-pattern.svg')]">Background Image</div>
-        <div class="from-inherit sm:from-current md:from-transparent lg:from-black xl:from-[#243c5a] 2xl:from-[#243c5a/50]">Gradient Color Stops</div>
+        <div class="from-inherit sm:from-current md:from-transparent lg:from-black xl:from-[#243c5a] 2xl:from-[#243c5a/50] first:from-black/50 last:from-[#F005] even:from-[#F0F5F6B8] odd:from-[rgba(100,10,140,.5)]">Gradient Color Stops</div>
       </section>`,
     },
     {
@@ -210,19 +210,19 @@ ruleTester.run("no-custom-classname", rule, {
         <h1>Borders</h1>
         <div class="rounded-none sm:rounded-xl md:rounded-t-md lg:rounded-br-3xl xl:rounded-[12px]">Border Radius</div>
         <div class="border sm:border-0 md:border-x-2 lg:border-y-8 xl:border-r 2xl:border-t-[3px]">Border Width</div>
-        <div class="border-transparent sm:border-rose-500 md:border-t-indigo-500/75 lg:border-x-indigo-500 xl:border-[#243c5a]">Border Color</div>
+        <div class="border-transparent sm:border-rose-500 md:border-t-indigo-500/75 lg:border-x-indigo-500 xl:border-[#243c5a] first:border-black/50 last:border-[#F005] even:border-[#F0F5F6B8] odd:border-[rgba(100,10,140,.5)]">Border Color</div>
         <div class="border-solid sm:border-dashed md:border-dotted lg:border-double xl:border-hidden 2xl:border-none">Border Style</div>
         <div class="divide-y-4 sm:divide-x-8 md:divide-y lg:divide-y-reverse xl:divide-x-reverse 2xl:divide-x-[3px]">Divide Width</div>
-        <div class="divide-gray-400/25 sm:divide-amber-400 md:divide-[#243c5a]">Divide Color</div>
+        <div class="divide-gray-400/25 sm:divide-amber-400 md:divide-[#243c5a] first:divide-black/50 last:divide-[#F005] even:divide-[#F0F5F6B8] odd:divide-[rgba(100,10,140,.5)]">Divide Color</div>
         <div class="divide-solid sm:divide-dashed md:divide-dotted lg:divide-double xl:divide-none">Divide Style</div>
         <div class="outline-0 sm:outline-4 md:outline-[5px]">Outline Width</div>
-        <div class="outline-inherit sm:outline-current md:outline-black lg:outline-lime-900 xl:outline-[#50d71e] 2xl:outline-[color:var(--some)]">Outline Color</div>
+        <div class="outline-inherit sm:outline-current md:outline-black lg:outline-lime-900 xl:outline-[#50d71e] 2xl:outline-[color:var(--some)] first:outline-black/50 last:outline-[#F005] even:outline-[#F0F5F6B8] odd:outline-[rgba(100,10,140,.5)]">Outline Color</div>
         <div class="outline-none sm:outline md:outline-dashed lg:outline-dotted xl:outline-double 2xl:outline-hidden">Outline Style</div>
         <div class="outline-offset-4 sm:outline-offset-[3px]">Outline Offset</div>
         <div class="ring-0 sm:ring-4 md:ring-inset lg:ring-[10px]">Ring Width</div>
-        <div class="ring-inherit sm:ring-current md:ring-black lg:ring-lime-900 xl:ring-[#50d71e] 2xl:ring-[color:var(--some)]">Ring Color</div>
+        <div class="ring-inherit sm:ring-current md:ring-black lg:ring-lime-900 xl:ring-[#50d71e] 2xl:ring-[color:var(--some)] first:ring-black/50 last:ring-[#F005] even:ring-[#F0F5F6B8] odd:ring-[rgba(100,10,140,.5)]">Ring Color</div>
         <div class="ring-offset-4 sm:ring-offset-[3px]">Ring Offset Width</div>
-        <div class="ring-offset-inherit sm:ring-offset-current md:ring-offset-black lg:ring-offset-lime-900 xl:ring-offset-[#50d71e] 2xl:ring-offset-[color:var(--some)]">Ring Offset Color</div>
+        <div class="ring-offset-inherit sm:ring-offset-current md:ring-offset-black lg:ring-offset-lime-900 xl:ring-offset-[#50d71e] 2xl:ring-offset-[color:var(--some)] first:ring-offset-black/50 last:ring-offset-[#F005] even:ring-offset-[#F0F5F6B8] odd:ring-offset-[rgba(100,10,140,.5)]">Ring Offset Color</div>
       </section>`,
     },
     {
@@ -230,7 +230,7 @@ ruleTester.run("no-custom-classname", rule, {
       <section>
         <h1>Effects</h1>
         <div class="shadow sm:shadow-lg md:shadow-inner lg:shadow-none xl:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]">Box Shadow</div>
-        <div class="shadow-inherit sm:shadow-current md:shadow-black lg:shadow-lime-900 xl:shadow-[#50d71e] 2xl:shadow-[color:var(--some)]">Box Shadow Color</div>
+        <div class="shadow-inherit sm:shadow-current md:shadow-black lg:shadow-lime-900 xl:shadow-[#50d71e] 2xl:shadow-[color:var(--some)] first:shadow-black/50 last:shadow-[#F005] even:shadow-[#F0F5F6B8] odd:shadow-[rgba(100,10,140,.5)]">Box Shadow Color</div>
         <div class="opacity-0 sm:opacity-50 md:opacity-[.67]">Opacity</div>
         <div class="mix-blend-normal sm:mix-blend-multiply md:mix-blend-screen lg:mix-blend-overlay xl:mix-blend-darken 2xl:mix-blend-lighten dark:mix-blend-color-dodge sm:dark:mix-blend-color-burn md:dark:mix-blend-hard-light lg:dark:mix-blend-soft-light xl:dark:mix-blend-difference 2xl:dark:mix-blend-exclusion hover:mix-blend-hue first:mix-blend-saturation last:mix-blend-color focus:mix-blend-luminosity">Mix Blend Mode</div>
         <div class="bg-blend-normal sm:bg-blend-multiply md:bg-blend-screen lg:bg-blend-overlay xl:bg-blend-darken 2xl:bg-blend-lighten dark:bg-blend-color-dodge focus:bg-blend-color-burn link:bg-blend-hard-light visited:bg-blend-soft-light hover:bg-blend-difference active:bg-blend-exclusion first:bg-blend-hue last:bg-blend-saturation odd:bg-blend-color even:bg-blend-luminosity">Background Blend Mode</div>
@@ -294,10 +294,10 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <section>
         <h1>Interactivity</h1>
-        <div class="accent-emerald-500/25 sm:accent-violet-300 2xl:accent-[#50d71e]">Accent Color</div>
+        <div class="accent-emerald-500/25 sm:accent-violet-300 2xl:accent-[#50d71e] first:accent-black/50 last:accent-[#F005] even:accent-[#F0F5F6B8] odd:accent-[rgba(100,10,140,.5)]">Accent Color</div>
         <div class="appearance-none">Appearance</div>
         <div class="cursor-auto sm:cursor-default md:cursor-pointer lg:cursor-wait xl:cursor-text 2xl:cursor-move dark:cursor-help sm:dark:cursor-not-allowed md:dark:cursor-none lg:dark:cursor-context-menu xl:dark:cursor-progress 2xl:dark:cursor-cell dark:focus:cursor-crosshair dark:active:cursor-vertical-text dark:valid:cursor-alias first:cursor-copy last:cursor-no-drop even:cursor-grab odd:cursor-grabbing empty:cursor-all-scroll disabled:cursor-col-resize active:cursor-row-resize visited:cursor-n-resize hover:cursor-e-resize focus:cursor-s-resize link:cursor-w-resize only:cursor-ne-resize focus-visible:cursor-nw-resize disabled:cursor-se-resize checked:cursor-sw-resize required:cursor-ew-resize invalid:cursor-ns-resize valid:cursor-nesw-resize in-range:cursor-nwse-resize out-of-range:cursor-zoom-in open:cursor-zoom-out open:first:cursor-[url(hand.cur),_pointer]">Cursor</div>
-        <div class="caret-emerald-500/25 sm:caret-violet-300 2xl:caret-[#50d71e]">Caret Color</div>
+        <div class="caret-emerald-500/25 sm:caret-violet-300 2xl:caret-[#50d71e] first:caret-black/50 last:caret-[#F005] even:caret-[#F0F5F6B8] odd:caret-[rgba(100,10,140,.5)]">Caret Color</div>
         <div class="pointer-events-none sm:pointer-events-auto">Pointer Events</div>
         <div class="resize-none sm:resize-y md:resize-x lg:resize">Resize</div>
         <div class="scroll-auto sm:scroll-smooth">Scroll Behavior</div>
@@ -315,8 +315,8 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <section>
         <h1>SVG</h1>
-        <div class="fill-emerald-500 sm:fill-violet-300 2xl:fill-[#50d71e]">Fill</div>
-        <div class="stroke-emerald-500 sm:stroke-violet-300 2xl:stroke-[#50d71e]">Stroke</div>
+        <div class="fill-emerald-500 sm:fill-violet-300 2xl:fill-[#50d71e] first:fill-black/50 last:fill-[#F005] even:fill-[#F0F5F6B8] odd:fill-[rgba(100,10,140,.5)]">Fill</div>
+        <div class="stroke-emerald-500 sm:stroke-violet-300 2xl:stroke-[#50d71e] first:stroke-black/50 last:stroke-[#F005] even:stroke-[#F0F5F6B8] odd:stroke-[rgba(100,10,140,.5)]">Stroke</div>
         <div class="stroke-0 sm:stroke-1 md:stroke-2 lg:stroke-[2px]">Stroke Width</div>
       </section>`,
     },
