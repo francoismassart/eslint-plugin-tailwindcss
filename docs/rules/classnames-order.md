@@ -28,7 +28,8 @@ Examples of **correct** code for this rule:
   "groupByResponsive": <boolean>,
   "groups": Array<object>,
   "prependCustom": <boolean>,
-  "removeDuplicates": <boolean>
+  "removeDuplicates": <boolean>,
+  "tags": Array<string>,
 }]
 ...
 ```
@@ -53,19 +54,24 @@ It is also possible to directly inject a configuration as plain `object` like `{
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
 
-### `groupByResponsive` (default: `false`)
+### `groupByResponsive` (default: `true`)
+
+When this option was introduced in version 2.x.x of the plugin, this setting was set to `false` to avoid a tsunami of reorder in the classnames.
+You had to set it to `true` intentionally.
+
+Since version 3 of the plugin, the default value is now `true`, grouping by responsive modifier in priority vs. grouping by property.
 
 Linting this code:
 
 `<div class="rounded sm:rounded-lg lg:rounded-2xl p-4 sm:p-6 lg:p-8">...</div>`
 
-By default, the ordering process will group the classnames by properties, then by variants:
-
-`<div class="p-4 sm:p-6 lg:p-8 rounded sm:rounded-lg lg:rounded-2xl">...</div>`
-
-Set `groupByResponsive` to `true` and the ordering and you will get:
+By default, the ordering process will group the classnames by variants then by properties:
 
 `<div class="p-4 rounded sm:p-6 sm:rounded-lg lg:p-8 lg:rounded-2xl">...</div>`
+
+Set `groupByResponsive` to `false` and the ordering will work by properties, then by variants:
+
+`<div class="p-4 sm:p-6 lg:p-8 rounded sm:rounded-lg lg:rounded-2xl">...</div>`
 
 ### `groups` (default defined in [groups.js](../../lib/config/groups.js))
 
@@ -79,7 +85,7 @@ I would recommend you to duplicate the `groups.js` file, move it in your own con
 // custom-groups.js
 module.exports.groups = [
   {
-    type: 'LAYOUT',
+    type: 'Layout',
     members: [
       {
         type: 'Floats',
@@ -117,6 +123,10 @@ By default, classnames which doesn't belong to Tailwind CSS will be pushed at th
 
 Duplicate classnames are automatically removed but you can always disable this behavior by setting `removeDuplicates` to `false`.
 
+### `tags` (default: `[]`)
+
+Optional, if you are using tagged templates, you should provide the tags in this array.
+
 ## Further Reading
 
 ### How it works
@@ -137,198 +147,184 @@ The [default `groups` configuration](../../lib/config/groups.js) will apply the 
 Each line represents a group (based on property).
 
 ```
-LAYOUT > Container
-LAYOUT > Box Decoration Break
-LAYOUT > Box Sizing
-LAYOUT > Display
-LAYOUT > Floats
-LAYOUT > Clear
-LAYOUT > Isolation
-LAYOUT > Object Fit
-LAYOUT > Object Position
-LAYOUT > Overflow > overflow
-LAYOUT > Overflow > overflow-x
-LAYOUT > Overflow > overflow-y
-LAYOUT > Overscroll Behavior > overscroll
-LAYOUT > Overscroll Behavior > overscroll-x
-LAYOUT > Overscroll Behavior > overscroll-y
-LAYOUT > Position
-LAYOUT > Top / Right / Bottom / Left > inset
-LAYOUT > Top / Right / Bottom / Left > inset-y
-LAYOUT > Top / Right / Bottom / Left > inset-x
-LAYOUT > Top / Right / Bottom / Left > top
-LAYOUT > Top / Right / Bottom / Left > right
-LAYOUT > Top / Right / Bottom / Left > bottom
-LAYOUT > Top / Right / Bottom / Left > left
-LAYOUT > Visibility
-LAYOUT > Z-Index
-FLEXBOX > Flex Direction
-FLEXBOX > Flex Wrap
-FLEXBOX > Flex
-FLEXBOX > Flex Grow
-FLEXBOX > Flex Shrink
-FLEXBOX > Order
-GRID > Grid Template Columns
-GRID > Grid Column Start / End > grid-column
-GRID > Grid Column Start / End > grid-column-start
-GRID > Grid Column Start / End > grid-column-end
-GRID > Grid Template Rows
-GRID > Grid Row Start / End > grid-row
-GRID > Grid Row Start / End > grid-row-start
-GRID > Grid Row Start / End > grid-row-end
-GRID > Grid Auto Flow
-GRID > Grid Auto Columns
-GRID > Grid Auto Rows
-GRID > Gap > gap
-GRID > Gap > column-gap
-GRID > Gap > row-gap
-BOX ALIGNMENT > Justify Content
-BOX ALIGNMENT > Justify Items
-BOX ALIGNMENT > Justify Self
-BOX ALIGNMENT > Align Content
-BOX ALIGNMENT > Align Items
-BOX ALIGNMENT > Align Self
-BOX ALIGNMENT > Place Content
-BOX ALIGNMENT > Place Items
-BOX ALIGNMENT > Place Self
-SPACING > Padding > p
-SPACING > Padding > py
-SPACING > Padding > px
-SPACING > Padding > pt
-SPACING > Padding > pr
-SPACING > Padding > pb
-SPACING > Padding > pl
-SPACING > Margin > m
-SPACING > Margin > my
-SPACING > Margin > mx
-SPACING > Margin > mt
-SPACING > Margin > mr
-SPACING > Margin > mb
-SPACING > Margin > ml
-SPACING > Space Between > space-y
-SPACING > Space Between > space-x
-SIZING > Width
-SIZING > Min-Width
-SIZING > Max-Width
-SIZING > Height
-SIZING > Min-Height
-SIZING > Max-Height
-TYPOGRAPHY > Font Family
-TYPOGRAPHY > Font Size
-TYPOGRAPHY > Font Smoothing
-TYPOGRAPHY > Font Style
-TYPOGRAPHY > Font Weight
-TYPOGRAPHY > Font Variant Numeric
-TYPOGRAPHY > Letter Spacing
-TYPOGRAPHY > Line Height
-TYPOGRAPHY > List Style Type
-TYPOGRAPHY > List Style Position
-TYPOGRAPHY > Placeholder Color
-TYPOGRAPHY > Placeholder Opacity
-TYPOGRAPHY > Text Alignment
-TYPOGRAPHY > Text Color
-TYPOGRAPHY > Text Opacity
-TYPOGRAPHY > Text Decoration
-TYPOGRAPHY > Text Transform
-TYPOGRAPHY > Text Overflow
-TYPOGRAPHY > Vertical Alignment
-TYPOGRAPHY > Whitespace
-TYPOGRAPHY > Word Break
-BACKGROUNDS > Background Attachment
-BACKGROUNDS > Background Clip
-BACKGROUNDS > Background Color
-BACKGROUNDS > Background Opacity
-BACKGROUNDS > Background Position
-BACKGROUNDS > Background Repeat
-BACKGROUNDS > Background Size
-BACKGROUNDS > Background Image
-BACKGROUNDS > Gradient Color Stops > from
-BACKGROUNDS > Gradient Color Stops > via
-BACKGROUNDS > Gradient Color Stops > to
-BORDERS > Border Radius > border-radius
-BORDERS > Border Radius > border-radius-top
-BORDERS > Border Radius > border-radius-right
-BORDERS > Border Radius > border-radius-bottom
-BORDERS > Border Radius > border-radius-left
-BORDERS > Border Radius > border-radius-top-left
-BORDERS > Border Radius > border-radius-top-right
-BORDERS > Border Radius > border-radius-bottom-right
-BORDERS > Border Radius > border-radius-bottom-left
-BORDERS > Border Width > border-width
-BORDERS > Border Width > border-top-width
-BORDERS > Border Width > border-right-width
-BORDERS > Border Width > border-bottom-width
-BORDERS > Border Width > border-left-width
-BORDERS > Border Color
-BORDERS > Border Opacity
-BORDERS > Border Style
-BORDERS > Divide Width > divide-y
-BORDERS > Divide Width > divide-x
-BORDERS > Divide Width > divide-y-reverse
-BORDERS > Divide Width > divide-x-reverse
-BORDERS > Divide Color
-BORDERS > Divide Opacity
-BORDERS > Divide Style
-BORDERS > Ring Width > ring
-BORDERS > Ring Width > ring-inset
-BORDERS > Ring Color
-BORDERS > Ring Opacity
-BORDERS > Ring Offset Width
-BORDERS > Ring Offset Color
-EFFECTS > Box Shadow
-EFFECTS > Opacity
-EFFECTS > Mix Blend Mode
-EFFECTS > Background Blend Mode
-FILTERS > Filter
-FILTERS > Blur
-FILTERS > Brightness
-FILTERS > Contrast
-FILTERS > Drop Shadow
-FILTERS > Grayscale
-FILTERS > Hue Rotate
-FILTERS > Invert
-FILTERS > Saturate
-FILTERS > Sepia
-FILTERS > Backdrop Filter
-FILTERS > Backdrop Blur
-FILTERS > Backdrop Brightness
-FILTERS > Backdrop Contrast
-FILTERS > Backdrop Grayscale
-FILTERS > Backdrop Hue Rotate
-FILTERS > Backdrop Invert
-FILTERS > Backdrop Opacity
-FILTERS > Backdrop Saturate
-FILTERS > Backdrop Sepia
-TABLES > Border Collapse
-TABLES > Table Layout
-TRANSITIONS AND ANIMATION > Transition Property
-TRANSITIONS AND ANIMATION > Transition Duration
-TRANSITIONS AND ANIMATION > Transition Timing Function
-TRANSITIONS AND ANIMATION > Transition Delay
-TRANSITIONS AND ANIMATION > Animation
-TRANSFORMS > Transform
-TRANSFORMS > Transform Origin
-TRANSFORMS > Scale > scale
-TRANSFORMS > Scale > scale-y
-TRANSFORMS > Scale > scale-x
-TRANSFORMS > Rotate
-TRANSFORMS > Translate > translate-x
-TRANSFORMS > Translate > translate-y
-TRANSFORMS > Skew > skew-x
-TRANSFORMS > Skew > skew-y
-INTERACTIVITY > Appearance
-INTERACTIVITY > Cursor
-INTERACTIVITY > Outline
-INTERACTIVITY > Pointer Events
-INTERACTIVITY > Resize
-INTERACTIVITY > User Select
-SVG > Fill
-SVG > Stroke
-SVG > Stroke Width
-ACCESSIBILITY > Screen Readers
-OFFICIAL PLUGINS > Typography > prose
-OFFICIAL PLUGINS > Typography > prose-modifier
-OFFICIAL PLUGINS > Aspect Ratio > aspect-w
-OFFICIAL PLUGINS > Aspect Ratio > aspect-h
-OFFICIAL PLUGINS > Line Clamp
+Core Concepts
+  Hover, Focus, & Other States
+  Dark Mode
+  Arbitrary properties
+Layout
+  Aspect Ratio
+  Container
+  Columns
+  Break After
+  Break Before
+  Break Inside
+  Box Decoration Break
+  Box Sizing
+  Display
+  Floats
+  Clear
+  Isolation
+  Object Fit
+  Object Position
+  Overflow
+  Overscroll Behavior
+  Position
+  Top / Right / Bottom / Left
+  Visibility
+  Z-Index
+Flexbox & Grid
+  Flex Basis
+  Flex Direction
+  Flex Wrap
+  Flex
+  Flex Grow
+  Flex Shrink
+  Order
+  Grid Template Columns
+  Grid Column Start / End
+  Grid Template Rows
+  Grid Row Start / End
+  Grid Auto Flow
+  Grid Auto Columns
+  Grid Auto Rows
+  Gap
+  Justify Content
+  Justify Items
+  Justify Self
+  Align Content
+  Align Items
+  Align Self
+  Place Content
+  Place Items
+  Place Self
+Spacing
+  Padding
+  Margin
+  Space Between
+Sizing
+  Width
+  Min-Width
+  Max-Width
+  Height
+  Min-Height
+  Max-Height
+Typography
+  Font Family
+  Font Size
+  Font Smoothing
+  Font Style
+  Font Weight
+  Font Variant Numeric
+  Letter Spacing
+  Line Height
+  List Style Type
+  List Style Position
+  Text Alignment
+  Text Color
+  Text Decoration
+  Text Decoration Color
+  Text Decoration Style
+  Text Decoration Thickness
+  Text Underline Offset
+  Text Transform
+  Text Overflow
+  Text Indent
+  Vertical Alignment
+  Whitespace
+  Word Break
+  Content
+Backgrounds
+  Background Attachment
+  Background Clip
+  Background Color
+  Background Origin
+  Background Position
+  Background Repeat
+  Background Size
+  Background Image
+  Gradient Color Stops
+Borders
+  Border Radius
+  Border Width
+  Border Color
+  Border Style
+  Divide Width
+  Divide Color
+  Divide Style
+  Outline Width
+  Outline Color
+  Outline Style
+  Outline Offset
+  Ring Width
+  Ring Inset
+  Ring Color
+  Ring Offset Width
+  Ring Offset Color
+Effects
+  Box Shadow
+  Box Shadow Color
+  Opacity
+  Mix Blend Mode
+  Background Blend Mode
+Filters
+  Blur
+  Brightness
+  Contrast
+  Drop Shadow
+  Grayscale
+  Hue Rotate
+  Invert
+  Saturate
+  Sepia
+  Backdrop Blur
+  Backdrop Brightness
+  Backdrop Contrast
+  Backdrop Grayscale
+  Backdrop Hue Rotate
+  Backdrop Invert
+  Backdrop Opacity
+  Backdrop Saturate
+  Backdrop Sepia
+Tables
+  Border Collapse
+  Table Layout
+Transitions & Animation
+  Transition Property
+  Transition Duration
+  Transition Timing Function
+  Transition Delay
+  Animation
+Transforms
+  Transform GPU
+  Scale
+  Rotate
+  Translate
+  Skew
+  Transform Origin
+Interactivity
+  Accent Color
+  Appearance
+  Cursor
+  Caret Color
+  Pointer Events
+  Resize
+  Scroll Behavior
+  Scroll Margin
+  Scroll Padding
+  Scroll Snap Align
+  Scroll Snap Stop
+  Scroll Snap Type
+  Touch Action
+  User Select
+  Will Change
+SVG
+  Fill
+  Stroke
+  Stroke Width
+Accessibility
+  Screen Readers
+Official Plugins
+  Typography
+  Aspect Ratio
+  Line Clamp
 ```
