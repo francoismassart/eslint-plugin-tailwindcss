@@ -71,7 +71,7 @@ ruleTester.run("classnames-order", rule, {
       ],
     },
     {
-      code: `<div class="p-5 lg:p-4 md:py-2 sm:px-3 xl:px-6">'p', then 'py' then 'px'</div>`,
+      code: `<div class="p-5 sm:px-3 md:py-2 lg:p-4 xl:px-6">'p', then 'py' then 'px'</div>`,
     },
     {
       code: `<template><div class="container box-content lg:box-border custom">Simple, basic</div></template>`,
@@ -84,7 +84,7 @@ ruleTester.run("classnames-order", rule, {
       parser: require.resolve("vue-eslint-parser"),
     },
     {
-      code: `<template><div class="p-5 lg:p-4 md:py-2 sm:px-3 xl:px-6">'p', then 'py' then 'px'</div></template>`,
+      code: `<template><div class="p-5 sm:px-3 md:py-2 lg:p-4 xl:px-6">'p', then 'py' then 'px'</div></template>`,
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
@@ -115,30 +115,15 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div class="w-12 lg:w-[500px]">Allowed arbitrary value</div>`,
-      options: [
-        {
-          config: { mode: "jit" },
-        },
-      ],
     },
     {
       code: `<div class="dark:focus:hover:bg-black md:dark:disabled:focus:hover:bg-gray-400">Stackable variants</div>`,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
     },
     {
       code: `<div className={clsx(\`flex absolute bottom-0 flex-col w-full h-[270px]\`)}>clsx</div>`,
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
     },
@@ -233,12 +218,12 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div class="sm:py-5 p-4 sm:px-7 lg:p-8">Enhancing readability</div>`,
-      output: `<div class="p-4 lg:p-8 sm:py-5 sm:px-7">Enhancing readability</div>`,
+      output: `<div class="p-4 sm:py-5 sm:px-7 lg:p-8">Enhancing readability</div>`,
       errors: errors,
     },
     {
       code: `<div class="grid grid-cols-1 sm:grid-cols-2 sm:px-8 sm:py-12 sm:gap-x-8 md:py-16">:)</div>`,
-      output: `<div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:py-12 md:py-16 sm:px-8">:)</div>`,
+      output: `<div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:py-12 sm:px-8 md:py-16">:)</div>`,
       errors: errors,
     },
     {
@@ -250,14 +235,14 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<template><div class="sm:py-5 p-4 sm:px-7 lg:p-8">Enhancing readability</div></template>`,
-      output: `<template><div class="p-4 lg:p-8 sm:py-5 sm:px-7">Enhancing readability</div></template>`,
+      output: `<template><div class="p-4 sm:py-5 sm:px-7 lg:p-8">Enhancing readability</div></template>`,
       errors: errors,
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
     {
       code: `<template><div class="grid grid-cols-1 sm:grid-cols-2 sm:px-8 sm:py-12 sm:gap-x-8 md:py-16">:)</div></template>`,
-      output: `<template><div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:py-12 md:py-16 sm:px-8">:)</div></template>`,
+      output: `<template><div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:py-12 sm:px-8 md:py-16">:)</div></template>`,
       errors: errors,
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
@@ -391,23 +376,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="sm:w-12 w-[320px]">Allowed arbitrary value but incorrect order</div>`,
       output: `<div class="w-[320px] sm:w-12">Allowed arbitrary value but incorrect order</div>`,
-      options: [
-        {
-          config: { mode: "jit" },
-        },
-      ],
       errors: errors,
     },
     {
       code: `<div className='absolute bottom-0 w-full h-[270px] flex flex-col'>clsx</div>`,
       output: `<div className='flex absolute bottom-0 flex-col w-full h-[270px]'>clsx</div>`,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
       errors: errors,
     },
     {
@@ -416,9 +389,6 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
       errors: errors,
@@ -429,9 +399,6 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
       errors: errors,
@@ -442,9 +409,6 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           callees: ["clsx"],
-          config: {
-            mode: "jit",
-          },
         },
       ],
       errors: errors,

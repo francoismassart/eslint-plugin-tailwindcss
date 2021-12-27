@@ -27,17 +27,7 @@ var parserOptions = {
 var config = [
   {
     config: {
-      mode: "jit",
-      theme: {
-        order: {
-          "-1": "-1",
-          0: "0",
-        },
-        zIndex: {
-          "-1": "-1",
-          0: "0",
-        },
-      },
+      darkMode: "class",
     },
   },
 ];
@@ -61,6 +51,24 @@ ruleTester.run("arbitrary-values", rule, {
   valid: [
     {
       code: `
+      <div class="dark">
+        <span class="dark:text-white">
+          TailwindCSS V3: dark is valid when
+          <code>config.darkMode === 'class'</code>
+        </span>
+      </div>
+      `,
+      options: config,
+    },
+    {
+      code: `
+      <div class="aspect-[4/3]">
+        Aspect Ratio accepts arbitrary values
+      </div>
+      `,
+    },
+    {
+      code: `
       <div class="object-center object-[0%,10%] object-[10px,-66vh]">
         Valid object-position
       </div>
@@ -69,20 +77,13 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="top-[-325px] right-[50%] w-[762px] h-[0] flex-grow-[var(--some-grow)] flex-shrink-[12] z-[var(--some-z-index)]">
+      <div class="top-[-325px] right-[50%] w-[762px] h-[0] grow-[var(--some-grow)] shrink-[12] z-[var(--some-z-index)]">
         Should accept the arbitrary values
       </div>`,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
     },
     {
       code: `
-      <div class="z-0 -z-1 z-[auto] z-[inherit] z-[initial] z-[unset] z-[var(--some)] z-[2] z-[-3]">
+      <div class="z-0 -z-10 z-[auto] z-[inherit] z-[initial] z-[unset] z-[var(--some)] z-[2] z-[-3]">
         Arbitrary values for zIndex
       </div>
       `,
@@ -98,7 +99,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="flex-shrink flex-shrink-0 flex-shrink-[inherit] flex-shrink-[initial] flex-shrink-[unset] flex-shrink-[var(--some)] flex-shrink-[0.5] flex-shrink-[5]">
+      <div class="shrink shrink-0 shrink-[inherit] shrink-[initial] shrink-[unset] shrink-[var(--some)] shrink-[0.5] shrink-[5]">
         Arbitrary values for positive integers
       </div>
       `,
@@ -106,7 +107,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="order-0 -order-1 order-[inherit] order-[initial] order-[unset] order-[var(--some)] order-[calc(1+1)] order-[2] order-[-3]">
+      <div class="order-2 -order-1 order-[inherit] order-[initial] order-[unset] order-[var(--some)] order-[calc(1+1)] order-[2] order-[-3]">
         Arbitrary values for order
       </div>
       `,
@@ -114,7 +115,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="placeholder-white placeholder-[#123456aB] placeholder-[#123456] placeholder-[#1234] placeholder-[#123]">
+      <div class="placeholder:text-white placeholder:text-[#123456aB] placeholder:text-[#123456] placeholder:text-[#1234] placeholder:text-[#123]">
         placeholderColor using #RGB
       </div>
       `,
@@ -122,7 +123,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="placeholder-white placeholder-[rgb(4,8,15)] placeholder-[rgb(16%,23%,42%)] placeholder-[rgba(23,0,42,0.5)] placeholder-[rgba(10%,20%,30%,100%)] ">
+      <div class="placeholder:text-white placeholder:text-[rgb(4,8,15)] placeholder:text-[rgb(16%,23%,42%)] placeholder:text-[rgba(23,0,42,0.5)] placeholder:text-[rgba(10%,20%,30%,100%)] ">
         placeholderColor using rgb[a]()
       </div>
       `,
@@ -130,24 +131,8 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="placeholder-white placeholder-[rgba(255,0,0/0.4)] placeholder-[rgba(255,0,0/.4)] placeholder-[rgba(255,0,0/40%)]">
-        placeholderColor using rgba(255 0 0 / 0.4)
-      </div>
-      `,
-      options: config,
-    },
-    {
-      code: `
-      <div class="placeholder-white placeholder-[hsl(120,100%,25%)]">
+      <div class="placeholder:text-white placeholder:text-[hsl(120,100%,25%)]">
         placeholderColor using hsl
-      </div>
-      `,
-      options: config,
-    },
-    {
-      code: `
-      <div class="placeholder-white placeholder-[var(--some)] placeholder-[color:var(--some)]">
-        placeholderColor using var
       </div>
       `,
       options: config,
@@ -162,7 +147,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="bg-white/80 text-red-500/25 placeholder-black/50">
+      <div class="bg-white/80 text-red-500/25 placeholder:text-black/50">
         Color opacity shorthands
       </div>
       `,
@@ -317,7 +302,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="h-20 w-20 bg-black transform rotate-3 rotate-[calc(15deg+5deg)] rotate-[var(--some)]">rotate</div>
+      <div class="h-20 w-20 bg-black rotate-3 rotate-[calc(15deg+5deg)] rotate-[var(--some)]">rotate</div>
       `,
       options: config,
     },
@@ -351,13 +336,6 @@ ruleTester.run("arbitrary-values", rule, {
         Arbitrary values for border-radius
       </div>
       `,
-      options: [
-        {
-          config: {
-            mode: "jit",
-          },
-        },
-      ],
     },
     {
       code: `
@@ -368,103 +346,103 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="bg-[#00800034] filter blur-[4] blur-[1px] blur-[0.5ch] blur-[.1em] blur-[1ex] blur-[1lh] blur-[1rem] blur-[1rlh] blur-[2vh] blur-[2vw] blur-[2vmin] blur-[2vmax] blur-[3px] blur-[3mm] blur-[3cm] blur-[3in] blur-[3pt] blur-[3pc] blur-[3lin] blur-[3%] blur-[calc(50%+10px)]">valid blur</button>
+      <button class="bg-[#00800034] blur-[4] blur-[1px] blur-[0.5ch] blur-[.1em] blur-[1ex] blur-[1lh] blur-[1rem] blur-[1rlh] blur-[2vh] blur-[2vw] blur-[2vmin] blur-[2vmax] blur-[3px] blur-[3mm] blur-[3cm] blur-[3in] blur-[3pt] blur-[3pc] blur-[3lin] blur-[3%] blur-[calc(50%+10px)]">valid blur</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 filter brightness-[4] brightness-[1px] brightness-[0.5ch] brightness-[.1em] brightness-[1ex] brightness-[1lh] brightness-[1rem] brightness-[1rlh] brightness-[2vh] brightness-[2vw] brightness-[2vmin] brightness-[2vmax] brightness-[3px] brightness-[3mm] brightness-[3cm] brightness-[3in] brightness-[3pt] brightness-[3pc] brightness-[3lin] brightness-[33.3%] brightness-[calc(50%+10px)]">valid brightness</button>
+      <button class="bg-red-500 brightness-[4] brightness-[1px] brightness-[0.5ch] brightness-[.1em] brightness-[1ex] brightness-[1lh] brightness-[1rem] brightness-[1rlh] brightness-[2vh] brightness-[2vw] brightness-[2vmin] brightness-[2vmax] brightness-[3px] brightness-[3mm] brightness-[3cm] brightness-[3in] brightness-[3pt] brightness-[3pc] brightness-[3lin] brightness-[33.3%] brightness-[calc(50%+10px)]">valid brightness</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 filter contrast-[4] contrast-[1px] contrast-[0.5ch] contrast-[.1em] contrast-[1ex] contrast-[1lh] contrast-[1rem] contrast-[1rlh] contrast-[2vh] contrast-[2vw] contrast-[2vmin] contrast-[2vmax] contrast-[3px] contrast-[3mm] contrast-[3cm] contrast-[3in] contrast-[3pt] contrast-[3pc] contrast-[3lin] contrast-[33.3%] contrast-[calc(50%+10px)]">valid contrast</button>
+      <button class="bg-red-500 contrast-[4] contrast-[1px] contrast-[0.5ch] contrast-[.1em] contrast-[1ex] contrast-[1lh] contrast-[1rem] contrast-[1rlh] contrast-[2vh] contrast-[2vw] contrast-[2vmin] contrast-[2vmax] contrast-[3px] contrast-[3mm] contrast-[3cm] contrast-[3in] contrast-[3pt] contrast-[3pc] contrast-[3lin] contrast-[33.3%] contrast-[calc(50%+10px)]">valid contrast</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 filter grayscale-[4] grayscale-[1px] grayscale-[0.5ch] grayscale-[.1em] grayscale-[1ex] grayscale-[1lh] grayscale-[1rem] grayscale-[1rlh] grayscale-[2vh] grayscale-[2vw] grayscale-[2vmin] grayscale-[2vmax] grayscale-[3px] grayscale-[3mm] grayscale-[3cm] grayscale-[3in] grayscale-[3pt] grayscale-[3pc] grayscale-[3lin] grayscale-[33.3%] grayscale-[calc(50%+10px)]">valid grayscale</button>
+      <button class="bg-red-500 grayscale-[4] grayscale-[1px] grayscale-[0.5ch] grayscale-[.1em] grayscale-[1ex] grayscale-[1lh] grayscale-[1rem] grayscale-[1rlh] grayscale-[2vh] grayscale-[2vw] grayscale-[2vmin] grayscale-[2vmax] grayscale-[3px] grayscale-[3mm] grayscale-[3cm] grayscale-[3in] grayscale-[3pt] grayscale-[3pc] grayscale-[3lin] grayscale-[33.3%] grayscale-[calc(50%+10px)]">valid grayscale</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 filter hue-rotate-[4] hue-rotate-[1px] hue-rotate-[0.5ch] hue-rotate-[.1em] hue-rotate-[1ex] hue-rotate-[1lh] hue-rotate-[1rem] hue-rotate-[1rlh] hue-rotate-[2vh] hue-rotate-[2vw] hue-rotate-[2vmin] hue-rotate-[2vmax] hue-rotate-[3px] hue-rotate-[3mm] hue-rotate-[3cm] hue-rotate-[3in] hue-rotate-[3pt] hue-rotate-[3pc] hue-rotate-[3lin] hue-rotate-[33.3%] hue-rotate-[calc(50%+10px)]">valid hue-rotate</button>
+      <button class="bg-red-500 hue-rotate-[4] hue-rotate-[1px] hue-rotate-[0.5ch] hue-rotate-[.1em] hue-rotate-[1ex] hue-rotate-[1lh] hue-rotate-[1rem] hue-rotate-[1rlh] hue-rotate-[2vh] hue-rotate-[2vw] hue-rotate-[2vmin] hue-rotate-[2vmax] hue-rotate-[3px] hue-rotate-[3mm] hue-rotate-[3cm] hue-rotate-[3in] hue-rotate-[3pt] hue-rotate-[3pc] hue-rotate-[3lin] hue-rotate-[33.3%] hue-rotate-[calc(50%+10px)]">valid hue-rotate</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 filter invert-[4] invert-[1px] invert-[0.5ch] invert-[.1em] invert-[1ex] invert-[1lh] invert-[1rem] invert-[1rlh] invert-[2vh] invert-[2vw] invert-[2vmin] invert-[2vmax] invert-[3px] invert-[3mm] invert-[3cm] invert-[3in] invert-[3pt] invert-[3pc] invert-[3lin] invert-[33.3%] invert-[calc(50%+10px)]">valid invert</button>
+      <button class="bg-red-500 invert-[4] invert-[1px] invert-[0.5ch] invert-[.1em] invert-[1ex] invert-[1lh] invert-[1rem] invert-[1rlh] invert-[2vh] invert-[2vw] invert-[2vmin] invert-[2vmax] invert-[3px] invert-[3mm] invert-[3cm] invert-[3in] invert-[3pt] invert-[3pc] invert-[3lin] invert-[33.3%] invert-[calc(50%+10px)]">valid invert</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 filter saturate-[4] saturate-[1px] saturate-[0.5ch] saturate-[.1em] saturate-[1ex] saturate-[1lh] saturate-[1rem] saturate-[1rlh] saturate-[2vh] saturate-[2vw] saturate-[2vmin] saturate-[2vmax] saturate-[3px] saturate-[3mm] saturate-[3cm] saturate-[3in] saturate-[3pt] saturate-[3pc] saturate-[3lin] saturate-[33.3%] saturate-[calc(50%+10px)]">valid saturate</button>
+      <button class="bg-red-500 saturate-[4] saturate-[1px] saturate-[0.5ch] saturate-[.1em] saturate-[1ex] saturate-[1lh] saturate-[1rem] saturate-[1rlh] saturate-[2vh] saturate-[2vw] saturate-[2vmin] saturate-[2vmax] saturate-[3px] saturate-[3mm] saturate-[3cm] saturate-[3in] saturate-[3pt] saturate-[3pc] saturate-[3lin] saturate-[33.3%] saturate-[calc(50%+10px)]">valid saturate</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 filter sepia-[4] sepia-[1px] sepia-[0.5ch] sepia-[.1em] sepia-[1ex] sepia-[1lh] sepia-[1rem] sepia-[1rlh] sepia-[2vh] sepia-[2vw] sepia-[2vmin] sepia-[2vmax] sepia-[3px] sepia-[3mm] sepia-[3cm] sepia-[3in] sepia-[3pt] sepia-[3pc] sepia-[3lin] sepia-[33.3%] sepia-[calc(50%+10px)]">valid sepia</button>
+      <button class="bg-red-500 sepia-[4] sepia-[1px] sepia-[0.5ch] sepia-[.1em] sepia-[1ex] sepia-[1lh] sepia-[1rem] sepia-[1rlh] sepia-[2vh] sepia-[2vw] sepia-[2vmin] sepia-[2vmax] sepia-[3px] sepia-[3mm] sepia-[3cm] sepia-[3in] sepia-[3pt] sepia-[3pc] sepia-[3lin] sepia-[33.3%] sepia-[calc(50%+10px)]">valid sepia</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-blur-[4] backdrop-blur-[1px] backdrop-blur-[0.5ch] backdrop-blur-[.1em] backdrop-blur-[1ex] backdrop-blur-[1lh] backdrop-blur-[1rem] backdrop-blur-[1rlh] backdrop-blur-[2vh] backdrop-blur-[2vw] backdrop-blur-[2vmin] backdrop-blur-[2vmax] backdrop-blur-[3px] backdrop-blur-[3mm] backdrop-blur-[3cm] backdrop-blur-[3in] backdrop-blur-[3pt] backdrop-blur-[3pc] backdrop-blur-[3lin] backdrop-blur-[33.3%] backdrop-blur-[calc(50%+10px)]">valid backdrop-blur</button>
+      <button class="bg-red-500 backdrop-blur-[4] backdrop-blur-[1px] backdrop-blur-[0.5ch] backdrop-blur-[.1em] backdrop-blur-[1ex] backdrop-blur-[1lh] backdrop-blur-[1rem] backdrop-blur-[1rlh] backdrop-blur-[2vh] backdrop-blur-[2vw] backdrop-blur-[2vmin] backdrop-blur-[2vmax] backdrop-blur-[3px] backdrop-blur-[3mm] backdrop-blur-[3cm] backdrop-blur-[3in] backdrop-blur-[3pt] backdrop-blur-[3pc] backdrop-blur-[3lin] backdrop-blur-[33.3%] backdrop-blur-[calc(50%+10px)]">valid backdrop-blur</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-brightness-[4] backdrop-brightness-[1px] backdrop-brightness-[0.5ch] backdrop-brightness-[.1em] backdrop-brightness-[1ex] backdrop-brightness-[1lh] backdrop-brightness-[1rem] backdrop-brightness-[1rlh] backdrop-brightness-[2vh] backdrop-brightness-[2vw] backdrop-brightness-[2vmin] backdrop-brightness-[2vmax] backdrop-brightness-[3px] backdrop-brightness-[3mm] backdrop-brightness-[3cm] backdrop-brightness-[3in] backdrop-brightness-[3pt] backdrop-brightness-[3pc] backdrop-brightness-[3lin] backdrop-brightness-[33.3%] backdrop-brightness-[calc(50%+10px)]">valid backdrop-brightness</button>
+      <button class="bg-red-500 backdrop-brightness-[4] backdrop-brightness-[1px] backdrop-brightness-[0.5ch] backdrop-brightness-[.1em] backdrop-brightness-[1ex] backdrop-brightness-[1lh] backdrop-brightness-[1rem] backdrop-brightness-[1rlh] backdrop-brightness-[2vh] backdrop-brightness-[2vw] backdrop-brightness-[2vmin] backdrop-brightness-[2vmax] backdrop-brightness-[3px] backdrop-brightness-[3mm] backdrop-brightness-[3cm] backdrop-brightness-[3in] backdrop-brightness-[3pt] backdrop-brightness-[3pc] backdrop-brightness-[3lin] backdrop-brightness-[33.3%] backdrop-brightness-[calc(50%+10px)]">valid backdrop-brightness</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-contrast-[4] backdrop-contrast-[1px] backdrop-contrast-[0.5ch] backdrop-contrast-[.1em] backdrop-contrast-[1ex] backdrop-contrast-[1lh] backdrop-contrast-[1rem] backdrop-contrast-[1rlh] backdrop-contrast-[2vh] backdrop-contrast-[2vw] backdrop-contrast-[2vmin] backdrop-contrast-[2vmax] backdrop-contrast-[3px] backdrop-contrast-[3mm] backdrop-contrast-[3cm] backdrop-contrast-[3in] backdrop-contrast-[3pt] backdrop-contrast-[3pc] backdrop-contrast-[3lin] backdrop-contrast-[33.3%] backdrop-contrast-[calc(50%+10px)]">valid backdrop-contrast</button>
+      <button class="bg-red-500 backdrop-contrast-[4] backdrop-contrast-[1px] backdrop-contrast-[0.5ch] backdrop-contrast-[.1em] backdrop-contrast-[1ex] backdrop-contrast-[1lh] backdrop-contrast-[1rem] backdrop-contrast-[1rlh] backdrop-contrast-[2vh] backdrop-contrast-[2vw] backdrop-contrast-[2vmin] backdrop-contrast-[2vmax] backdrop-contrast-[3px] backdrop-contrast-[3mm] backdrop-contrast-[3cm] backdrop-contrast-[3in] backdrop-contrast-[3pt] backdrop-contrast-[3pc] backdrop-contrast-[3lin] backdrop-contrast-[33.3%] backdrop-contrast-[calc(50%+10px)]">valid backdrop-contrast</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-grayscale-[4] backdrop-grayscale-[1px] backdrop-grayscale-[0.5ch] backdrop-grayscale-[.1em] backdrop-grayscale-[1ex] backdrop-grayscale-[1lh] backdrop-grayscale-[1rem] backdrop-grayscale-[1rlh] backdrop-grayscale-[2vh] backdrop-grayscale-[2vw] backdrop-grayscale-[2vmin] backdrop-grayscale-[2vmax] backdrop-grayscale-[3px] backdrop-grayscale-[3mm] backdrop-grayscale-[3cm] backdrop-grayscale-[3in] backdrop-grayscale-[3pt] backdrop-grayscale-[3pc] backdrop-grayscale-[3lin] backdrop-grayscale-[33.3%] backdrop-grayscale-[calc(50%+10px)]">valid backdrop-grayscale</button>
+      <button class="bg-red-500 backdrop-grayscale-[4] backdrop-grayscale-[1px] backdrop-grayscale-[0.5ch] backdrop-grayscale-[.1em] backdrop-grayscale-[1ex] backdrop-grayscale-[1lh] backdrop-grayscale-[1rem] backdrop-grayscale-[1rlh] backdrop-grayscale-[2vh] backdrop-grayscale-[2vw] backdrop-grayscale-[2vmin] backdrop-grayscale-[2vmax] backdrop-grayscale-[3px] backdrop-grayscale-[3mm] backdrop-grayscale-[3cm] backdrop-grayscale-[3in] backdrop-grayscale-[3pt] backdrop-grayscale-[3pc] backdrop-grayscale-[3lin] backdrop-grayscale-[33.3%] backdrop-grayscale-[calc(50%+10px)]">valid backdrop-grayscale</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-hue-rotate-[4] backdrop-hue-rotate-[1px] backdrop-hue-rotate-[0.5ch] backdrop-hue-rotate-[.1em] backdrop-hue-rotate-[1ex] backdrop-hue-rotate-[1lh] backdrop-hue-rotate-[1rem] backdrop-hue-rotate-[1rlh] backdrop-hue-rotate-[2vh] backdrop-hue-rotate-[2vw] backdrop-hue-rotate-[2vmin] backdrop-hue-rotate-[2vmax] backdrop-hue-rotate-[3px] backdrop-hue-rotate-[3mm] backdrop-hue-rotate-[3cm] backdrop-hue-rotate-[3in] backdrop-hue-rotate-[3pt] backdrop-hue-rotate-[3pc] backdrop-hue-rotate-[3lin] backdrop-hue-rotate-[33.3%] backdrop-hue-rotate-[calc(50%+10px)]">valid backdrop-hue-rotate</button>
+      <button class="bg-red-500 backdrop-hue-rotate-[4] backdrop-hue-rotate-[1px] backdrop-hue-rotate-[0.5ch] backdrop-hue-rotate-[.1em] backdrop-hue-rotate-[1ex] backdrop-hue-rotate-[1lh] backdrop-hue-rotate-[1rem] backdrop-hue-rotate-[1rlh] backdrop-hue-rotate-[2vh] backdrop-hue-rotate-[2vw] backdrop-hue-rotate-[2vmin] backdrop-hue-rotate-[2vmax] backdrop-hue-rotate-[3px] backdrop-hue-rotate-[3mm] backdrop-hue-rotate-[3cm] backdrop-hue-rotate-[3in] backdrop-hue-rotate-[3pt] backdrop-hue-rotate-[3pc] backdrop-hue-rotate-[3lin] backdrop-hue-rotate-[33.3%] backdrop-hue-rotate-[calc(50%+10px)]">valid backdrop-hue-rotate</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-invert-[4] backdrop-invert-[1px] backdrop-invert-[0.5ch] backdrop-invert-[.1em] backdrop-invert-[1ex] backdrop-invert-[1lh] backdrop-invert-[1rem] backdrop-invert-[1rlh] backdrop-invert-[2vh] backdrop-invert-[2vw] backdrop-invert-[2vmin] backdrop-invert-[2vmax] backdrop-invert-[3px] backdrop-invert-[3mm] backdrop-invert-[3cm] backdrop-invert-[3in] backdrop-invert-[3pt] backdrop-invert-[3pc] backdrop-invert-[3lin] backdrop-invert-[33.3%] backdrop-invert-[calc(50%+10px)]">valid backdrop-invert</button>
+      <button class="bg-red-500 backdrop-invert-[4] backdrop-invert-[1px] backdrop-invert-[0.5ch] backdrop-invert-[.1em] backdrop-invert-[1ex] backdrop-invert-[1lh] backdrop-invert-[1rem] backdrop-invert-[1rlh] backdrop-invert-[2vh] backdrop-invert-[2vw] backdrop-invert-[2vmin] backdrop-invert-[2vmax] backdrop-invert-[3px] backdrop-invert-[3mm] backdrop-invert-[3cm] backdrop-invert-[3in] backdrop-invert-[3pt] backdrop-invert-[3pc] backdrop-invert-[3lin] backdrop-invert-[33.3%] backdrop-invert-[calc(50%+10px)]">valid backdrop-invert</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-opacity-[4] backdrop-opacity-[1px] backdrop-opacity-[0.5ch] backdrop-opacity-[.1em] backdrop-opacity-[1ex] backdrop-opacity-[1lh] backdrop-opacity-[1rem] backdrop-opacity-[1rlh] backdrop-opacity-[2vh] backdrop-opacity-[2vw] backdrop-opacity-[2vmin] backdrop-opacity-[2vmax] backdrop-opacity-[3px] backdrop-opacity-[3mm] backdrop-opacity-[3cm] backdrop-opacity-[3in] backdrop-opacity-[3pt] backdrop-opacity-[3pc] backdrop-opacity-[3lin] backdrop-opacity-[33.3%] backdrop-opacity-[calc(50%+10px)]">valid backdrop-opacity</button>
+      <button class="bg-red-500 backdrop-opacity-[4] backdrop-opacity-[1px] backdrop-opacity-[0.5ch] backdrop-opacity-[.1em] backdrop-opacity-[1ex] backdrop-opacity-[1lh] backdrop-opacity-[1rem] backdrop-opacity-[1rlh] backdrop-opacity-[2vh] backdrop-opacity-[2vw] backdrop-opacity-[2vmin] backdrop-opacity-[2vmax] backdrop-opacity-[3px] backdrop-opacity-[3mm] backdrop-opacity-[3cm] backdrop-opacity-[3in] backdrop-opacity-[3pt] backdrop-opacity-[3pc] backdrop-opacity-[3lin] backdrop-opacity-[33.3%] backdrop-opacity-[calc(50%+10px)]">valid backdrop-opacity</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-saturate-[4] backdrop-saturate-[1px] backdrop-saturate-[0.5ch] backdrop-saturate-[.1em] backdrop-saturate-[1ex] backdrop-saturate-[1lh] backdrop-saturate-[1rem] backdrop-saturate-[1rlh] backdrop-saturate-[2vh] backdrop-saturate-[2vw] backdrop-saturate-[2vmin] backdrop-saturate-[2vmax] backdrop-saturate-[3px] backdrop-saturate-[3mm] backdrop-saturate-[3cm] backdrop-saturate-[3in] backdrop-saturate-[3pt] backdrop-saturate-[3pc] backdrop-saturate-[3lin] backdrop-saturate-[33.3%] backdrop-saturate-[calc(50%+10px)]">valid backdrop-saturate</button>
+      <button class="bg-red-500 backdrop-saturate-[4] backdrop-saturate-[1px] backdrop-saturate-[0.5ch] backdrop-saturate-[.1em] backdrop-saturate-[1ex] backdrop-saturate-[1lh] backdrop-saturate-[1rem] backdrop-saturate-[1rlh] backdrop-saturate-[2vh] backdrop-saturate-[2vw] backdrop-saturate-[2vmin] backdrop-saturate-[2vmax] backdrop-saturate-[3px] backdrop-saturate-[3mm] backdrop-saturate-[3cm] backdrop-saturate-[3in] backdrop-saturate-[3pt] backdrop-saturate-[3pc] backdrop-saturate-[3lin] backdrop-saturate-[33.3%] backdrop-saturate-[calc(50%+10px)]">valid backdrop-saturate</button>
       `,
       options: config,
     },
     {
       code: `
-      <button class="bg-red-500 backdrop-filter backdrop-sepia-[4] backdrop-sepia-[1px] backdrop-sepia-[0.5ch] backdrop-sepia-[.1em] backdrop-sepia-[1ex] backdrop-sepia-[1lh] backdrop-sepia-[1rem] backdrop-sepia-[1rlh] backdrop-sepia-[2vh] backdrop-sepia-[2vw] backdrop-sepia-[2vmin] backdrop-sepia-[2vmax] backdrop-sepia-[3px] backdrop-sepia-[3mm] backdrop-sepia-[3cm] backdrop-sepia-[3in] backdrop-sepia-[3pt] backdrop-sepia-[3pc] backdrop-sepia-[3lin] backdrop-sepia-[33.3%] backdrop-sepia-[calc(50%+10px)]">valid backdrop-sepia</button>
+      <button class="bg-red-500 backdrop-sepia-[4] backdrop-sepia-[1px] backdrop-sepia-[0.5ch] backdrop-sepia-[.1em] backdrop-sepia-[1ex] backdrop-sepia-[1lh] backdrop-sepia-[1rem] backdrop-sepia-[1rlh] backdrop-sepia-[2vh] backdrop-sepia-[2vw] backdrop-sepia-[2vmin] backdrop-sepia-[2vmax] backdrop-sepia-[3px] backdrop-sepia-[3mm] backdrop-sepia-[3cm] backdrop-sepia-[3in] backdrop-sepia-[3pt] backdrop-sepia-[3pc] backdrop-sepia-[3lin] backdrop-sepia-[33.3%] backdrop-sepia-[calc(50%+10px)]">valid backdrop-sepia</button>
       `,
       options: config,
     },
@@ -494,31 +472,31 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="transform rotate-45 h-20 w-20 bg-green-600 origin-top-left origin-[var(--some)] origin-[20%] origin-[90%,90%]">origin</div>
+      <div class="rotate-45 h-20 w-20 bg-green-600 origin-top-left origin-[var(--some)] origin-[20%] origin-[90%,90%]">origin</div>
       `,
       options: config,
     },
     {
       code: `
-      <div class="transform scale-50 scale-0 scale-[90%] scale-[5]">scale</div>
+      <div class="scale-50 scale-0 scale-[90%] scale-[5]">scale</div>
       `,
       options: config,
     },
     {
       code: `
-      <div class="transform scale-50 scale-0 scale-[90%] scale-[5]">scale</div>
+      <div class="scale-50 scale-0 scale-[90%] scale-[5]">scale</div>
       `,
       options: config,
     },
     {
       code: `
-      <div class="transform translate-y-6 translate-y-[10px] translate-y-[-10px] translate-y-[1%]">translate</div>
+      <div class="translate-y-6 translate-y-[10px] translate-y-[-10px] translate-y-[1%]">translate</div>
       `,
       options: config,
     },
     {
       code: `
-      <div class="transform skew-y-6 skew-y-[10px] skew-y-[-10px] skew-y-[1%]">skew</div>
+      <div class="skew-y-6 skew-y-[10px] skew-y-[-10px] skew-y-[1%]">skew</div>
       `,
       options: config,
     },
@@ -530,7 +508,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="outline-black outline-['2px,solid,red'] outline-[var(--some)]">outline</button>
+      <button class="outline-black">outline</button>
       `,
       options: config,
     },
@@ -559,6 +537,45 @@ ruleTester.run("arbitrary-values", rule, {
   invalid: [
     {
       code: `
+      <div class="dark">
+        <span class="dark:text-white">
+          TailwindCSS V3: dark is not valid unless
+          <code>config.darkMode === 'class'</code>
+        </span>
+      </div>
+      `,
+      errors: generateErrors("dark"),
+    },
+    {
+      code: `
+      <div class="aspect-ko">
+        Aspect Ratio
+      </div>
+      `,
+      errors: generateErrors("aspect-ko"),
+    },
+    {
+      code: `
+      <div class="placeholder:text-white placeholder:text-[var(--some)] placeholder:text-[color:var(--some)]">
+        placeholderColor using var
+      </div>
+      `,
+      options: config,
+      errors: generateErrors("placeholder:text-[var(--some)]"),
+    },
+    {
+      code: `
+      <div class="placeholder:text-white placeholder:text-[rgba(255,0,0/0.4)] placeholder:text-[rgba(255,0,0/.4)] placeholder:text-[rgba(255,0,0/40%)]">
+        placeholderColor using rgba(255 0 0 / 0.4)
+      </div>
+      `,
+      options: config,
+      errors: generateErrors(
+        "placeholder:text-[rgba(255,0,0/0.4)] placeholder:text-[rgba(255,0,0/.4)] placeholder:text-[rgba(255,0,0/40%)]"
+      ),
+    },
+    {
+      code: `
       <div class="bg-[var(--donno)]">
         Invalid bg-color
       </div>
@@ -577,12 +594,12 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="placeholder-[hsla(240,100%,50%,0.7]">
+      <div class="placeholder:text-[hsla(240,100%,50%,0.7]">
         Unsupported placeholderColor using hsla
       </div>
       `,
       options: config,
-      errors: generateErrors("placeholder-[hsla(240,100%,50%,0.7]"),
+      errors: generateErrors("placeholder:text-[hsla(240,100%,50%,0.7]"),
     },
     {
       code: `
@@ -592,7 +609,7 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
       errors: generateErrors(
-        "text-[rgba(10%,20%,30%,100%)] text-[rgba(255,0,0/0.4)] text-[rgba(255,0,0/.4)] text-[rgba(255,0,0/40%)] text-[var(--some)]"
+        "text-[rgba(255,0,0/0.4)] text-[rgba(255,0,0/.4)] text-[rgba(255,0,0/40%)] text-[var(--some)]"
       ),
     },
     {
@@ -790,7 +807,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="filter brightness-[length:0] brightness-[length:thick] brightness-[length:var(--some)] brightness-[length:calc(50%+10px)]">Invalid brightness</button> 
+      <button class="brightness-[length:0] brightness-[length:thick] brightness-[length:var(--some)] brightness-[length:calc(50%+10px)]">Invalid brightness</button>
       `,
       options: config,
       errors: generateErrors(
@@ -799,7 +816,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="filter contrast-[length:0] contrast-[length:thick] contrast-[length:var(--some)] contrast-[length:calc(50%+10px)]">Invalid contrast</button> 
+      <button class="contrast-[length:0] contrast-[length:thick] contrast-[length:var(--some)] contrast-[length:calc(50%+10px)]">Invalid contrast</button>
       `,
       options: config,
       errors: generateErrors(
@@ -808,7 +825,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="filter grayscale-[length:0] grayscale-[length:thick] grayscale-[length:var(--some)] grayscale-[length:calc(50%+10px)]">Invalid grayscale</button> 
+      <button class="grayscale-[length:0] grayscale-[length:thick] grayscale-[length:var(--some)] grayscale-[length:calc(50%+10px)]">Invalid grayscale</button>
       `,
       options: config,
       errors: generateErrors(
@@ -817,7 +834,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="filter hue-rotate-[length:0] hue-rotate-[length:thick] hue-rotate-[length:var(--some)] hue-rotate-[length:calc(50%+10px)]">Invalid hue-rotate</button> 
+      <button class="hue-rotate-[length:0] hue-rotate-[length:thick] hue-rotate-[length:var(--some)] hue-rotate-[length:calc(50%+10px)]">Invalid hue-rotate</button>
       `,
       options: config,
       errors: generateErrors(
@@ -826,7 +843,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="filter invert-[length:0] invert-[length:thick] invert-[length:var(--some)] invert-[length:calc(50%+10px)]">Invalid invert</button> 
+      <button class="invert-[length:0] invert-[length:thick] invert-[length:var(--some)] invert-[length:calc(50%+10px)]">Invalid invert</button>
       `,
       options: config,
       errors: generateErrors(
@@ -835,7 +852,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="filter saturate-[length:0] saturate-[length:thick] saturate-[length:var(--some)] saturate-[length:calc(50%+10px)]">Invalid saturate</button> 
+      <button class="saturate-[length:0] saturate-[length:thick] saturate-[length:var(--some)] saturate-[length:calc(50%+10px)]">Invalid saturate</button>
       `,
       options: config,
       errors: generateErrors(
@@ -844,7 +861,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="filter sepia-[length:0] sepia-[length:thick] sepia-[length:var(--some)] sepia-[length:calc(50%+10px)]">Invalid sepia</button> 
+      <button class="sepia-[length:0] sepia-[length:thick] sepia-[length:var(--some)] sepia-[length:calc(50%+10px)]">Invalid sepia</button>
       `,
       options: config,
       errors: generateErrors(
@@ -853,7 +870,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-blur-[length:0] backdrop-blur-[length:thick] backdrop-blur-[length:var(--some)] backdrop-blur-[length:calc(50%+10px)]">Invalid backdrop-blur</button> 
+      <button class="backdrop-blur-[length:0] backdrop-blur-[length:thick] backdrop-blur-[length:var(--some)] backdrop-blur-[length:calc(50%+10px)]">Invalid backdrop-blur</button>
       `,
       options: config,
       errors: generateErrors(
@@ -862,7 +879,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-brightness-[length:0] backdrop-brightness-[length:thick] backdrop-brightness-[length:var(--some)] backdrop-brightness-[length:calc(50%+10px)]">Invalid backdrop-brightness</button> 
+      <button class="backdrop-brightness-[length:0] backdrop-brightness-[length:thick] backdrop-brightness-[length:var(--some)] backdrop-brightness-[length:calc(50%+10px)]">Invalid backdrop-brightness</button>
       `,
       options: config,
       errors: generateErrors(
@@ -871,7 +888,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-contrast-[length:0] backdrop-contrast-[length:thick] backdrop-contrast-[length:var(--some)] backdrop-contrast-[length:calc(50%+10px)]">Invalid backdrop-contrast</button> 
+      <button class="backdrop-contrast-[length:0] backdrop-contrast-[length:thick] backdrop-contrast-[length:var(--some)] backdrop-contrast-[length:calc(50%+10px)]">Invalid backdrop-contrast</button>
       `,
       options: config,
       errors: generateErrors(
@@ -880,7 +897,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-grayscale-[length:0] backdrop-grayscale-[length:thick] backdrop-grayscale-[length:var(--some)] backdrop-grayscale-[length:calc(50%+10px)]">Invalid backdrop-grayscale</button> 
+      <button class="backdrop-grayscale-[length:0] backdrop-grayscale-[length:thick] backdrop-grayscale-[length:var(--some)] backdrop-grayscale-[length:calc(50%+10px)]">Invalid backdrop-grayscale</button>
       `,
       options: config,
       errors: generateErrors(
@@ -889,7 +906,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-hue-rotate-[length:0] backdrop-hue-rotate-[length:thick] backdrop-hue-rotate-[length:var(--some)] backdrop-hue-rotate-[length:calc(50%+10px)]">Invalid backdrop-hue-rotate</button> 
+      <button class="backdrop-hue-rotate-[length:0] backdrop-hue-rotate-[length:thick] backdrop-hue-rotate-[length:var(--some)] backdrop-hue-rotate-[length:calc(50%+10px)]">Invalid backdrop-hue-rotate</button>
       `,
       options: config,
       errors: generateErrors(
@@ -898,7 +915,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-invert-[length:0] backdrop-invert-[length:thick] backdrop-invert-[length:var(--some)] backdrop-invert-[length:calc(50%+10px)]">Invalid backdrop-invert</button> 
+      <button class="backdrop-invert-[length:0] backdrop-invert-[length:thick] backdrop-invert-[length:var(--some)] backdrop-invert-[length:calc(50%+10px)]">Invalid backdrop-invert</button>
       `,
       options: config,
       errors: generateErrors(
@@ -907,7 +924,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-opacity-[length:0] backdrop-opacity-[length:thick] backdrop-opacity-[length:var(--some)] backdrop-opacity-[length:calc(50%+10px)]">Invalid backdrop-opacity</button> 
+      <button class="backdrop-opacity-[length:0] backdrop-opacity-[length:thick] backdrop-opacity-[length:var(--some)] backdrop-opacity-[length:calc(50%+10px)]">Invalid backdrop-opacity</button>
       `,
       options: config,
       errors: generateErrors(
@@ -916,7 +933,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-saturate-[length:0] backdrop-saturate-[length:thick] backdrop-saturate-[length:var(--some)] backdrop-saturate-[length:calc(50%+10px)]">Invalid backdrop-saturate</button> 
+      <button class="backdrop-saturate-[length:0] backdrop-saturate-[length:thick] backdrop-saturate-[length:var(--some)] backdrop-saturate-[length:calc(50%+10px)]">Invalid backdrop-saturate</button>
       `,
       options: config,
       errors: generateErrors(
@@ -925,7 +942,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="backdrop-filter backdrop-sepia-[length:0] backdrop-sepia-[length:thick] backdrop-sepia-[length:var(--some)] backdrop-sepia-[length:calc(50%+10px)]">Invalid backdrop-sepia</button> 
+      <button class="backdrop-sepia-[length:0] backdrop-sepia-[length:thick] backdrop-sepia-[length:var(--some)] backdrop-sepia-[length:calc(50%+10px)]">Invalid backdrop-sepia</button>
       `,
       options: config,
       errors: generateErrors(
@@ -934,7 +951,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="duration-[length:0] duration-[length:thick] duration-[length:var(--some)] duration-[length:calc(50%+10px)]">Invalid duration</button> 
+      <button class="duration-[length:0] duration-[length:thick] duration-[length:var(--some)] duration-[length:calc(50%+10px)]">Invalid duration</button>
       `,
       options: config,
       errors: generateErrors(
@@ -964,35 +981,35 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="transform rotate-45 h-20 w-20 bg-green-600 origin-top-left origin-[list:top,right] origin-[list:10%]">origin</div>
+      <div class="rotate-45 h-20 w-20 bg-green-600 origin-top-left origin-[list:top,right] origin-[list:10%]">origin</div>
       `,
       options: config,
       errors: generateErrors("origin-[list:top,right] origin-[list:10%]"),
     },
     {
       code: `
-      <div class="transform scale-50 scale-0 scale-[length:90%] scale-[length:0.5]">scale</div>
+      <div class="scale-50 scale-0 scale-[length:90%] scale-[length:0.5]">scale</div>
       `,
       options: config,
       errors: generateErrors("scale-[length:90%] scale-[length:0.5]"),
     },
     {
       code: `
-      <div class="transform translate-y-6 translate-y-[length:10px] translate-y-[list:-10px]">translate</div>
+      <div class="translate-y-6 translate-y-[length:10px] translate-y-[list:-10px]">translate</div>
       `,
       options: config,
       errors: generateErrors("translate-y-[length:10px] translate-y-[list:-10px]"),
     },
     {
       code: `
-      <div class="transform translate-y-6 translate-y-[length:10px] translate-y-[list:-10px]">translate</div>
+      <div class="translate-y-6 translate-y-[length:10px] translate-y-[list:-10px]">translate</div>
       `,
       options: config,
       errors: generateErrors("translate-y-[length:10px] translate-y-[list:-10px]"),
     },
     {
       code: `
-      <div class="transform skew-y-6 skew-y-[length:10px] skew-y-[list:-10px]">skew</div>
+      <div class="skew-y-6 skew-y-[length:10px] skew-y-[list:-10px]">skew</div>
       `,
       options: config,
       errors: generateErrors("skew-y-[length:10px] skew-y-[list:-10px]"),

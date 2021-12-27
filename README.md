@@ -4,41 +4,60 @@
 
 ![eslint-plugin-tailwindcss logo](.github/logo.png)
 
-Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/) v2.1.2
+Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/)
 
-> **🎉 Since v1.5.0, the plugin will parse the `tailwind.config.js` file and use the correct values based on your own settings.**
->
-> 👍 Most of [the new JIT mode features](https://tailwindcss.com/docs/just-in-time-mode#new-features) are also supported.
+## **🎉 The version 3 of plugin is now ready for TailwindCSS v3 🎉**
+
+## Make sure to use the correct version
+
+- Still using TailwindCSS v2 ?
+  - You should stick with `v1.x.x` or `v2.x.x` of this plugin (next support releases will be using major version `2`)
+- Using TailwindCSS v3 ?
+  - Make sure to use `v3.x.x` of this plugin
+
+## We need you ❤️
+
+Version 3 of the plugin is brand new and you will most likely experience bugs, please provide feedback by opening issues on GitHub with all the useful informations so that we can fix them all.
+
+If you enjoy my work you can:
+
+- [Share the plugin on Twitter](https://twitter.com/hashtag/eslint-plugin-tailwindcss)
+- Contribute to the project by:
+  - Giving feedback
+  - Creating an issue
+  - Make a pull request
+  - Write a feature request
+- Give back and [sponsor its development](https://github.com/sponsors/francoismassart)
 
 ## Latest changelog
 
-- FIX: [classname `aspect-none` should be valid](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/63)
+- New rule: [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy migration from TailwindCSS `v2` to `v3`
 
-- FIX: [Invalid regular expression](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/62)
+- Support for TailwindCSS v3
 
-- Handling `Literal` attribute values (e.g. `className={'...'}` mind the curly brackets) instead of ignoring them
+  - New config matching the updated docs
+  - Support for arbitrary properties
 
-- FIX: issue with trim and `TemplateLiteral` causing unwanted concatenation of classnames
-
-- Support for [per-side border-color in JIT](https://github.com/tailwindlabs/tailwindcss/pull/4404)
-
-- Better support for [JIT mode arbitrary values](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/40)
-
-- Support for [color opacity shorthand](https://tailwindcss.com/docs/just-in-time-mode#color-opacity-shorthand)
+- `groupByResponsive` is enabled by default for `classnames-order`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
-## Sponsors
+## Monthly sponsors
 
 <a href="https://daily.dev/" target="_blank">
   <img width="150px" src="https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/master/sponsors/daily.dev.jpg">
 </a>
+
+## One-time sponsors
+
+[TheoBr](https://github.com/TheoBr) sponsorship gave me a little extra motivation. Thanks, man
 
 ## Supported Rules
 
 Learn more about each supported rules by reading their documentation:
 
 - [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
+- [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from TailwindCSS `v2` to `v3`
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 
@@ -89,6 +108,7 @@ Configure the rules you want to use under the rules section.
 {
   "rules": {
     "tailwindcss/classnames-order": "warn",
+    "tailwindcss/migration-from-tailwind-2": "warn",
     "tailwindcss/no-custom-classname": "warn",
     "tailwindcss/no-contradicting-classname": "error"
   }
@@ -131,6 +151,10 @@ The plugin will look for each setting value in this order and stop looking as so
 3. Default value of the requested setting (plugin level)...
 
 ## Upcoming Rules
+
+- `enforces-shorthand`: Make sure you group properties inside a shorthand when possible e.g. `mx-5 my-5` should become `m-5`
+
+- `validate-modifiers`: I don't know if possible, but I'd like to make sure all the modifiers prefixes of a classname are valid e.g. `yolo:bg-red` should throw an error...
 
 - `no-redundant-variant`: e.g. avoid `mx-5 sm:mx-5`, no need to redefine `mx` in `sm:` variant as it uses the same value (`5`)
 
