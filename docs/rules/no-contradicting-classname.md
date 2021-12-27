@@ -25,7 +25,8 @@ Examples of **correct** code for this rule:
 ...
 "tailwindcss/classnames-order": [<enabled>, {
   "callees": Array<string>,
-  "config": <string>|<object>
+  "config": <string>|<object>,
+  "tags": Array<string>,
 }]
 ...
 ```
@@ -49,6 +50,10 @@ If the external file cannot be loaded (e.g. incorrect path or deleted file), an 
 It is also possible to directly inject a configuration as plain `object` like `{ prefix: "tw-", theme: { ... } }`.
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
+
+### `tags` (default: `[]`)
+
+Optional, if you are using tagged templates, you should provide the tags in this array.
 
 ## Further Reading
 

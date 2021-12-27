@@ -26,7 +26,8 @@ Examples of **correct** code for this rule:
   "callees": Array<string>,
   "config": <string>|<object>,
   "cssFiles": Array<string>,
-  "whitelist": Array<string>
+  "tags": Array<string>,
+  "whitelist": Array<string>,
 }]
 ...
 ```
@@ -56,6 +57,10 @@ Finally, the plugin will [merge the provided configuration](https://tailwindcss.
 By default the plugin will now look for any `css` files and ignore the `node_modules/` folder.
 
 Each `css` files will be processed in order to extract the declared classnames in order to accept them.
+
+### `tags` (default: `[]`)
+
+Optional, if you are using tagged templates, you should provide the tags in this array.
 
 ### `whitelist` (default: `[]`)
 
