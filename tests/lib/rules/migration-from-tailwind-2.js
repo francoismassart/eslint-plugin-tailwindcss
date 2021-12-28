@@ -30,6 +30,12 @@ ruleTester.run("migration-from-tailwind-2", rule, {
     {
       code: `<div class="scale-50 grayscale backdrop-blur-sm">Automatic transforms and filters</div>`,
     },
+    {
+      code: `<div class="transition-transform">transition-transform</div>`,
+    },
+    {
+      code: `<div class="transition-[var(--transform)]">transition-[var(--transform)]</div>`,
+    },
   ],
   invalid: [
     {
