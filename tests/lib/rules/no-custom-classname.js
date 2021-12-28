@@ -488,6 +488,10 @@ ruleTester.run("no-custom-classname", rule, {
         font-mono is a valid classname
       </div>`,
     },
+    {
+      code: `
+      <div className={'stroke-sky-500/[.1]'}>Arbitrary alpha suffix</div>`,
+    },
   ],
 
   invalid: [

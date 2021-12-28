@@ -6,7 +6,7 @@
 
 Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/)
 
-## **🎉 The version 3 of plugin is now ready for TailwindCSS v3 🎉**
+## **🎉 Version 3 is now ready for TailwindCSS v3 🎉**
 
 ## Make sure to use the correct version
 
@@ -14,6 +14,8 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
   - You should stick with `v1.x.x` or `v2.x.x` of this plugin (next support releases will be using major version `2`)
 - Using TailwindCSS v3 ?
   - Make sure to use `v3.x.x` of this plugin
+
+**If you are using the eslint extension, make sure to restart VSCode in order to use the lastest version of the plugin and not the former version from the cache.**
 
 ## We need you ❤️
 
@@ -30,6 +32,10 @@ If you enjoy my work you can:
 - Give back and [sponsor its development](https://github.com/sponsors/francoismassart)
 
 ## Latest changelog
+
+- FIX: [Arbitrary values of color opacity](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/80)
+
+- FIX: [Class transition-transform throws the wrong warning](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/77)
 
 - New rule: [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy migration from TailwindCSS `v2` to `v3`
 
