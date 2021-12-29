@@ -492,6 +492,10 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div className={'stroke-sky-500/[.1]'}>Arbitrary alpha suffix</div>`,
     },
+    {
+      code: `
+      <div className={'!hidden sm:!flex lg:!block 2xl:!block'}>Important modifier</div>`,
+    },
   ],
 
   invalid: [
