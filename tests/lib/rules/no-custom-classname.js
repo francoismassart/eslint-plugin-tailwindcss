@@ -496,6 +496,16 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div className={'!hidden sm:!flex lg:!block 2xl:!block'}>Important modifier</div>`,
     },
+    {
+      code: `
+      <button
+      type="button"
+      className={classnames(
+        "p-2 font-medium",
+        boolVal ? false : "text-black"
+      )}
+      />`,
+    },
   ],
 
   invalid: [
