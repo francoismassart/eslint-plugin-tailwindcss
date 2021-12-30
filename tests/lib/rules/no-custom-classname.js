@@ -506,6 +506,21 @@ ruleTester.run("no-custom-classname", rule, {
       )}
       />`,
     },
+    {
+      code: `
+      <div className="-mt-4">Negative value with custom config</div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              spacing: {
+                4: "calc(4 * .25rem)",
+              },
+            },
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
