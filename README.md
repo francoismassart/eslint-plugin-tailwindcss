@@ -33,8 +33,11 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
-- FIX: [Arbitrary values of color opacity](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/80)
+- FIX: [Important marker throws warning](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/82)
+- FIX: [Boolean values in class throws error](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/83)
+- FIX: [Negative margins](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/78)
 
+- FIX: [Arbitrary values of color opacity](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/80)
 - FIX: [Class transition-transform throws the wrong warning](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/77)
 
 - New rule: [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy migration from TailwindCSS `v2` to `v3`
