@@ -33,6 +33,8 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [`transform-none` not allowed](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/84)
+
 - FIX: [Important marker throws warning](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/82)
 - FIX: [Boolean values in class throws error](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/83)
 - FIX: [Negative margins](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/78)

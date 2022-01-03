@@ -521,6 +521,10 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      <div className="transform-none">Disabling transform</div>`,
+    },
   ],
 
   invalid: [

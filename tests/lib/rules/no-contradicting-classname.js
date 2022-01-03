@@ -170,6 +170,12 @@ ruleTester.run("no-contradicting-classname", rule, {
         Same class prefix, type prefix may be required for resolving ambiguous values
       </div>`,
     },
+    {
+      code: `
+      <div class="scale-75 translate-x-4 skew-y-3 motion-reduce:transform-none">
+        Legit transform-none
+      </div>`,
+    },
   ],
 
   invalid: [
@@ -382,5 +388,12 @@ ruleTester.run("no-contradicting-classname", rule, {
       options: config,
       errors: generateErrors("aspect-none aspect-w-16"),
     },
+    // {
+    //   code: `
+    //   <div class="scale-75 transform-none">
+    //     Conflicting transform-none
+    //   </div>`,
+    //   errors: generateErrors("scale-75 transform-none"),
+    // },
   ],
 });
