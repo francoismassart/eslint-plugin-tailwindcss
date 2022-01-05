@@ -33,6 +33,8 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [correctly handle number values in config](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/86) (by [patrikholcak](https://github.com/patrikholcak) 🙏)
+
 - FIX: [`transform-none` not allowed](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/84)
 
 - FIX: [Important marker throws warning](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/82)
