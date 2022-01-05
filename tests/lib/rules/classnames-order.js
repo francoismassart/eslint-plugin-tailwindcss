@@ -162,6 +162,14 @@ ruleTester.run("classnames-order", rule, {
         },
       ],
     },
+    {
+      code: `<div class="flex z-dialog w-12">Number values</div>`,
+      settings: {
+        tailwindcss: {
+          config: { theme: { zIndex: { dialog: 10000 } } },
+        },
+      },
+    },
   ],
   invalid: [
     {
