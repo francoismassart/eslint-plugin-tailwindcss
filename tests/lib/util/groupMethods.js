@@ -36,6 +36,8 @@ describe("parseClassname", function () {
       body: "overflow-x-",
       value: "auto",
       shorthand: "x",
+      leading: "",
+      trailing: "",
     };
     assert.deepEqual(actual, expected);
     name = "md:overflow-y-auto";
@@ -169,6 +171,20 @@ describe("parseClassname", function () {
     expected.parentType = "Margin";
     expected.body = "m-";
     expected.value = "[0]";
+    assert.deepEqual(actual, expected);
+
+    // Leading / Trailing
+    name = "  md:gap-x-2  ";
+    actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 100);
+    expected.index = 100;
+    expected.name = "md:gap-x-2";
+    expected.shorthand = "x";
+    expected.variants = "md:";
+    expected.parentType = "Gap";
+    expected.body = "gap-x-";
+    expected.value = "2";
+    expected.leading = "  ";
+    expected.trailing = "  ";
     assert.deepEqual(actual, expected);
   });
 
