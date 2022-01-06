@@ -33,6 +33,8 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- New rule: [`enforces-shorthand`](docs/rules/enforces-shorthand.md) merging multiple classnames when possible
+
 - FIX: [correctly handle number values in config](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/86) (by [patrikholcak](https://github.com/patrikholcak) 🙏)
 
 - FIX: [`transform-none` not allowed](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/84)

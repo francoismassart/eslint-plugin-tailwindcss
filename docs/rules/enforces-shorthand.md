@@ -26,6 +26,9 @@ At the moment, the rule will not merge mixed classnames (e.g. using regular valu
 </div>
 ```
 
+Also, unless you are using the `classnames-order` rule, the order of your classnames may be affected by the fix.
+If indeed, you are using the `classnames-order` rule, then it'll be automatically re-ordered during the next lint process (depending on your autofix preferences) and you won't notice any order issue.
+
 ### Options
 
 ```js
