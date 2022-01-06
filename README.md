@@ -72,6 +72,7 @@ If you enjoy my work you can:
 Learn more about each supported rules by reading their documentation:
 
 - [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
+- [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
 - [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from TailwindCSS `v2` to `v3`
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
@@ -123,6 +124,7 @@ Configure the rules you want to use under the rules section.
 {
   "rules": {
     "tailwindcss/classnames-order": "warn",
+    "tailwindcss/enforces-shorthand": "warn",
     "tailwindcss/migration-from-tailwind-2": "warn",
     "tailwindcss/no-custom-classname": "warn",
     "tailwindcss/no-contradicting-classname": "error"
@@ -166,8 +168,6 @@ The plugin will look for each setting value in this order and stop looking as so
 3. Default value of the requested setting (plugin level)...
 
 ## Upcoming Rules
-
-- `enforces-shorthand`: Make sure you group properties inside a shorthand when possible e.g. `mx-5 my-5` should become `m-5`
 
 - `validate-modifiers`: I don't know if possible, but I'd like to make sure all the modifiers prefixes of a classname are valid e.g. `yolo:bg-red` should throw an error...
 
