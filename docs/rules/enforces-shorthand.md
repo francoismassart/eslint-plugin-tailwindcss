@@ -18,11 +18,11 @@ Examples of **correct** code for this rule:
 
 #### Limitations
 
-At the moment, the rule will not merge mixed classnames (e.g. using regular values AND arbitrary value).
+At the moment, the rule will not merge mixed classnames (e.g. using regular values AND arbitrary values).
 
 ```html
 <div class="border-t-[0] border-r-0 border-b-0 border-l-[0]">
-  won't be converted to boredr-0 shorthand
+  won't be converted to border-0 shorthand
 </div>
 ```
 
