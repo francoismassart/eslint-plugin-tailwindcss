@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwindcss",
-  "version": "3.0.4",
+  "version": "3.1.0-beta.1",
   "description": "Rules enforcing best practices while using Tailwind CSS",
   "keywords": [
     "eslint",
@@ -18,6 +18,7 @@
   "bugs": "https://github.com/francoismassart/eslint-plugin-tailwindcss/issues",
   "main": "lib/index.js",
   "scripts": {
+    "wip": "mocha tests/lib/rules/enforces-shorthand.js",
     "test": "mocha tests --recursive"
   },
   "files": [

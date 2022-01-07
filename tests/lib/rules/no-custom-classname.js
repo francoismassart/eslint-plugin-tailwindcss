@@ -1,6 +1,6 @@
 /**
  * @fileoverview Detect classnames which do not belong to Tailwind CSS
- * @author no-custom-classname
+ * @author François Massart
  */
 "use strict";
 
