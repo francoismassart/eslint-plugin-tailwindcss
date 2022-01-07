@@ -67,4 +67,4 @@ Optional, if you are using tagged templates, you should provide the tags in this
 
 ## Further Reading
 
-This rule will not fix the issue but will let you know about the issue.
+This rule will fix the issue for you.
