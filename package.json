@@ -18,7 +18,6 @@
   "bugs": "https://github.com/francoismassart/eslint-plugin-tailwindcss/issues",
   "main": "lib/index.js",
   "scripts": {
-    "wip": "mocha tests/lib/rules/enforces-shorthand.js",
     "test": "mocha tests --recursive"
   },
   "files": [
