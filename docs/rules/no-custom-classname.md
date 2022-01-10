@@ -26,6 +26,7 @@ Examples of **correct** code for this rule:
   "callees": Array<string>,
   "config": <string>|<object>,
   "cssFiles": Array<string>,
+  "cssFilesRefreshRate": <number>,
   "tags": Array<string>,
   "whitelist": Array<string>,
 }]
@@ -57,6 +58,12 @@ Finally, the plugin will [merge the provided configuration](https://tailwindcss.
 By default the plugin will now look for any `css` files and ignore the `node_modules/` folder.
 
 Each `css` files will be processed in order to extract the declared classnames in order to accept them.
+
+### `cssFilesRefreshRate` (default: `5_000`)
+
+The plugin read and parses css files which can be a time consuming process depending on your files.
+
+By default, it runs the process if files were updated for at least 5 seconds (`5_000` ms) but you can increase this setting to enhance performances while reducing the update interval.
 
 ### `tags` (default: `[]`)
 
