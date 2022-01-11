@@ -33,7 +33,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
-- FIX: [FIX: `enforces-shorthand` false positive](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/91)
+- FIX: [`enforces-shorthand` false positive](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/91)
 
 - FIX: [`snap-x` and `snap-mandatory` are conflicting classes](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/90)
 
