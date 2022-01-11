@@ -162,7 +162,7 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="bg-white/80 text-red-500/25 placeholder-black/50">
+      <div class="bg-white/80 text-red-500/25 placeholder-black/50 from-white/50 to-black/50">
         Color opacity shorthands
       </div>
       `,
