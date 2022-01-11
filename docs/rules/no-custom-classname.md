@@ -26,6 +26,7 @@ Examples of **correct** code for this rule:
   "callees": Array<string>,
   "config": <string>|<object>,
   "cssFiles": Array<string>,
+  "cssFilesRefreshRate": <number>,
   "tags": Array<string>,
   "whitelist": Array<string>,
 }]

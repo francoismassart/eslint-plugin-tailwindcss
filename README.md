@@ -37,6 +37,8 @@ If you enjoy my work you can:
 
 - FIX: [New default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
 
+- FIX: [New option `cssFilesRefreshRate` for `no-custom-classname`](docs/rules/no-custom-classname.md)
+
 - FIX: [`enforces-shorthand` false positive](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/91)
 
 - FIX: [`snap-x` and `snap-mandatory` are conflicting classes](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/90)
