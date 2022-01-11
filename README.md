@@ -33,6 +33,8 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [New default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
+
 - FIX: [`enforces-shorthand` false positive](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/91)
 
 - FIX: [`snap-x` and `snap-mandatory` are conflicting classes](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/90)
@@ -155,7 +157,7 @@ All these settings have nice default values that are explained in each rules' do
       // These are the default values but feel free to customize
       "callees": ["classnames", "clsx", "ctl"],
       "config": "tailwind.config.js",
-      "cssFiles": ["**/*.css", "!**/node_modules"],
+      "cssFiles": ["**/*.css", "!**/node_modules", "!**/.*", "!**/dist", "!**/build"],
       "groupByResponsive": false,
       "groups": defaultGroups, // imported from groups.js
       "prependCustom": false,
