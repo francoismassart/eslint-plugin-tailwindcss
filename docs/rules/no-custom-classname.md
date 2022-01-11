@@ -53,15 +53,17 @@ It is also possible to directly inject a configuration as plain `object` like `{
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
 
-### `cssFiles` (default: `["**/*.css", "!**/node_modules"]`)
+### `cssFiles` (default: `["**/*.css", "!**/node_modules", "!**/.*", "!**/dist", "!**/build"]`)
 
-By default the plugin will now look for any `css` files and ignore the `node_modules/` folder.
+By default the plugin will now look for any `css` files while ignoring files in special folders (`node_modules/`, `dist/`, `build/` folders as well as hidden folders prefixed by a dot e.g. `.git/`).
 
 Each `css` files will be processed in order to extract the declared classnames in order to accept them.
 
+> If you are experiencing performance issues with this plugin, make sure to provide this setting and restrict its value to only parse the correct subset of CSS files. Read more about such cases in [PR#92](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/92) and [PR#93](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/93).
+
 ### `cssFilesRefreshRate` (default: `5_000`)
 
-The plugin read and parses css files which can be a time consuming process depending on your files.
+The plugin read and parses CSS files which can be a time consuming process depending on your files.
 
 By default, it runs the process if files were updated for at least 5 seconds (`5_000` ms) but you can increase this setting to enhance performances while reducing the update interval.
 

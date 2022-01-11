@@ -12,6 +12,8 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Latest changelog
 
+- FIX: [New default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
+
 - FIX: [classname `aspect-none` should be valid](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/63)
 
 - FIX: [Invalid regular expression](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/62)
@@ -113,7 +115,7 @@ All these settings have nice default values that are explained in each rules' do
       // These are the default values but feel free to customize
       "callees": ["classnames", "clsx", "ctl"],
       "config": "tailwind.config.js",
-      "cssFiles": ["**/*.css", "!**/node_modules"],
+      "cssFiles": ["**/*.css", "!**/node_modules", "!**/.*", "!**/dist", "!**/build"],
       "groupByResponsive": false,
       "groups": defaultGroups, // imported from groups.js
       "prependCustom": false,
