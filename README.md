@@ -11,7 +11,7 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 ## Make sure to use the correct version
 
 - Still using TailwindCSS v2 ?
-  - You should stick with `v1.x.x` or `v2.x.x` of this plugin (next support releases will be using major version `2`)
+  - You should stick with `v2.x.x` of this plugin
 - Using TailwindCSS v3 ?
   - Make sure to use `v3.x.x` of this plugin
 
@@ -33,31 +33,11 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
-- FIX: [FIX: `enforces-shorthand` false positive](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/91)
-
-- FIX: [`snap-x` and `snap-mandatory` are conflicting classes](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/90)
-
+- New rule: [`no-arbitrary-value`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/89) which forbid using arbitrary values in classnames
+- New rule: [default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
+- New option: [`cssFilesRefreshRate` for `no-custom-classname`](docs/rules/no-custom-classname.md)
 - New rule: [`enforces-shorthand`](docs/rules/enforces-shorthand.md) merging multiple classnames when possible
-
-- FIX: [correctly handle number values in config](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/86) (by [patrikholcak](https://github.com/patrikholcak) 🙏)
-
-- FIX: [`transform-none` not allowed](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/84)
-
-- FIX: [Important marker throws warning](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/82)
-- FIX: [Boolean values in class throws error](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/83)
-- FIX: [Negative margins](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/78)
-
-- FIX: [Arbitrary values of color opacity](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/80)
-- FIX: [Class transition-transform throws the wrong warning](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/77)
-
 - New rule: [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy migration from TailwindCSS `v2` to `v3`
-
-- Support for TailwindCSS v3
-
-  - New config matching the updated docs
-  - Support for arbitrary properties
-
-- `groupByResponsive` is enabled by default for `classnames-order`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
@@ -79,6 +59,7 @@ Learn more about each supported rules by reading their documentation:
 - [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
 - [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from TailwindCSS `v2` to `v3`.
   Warning: at the moment you should [temporary turn off the `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88) rule if you want to see the warning from `migration-from-tailwind-2`
+- [`no-arbitrary-value`](docs/rules/no-arbitrary-value.md): forbid using arbitrary values in classnames (turned off by default)
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 
@@ -131,6 +112,7 @@ Configure the rules you want to use under the rules section.
     "tailwindcss/classnames-order": "warn",
     "tailwindcss/enforces-shorthand": "warn",
     "tailwindcss/migration-from-tailwind-2": "warn",
+    "tailwindcss/no-arbitrary-value": "off",
     "tailwindcss/no-custom-classname": "warn",
     "tailwindcss/no-contradicting-classname": "error"
   }
@@ -155,8 +137,9 @@ All these settings have nice default values that are explained in each rules' do
       // These are the default values but feel free to customize
       "callees": ["classnames", "clsx", "ctl"],
       "config": "tailwind.config.js",
-      "cssFiles": ["**/*.css", "!**/node_modules"],
-      "groupByResponsive": false,
+      "cssFiles": ["**/*.css", "!**/node_modules", "!**/.*", "!**/dist", "!**/build"],
+      "cssFilesRefreshRate": 5_000,
+      "groupByResponsive": true,
       "groups": defaultGroups, // imported from groups.js
       "prependCustom": false,
       "removeDuplicates": true,
