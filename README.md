@@ -14,6 +14,10 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 - FIX: [New default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
 
+- Add [`cssFilesRefreshRate` option](docs/rules/no-custom-classname.md#cssfilesrefreshrate-default-5_000) for `no-custom-classname` rule
+
+- FIX: [`GradientColorStops` also support opacity suffixes](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/68)
+
 - FIX: [classname `aspect-none` should be valid](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/63)
 
 - FIX: [Invalid regular expression](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/62)
