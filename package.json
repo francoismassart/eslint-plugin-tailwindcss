@@ -18,6 +18,7 @@
   "bugs": "https://github.com/francoismassart/eslint-plugin-tailwindcss/issues",
   "main": "lib/index.js",
   "scripts": {
+    "wip": "mocha tests/lib/rules/wip/ --recursive",
     "test": "mocha tests --recursive"
   },
   "files": [
@@ -29,6 +30,7 @@
     "tailwindcss": "^2.1.2"
   },
   "devDependencies": {
+    "@angular-eslint/template-parser": "^13.0.1",
     "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/line-clamp": "^0.2.0",
     "@tailwindcss/typography": "^0.4.0",
