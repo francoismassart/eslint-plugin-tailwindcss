@@ -11,7 +11,7 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 ## Make sure to use the correct version
 
 - Still using TailwindCSS v2 ?
-  - You should stick with `v1.x.x` or `v2.x.x` of this plugin (next support releases will be using major version `2`)
+  - You should stick with `v2.x.x` of this plugin
 - Using TailwindCSS v3 ?
   - Make sure to use `v3.x.x` of this plugin
 
@@ -35,9 +35,9 @@ If you enjoy my work you can:
 
 - New rule: [`no-arbitrary-value`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/89) which forbid using arbitrary values in classnames
 
-- FIX: [New default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
+- New [default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
 
-- FIX: [New option `cssFilesRefreshRate` for `no-custom-classname`](docs/rules/no-custom-classname.md)
+- New [option `cssFilesRefreshRate` for `no-custom-classname`](docs/rules/no-custom-classname.md)
 
 - FIX: [`enforces-shorthand` false positive](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/91)
 
