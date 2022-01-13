@@ -10,10 +10,10 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 ## Make sure to use the correct version
 
-- Still using TailwindCSS v2 ?
-  - You should stick with `v2.x.x` of this plugin
-- Using TailwindCSS v3 ?
-  - Make sure to use `v3.x.x` of this plugin
+- Still using TailwindCSS v2 ? 👻
+  - You should stick with `v2.x.x` of this plugin (`npm i eslint-plugin-tailwindcss@tw2`)
+- Using TailwindCSS v3 ? 🚀
+  - Make sure to use `v3.x.x` of this plugin (`npm i eslint-plugin-tailwindcss`
 
 **If you are using the eslint extension, make sure to restart VSCode in order to use the lastest version of the plugin and not the former version from the cache.**
 
@@ -76,11 +76,17 @@ You'll first need to install [ESLint](http://eslint.org):
 $ npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-tailwindcss`:
+Next, install the latest version of `eslint-plugin-tailwindcss` if you are using TailwindCSS v3
 
 ```
 $ npm i eslint-plugin-tailwindcss --save-dev
 ```
+
+> ### Still using TailwindCSS v2?
+>
+> 👉 Install the latest version compatible with TailwindCSS v2 via `npm i eslint-plugin-tailwindcss@tw2 --save-dev`
+>
+> Please note that new rules might not be available in the `tw2` distribution
 
 Add `tailwindcss` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
