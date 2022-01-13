@@ -525,6 +525,17 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div className="transform-none">Disabling transform</div>`,
     },
+    {
+      code: `
+      <div className="p/r[e].f!-x_flex">Nasty prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
