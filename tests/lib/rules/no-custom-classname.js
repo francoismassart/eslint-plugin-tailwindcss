@@ -207,6 +207,87 @@ ruleTester.run("no-custom-classname", rule, {
         font-mono is a valid classname
       </div>`,
     },
+    {
+      code: `<div class="tw-inset-0">with prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "tw-",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="tw/inset-0">with prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "tw/",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="[tw]inset-0">with prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "[tw]",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="[tw!]inset-0">with prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "[tw!]",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="[.tw!]inset-0">with prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "[.tw!]",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="[-tw!-]inset-0">with prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "[-tw!-]",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div class="p/r[e].f!-x_inset-0">with prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+    },
+    // {
+    //   code: `
+    //   <div class="p/r[e].f!-x_flex">Nasty prefix</div>`,
+    //   options: [
+    //     {
+    //       config: {
+    //         prefix: "p/r[e].f!-x_",
+    //       },
+    //     },
+    //   ],
+    // },
   ],
 
   invalid: [
