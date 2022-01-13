@@ -23,7 +23,7 @@ Examples of **correct** code for this rule:
 
 ```js
 ...
-"tailwindcss/classnames-order": [<enabled>, {
+"tailwindcss/no-contradicting-classname": [<enabled>, {
   "callees": Array<string>,
   "config": <string>|<object>,
   "tags": Array<string>,
