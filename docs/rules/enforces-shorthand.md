@@ -33,7 +33,7 @@ If indeed, you are using the `classnames-order` rule, then it'll be automaticall
 
 ```js
 ...
-"tailwindcss/no-custom-classname": [<enabled>, {
+"tailwindcss/enforces-shorthand": [<enabled>, {
   "callees": Array<string>,
   "config": <string>|<object>,
   "tags": Array<string>,
