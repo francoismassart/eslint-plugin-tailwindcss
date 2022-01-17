@@ -525,6 +525,23 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div className="transform-none">Disabling transform</div>`,
     },
+    {
+      code: `
+      <div className="text-9xl text-ffffff/[24%] bg-000000">Issue #101</div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                "000000": "#000000",
+                ffffff: "#ffffff",
+              },
+            },
+            plugins: [],
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
