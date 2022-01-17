@@ -542,6 +542,24 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      <div className="grid gap-x-4 grid-cols-1fr/minmax(0/360)/1fr">Issue #100</div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              extend: {
+                gridTemplateColumns: {
+                  "1fr/minmax(0/360)/1fr": "1fr minmax(0, calc(360 * .25rem)) 1fr",
+                },
+              },
+            },
+            plugins: [],
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
