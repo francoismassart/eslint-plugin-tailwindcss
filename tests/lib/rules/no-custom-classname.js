@@ -527,11 +527,50 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
+      <div className="transform-none">Disabling transform</div>`,
+    },
+    {
+      code: `
       <div className="p/r[e].f!-x_flex">Nasty prefix</div>`,
       options: [
         {
           config: {
             prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div className="text-9xl text-ffffff/[24%] bg-000000">Issue #101</div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                "000000": "#000000",
+                ffffff: "#ffffff",
+              },
+            },
+            plugins: [],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div className="grid gap-x-4 grid-cols-1fr/minmax(0/360)/1fr">Issue #100</div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              extend: {
+                gridTemplateColumns: {
+                  "1fr/minmax(0/360)/1fr": "1fr minmax(0, calc(360 * .25rem)) 1fr",
+                },
+              },
+            },
+            plugins: [],
           },
         },
       ],
