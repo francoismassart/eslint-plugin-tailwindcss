@@ -508,6 +508,16 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
+      <button
+      type="button"
+      className={classnames(
+        ["p-2 font-medium"],
+        [{"text-black": boolVal}]
+      )}
+      />`,
+    },
+    {
+      code: `
       <div className="-mt-4">Negative value with custom config</div>`,
       options: [
         {
@@ -635,6 +645,28 @@ ruleTester.run("no-custom-classname", rule, {
       \`)
       `,
       errors: generateErrors("custom-2 custom-3 custom-1"),
+    },
+    {
+      code: `
+      <button
+      type="button"
+      className={classnames(
+        ["asdf"],
+        [{"qwerty": boolVal}]
+      )}
+      />`,
+      errors: generateErrors("asdf qwerty"),
+    },
+    {
+      code: `
+      classnames(
+        ["asdf foo"],
+        myFlag && [
+          "bar",
+          someBoolean ? ["baz"] : { "qwerty": someOtherFlag },
+        ]
+      );`,
+      errors: generateErrors("asdf foo bar baz qwerty"),
     },
     {
       code: `<div className="flex skin-summer custom-2 custom-not-whitelisted">incomplete whitelist</div>`,

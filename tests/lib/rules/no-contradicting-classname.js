@@ -298,7 +298,17 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `ctl(\`\${enabled && "px-2 px-0"}\`)`,
       errors: generateErrors("px-2 px-0"),
     },
-
+    {
+      code: `
+      classnames(
+        ["p-2 p-4"],
+        myFlag && [
+          "w-1 w-2",
+          someBoolean ? ["py-1 py-2"] : { "px-2 px-4": someOtherFlag },
+        ]
+      );`,
+      errors: generateErrors(["p-2 p-4", "w-1 w-2", "py-1 py-2", "px-2 px-4"]),
+    },
     {
       code: `
       myTag\`
