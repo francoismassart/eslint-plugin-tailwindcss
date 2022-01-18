@@ -25,11 +25,19 @@ var parserOptions = {
 
 var ruleTester = new RuleTester({ parserOptions });
 
-var errors = [
-  {
-    messageId: "invalidOrder",
-  },
-];
+const generateErrors = (count) => {
+  const errors = [];
+
+  for (let i = 0; i < count; i++) {
+    errors.push({
+      messageId: "invalidOrder",
+    });
+  }
+
+  return errors;
+};
+
+const errors = generateErrors(1);
 
 ruleTester.run("classnames-order", rule, {
   valid: [
@@ -372,14 +380,7 @@ ruleTester.run("classnames-order", rule, {
         lg:py-4
         \${hasError && "bg-red"}
       \`);`,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: generateErrors(2),
     },
     {
       code: `<div class="sm:w-12 w-[320px]">Allowed arbitrary value but incorrect order</div>`,
@@ -464,44 +465,22 @@ ruleTester.run("classnames-order", rule, {
         }
       \`)
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-        {
-          messageId: "invalidOrder",
-        },
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: generateErrors(3),
     },
     {
       code: `<div className="px-2 flex">...</div>`,
       output: `<div className="flex px-2">...</div>`,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `ctl(\`\${enabled && "px-2 flex"}\`)`,
       output: `ctl(\`\${enabled && "flex px-2"}\`)`,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `ctl(\`px-2 flex\`)`,
       output: `ctl(\`flex px-2\`)`,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -516,11 +495,7 @@ ruleTester.run("classnames-order", rule, {
         px-2
       \`)
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -553,11 +528,7 @@ ruleTester.run("classnames-order", rule, {
         #19
       </div>
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -580,11 +551,7 @@ ruleTester.run("classnames-order", rule, {
         )}
       />
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -664,14 +631,35 @@ ruleTester.run("classnames-order", rule, {
           tags: ["myTag"],
         },
       ],
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: generateErrors(2),
+    },
+    {
+      code: `
+      classnames([
+        'invalid lg:w-4 sm:w-6',
+        ['w-12 flex'],
+      ])`,
+      output: `
+      classnames([
+        'sm:w-6 lg:w-4 invalid',
+        ['flex w-12'],
+      ])`,
+      errors: generateErrors(2),
+    },
+    {
+      code: `
+      classnames({
+        invalid,
+        flex: myFlag,
+        'lg:w-4 sm:w-6': resize
+      })`,
+      output: `
+      classnames({
+        invalid,
+        flex: myFlag,
+        'sm:w-6 lg:w-4': resize
+      })`,
+      errors: errors,
     },
   ],
 });

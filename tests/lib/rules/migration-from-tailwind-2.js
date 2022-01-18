@@ -177,5 +177,31 @@ ruleTester.run("migration-from-tailwind-2", rule, {
         },
       ],
     },
+    {
+      code: `classnames(["placeholder-red-900"])`,
+      output: `classnames(["placeholder:text-red-900"])`,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "placeholder-red-900",
+            updated: "placeholder:text-red-900",
+          },
+        },
+      ],
+    },
+    {
+      code: `classnames({"placeholder-red-900": true})`,
+      output: `classnames({"placeholder:text-red-900": true})`,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "placeholder-red-900",
+            updated: "placeholder:text-red-900",
+          },
+        },
+      ],
+    },
   ],
 });
