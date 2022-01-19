@@ -69,5 +69,31 @@ ruleTester.run("no-arbitrary-value", rule, {
       \`)`,
       errors: generateErrors("[mask-type:luminance] bg-[rgba(10,20,30,0.5)]"),
     },
+    {
+      code: `
+      <nav
+        className={cns("flex relative flex-row rounded-lg select-none", {
+          "bg-gray-200 p-1": !size,
+          "bg-gray-100 p-[3px]": size === "sm",
+        })}
+      />`,
+      options: [
+        {
+          callees: ["cns"],
+        },
+      ],
+      errors: generateErrors("p-[3px]"),
+    },
+    {
+      code: `
+      classnames(
+        ["flex text-[length:var(--font-size)]"],
+        myFlag && [
+          "rounded-[2em]",
+          someBoolean ? ["p-[4vw]"] : { "leading-[1]": someOtherFlag },
+        ]
+      );`,
+      errors: generateErrors("text-[length:var(--font-size)] rounded-[2em] p-[4vw] leading-[1]"),
+    },
   ],
 });
