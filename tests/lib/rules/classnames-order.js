@@ -11,6 +11,18 @@
 var rule = require("../../../lib/rules/classnames-order");
 var RuleTester = require("eslint").RuleTester;
 
+const generateErrors = (count) => {
+  const errors = [];
+
+  for (let i = 0; i < count; i++) {
+    errors.push({
+      messageId: "invalidOrder",
+    });
+  }
+
+  return errors;
+};
+
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
@@ -25,11 +37,7 @@ var parserOptions = {
 
 var ruleTester = new RuleTester({ parserOptions });
 
-var errors = [
-  {
-    messageId: "invalidOrder",
-  },
-];
+var errors = generateErrors(1);
 
 ruleTester.run("classnames-order", rule, {
   valid: [
@@ -176,6 +184,25 @@ ruleTester.run("classnames-order", rule, {
           tags: ["myTag"],
         },
       ],
+    },
+    {
+      code: `
+      <div class="transform-none">Using</div>
+      <div class="flex flex-col">HTML</div>`,
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `
+      <div class="p/r[e].f!-x_flex">Using HTML</div>
+      <div class="p/r[e].f!-x_block">With nasty prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+      parser: require.resolve("@angular-eslint/template-parser"),
     },
   ],
   invalid: [
@@ -492,44 +519,22 @@ ruleTester.run("classnames-order", rule, {
         }
       \`)
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-        {
-          messageId: "invalidOrder",
-        },
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: generateErrors(3),
     },
     {
       code: `<div className="px-2 flex">...</div>`,
       output: `<div className="flex px-2">...</div>`,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `ctl(\`\${enabled && "px-2 flex"}\`)`,
       output: `ctl(\`\${enabled && "flex px-2"}\`)`,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `ctl(\`px-2 flex\`)`,
       output: `ctl(\`flex px-2\`)`,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -544,11 +549,7 @@ ruleTester.run("classnames-order", rule, {
         px-2
       \`)
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -581,11 +582,7 @@ ruleTester.run("classnames-order", rule, {
         #19
       </div>
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -608,11 +605,7 @@ ruleTester.run("classnames-order", rule, {
         )}
       />
       `,
-      errors: [
-        {
-          messageId: "invalidOrder",
-        },
-      ],
+      errors: errors,
     },
     {
       code: `
@@ -692,12 +685,46 @@ ruleTester.run("classnames-order", rule, {
           tags: ["myTag"],
         },
       ],
-      errors: [
+      errors: generateErrors(2),
+    },
+    {
+      code: `
+      <div class="flex-col cursor-pointer flex"></div>
+      <div class="m-0 lg:m-2 md:m-1"></div>`,
+      output: `
+      <div class="flex flex-col cursor-pointer"></div>
+      <div class="m-0 md:m-1 lg:m-2"></div>`,
+      errors: [...errors, ...errors],
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `<div class="grid lg:grid-col-4 grid-cols-1 sm:grid-cols-2">:)</div>`,
+      output: `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-col-4">:)</div>`,
+      errors: errors,
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `
+      <div class="
+        flex-col
+        cursor-pointer
+        flex
+      ">
+        :)
+      </div>`,
+      output: `
+      <div class="
+        flex
+        flex-col
+        cursor-pointer
+      ">
+        :)
+      </div>`,
+      errors: errors,
+      parser: require.resolve("@angular-eslint/template-parser"),
+      options: [
         {
-          messageId: "invalidOrder",
-        },
-        {
-          messageId: "invalidOrder",
+          groupByResponsive: false,
         },
       ],
     },

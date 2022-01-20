@@ -9,6 +9,24 @@
 //------------------------------------------------------------------------------
 
 var rule = require("../../../lib/rules/no-contradicting-classname");
+
+var generateErrors = (classnames) => {
+  const errors = [];
+  if (typeof classnames === "string") {
+    classnames = [classnames];
+  }
+  classnames.map((classname) => {
+    const cls = classname.split(" ").join(", ");
+    errors.push({
+      messageId: "conflictingClassnames",
+      data: {
+        classnames: cls,
+      },
+    });
+  });
+  return errors;
+};
+
 var RuleTester = require("eslint").RuleTester;
 
 //------------------------------------------------------------------------------
@@ -159,6 +177,12 @@ ruleTester.run("no-contradicting-classname", rule, {
         Same class prefix, type prefix may be required for resolving ambiguous values
       </div>`,
     },
+    {
+      code: `
+      <div class="p-1 px-2 sm:px-3 sm:pt-0">Accepts shorthands</div>
+      <div class="m-1 mx-2 sm:mx-3">Accepts shorthands</div>`,
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
   ],
 
   invalid: [
@@ -183,25 +207,11 @@ ruleTester.run("no-contradicting-classname", rule, {
       export default Fake;
       `,
       parser: require.resolve("@typescript-eslint/parser"),
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "w-1, w-2",
-          },
-        },
-      ],
+      errors: generateErrors("w-1 w-2"),
     },
     {
       code: '<div class="container w-1 w-2"></div>',
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "w-1, w-2",
-          },
-        },
-      ],
+      errors: generateErrors("w-1 w-2"),
     },
     {
       code: '<div class="container sm_w-3 sm_w-4 lg_w-6"></div>',
@@ -210,25 +220,11 @@ ruleTester.run("no-contradicting-classname", rule, {
           config: { separator: "_" },
         },
       ],
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "sm_w-3, sm_w-4",
-          },
-        },
-      ],
+      errors: generateErrors("sm_w-3 sm_w-4"),
     },
     {
       code: '<template><div class="container w-1 w-2"></div></template>',
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "w-1, w-2",
-          },
-        },
-      ],
+      errors: generateErrors("w-1 w-2"),
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
@@ -239,33 +235,13 @@ ruleTester.run("no-contradicting-classname", rule, {
           config: { separator: "_" },
         },
       ],
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "sm_w-3, sm_w-4",
-          },
-        },
-      ],
+      errors: generateErrors("sm_w-3 sm_w-4"),
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
     {
       code: '<div class="flex-1 order-first order-11 sm:order-last flex-none"></div>',
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "flex-1, flex-none",
-          },
-        },
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "order-first, order-11",
-          },
-        },
-      ],
+      errors: [...generateErrors("flex-1 flex-none"), ...generateErrors("order-first order-11")],
     },
     {
       code: `
@@ -278,32 +254,12 @@ ruleTester.run("no-contradicting-classname", rule, {
         flex
         lg:w-4
       \`);`,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "w-8, w-12",
-          },
-        },
-      ],
+      errors: generateErrors("w-8 w-12"),
     },
     {
       code: '<div class="container sm:w-3 sm:w-[40%] lg:w-6 z-0 z-[var(--some)]"></div>',
       options: config,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "z-0, z-[var(--some)]",
-          },
-        },
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "sm:w-3, sm:w-[40%]",
-          },
-        },
-      ],
+      errors: [...generateErrors("z-0 z-[var(--some)]"), ...generateErrors("sm:w-3 sm:w-[40%]")],
     },
     {
       code: `<div className={clsx(\`container sm:w-3 sm:w-2 lg:w-6\`)}>clsx</div>`,
@@ -312,14 +268,7 @@ ruleTester.run("no-contradicting-classname", rule, {
           callees: ["clsx"],
         },
       ],
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "sm:w-3, sm:w-2",
-          },
-        },
-      ],
+      errors: generateErrors("sm:w-3 sm:w-2"),
     },
     {
       code: `
@@ -342,37 +291,11 @@ ruleTester.run("no-contradicting-classname", rule, {
         }
       \`)
       `,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "py-1, py-2",
-          },
-        },
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "w-1, w-2",
-          },
-        },
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "px-2, px-4",
-          },
-        },
-      ],
+      errors: [...generateErrors("py-1 py-2"), ...generateErrors("w-1 w-2"), ...generateErrors("px-2 px-4")],
     },
     {
       code: `ctl(\`\${enabled && "px-2 px-0"}\`)`,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "px-2, px-0",
-          },
-        },
-      ],
+      errors: generateErrors("px-2 px-0"),
     },
 
     {
@@ -387,14 +310,7 @@ ruleTester.run("no-contradicting-classname", rule, {
         lg:w-4
       \`;`,
       options: [{ tags: ["myTag"] }],
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "w-8, w-12",
-          },
-        },
-      ],
+      errors: generateErrors("w-8 w-12"),
     },
     {
       code: `
@@ -418,38 +334,12 @@ ruleTester.run("no-contradicting-classname", rule, {
       \`
       `,
       options: [{ tags: ["myTag"] }],
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "py-1, py-2",
-          },
-        },
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "w-1, w-2",
-          },
-        },
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "px-2, px-4",
-          },
-        },
-      ],
+      errors: [...generateErrors("py-1 py-2"), ...generateErrors("w-1 w-2"), ...generateErrors("px-2 px-4")],
     },
     {
       code: `myTag\`\${enabled && "px-2 px-0"}\``,
       options: [{ tags: ["myTag"] }],
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "px-2, px-0",
-          },
-        },
-      ],
+      errors: generateErrors("px-2 px-0"),
     },
     {
       code: `
@@ -458,15 +348,9 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>
       `,
       options: config,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames:
-              "flex-shrink, flex-shrink-0, flex-shrink-[inherit], flex-shrink-[initial], flex-shrink-[unset], flex-shrink-[var(--some)], flex-shrink-[0.5], flex-shrink-[5]",
-          },
-        },
-      ],
+      errors: generateErrors(
+        "flex-shrink flex-shrink-0 flex-shrink-[inherit] flex-shrink-[initial] flex-shrink-[unset] flex-shrink-[var(--some)] flex-shrink-[0.5] flex-shrink-[5]"
+      ),
     },
     {
       code: `
@@ -475,15 +359,9 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>
       `,
       options: config,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames:
-              "order-0, -order-1, order-[inherit], order-[initial], order-[unset], order-[var(--some)], order-[2], order-[-3]",
-          },
-        },
-      ],
+      errors: generateErrors(
+        "order-0 -order-1 order-[inherit] order-[initial] order-[unset] order-[var(--some)] order-[2] order-[-3]"
+      ),
     },
     {
       code: `
@@ -492,14 +370,7 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>
       `,
       options: config,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "z-0, -z-1, z-[auto], z-[inherit], z-[initial], z-[unset], z-[var(--some)], z-[2], z-[-3]",
-          },
-        },
-      ],
+      errors: generateErrors("z-0 -z-1 z-[auto] z-[inherit] z-[initial] z-[unset] z-[var(--some)] z-[2] z-[-3]"),
     },
     {
       code: `
@@ -508,14 +379,7 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>
       `,
       options: config,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "flex-auto, flex-[2,2,10%], flex-[var(--some)]",
-          },
-        },
-      ],
+      errors: generateErrors("flex-auto flex-[2,2,10%] flex-[var(--some)]"),
     },
     {
       code: `
@@ -524,26 +388,26 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>
       `,
       options: config,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "rounded-xl, rounded-[50%/10%], rounded-[10%,30%,50%,70%], rounded-[var(--some)]",
-          },
-        },
-      ],
+      errors: generateErrors("rounded-xl rounded-[50%/10%] rounded-[10%,30%,50%,70%] rounded-[var(--some)]"),
     },
     {
       code: `<div class="aspect-none aspect-w-16 aspect-w-10 aspect-h-9">aspect</div>`,
       options: config,
-      errors: [
-        {
-          messageId: "conflictingClassnames",
-          data: {
-            classnames: "aspect-none, aspect-w-16",
-          },
-        },
-      ],
+      errors: generateErrors("aspect-none aspect-w-16"),
     },
+    {
+      code: `
+      <div class="container w-1 w-2"></div>
+      <div class="block flex"></div>`,
+      errors: [...generateErrors("w-1 w-2"), ...generateErrors("block flex")],
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    // {
+    //   code: `
+    //   <div class="scale-75 transform-none">
+    //     Conflicting transform-none
+    //   </div>`,
+    //   errors: generateErrors("scale-75 transform-none"),
+    // },
   ],
 });

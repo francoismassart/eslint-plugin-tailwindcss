@@ -23,6 +23,22 @@ var parserOptions = {
   },
 };
 
+var generateErrors = (classnames) => {
+  const errors = [];
+  if (typeof classnames === "string") {
+    classnames = classnames.split(" ");
+  }
+  classnames.map((classname) => {
+    errors.push({
+      messageId: "customClassnameDetected",
+      data: {
+        classname: classname,
+      },
+    });
+  });
+  return errors;
+};
+
 var ruleTester = new RuleTester({ parserOptions });
 
 ruleTester.run("no-custom-classname", rule, {
@@ -277,17 +293,35 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
-    // {
-    //   code: `
-    //   <div class="p/r[e].f!-x_flex">Nasty prefix</div>`,
-    //   options: [
-    //     {
-    //       config: {
-    //         prefix: "p/r[e].f!-x_",
-    //       },
-    //     },
-    //   ],
-    // },
+    {
+      code: `<div class="p/r[e].f!-x_grid p/r[e].f!-x_block p/r[e].f!-x_flex">Nasty prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="transform-none">Using</div>
+      <div class="flex flex-col">HTML</div>`,
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `
+      <div class="p/r[e].f!-x_flex">Using HTML</div>
+      <div class="p/r[e].f!-x_block">With nasty prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
   ],
 
   invalid: [
@@ -312,55 +346,21 @@ ruleTester.run("no-custom-classname", rule, {
       export default Fake;
       `,
       parser: require.resolve("@typescript-eslint/parser"),
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "my-custom",
-          },
-        },
-      ],
+      errors: generateErrors("my-custom"),
     },
     {
       code: `<div class="w-12 my-custom">my-custom is not defined in Tailwind CSS!</div>`,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "my-custom",
-          },
-        },
-      ],
+      errors: generateErrors("my-custom"),
     },
     {
       code: `<template><div class="w-12 my-custom">my-custom is not defined in Tailwind CSS!</div></template>`,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "my-custom",
-          },
-        },
-      ],
+      errors: generateErrors("my-custom"),
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
     {
       code: `<div class="hello world">2 classnames are not defined in Tailwind CSS!</div>`,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "hello",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "world",
-          },
-        },
-      ],
+      errors: generateErrors("hello world"),
     },
     {
       code: `
@@ -374,20 +374,7 @@ ruleTester.run("no-custom-classname", rule, {
         flex
         lg:w-4
       \`);`,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "hello",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "world",
-          },
-        },
-      ],
+      errors: generateErrors("hello world"),
     },
     {
       code: `<div class="hello tw-container tw-box-content lg_tw-box-border world">Only Tailwind CSS classnames</div>`,
@@ -396,20 +383,7 @@ ruleTester.run("no-custom-classname", rule, {
           config: { prefix: "tw-", separator: "_" },
         },
       ],
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "hello",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "world",
-          },
-        },
-      ],
+      errors: generateErrors("hello world"),
     },
     {
       code: `<div class="arbitrary-inset-[123px]">No arbitrary value support without JIT</div>`,
@@ -421,14 +395,7 @@ ruleTester.run("no-custom-classname", rule, {
           },
         },
       ],
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "arbitrary-inset-[123px]",
-          },
-        },
-      ],
+      errors: generateErrors("arbitrary-inset-[123px]"),
     },
     {
       code: `<div className={clsx(\`hello-world flex w-full\`)}>clsx</div>`,
@@ -437,14 +404,7 @@ ruleTester.run("no-custom-classname", rule, {
           callees: ["clsx"],
         },
       ],
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "hello-world",
-          },
-        },
-      ],
+      errors: generateErrors("hello-world"),
     },
     {
       code: `
@@ -470,26 +430,7 @@ ruleTester.run("no-custom-classname", rule, {
         }
       \`)
       `,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "custom-2",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "custom-3",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "custom-1",
-          },
-        },
-      ],
+      errors: generateErrors("custom-2 custom-3 custom-1"),
     },
     {
       code: `<div className="flex skin-summer custom-2 custom-not-whitelisted">incomplete whitelist</div>`,
@@ -498,25 +439,11 @@ ruleTester.run("no-custom-classname", rule, {
           whitelist: ["skin\\-(summer|xmas)", "custom\\-[1-3]"],
         },
       ],
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "custom-not-whitelisted",
-          },
-        },
-      ],
+      errors: generateErrors("custom-not-whitelisted"),
     },
     {
       code: `ctl(\`\${enabled && "px-2 yo flex"}\`)`,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "yo",
-          },
-        },
-      ],
+      errors: generateErrors("yo"),
     },
     {
       code: `
@@ -529,14 +456,7 @@ ruleTester.run("no-custom-classname", rule, {
         )}
       />
       `,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "azerty",
-          },
-        },
-      ],
+      errors: generateErrors("azerty"),
     },
     {
       code: `<div className="dark">dark is invalid without darkMode in class</div>`,
@@ -545,14 +465,7 @@ ruleTester.run("no-custom-classname", rule, {
           config: { darkMode: "media" },
         },
       ],
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "dark",
-          },
-        },
-      ],
+      errors: generateErrors("dark"),
     },
     {
       code: `
@@ -567,20 +480,7 @@ ruleTester.run("no-custom-classname", rule, {
         lg:w-4
       \`;`,
       options: [{ tags: ["myTag"] }],
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "hello",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "world",
-          },
-        },
-      ],
+      errors: generateErrors("hello world"),
     },
     {
       code: `
@@ -607,26 +507,7 @@ ruleTester.run("no-custom-classname", rule, {
       \`
       `,
       options: [{ tags: ["myTag"] }],
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "custom-2",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "custom-3",
-          },
-        },
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "custom-1",
-          },
-        },
-      ],
+      errors: generateErrors("custom-2 custom-3 custom-1"),
     },
     {
       code: `
@@ -634,14 +515,7 @@ ruleTester.run("no-custom-classname", rule, {
         <p class="text-yellow-400 border-2 border-green-600 border-t-current p-2">border-t-current</p>
       </div>
       `,
-      errors: [
-        {
-          messageId: "customClassnameDetected",
-          data: {
-            classname: "border-t-current",
-          },
-        },
-      ],
+      errors: generateErrors("border-t-current"),
     },
   ],
 });
