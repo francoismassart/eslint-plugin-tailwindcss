@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwindcss",
-  "version": "2.0.0",
+  "version": "2.0.1-beta.1",
   "description": "Rules enforcing best practices while using Tailwind CSS",
   "keywords": [
     "eslint",
@@ -29,6 +29,7 @@
     "tailwindcss": "^2.1.2"
   },
   "devDependencies": {
+    "@angular-eslint/template-parser": "^13.0.1",
     "@tailwindcss/aspect-ratio": "^0.2.0",
     "@tailwindcss/line-clamp": "^0.2.0",
     "@tailwindcss/typography": "^0.4.0",
