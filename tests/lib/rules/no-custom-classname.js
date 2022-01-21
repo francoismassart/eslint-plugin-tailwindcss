@@ -537,6 +537,17 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
+      <div className="p/r[e].f!-x_flex">Nasty prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+    },
+    {
+      code: `
       <div className="text-9xl text-ffffff/[24%] bg-000000">Issue #101</div>`,
       options: [
         {
@@ -569,6 +580,25 @@ ruleTester.run("no-custom-classname", rule, {
           },
         },
       ],
+    },
+    {
+      code: `
+      <div class="transform-none">Using</div>
+      <div class="flex flex-col">HTML</div>`,
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `
+      <div class="p/r[e].f!-x_flex">Using HTML</div>
+      <div class="p/r[e].f!-x_block">With nasty prefix</div>`,
+      options: [
+        {
+          config: {
+            prefix: "p/r[e].f!-x_",
+          },
+        },
+      ],
+      parser: require.resolve("@angular-eslint/template-parser"),
     },
   ],
 

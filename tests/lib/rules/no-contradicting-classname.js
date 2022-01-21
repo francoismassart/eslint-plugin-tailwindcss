@@ -184,6 +184,12 @@ ruleTester.run("no-contradicting-classname", rule, {
         </div>
       </div>`,
     },
+    {
+      code: `
+      <div class="p-1 px-2 sm:px-3 sm:pt-0">Accepts shorthands</div>
+      <div class="m-1 mx-2 sm:mx-3">Accepts shorthands</div>`,
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
   ],
 
   invalid: [
@@ -405,6 +411,13 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `<div class="aspect-none aspect-w-16 aspect-w-10 aspect-h-9">aspect</div>`,
       options: config,
       errors: generateErrors("aspect-none aspect-w-16"),
+    },
+    {
+      code: `
+      <div class="container w-1 w-2"></div>
+      <div class="block flex"></div>`,
+      errors: [...generateErrors("w-1 w-2"), ...generateErrors("block flex")],
+      parser: require.resolve("@angular-eslint/template-parser"),
     },
     // {
     //   code: `

@@ -661,5 +661,46 @@ ruleTester.run("classnames-order", rule, {
       })`,
       errors: errors,
     },
+    {
+      code: `
+      <div class="flex-col cursor-pointer flex"></div>
+      <div class="m-0 lg:m-2 md:m-1"></div>`,
+      output: `
+      <div class="flex flex-col cursor-pointer"></div>
+      <div class="m-0 md:m-1 lg:m-2"></div>`,
+      errors: [...errors, ...errors],
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `<div class="grid lg:grid-col-4 grid-cols-1 sm:grid-cols-2">:)</div>`,
+      output: `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-col-4">:)</div>`,
+      errors: errors,
+      parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `
+      <div class="
+        flex-col
+        cursor-pointer
+        flex
+      ">
+        :)
+      </div>`,
+      output: `
+      <div class="
+        flex
+        flex-col
+        cursor-pointer
+      ">
+        :)
+      </div>`,
+      errors: errors,
+      parser: require.resolve("@angular-eslint/template-parser"),
+      options: [
+        {
+          groupByResponsive: false,
+        },
+      ],
+    },
   ],
 });

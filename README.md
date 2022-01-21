@@ -33,6 +33,9 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [Escaping special characters in the `prefix`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/73)
+- FIX: [Formating HTML files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/85) is now possible using `@angular-eslint/template-parser`
+
 - New feature: [crawling `ArrayExpression` elements and `ObjectExpression`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/103), see [issue #99](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/99) (by [matt-tingen](https://github.com/matt-tingen) 🙏)
 - New rule: [`no-arbitrary-value`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/89) which forbid using arbitrary values in classnames
 - New rule: [default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
