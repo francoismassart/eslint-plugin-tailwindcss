@@ -33,6 +33,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [`no-custom-classname` rule prevents `migration-from-tailwind-2` rule](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88)
 - FIX: [Escaping special characters in the `prefix`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/73)
 - FIX: [Formating HTML files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/85) is now possible using `@angular-eslint/template-parser`
 
