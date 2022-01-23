@@ -600,6 +600,10 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       parser: require.resolve("@angular-eslint/template-parser"),
     },
+    {
+      code: `
+      <div class="decoration-clone decoration-slice flex-grow flex-shrink overflow-clip overflow-ellipsis bg-opacity-50 transform scale-50">Deprecated classnames yet still supported for now</div>`,
+    },
   ],
 
   invalid: [
