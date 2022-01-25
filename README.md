@@ -4,9 +4,13 @@
 
 ![eslint-plugin-tailwindcss logo](.github/logo.png)
 
-Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/)
+Rules enforcing best practices and consistency using [Tailwind CSS](https://tailwindcss.com/).
 
-## **🎉 Version 3 is now ready for TailwindCSS v3 🎉**
+While you can use the official plugin [`prettier-plugin-tailwindcss`](https://www.npmjs.com/package/prettier-plugin-tailwindcss) for ordering your classnames...
+
+**`eslint-plugin-tailwindcss` offers 5 other rules, that you can benefit on top of `prettier-plugin-tailwindcss`. Sounds good ? Keep reading 👇**
+
+## **🎉 Compatible with TailwindCSS v3 and v2 🎉**
 
 ## Make sure to use the correct version
 
@@ -33,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: `migration-from-tailwind-2` and `enforces-shorthand` fixer with `@angular-eslint/template-parser`
 - FIX: [`no-custom-classname` rule prevents `migration-from-tailwind-2` rule](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88)
 - FIX: [Escaping special characters in the `prefix`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/73)
 - FIX: [Formating HTML files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/85) is now possible using `@angular-eslint/template-parser`
@@ -78,18 +83,18 @@ You can can the same information on your favorite command line software as well.
 You'll first need to install [ESLint](http://eslint.org):
 
 ```
-$ npm i eslint --save-dev
+$ npm i -D eslint
 ```
 
 Next, install the latest version of `eslint-plugin-tailwindcss` if you are using TailwindCSS v3
 
 ```
-$ npm i eslint-plugin-tailwindcss --save-dev
+$ npm i -D eslint-plugin-tailwindcss
 ```
 
 > ### Still using TailwindCSS v2?
 >
-> 👉 Install the latest version compatible with TailwindCSS v2 via `npm i eslint-plugin-tailwindcss@tw2 --save-dev`
+> 👉 Install the latest version compatible with TailwindCSS v2 via `npm i -D eslint-plugin-tailwindcss@tw2`
 >
 > Please note that new rules might not be available in the `tw2` distribution
 
@@ -180,6 +185,7 @@ The plugin will look for each setting value in this order and stop looking as so
 
 I wrote this plugin after searching for existing tools which perform the same task but didn't satisfied my needs:
 
+- [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss), the official plugin, only takes care of ordering classnames, do not support array of classnames, do not support blade
 - [eslint-plugin-tailwind](https://www.npmjs.com/package/eslint-plugin-tailwind), not bad but no support (yet) for variants sorting
 - [Headwind](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind), only works within Visual Studio Code
 

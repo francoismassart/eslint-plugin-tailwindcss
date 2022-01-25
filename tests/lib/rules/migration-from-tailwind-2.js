@@ -203,5 +203,29 @@ ruleTester.run("migration-from-tailwind-2", rule, {
         },
       ],
     },
+    {
+      code: `
+      @if (session()->has('status'))
+        <p class="flex flex-shrink">
+          {{ session('status') }}
+        </p>
+      @endif`,
+      output: `
+      @if (session()->has('status'))
+        <p class="flex shrink">
+          {{ session('status') }}
+        </p>
+      @endif`,
+      parser: require.resolve("@angular-eslint/template-parser"),
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "flex-shrink",
+            updated: "shrink",
+          },
+        },
+      ],
+    },
   ],
 });
