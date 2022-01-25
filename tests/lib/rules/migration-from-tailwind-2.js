@@ -165,6 +165,18 @@ ruleTester.run("migration-from-tailwind-2", rule, {
       ],
     },
     {
+      code: `<div class="ring-opacity-50">ring-opacity</div>`,
+      errors: [
+        {
+          messageId: "bgOpacityDeprecated",
+          data: {
+            classname: "ring-opacity-50",
+            value: "50",
+          },
+        },
+      ],
+    },
+    {
       code: `<div class="placeholder-red-900"></div>`,
       output: `<div class="placeholder:text-red-900"></div>`,
       errors: [

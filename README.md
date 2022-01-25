@@ -37,17 +37,12 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: deprecated message for `ring-opacity-*` in `migration-from-tailwind-2` rule
 - FIX: `migration-from-tailwind-2` and `enforces-shorthand` fixer with `@angular-eslint/template-parser`
 - FIX: [`no-custom-classname` rule prevents `migration-from-tailwind-2` rule](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88)
 - FIX: [Escaping special characters in the `prefix`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/73)
 - FIX: [Formating HTML files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/85) is now possible using `@angular-eslint/template-parser`
-
 - New feature: [crawling `ArrayExpression` elements and `ObjectExpression`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/103), see [issue #99](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/99) (by [matt-tingen](https://github.com/matt-tingen) 🙏)
-- New rule: [`no-arbitrary-value`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/89) which forbid using arbitrary values in classnames
-- New rule: [default for `cssFiles` option used by `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/37)
-- New option: [`cssFilesRefreshRate` for `no-custom-classname`](docs/rules/no-custom-classname.md)
-- New rule: [`enforces-shorthand`](docs/rules/enforces-shorthand.md) merging multiple classnames when possible
-- New rule: [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy migration from TailwindCSS `v2` to `v3`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
