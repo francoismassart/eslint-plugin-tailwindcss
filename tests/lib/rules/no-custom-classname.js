@@ -602,7 +602,7 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
-      <div class="decoration-clone decoration-slice flex-grow flex-shrink overflow-clip overflow-ellipsis bg-opacity-50 transform scale-50">Deprecated classnames yet still supported for now</div>`,
+      <div class="decoration-clone decoration-slice flex-grow flex-shrink overflow-clip overflow-ellipsis bg-opacity-50 border-opacity-100 transform scale-50">Deprecated classnames yet still supported for now</div>`,
     },
   ],
 

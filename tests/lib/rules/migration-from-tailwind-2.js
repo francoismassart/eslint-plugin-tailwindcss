@@ -156,7 +156,7 @@ ruleTester.run("migration-from-tailwind-2", rule, {
       code: `<div class="bg-opacity-50">bg-opacity</div>`,
       errors: [
         {
-          messageId: "bgOpacityDeprecated",
+          messageId: "classnameOpacityDeprecated",
           data: {
             classname: "bg-opacity-50",
             value: "50",
@@ -165,12 +165,19 @@ ruleTester.run("migration-from-tailwind-2", rule, {
       ],
     },
     {
-      code: `<div class="ring-opacity-50">ring-opacity</div>`,
+      code: `<div class="ring-opacity-50 border-opacity-50">ring-opacity</div>`,
       errors: [
         {
-          messageId: "bgOpacityDeprecated",
+          messageId: "classnameOpacityDeprecated",
           data: {
             classname: "ring-opacity-50",
+            value: "50",
+          },
+        },
+        {
+          messageId: "classnameOpacityDeprecated",
+          data: {
+            classname: "border-opacity-50",
             value: "50",
           },
         },
