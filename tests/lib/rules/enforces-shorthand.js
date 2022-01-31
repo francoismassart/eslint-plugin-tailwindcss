@@ -373,5 +373,15 @@ ruleTester.run("shorthands", rule, {
       output: `classnames({'p-8 w-48 h-48 text-white': true})`,
       errors: [generateError(["py-8", "px-8"], "p-8")],
     },
+    {
+      code: `classnames({'!py-8 !px-8 w-48 h-48 text-white': true})`,
+      output: `classnames({'!p-8 w-48 h-48 text-white': true})`,
+      errors: [generateError(["!py-8", "!px-8"], "!p-8")],
+    },
+    {
+      code: `classnames({'!pt-8 pb-8 pr-8 pl-8 w-48 h-48 text-white': true})`,
+      output: `classnames({'!pt-8 pb-8 px-8 w-48 h-48 text-white': true})`,
+      errors: [generateError(["pr-8", "pl-8"], "px-8")],
+    },
   ],
 });
