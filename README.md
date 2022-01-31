@@ -37,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- New rule: [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): prefers `top-[-5px]` instead of `-top-[5px]`
 - FIX: [allowing negative arbitrary values in dash prefixed classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/112)
 - FIX: deprecated message for `ring-opacity-*` in `migration-from-tailwind-2` rule
 - FIX: `migration-from-tailwind-2` and `enforces-shorthand` fixer with `@angular-eslint/template-parser`
@@ -62,6 +63,7 @@ If you enjoy my work you can:
 Learn more about each supported rules by reading their documentation:
 
 - [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
+- [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): make sure to use negative arbitrary values classname without the negative classname e.g. `-top-[5px]` should become `top-[-5px]`
 - [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
 - [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from TailwindCSS `v2` to `v3`.
   Warning: at the moment you should [temporary turn off the `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88) rule if you want to see the warning from `migration-from-tailwind-2`
