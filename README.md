@@ -37,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [allowing negative arbitrary values in dash prefixed classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/112)
 - FIX: deprecated message for `ring-opacity-*` in `migration-from-tailwind-2` rule
 - FIX: `migration-from-tailwind-2` and `enforces-shorthand` fixer with `@angular-eslint/template-parser`
 - FIX: [`no-custom-classname` rule prevents `migration-from-tailwind-2` rule](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88)
