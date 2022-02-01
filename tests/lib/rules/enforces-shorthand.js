@@ -280,7 +280,7 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
       output: `
-      <div class="rounded-t-sm rounded-br-lg rounded-bl-xl md:rounded-md border-y-4 border-y-4 border-l-0 block">
+      <div class="rounded-t-sm border-r-4 block rounded-br-lg rounded-bl-xl md:rounded-md border-y-4 border-l-0">
         Randomized classnames order
       </div>
       `,
@@ -372,6 +372,31 @@ ruleTester.run("shorthands", rule, {
       code: `classnames({'py-8 px-8 w-48 h-48 text-white': true})`,
       output: `classnames({'p-8 w-48 h-48 text-white': true})`,
       errors: [generateError(["py-8", "px-8"], "p-8")],
+    },
+    {
+      code: `classnames({'!py-8 !px-8 w-48 h-48 text-white': true})`,
+      output: `classnames({'!p-8 w-48 h-48 text-white': true})`,
+      errors: [generateError(["!py-8", "!px-8"], "!p-8")],
+    },
+    {
+      code: `classnames({'!pt-8 !pb-8 pr-8 !pl-8': true})`,
+      output: `classnames({'!py-8 pr-8 !pl-8': true})`,
+      errors: [generateError(["!pt-8", "!pb-8"], "!py-8")],
+    },
+    {
+      code: `classnames({'!pt-8 !pb-8 !pr-8 !pl-8': true})`,
+      output: `classnames({'!p-8': true})`,
+      errors: [generateError(["!pt-8", "!pb-8", "!pr-8", "!pl-8"], "!p-8")],
+    },
+    {
+      code: `classnames({'!pt-8 pb-8 pr-8 pl-8': true})`,
+      output: `classnames({'!pt-8 pb-8 px-8': true})`,
+      errors: [generateError(["pr-8", "pl-8"], "px-8")],
+    },
+    {
+      code: `classnames({'md:!rounded-tr block md:rounded-tl md:rounded-br md:rounded-bl': true})`,
+      output: `classnames({'md:!rounded-tr block md:rounded-tl md:rounded-b': true})`,
+      errors: [generateError(["md:rounded-br", "md:rounded-bl"], "md:rounded-b")],
     },
   ],
 });
