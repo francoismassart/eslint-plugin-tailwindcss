@@ -38,6 +38,7 @@ describe("parseClassname", function () {
       shorthand: "x",
       leading: "",
       trailing: "",
+      important: false,
     };
     assert.deepEqual(actual, expected);
     name = "md:overflow-y-auto";
@@ -185,6 +186,22 @@ describe("parseClassname", function () {
     expected.value = "2";
     expected.leading = "  ";
     expected.trailing = "  ";
+    assert.deepEqual(actual, expected);
+
+    // Important
+    name = "md:!p-8";
+    actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 1);
+    expected.index = 1;
+    expected.name = name;
+    expected.body = "!p-";
+    expected.leading = "";
+    expected.trailing = "";
+    expected.shorthand = "";
+    expected.parentType = "Padding";
+    expected.shorthand = "all";
+    expected.variants = "md:";
+    expected.value = "8";
+    expected.important = true;
     assert.deepEqual(actual, expected);
   });
 
