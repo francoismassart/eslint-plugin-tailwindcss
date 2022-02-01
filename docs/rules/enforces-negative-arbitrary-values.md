@@ -25,7 +25,7 @@ Examples of **incorrect** code for this rule:
 </div>
 ```
 
-`-right-[var(--my-var)*-1]` will generate this non sense: `left: calc(var(--my-var) * -1 * -1);`
+`-right-[var(--my-var)*-1]` will generate this non sense: `right: calc(var(--my-var) * -1 * -1);`
 
 Examples of **correct** code for this rule:
 
