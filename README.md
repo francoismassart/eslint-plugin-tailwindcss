@@ -8,7 +8,7 @@ Rules enforcing best practices and consistency using [Tailwind CSS](https://tail
 
 While you can use the official plugin [`prettier-plugin-tailwindcss`](https://www.npmjs.com/package/prettier-plugin-tailwindcss) for ordering your classnames...
 
-**`eslint-plugin-tailwindcss` offers 5 other rules, that you can benefit on top of `prettier-plugin-tailwindcss`. Sounds good ? Keep reading 👇**
+**`eslint-plugin-tailwindcss` offers more than 5 other rules, that you can benefit from on top of `prettier-plugin-tailwindcss`. Sounds good ? Keep reading 👇**
 
 ## **🎉 Compatible with TailwindCSS v3 and v2 🎉**
 
@@ -37,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [`enforces-shorthand` rule loses the importance flag](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/114)
 - New rule: [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): prefers `top-[-5px]` instead of `-top-[5px]`
 - FIX: [allowing negative arbitrary values in dash prefixed classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/112)
 - FIX: deprecated message for `ring-opacity-*` in `migration-from-tailwind-2` rule
