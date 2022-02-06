@@ -178,6 +178,9 @@ ruleTester.run("classnames-order", rule, {
         },
       },
     },
+    {
+      code: `<div className={classnames({...{'block': true}})} />`,
+    },
   ],
   invalid: [
     {
@@ -701,6 +704,11 @@ ruleTester.run("classnames-order", rule, {
           groupByResponsive: false,
         },
       ],
+    },
+    {
+      code: `<div className={classnames({...{'flex-col flex': true}})} />`,
+      output: `<div className={classnames({...{'flex flex-col': true}})} />`,
+      errors: errors,
     },
   ],
 });

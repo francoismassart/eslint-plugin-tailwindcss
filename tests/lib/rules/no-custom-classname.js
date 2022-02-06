@@ -608,6 +608,9 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div class="-ml-[1px] mr-[-1px]">Negative arbitrary value</div>`,
     },
+    {
+      code: `classnames({...{'flex flex-col': true}})`,
+    },
   ],
 
   invalid: [
@@ -844,6 +847,10 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("xl:z-666"),
+    },
+    {
+      code: `classnames({...{'custom': true}})`,
+      errors: generateErrors("custom"),
     },
   ],
 });

@@ -86,6 +86,9 @@ ruleTester.run("shorthands", rule, {
     {
       code: `<div className="py-2.5 md:py-3 pl-2.5 md:pl-4 font-medium uppercase">issue #91</div>`,
     },
+    {
+      code: `<div className={classnames({...{'py-2.5 md:py-3 pl-2.5 md:pl-4 font-medium uppercase': true}})} />`,
+    },
   ],
 
   invalid: [
@@ -396,6 +399,11 @@ ruleTester.run("shorthands", rule, {
     {
       code: `classnames({'md:!rounded-tr block md:rounded-tl md:rounded-br md:rounded-bl': true})`,
       output: `classnames({'md:!rounded-tr block md:rounded-tl md:rounded-b': true})`,
+      errors: [generateError(["md:rounded-br", "md:rounded-bl"], "md:rounded-b")],
+    },
+    {
+      code: `<div className={classnames({...{'md:!rounded-tr block md:rounded-tl md:rounded-br md:rounded-bl': true}})} />`,
+      output: `<div className={classnames({...{'md:!rounded-tr block md:rounded-tl md:rounded-b': true}})} />`,
       errors: [generateError(["md:rounded-br", "md:rounded-bl"], "md:rounded-b")],
     },
   ],

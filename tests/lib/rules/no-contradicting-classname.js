@@ -190,6 +190,9 @@ ruleTester.run("no-contradicting-classname", rule, {
       <div class="m-1 mx-2 sm:mx-3">Accepts shorthands</div>`,
       parser: require.resolve("@angular-eslint/template-parser"),
     },
+    {
+      code: `classnames({...{'flex flex-col': true}})`,
+    },
   ],
 
   invalid: [
@@ -418,6 +421,10 @@ ruleTester.run("no-contradicting-classname", rule, {
       <div class="block flex"></div>`,
       errors: [...generateErrors("w-1 w-2"), ...generateErrors("block flex")],
       parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `classnames({...{'flex block': true}})`,
+      errors: [...generateErrors("flex block")],
     },
     // {
     //   code: `

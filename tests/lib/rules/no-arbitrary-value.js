@@ -46,6 +46,9 @@ ruleTester.run("no-arbitrary-value", rule, {
     {
       code: `<div class="flex shrink-0 flex-col">No arbitrary value</div>`,
     },
+    {
+      code: `classnames({...{'flex flex-col': true}})`,
+    },
   ],
 
   invalid: [
@@ -94,6 +97,10 @@ ruleTester.run("no-arbitrary-value", rule, {
         ]
       );`,
       errors: generateErrors("text-[length:var(--font-size)] rounded-[2em] p-[4vw] leading-[1]"),
+    },
+    {
+      code: `classnames({...{'w-[10px]': true}})`,
+      errors: generateErrors("w-[10px]"),
     },
   ],
 });

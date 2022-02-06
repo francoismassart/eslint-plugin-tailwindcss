@@ -36,6 +36,9 @@ ruleTester.run("migration-from-tailwind-2", rule, {
     {
       code: `<div class="transition-[var(--transform)]">transition-[var(--transform)]</div>`,
     },
+    {
+      code: `classnames({...{'scale-50 grayscale backdrop-blur-sm': true}})`,
+    },
   ],
   invalid: [
     {
@@ -242,6 +245,18 @@ ruleTester.run("migration-from-tailwind-2", rule, {
           data: {
             deprecated: "flex-shrink",
             updated: "shrink",
+          },
+        },
+      ],
+    },
+    {
+      code: `classnames({...{'bg-opacity-50': true}})`,
+      errors: [
+        {
+          messageId: "classnameOpacityDeprecated",
+          data: {
+            classname: "bg-opacity-50",
+            value: "50",
           },
         },
       ],
