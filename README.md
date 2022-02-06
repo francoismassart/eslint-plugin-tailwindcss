@@ -10,13 +10,13 @@ While you can use the official plugin [`prettier-plugin-tailwindcss`](https://ww
 
 **`eslint-plugin-tailwindcss` offers more than 5 other rules, that you can benefit from on top of `prettier-plugin-tailwindcss`. Sounds good ? Keep reading 👇**
 
-## **🎉 Compatible with TailwindCSS v3 and v2 🎉**
+## **🎉 Compatible with Tailwind CSS v3 and v2 🎉**
 
 ## Make sure to use the correct version
 
-- Still using TailwindCSS v2 ? 👻
+- Still using Tailwind CSS v2 ? 👻
   - You should stick with `v2.x.x` of this plugin (`npm i eslint-plugin-tailwindcss@tw2`)
-- Using TailwindCSS v3 ? 🚀
+- Using Tailwind CSS v3 ? 🚀
   - Make sure to use `v3.x.x` of this plugin (`npm i eslint-plugin-tailwindcss`
 
 **If you are using the eslint extension, make sure to restart VSCode in order to use the lastest version of the plugin and not the former version from the cache.**
@@ -66,7 +66,7 @@ Learn more about each supported rules by reading their documentation:
 - [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
 - [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): make sure to use negative arbitrary values classname without the negative classname e.g. `-top-[5px]` should become `top-[-5px]`
 - [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
-- [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from TailwindCSS `v2` to `v3`.
+- [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from Tailwind CSS `v2` to `v3`.
   Warning: at the moment you should [temporary turn off the `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88) rule if you want to see the warning from `migration-from-tailwind-2`
 - [`no-arbitrary-value`](docs/rules/no-arbitrary-value.md): forbid using arbitrary values in classnames (turned off by default)
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
@@ -85,15 +85,15 @@ You'll first need to install [ESLint](http://eslint.org):
 $ npm i -D eslint
 ```
 
-Next, install the latest version of `eslint-plugin-tailwindcss` if you are using TailwindCSS v3
+Next, install the latest version of `eslint-plugin-tailwindcss` if you are using Tailwind CSS v3
 
 ```
 $ npm i -D eslint-plugin-tailwindcss
 ```
 
-> ### Still using TailwindCSS v2?
+> ### Still using Tailwind CSS v2?
 >
-> 👉 Install the latest version compatible with TailwindCSS v2 via `npm i -D eslint-plugin-tailwindcss@tw2`
+> 👉 Install the latest version compatible with Tailwind CSS v2 via `npm i -D eslint-plugin-tailwindcss@tw2`
 >
 > Please note that new rules might not be available in the `tw2` distribution
 
@@ -193,4 +193,4 @@ I wrote this plugin after searching for existing tools which perform the same ta
 
 You are welcome to contribute to this project by reporting issues, feature requests or even opening Pull Requests.
 
-Learn more about [contributing to ESLint-plugin-TailwindCSS](CONTRIBUTING.md).
+Learn more about [contributing to ESLint-plugin-Tailwind CSS](CONTRIBUTING.md).

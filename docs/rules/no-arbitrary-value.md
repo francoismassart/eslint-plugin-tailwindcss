@@ -1,7 +1,7 @@
 # Forbid using arbitrary values in classnames (no-arbitrary-value)
 
-TailwindCSS 3 is Just In Time, all the time. It brings flexibility, great compilation perfs and arbitrary values.
-Arbitrary values are great but can be problematic too if you wish to restrict developer to stick with the values defined in the TailwindCSS config file.
+Tailwind CSS 3 is Just In Time, all the time. It brings flexibility, great compilation perfs and arbitrary values.
+Arbitrary values are great but can be problematic too if you wish to restrict developer to stick with the values defined in the Tailwind CSS config file.
 
 **By default this rule is turned `off`, if you want to use it set it to `warn` or `error`.**
 

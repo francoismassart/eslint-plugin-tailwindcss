@@ -8,7 +8,7 @@ b) Unprefixed classname (no dash) with negative value inside the square brackets
 
 I believe, **we should always prefer the (b) approach "Unprefixed classname"** for few reasons:
 
-- In TailwindCSS **v2.x.x** the (a) **was not supported** (example: https://play.tailwindcss.com/fsS91hkyKx)
+- In Tailwind CSS **v2.x.x** the (a) **was not supported** (example: https://play.tailwindcss.com/fsS91hkyKx)
 - You can get nasty using (a) like `-top-[-1px]` 🥴
 - Using `var()` you simply don't know if you are dealing with a negative or positive value
 - [Adam recommends the unprefixed approach 🎉](https://twitter.com/adamwathan/status/1487895306847105038)

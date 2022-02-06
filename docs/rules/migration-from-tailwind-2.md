@@ -24,7 +24,7 @@ Examples of **correct** code for this rule:
 </div>
 ```
 
-The classnames `backdrop-filter`, `filter` & `transform` are [not needed when you are using TailwindCSS v3](https://tailwindcss.com/docs/upgrade-guide#automatic-transforms-and-filters) because it is always running in JIT mode.
+The classnames `backdrop-filter`, `filter` & `transform` are [not needed when you are using Tailwind CSS v3](https://tailwindcss.com/docs/upgrade-guide#automatic-transforms-and-filters) because it is always running in JIT mode.
 
 The rule can fix your code by removing these obsolete classnames.
 

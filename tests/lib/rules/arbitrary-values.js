@@ -53,7 +53,7 @@ ruleTester.run("arbitrary-values", rule, {
       code: `
       <div class="dark">
         <span class="dark:text-white">
-          TailwindCSS V3: dark is valid when
+          Tailwind CSS V3: dark is valid when
           <code>config.darkMode === 'class'</code>
         </span>
       </div>
@@ -539,7 +539,7 @@ ruleTester.run("arbitrary-values", rule, {
       code: `
       <div class="dark">
         <span class="dark:text-white">
-          TailwindCSS V3: dark is not valid unless
+          Tailwind CSS V3: dark is not valid unless
           <code>config.darkMode === 'class'</code>
         </span>
       </div>

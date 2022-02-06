@@ -1,4 +1,4 @@
-# Contributing to ESLint-plugin-TailwindCSS
+# Contributing to `esLint-plugin-tailwindcss`
 
 # Contributing
 
