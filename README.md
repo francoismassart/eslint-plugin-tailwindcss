@@ -37,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- New option `officialSorting` for [`classnames-order`](docs/rules/classnames-order.md#officialsorting-default-false) can be set to `true` in order to use the same ordering order as the official [`prettier-plugin-tailwindcss`](https://www.npmjs.com/package/prettier-plugin-tailwindcss)
 - FIX: [`enforces-shorthand` rule loses the importance flag](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/114)
 - New rule: [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): prefers `top-[-5px]` instead of `-top-[5px]`
 - FIX: [allowing negative arbitrary values in dash prefixed classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/112)
@@ -157,6 +158,7 @@ All these settings have nice default values that are explained in each rules' do
       "cssFilesRefreshRate": 5_000,
       "groupByResponsive": true,
       "groups": defaultGroups, // imported from groups.js
+      "officialSorting": false,
       "prependCustom": false,
       "removeDuplicates": true,
       "whitelist": []

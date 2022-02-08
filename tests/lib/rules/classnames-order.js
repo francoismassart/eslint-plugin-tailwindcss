@@ -178,6 +178,23 @@ ruleTester.run("classnames-order", rule, {
         },
       },
     },
+    {
+      code: `<div class="container animate-spin first:flex">Valid using mode official</div>`,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `<div class="lorem-container lorem-animate-spin first_lorem-flex">Valid using mode official</div>`,
+      options: [
+        {
+          config: { prefix: "lorem-", separator: "_" },
+          officialSorting: true,
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -699,6 +716,16 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           groupByResponsive: false,
+        },
+      ],
+    },
+    {
+      code: `<div class="first:flex animate-spin custom container">Using official sorting</div>`,
+      output: `<div class="custom container animate-spin first:flex">Using official sorting</div>`,
+      errors: errors,
+      options: [
+        {
+          officialSorting: true,
         },
       ],
     },

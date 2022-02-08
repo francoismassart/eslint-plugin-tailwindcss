@@ -27,6 +27,7 @@ Examples of **correct** code for this rule:
   "config": <string>|<object>,
   "groupByResponsive": <boolean>,
   "groups": Array<object>,
+  "officialSorting": <boolean>,
   "prependCustom": <boolean>,
   "removeDuplicates": <boolean>,
   "tags": Array<string>,
@@ -114,6 +115,10 @@ const customGroups = require('custom-groups').groups;
 }]
 ...
 ```
+
+### `officialSorting` (default: `false`)
+
+Set `officialSorting` to `true` if you want to use the same ordering rules as the official plugin `prettier-plugin-tailwindcss`. Enabling this settings will cause `groupByResponsive`, `groups`, `prependCustom` and `removeDuplicates` options to be ignored.
 
 ### `prependCustom` (default: `false`)
 
