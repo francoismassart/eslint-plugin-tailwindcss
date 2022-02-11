@@ -37,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: `enforces-shorthand` rule [fixer](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/120) and [fix prefix](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/121)
 - FIX: [`enforces-shorthand` rule loses the importance flag](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/114)
 - New rule: [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): prefers `top-[-5px]` instead of `-top-[5px]`
 - FIX: [allowing negative arbitrary values in dash prefixed classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/112)
