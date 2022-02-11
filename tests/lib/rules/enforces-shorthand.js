@@ -410,6 +410,24 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
       errors: [generateError(["rounded-r-full", "rounded-l-full"], "rounded-full")],
+      code: `classnames('sfc-border-l-0 sfc-border-r-0')`,
+      output: `classnames('sfc-border-x-0')`,
+      options: [
+        {
+          config: { prefix: "sfc-" },
+        },
+      ],
+      errors: [generateError(["sfc-border-l-0", "sfc-border-r-0"], "sfc-border-x-0")],
+    },
+    {
+      code: `classnames('md_sfc-border-l-0 md_sfc-border-r-0')`,
+      output: `classnames('md_sfc-border-x-0')`,
+      options: [
+        {
+          config: { prefix: "sfc-", separator: "_" },
+        },
+      ],
+      errors: [generateError(["md_sfc-border-l-0", "md_sfc-border-r-0"], "md_sfc-border-x-0")],
     },
   ],
 });
