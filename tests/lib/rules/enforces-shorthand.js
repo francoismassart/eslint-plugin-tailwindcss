@@ -398,5 +398,18 @@ ruleTester.run("shorthands", rule, {
       output: `classnames({'md:!rounded-tr block md:rounded-tl md:rounded-b': true})`,
       errors: [generateError(["md:rounded-br", "md:rounded-bl"], "md:rounded-b")],
     },
+    {
+      code: `
+      <div class="rounded-r-full rounded-l-full">
+        Issue #120
+      </div>
+      `,
+      output: `
+      <div class="rounded-full">
+        Issue #120
+      </div>
+      `,
+      errors: [generateError(["rounded-r-full", "rounded-l-full"], "rounded-full")],
+    },
   ],
 });
