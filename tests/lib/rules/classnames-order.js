@@ -178,6 +178,26 @@ ruleTester.run("classnames-order", rule, {
         },
       },
     },
+    {
+      code: `<div class="   flex  space-y-0.5   ">Extra spaces</div>`,
+    },
+    {
+      code: `<div class="container animate-spin first:flex">Valid using mode official</div>`,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `<div class="lorem-container lorem-animate-spin first_lorem-flex">Valid using mode official</div>`,
+      options: [
+        {
+          config: { prefix: "lorem-", separator: "_" },
+          officialSorting: true,
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -185,11 +205,9 @@ ruleTester.run("classnames-order", rule, {
       export interface FakePropsInterface {
         readonly name?: string;
       }
-      
       function Fake({
         name = 'yolo'
       }: FakeProps) {
-      
         return (
           <>
             <h1 className={"absolute bottom-0 w-full flex flex-col"}>Welcome {name}</h1>
@@ -197,18 +215,15 @@ ruleTester.run("classnames-order", rule, {
           </>
         );
       }
-      
       export default Fake;
       `,
       output: `
       export interface FakePropsInterface {
         readonly name?: string;
       }
-      
       function Fake({
         name = 'yolo'
       }: FakeProps) {
-      
         return (
           <>
             <h1 className={"flex absolute bottom-0 flex-col w-full"}>Welcome {name}</h1>
@@ -216,7 +231,6 @@ ruleTester.run("classnames-order", rule, {
           </>
         );
       }
-      
       export default Fake;
       `,
       parser: require.resolve("@typescript-eslint/parser"),
@@ -225,11 +239,6 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="sm:w-6 container w-12">Classnames will be ordered</div>`,
       output: `<div class="container w-12 sm:w-6">Classnames will be ordered</div>`,
-      errors: errors,
-    },
-    {
-      code: `<div class="   flex  space-y-0.5   ">Extra spaces</div>`,
-      output: `<div class="flex space-y-0.5">Extra spaces</div>`,
       errors: errors,
     },
     {
@@ -266,6 +275,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="bg-gradient-to-r from-green-400 to-blue-500 focus:from-pink-500 focus:to-yellow-500"></div>`,
       output: `<div class="bg-gradient-to-r from-green-400 focus:from-pink-500 to-blue-500 focus:to-yellow-500"></div>`,
+      errors: errors,
+    },
+    {
+      code: "ctl(`w-full p-10 ${some}`)",
+      output: "ctl(`p-10 w-full ${some}`)",
       errors: errors,
     },
     {
@@ -313,8 +327,45 @@ ruleTester.run("classnames-order", rule, {
       errors: errors,
     },
     {
-      code: `<div class="w-12  lg:w-6   w-12">Multiple spaces</div>`,
-      output: `<div class="w-12 lg:w-6">Multiple spaces</div>`,
+      code: `<div class="w-12  lg:w-6   w-12">Single line dups + no head/tail spaces</div>`,
+      output: `<div class="w-12  lg:w-6">Single line dups + no head/tail spaces</div>`,
+      errors: errors,
+    },
+    {
+      code: `<div class=" w-12  lg:w-6   w-12">Single dups line + head spaces</div>`,
+      output: `<div class=" w-12  lg:w-6">Single dups line + head spaces</div>`,
+      errors: errors,
+    },
+    {
+      code: `<div class="w-12  lg:w-6   w-12 ">Single line dups + tail spaces</div>`,
+      output: `<div class="w-12  lg:w-6 ">Single line dups + tail spaces</div>`,
+      errors: errors,
+    },
+    {
+      // Multiline + both head/tail spaces
+      code: `
+      ctl(\`
+        invalid
+        sm:w-6
+        container
+        invalid
+        flex
+        container
+        w-12
+        flex
+        container
+        lg:w-4
+        lg:w-4
+      \`);`,
+      output: `
+      ctl(\`
+        container
+        flex
+        w-12
+        sm:w-6
+        lg:w-4
+        invalid
+      \`);`,
       errors: errors,
     },
     {
@@ -699,6 +750,26 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           groupByResponsive: false,
+        },
+      ],
+    },
+    {
+      code: `<div class="first:flex animate-spin custom container">Using official sorting</div>`,
+      output: `<div class="custom container animate-spin first:flex">Using official sorting</div>`,
+      errors: errors,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `ctl(\`\${some} container animate-spin first:flex \${bool ? "flex-col flex" : ""}\`)`,
+      output: `ctl(\`\${some} container animate-spin first:flex \${bool ? "flex flex-col" : ""}\`)`,
+      errors: errors,
+      options: [
+        {
+          officialSorting: true,
         },
       ],
     },
