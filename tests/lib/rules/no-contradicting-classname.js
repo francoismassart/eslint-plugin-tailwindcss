@@ -420,9 +420,10 @@ ruleTester.run("no-contradicting-classname", rule, {
       parser: require.resolve("@angular-eslint/template-parser"),
     },
     {
-      code: `<div class="prose not-prose aspect-w-16 aspect-h-9 aspect-w-4 line-clamp-1 line-clamp-3"></div>`,
+      code: `<div class="prose not-prose prose-slate prose-zinc prose-lead:container aspect-w-16 aspect-h-9 aspect-w-4 line-clamp-1 line-clamp-3"></div>`,
       errors: [
         ...generateErrors("prose not-prose"),
+        ...generateErrors("prose-slate prose-zinc"),
         ...generateErrors("aspect-w-16 aspect-w-4"),
         ...generateErrors("line-clamp-1 line-clamp-3"),
       ],
