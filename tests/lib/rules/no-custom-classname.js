@@ -608,6 +608,28 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div class="-ml-[1px] mr-[-1px]">Negative arbitrary value</div>`,
     },
+    {
+      code: `
+      <div class="prose prose-red prose-xl dark:prose-invert prose-img:rounded-xl prose-headings:underline prose-a:text-blue-600">
+        Support for plugins
+        <p class="not-prose">Not prose</p>
+        <div class="aspect-w-16 aspect-h-9">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="line-clamp-3">Line clamp</p>
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [
+              require("@tailwindcss/typography"),
+              require("@tailwindcss/aspect-ratio"),
+              require("@tailwindcss/line-clamp"),
+            ],
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -630,10 +652,6 @@ ruleTester.run("no-custom-classname", rule, {
       `,
       parser: require.resolve("@typescript-eslint/parser"),
       errors: generateErrors("my-custom"),
-    },
-    {
-      code: `<input class="bg-gray-500 text-white placeholder-current" placeholder="placeholder-current not valid anymore" />`,
-      errors: generateErrors("placeholder-current"),
     },
     {
       code: `<div class="w-12 my-custom">my-custom is not defined in Tailwind CSS!</div>`,
@@ -671,18 +689,6 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("hello world"),
-    },
-    {
-      code: `<div class="arbitrary-inset-[123px]">No arbitrary value support without JIT</div>`,
-      options: [
-        {
-          config: {
-            prefix: "arbitrary-",
-            theme: { inset: {} },
-          },
-        },
-      ],
-      errors: generateErrors("arbitrary-inset-[123px]"),
     },
     {
       code: `<div className={clsx(\`hello-world flex w-full\`)}>clsx</div>`,

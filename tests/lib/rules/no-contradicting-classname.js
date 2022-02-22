@@ -419,6 +419,25 @@ ruleTester.run("no-contradicting-classname", rule, {
       errors: [...generateErrors("w-1 w-2"), ...generateErrors("block flex")],
       parser: require.resolve("@angular-eslint/template-parser"),
     },
+    {
+      code: `<div class="prose not-prose aspect-w-16 aspect-h-9 aspect-w-4 line-clamp-1 line-clamp-3"></div>`,
+      errors: [
+        ...generateErrors("prose not-prose"),
+        ...generateErrors("aspect-w-16 aspect-w-4"),
+        ...generateErrors("line-clamp-1 line-clamp-3"),
+      ],
+      options: [
+        {
+          config: {
+            plugins: [
+              require("@tailwindcss/typography"),
+              require("@tailwindcss/aspect-ratio"),
+              require("@tailwindcss/line-clamp"),
+            ],
+          },
+        },
+      ],
+    },
     // {
     //   code: `
     //   <div class="scale-75 transform-none">
