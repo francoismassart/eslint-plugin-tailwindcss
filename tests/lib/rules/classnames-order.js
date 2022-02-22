@@ -39,6 +39,28 @@ const generateErrors = (count) => {
 
 const errors = generateErrors(1);
 
+const sharedOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          fontSize: { large: "20rem" },
+          colors: {
+            "deque-blue": "#243c5a",
+          },
+        },
+      },
+      plugins: [
+        require("@tailwindcss/typography"),
+        require("@tailwindcss/forms"),
+        require("@tailwindcss/aspect-ratio"),
+        require("@tailwindcss/line-clamp"),
+      ],
+    },
+    officialSorting: true,
+  },
+];
+
 ruleTester.run("classnames-order", rule, {
   valid: [
     {
@@ -178,6 +200,58 @@ ruleTester.run("classnames-order", rule, {
         },
       },
     },
+    {
+      code: `<div class="   flex  space-y-0.5   ">Extra spaces</div>`,
+    },
+    {
+      code: `<div class="container animate-spin first:flex">Valid using mode official</div>`,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `<div class="lorem-container lorem-animate-spin first_lorem-flex">Valid using mode official</div>`,
+      options: [
+        {
+          config: { prefix: "lorem-", separator: "_" },
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="custom group peer custom2 container sr-only pointer-events-auto visible sticky inset-0 inset-y-1 inset-x-2 top-3 right-4 bottom-5 left-6 isolate z-auto order-1 col-span-1 col-start-2 col-end-3 row-span-1 row-start-2 row-end-3 float-left clear-both m-0 my-px mx-1.5 mt-1 mr-2 mb-3 ml-4 box-border block aspect-auto h-0 max-h-fit min-h-full w-0 min-w-full max-w-fit flex-none flex-shrink shrink flex-grow grow basis-0 table-fixed border-collapse origin-bottom-right translate-x-px translate-y-2 rotate-90 skew-y-0 skew-x-2 scale-0 scale-y-50 scale-x-75 transform transform-gpu transform-none animate-spin cursor-text touch-auto select-none resize-none snap-x snap-mandatory snap-center snap-always scroll-m-0 scroll-my-px scroll-mx-1.5 scroll-mt-1 scroll-mr-2 scroll-mb-3 scroll-ml-4 scroll-p-0 scroll-py-px scroll-px-1.5 scroll-pt-1 scroll-pr-2 scroll-pb-3 scroll-pl-4 list-outside list-decimal appearance-none columns-1 break-before-avoid-page break-inside-avoid-column break-after-auto auto-cols-min grid-flow-col auto-rows-min grid-cols-1 grid-rows-1 flex-col flex-wrap place-content-between place-items-stretch content-between items-baseline justify-start justify-items-center gap-0 gap-x-1 gap-y-2 space-y-0 space-x-1 space-y-reverse space-x-reverse divide-x-2 divide-y-4 divide-y-reverse divide-x-reverse divide-dashed divide-black place-self-end self-baseline justify-self-stretch overflow-hidden overflow-x-auto overflow-y-scroll overscroll-auto overscroll-y-none overscroll-x-contain scroll-smooth overflow-ellipsis text-ellipsis whitespace-nowrap break-words rounded rounded-t-xl rounded-r-2xl rounded-b-sm rounded-l-none rounded-tl-xl rounded-tr-2xl rounded-br-sm rounded-bl-none border-0 border-y-2 border-x-2 border-t-4 border-b border-r-4 border-l border-solid border-black border-y-transparent border-x-slate-50 border-t-white border-r-transparent border-b-inherit border-l-current bg-current bg-opacity-50 bg-none from-current via-black to-orange-500 decoration-clone box-decoration-clone bg-auto bg-fixed bg-clip-padding bg-bottom bg-no-repeat bg-origin-border fill-white stroke-white stroke-2 object-contain object-bottom p-0 py-px px-1.5 pt-1 pr-2 pb-3 pl-4 text-left indent-px align-top font-sans text-lg font-semibold uppercase italic ordinal leading-4 tracking-normal text-current underline decoration-black decoration-double decoration-from-font underline-offset-auto subpixel-antialiased caret-black accent-black opacity-50 bg-blend-lighten mix-blend-darken shadow-lg shadow-white outline-dotted outline-0 outline-offset-1 outline-current ring-1 ring-inset ring-white ring-opacity-50 ring-offset-2 ring-offset-current blur brightness-50 contrast-100 drop-shadow-xl grayscale hue-rotate-90 invert saturate-100 sepia filter backdrop-blur-lg backdrop-brightness-110 backdrop-contrast-125 backdrop-grayscale backdrop-hue-rotate-90 backdrop-invert backdrop-opacity-30 backdrop-saturate-100 backdrop-sepia transition-all delay-150 duration-1000 ease-linear will-change-scroll content-none [--scroll-offset:56px]">no plugin</div>
+      `,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="bg-deque-blue text-large flex h-9 w-9 items-center justify-center rounded-full border-4 border-solid border-blue-100 text-white">https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/109#issuecomment-1044625260 no config, so bg-deque-blue text-large goes at first position because custom</div>
+      `,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="flex h-9 w-9 items-center justify-center rounded-full border-4 border-solid border-blue-100 bg-deque-blue text-large text-white">https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/109#issuecomment-1044625260</div>
+      `,
+      options: sharedOptions,
+    },
+    {
+      code: `
+      <div class="custom group peer custom2 aspect-auto container prose prose-slate aspect-w-16 aspect-h-9 sr-only pointer-events-auto visible sticky inset-0 inset-y-1 inset-x-2 top-3 right-4 bottom-5 left-6 isolate z-auto order-1 col-span-1 col-start-2 col-end-3 row-span-1 row-start-2 row-end-3 float-left clear-both m-0 my-px mx-1.5 mt-1 mr-2 mb-3 ml-4 box-border block h-0 max-h-fit min-h-full w-0 min-w-full max-w-fit flex-none flex-shrink shrink flex-grow grow basis-0 table-fixed border-collapse origin-bottom-right translate-x-px translate-y-2 rotate-90 skew-y-0 skew-x-2 scale-0 scale-y-50 scale-x-75 transform transform-gpu transform-none animate-spin cursor-text touch-auto select-none resize-none snap-x snap-mandatory snap-center snap-always scroll-m-0 scroll-my-px scroll-mx-1.5 scroll-mt-1 scroll-mr-2 scroll-mb-3 scroll-ml-4 scroll-p-0 scroll-py-px scroll-px-1.5 scroll-pt-1 scroll-pr-2 scroll-pb-3 scroll-pl-4 list-outside list-decimal appearance-none columns-1 break-before-avoid-page break-inside-avoid-column break-after-auto auto-cols-min grid-flow-col auto-rows-min grid-cols-1 grid-rows-1 flex-col flex-wrap place-content-between place-items-stretch content-between items-baseline justify-start justify-items-center gap-0 gap-x-1 gap-y-2 space-y-0 space-x-1 space-y-reverse space-x-reverse divide-x-2 divide-y-4 divide-y-reverse divide-x-reverse divide-dashed divide-black place-self-end self-baseline justify-self-stretch overflow-hidden overflow-x-auto overflow-y-scroll overscroll-auto overscroll-y-none overscroll-x-contain scroll-smooth overflow-ellipsis text-ellipsis whitespace-nowrap break-words rounded rounded-t-xl rounded-r-2xl rounded-b-sm rounded-l-none rounded-tl-xl rounded-tr-2xl rounded-br-sm rounded-bl-none border-0 border-y-2 border-x-2 border-t-4 border-b border-r-4 border-l border-solid border-black border-y-transparent border-x-slate-50 border-t-white border-r-transparent border-b-inherit border-l-current bg-current bg-opacity-50 bg-none from-current via-black to-orange-500 decoration-clone box-decoration-clone bg-auto bg-fixed bg-clip-padding bg-bottom bg-no-repeat bg-origin-border fill-white stroke-white stroke-2 object-contain object-bottom p-0 py-px px-1.5 pt-1 pr-2 pb-3 pl-4 text-left indent-px align-top font-sans text-lg font-semibold uppercase italic ordinal leading-4 tracking-normal text-current underline decoration-black decoration-double decoration-from-font underline-offset-auto subpixel-antialiased caret-black accent-black opacity-50 bg-blend-lighten mix-blend-darken shadow-lg shadow-white outline-dotted outline-0 outline-offset-1 outline-current ring-1 ring-inset ring-white ring-opacity-50 ring-offset-2 ring-offset-current blur brightness-50 contrast-100 drop-shadow-xl grayscale hue-rotate-90 invert saturate-100 sepia filter backdrop-blur-lg backdrop-brightness-110 backdrop-contrast-125 backdrop-grayscale backdrop-hue-rotate-90 backdrop-invert backdrop-opacity-30 backdrop-saturate-100 backdrop-sepia transition-all delay-150 duration-1000 ease-linear will-change-scroll content-none line-clamp-2 [--scroll-offset:56px]">kitchensink</div>
+      `,
+      options: sharedOptions,
+    },
   ],
   invalid: [
     {
@@ -185,11 +259,9 @@ ruleTester.run("classnames-order", rule, {
       export interface FakePropsInterface {
         readonly name?: string;
       }
-      
       function Fake({
         name = 'yolo'
       }: FakeProps) {
-      
         return (
           <>
             <h1 className={"absolute bottom-0 w-full flex flex-col"}>Welcome {name}</h1>
@@ -197,18 +269,15 @@ ruleTester.run("classnames-order", rule, {
           </>
         );
       }
-      
       export default Fake;
       `,
       output: `
       export interface FakePropsInterface {
         readonly name?: string;
       }
-      
       function Fake({
         name = 'yolo'
       }: FakeProps) {
-      
         return (
           <>
             <h1 className={"flex absolute bottom-0 flex-col w-full"}>Welcome {name}</h1>
@@ -216,7 +285,6 @@ ruleTester.run("classnames-order", rule, {
           </>
         );
       }
-      
       export default Fake;
       `,
       parser: require.resolve("@typescript-eslint/parser"),
@@ -225,11 +293,6 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="sm:w-6 container w-12">Classnames will be ordered</div>`,
       output: `<div class="container w-12 sm:w-6">Classnames will be ordered</div>`,
-      errors: errors,
-    },
-    {
-      code: `<div class="   flex  space-y-0.5   ">Extra spaces</div>`,
-      output: `<div class="flex space-y-0.5">Extra spaces</div>`,
       errors: errors,
     },
     {
@@ -266,6 +329,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="bg-gradient-to-r from-green-400 to-blue-500 focus:from-pink-500 focus:to-yellow-500"></div>`,
       output: `<div class="bg-gradient-to-r from-green-400 focus:from-pink-500 to-blue-500 focus:to-yellow-500"></div>`,
+      errors: errors,
+    },
+    {
+      code: "ctl(`w-full p-10 ${some}`)",
+      output: "ctl(`p-10 w-full ${some}`)",
       errors: errors,
     },
     {
@@ -313,8 +381,45 @@ ruleTester.run("classnames-order", rule, {
       errors: errors,
     },
     {
-      code: `<div class="w-12  lg:w-6   w-12">Multiple spaces</div>`,
-      output: `<div class="w-12 lg:w-6">Multiple spaces</div>`,
+      code: `<div class="w-12  lg:w-6   w-12">Single line dups + no head/tail spaces</div>`,
+      output: `<div class="w-12  lg:w-6">Single line dups + no head/tail spaces</div>`,
+      errors: errors,
+    },
+    {
+      code: `<div class=" w-12  lg:w-6   w-12">Single dups line + head spaces</div>`,
+      output: `<div class=" w-12  lg:w-6">Single dups line + head spaces</div>`,
+      errors: errors,
+    },
+    {
+      code: `<div class="w-12  lg:w-6   w-12 ">Single line dups + tail spaces</div>`,
+      output: `<div class="w-12  lg:w-6 ">Single line dups + tail spaces</div>`,
+      errors: errors,
+    },
+    {
+      // Multiline + both head/tail spaces
+      code: `
+      ctl(\`
+        invalid
+        sm:w-6
+        container
+        invalid
+        flex
+        container
+        w-12
+        flex
+        container
+        lg:w-4
+        lg:w-4
+      \`);`,
+      output: `
+      ctl(\`
+        container
+        flex
+        w-12
+        sm:w-6
+        lg:w-4
+        invalid
+      \`);`,
       errors: errors,
     },
     {
@@ -699,6 +804,26 @@ ruleTester.run("classnames-order", rule, {
       options: [
         {
           groupByResponsive: false,
+        },
+      ],
+    },
+    {
+      code: `<div class="first:flex animate-spin custom container">Using official sorting</div>`,
+      output: `<div class="custom container animate-spin first:flex">Using official sorting</div>`,
+      errors: errors,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `ctl(\`\${some} container animate-spin first:flex \${bool ? "flex-col flex" : ""}\`)`,
+      output: `ctl(\`\${some} container animate-spin first:flex \${bool ? "flex flex-col" : ""}\`)`,
+      errors: errors,
+      options: [
+        {
+          officialSorting: true,
         },
       ],
     },
