@@ -232,6 +232,16 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `
+      <div class="bg-deque-blue text-large flex h-9 w-9 items-center justify-center rounded-full border-4 border-solid border-blue-100 text-white">https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/109#issuecomment-1044625260 no config, so bg-deque-blue text-large goes at first position because custom</div>
+      `,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
+      code: `
       <div class="flex h-9 w-9 items-center justify-center rounded-full border-4 border-solid border-blue-100 bg-deque-blue text-large text-white">https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/109#issuecomment-1044625260</div>
       `,
       options: sharedOptions,
