@@ -610,6 +610,10 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
+      <div class="bg-[#ccc]/[75%]">Issue #130</div>`,
+    },
+    {
+      code: `
       <div class="prose prose-red prose-xl dark:prose-invert prose-img:rounded-xl prose-headings:underline prose-a:text-blue-600">
         Support for plugins
         <p class="not-prose">Not prose</p>

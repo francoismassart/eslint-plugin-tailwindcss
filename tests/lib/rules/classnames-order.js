@@ -252,6 +252,11 @@ ruleTester.run("classnames-order", rule, {
       `,
       options: sharedOptions,
     },
+    {
+      code: `
+      <div className={\`overflow-hidden relative w-full ${"className"}\`}>Issue #131</div>
+      `,
+    },
   ],
   invalid: [
     {
