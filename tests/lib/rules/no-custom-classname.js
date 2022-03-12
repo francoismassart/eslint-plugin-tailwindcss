@@ -634,6 +634,56 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      <div>
+        <h1 className="text-red-500">Hello, world!</h1>
+        <button className="btn">Hello</button>
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("daisyui")],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div>
+        <div class="bg-fnprimary">PRIMARY using a function</div>
+        <div class="bg-fnsecondary">SECONDARY using a function</div>
+        <p>See https://github.com/adamwathan/tailwind-css-variable-text-opacity-demo</p>
+      </div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                fnprimary: ({ opacityVariable, opacityValue }) => {
+                  if (opacityValue !== undefined) {
+                    return `rgba(var(--color-primary), ${opacityValue})`;
+                  }
+                  if (opacityVariable !== undefined) {
+                    return `rgba(var(--color-primary), var(${opacityVariable}, 1))`;
+                  }
+                  return `rgb(var(--color-primary))`;
+                },
+                fnsecondary: ({ opacityVariable, opacityValue }) => {
+                  if (opacityValue !== undefined) {
+                    return `rgba(var(--color-secondary), ${opacityValue})`;
+                  }
+                  if (opacityVariable !== undefined) {
+                    return `rgba(var(--color-secondary), var(${opacityVariable}, 1))`;
+                  }
+                  return `rgb(var(--color-secondary))`;
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
