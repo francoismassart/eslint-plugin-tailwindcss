@@ -608,6 +608,87 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div class="-ml-[1px] mr-[-1px]">Negative arbitrary value</div>`,
     },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = 'p-2'
+      `,
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = ['p-2', 'm-2']
+      `,
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = clsx(['p-2', 'm-2']);
+      `,
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = {
+          primary: 'p-4',
+          secondary: ['p-2', 'm-2'],
+        }
+      `,
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = 'p-2 text-my-custom'
+      `,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                "my-custom": "#B4D4AA",
+              },
+            },
+          },
+        },
+      ],
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = ['p-2', 'm-2', 'text-my-custom']
+      `,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                "my-custom": "#B4D4AA",
+              },
+            },
+          },
+        },
+      ],
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = {
+          primary: 'p-4 text-my-custom',
+          secondary: ['p-2', 'm-2', 'text-my-custom'],
+        }
+      `,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                "my-custom": "#B4D4AA",
+              },
+            },
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -844,6 +925,40 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("xl:z-666"),
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = 'p-2 my-custom'
+      `,
+      errors: generateErrors("my-custom"),
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = ['p-2', 'm-2', 'my-custom']
+      `,
+      errors: generateErrors("my-custom"),
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = {
+          primary: 'p-4',
+          secondary: ['p-2', 'm-2', 'my-custom'],
+        }
+      `,
+      errors: generateErrors("my-custom"),
+    },
+    {
+      code: `
+        // eslint-enable-next-line tailwindcss/no-custom-classname
+        const styles = {
+          primary: 'p-4 my-custom',
+          secondary: ['p-2', 'm-2'],
+        }
+      `,
+      errors: generateErrors("my-custom"),
     },
   ],
 });
