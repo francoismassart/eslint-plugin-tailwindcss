@@ -71,5 +71,11 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       errors: generateErrors("classes-like this more class-es"),
     },
+    {
+      code: `
+      tw\`class-es used he-re\``,
+      options: [{ tags: ["tw"] }],
+      errors: generateErrors("class-es used he-re"),
+    },
   ],
 });
