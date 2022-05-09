@@ -58,5 +58,18 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       errors: generateErrors("classes-like this more class-es"),
     },
+    {
+      code: `
+      <div style={tws(\`classes-like this\`, someBoolean && \`more class-es\`)}>
+        classes-like this more class-es
+      </div>
+      `,
+      options: [
+        {
+          callees: ["tws"],
+        },
+      ],
+      errors: generateErrors("classes-like this more class-es"),
+    },
   ],
 });
