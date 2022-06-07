@@ -382,17 +382,17 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div class="w-12  lg:w-6   w-12">Single line dups + no head/tail spaces</div>`,
-      output: `<div class="w-12  lg:w-6">Single line dups + no head/tail spaces</div>`,
+      output: `<div class="w-12   lg:w-6">Single line dups + no head/tail spaces</div>`,
       errors: errors,
     },
     {
       code: `<div class=" w-12  lg:w-6   w-12">Single dups line + head spaces</div>`,
-      output: `<div class=" w-12  lg:w-6">Single dups line + head spaces</div>`,
+      output: `<div class=" w-12   lg:w-6">Single dups line + head spaces</div>`,
       errors: errors,
     },
     {
       code: `<div class="w-12  lg:w-6   w-12 ">Single line dups + tail spaces</div>`,
-      output: `<div class="w-12  lg:w-6 ">Single line dups + tail spaces</div>`,
+      output: `<div class="w-12   lg:w-6 ">Single line dups + tail spaces</div>`,
       errors: errors,
     },
     {
