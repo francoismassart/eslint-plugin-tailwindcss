@@ -818,6 +818,16 @@ ruleTester.run("classnames-order", rule, {
       ],
     },
     {
+      code: `<div class="h-4 h-4 w-4">Using official sorting, with duplicates</div>`,
+      output: `<div class="h-4 w-4">Using official sorting, with duplicates</div>`,
+      errors: errors,
+      options: [
+        {
+          officialSorting: true,
+        },
+      ],
+    },
+    {
       code: `ctl(\`\${some} container animate-spin first:flex \${bool ? "flex-col flex" : ""}\`)`,
       output: `ctl(\`\${some} container animate-spin first:flex \${bool ? "flex flex-col" : ""}\`)`,
       errors: errors,

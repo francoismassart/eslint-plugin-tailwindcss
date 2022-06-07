@@ -118,7 +118,7 @@ const customGroups = require('custom-groups').groups;
 
 ### `officialSorting` (default: `false`)
 
-Set `officialSorting` to `true` if you want to use the same ordering rules as the official plugin `prettier-plugin-tailwindcss`. Enabling this settings will cause `groupByResponsive`, `groups`, `prependCustom` and `removeDuplicates` options to be ignored.
+Set `officialSorting` to `true` if you want to use the same ordering rules as the official plugin `prettier-plugin-tailwindcss`. Enabling this setting will cause `groupByResponsive`, `groups`, and `prependCustom` options to be ignored.
 
 ### `prependCustom` (default: `false`)
 
