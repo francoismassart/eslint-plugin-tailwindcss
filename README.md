@@ -37,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [speeds up `enforces-shorthand` and `classnames-order`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/136) with `officialSorting: true` by introducing WeakMap caches to reduce duplicate calculations (by [mpsijm](https://github.com/mpsijm) 🙏)
 - New strategy for whitespaces and linebreaks: the plugin will attempt to leave them intact
 - New option `officialSorting` for [`classnames-order`](docs/rules/classnames-order.md#officialsorting-default-false) can be set to `true` in order to use the same ordering order as the official [`prettier-plugin-tailwindcss`](https://www.npmjs.com/package/prettier-plugin-tailwindcss)
 - FIX: `enforces-shorthand` rule [fixer](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/120) and [fix prefix](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/121)
