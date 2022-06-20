@@ -190,6 +190,19 @@ ruleTester.run("no-contradicting-classname", rule, {
       <div class="m-1 mx-2 sm:mx-3">Accepts shorthands</div>`,
       parser: require.resolve("@angular-eslint/template-parser"),
     },
+    {
+      code: `
+      <div class="prose-red prose-xl">
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/97
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -438,6 +451,20 @@ ruleTester.run("no-contradicting-classname", rule, {
           },
         },
       ],
+    },
+    {
+      code: `
+      <div class="grid-flow-dense grid-flow-row">
+        Conflicting grid-flow
+      </div>`,
+      errors: generateErrors("grid-flow-dense grid-flow-row"),
+    },
+    {
+      code: `
+      <div class="border-spacing-y-px border-spacing-y-0">
+        Conflicting border-spacing
+      </div>`,
+      errors: generateErrors("border-spacing-y-px border-spacing-y-0"),
     },
     // {
     //   code: `

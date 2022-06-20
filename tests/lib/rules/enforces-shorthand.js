@@ -410,6 +410,8 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
       errors: [generateError(["rounded-r-full", "rounded-l-full"], "rounded-full")],
+    },
+    {
       code: `classnames('sfc-border-l-0 sfc-border-r-0')`,
       output: `classnames('sfc-border-x-0')`,
       options: [
@@ -428,6 +430,19 @@ ruleTester.run("shorthands", rule, {
         },
       ],
       errors: [generateError(["md_sfc-border-l-0", "md_sfc-border-r-0"], "md_sfc-border-x-0")],
+    },
+    {
+      code: `
+      <div class="border-spacing-x-px border-spacing-y-px">
+        Issue #148
+      </div>
+      `,
+      output: `
+      <div class="border-spacing-px">
+        Issue #148
+      </div>
+      `,
+      errors: [generateError(["border-spacing-x-px", "border-spacing-y-px"], "border-spacing-px")],
     },
   ],
 });

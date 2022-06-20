@@ -25,10 +25,7 @@ Examples of **correct** code for this rule:
 "tailwindcss/classnames-order": [<enabled>, {
   "callees": Array<string>,
   "config": <string>|<object>,
-  "groupByResponsive": <boolean>,
   "groups": Array<object>,
-  "officialSorting": <boolean>,
-  "prependCustom": <boolean>,
   "removeDuplicates": <boolean>,
   "tags": Array<string>,
 }]
@@ -54,25 +51,6 @@ If the external file cannot be loaded (e.g. incorrect path or deleted file), an 
 It is also possible to directly inject a configuration as plain `object` like `{ prefix: "tw-", theme: { ... } }`.
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
-
-### `groupByResponsive` (default: `true`)
-
-When this option was introduced in version 2.x.x of the plugin, this setting was set to `false` to avoid a tsunami of reorder in the classnames.
-You had to set it to `true` intentionally.
-
-Since version 3 of the plugin, the default value is now `true`, grouping by responsive modifier in priority vs. grouping by property.
-
-Linting this code:
-
-`<div class="rounded sm:rounded-lg lg:rounded-2xl p-4 sm:p-6 lg:p-8">...</div>`
-
-By default, the ordering process will group the classnames by variants then by properties:
-
-`<div class="p-4 rounded sm:p-6 sm:rounded-lg lg:p-8 lg:rounded-2xl">...</div>`
-
-Set `groupByResponsive` to `false` and the ordering will work by properties, then by variants:
-
-`<div class="p-4 sm:p-6 lg:p-8 rounded sm:rounded-lg lg:rounded-2xl">...</div>`
 
 ### `groups` (default defined in [groups.js](../../lib/config/groups.js))
 
@@ -115,14 +93,6 @@ const customGroups = require('custom-groups').groups;
 }]
 ...
 ```
-
-### `officialSorting` (default: `false`)
-
-Set `officialSorting` to `true` if you want to use the same ordering rules as the official plugin `prettier-plugin-tailwindcss`. Enabling this settings will cause `groupByResponsive`, `groups`, `prependCustom` and `removeDuplicates` options to be ignored.
-
-### `prependCustom` (default: `false`)
-
-By default, classnames which doesn't belong to Tailwind CSS will be pushed at the end. Set `prependCustom` to `true` if you prefer to move them at the beginning.
 
 ### `removeDuplicates` (default: `true`)
 

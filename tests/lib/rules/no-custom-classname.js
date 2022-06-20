@@ -44,6 +44,14 @@ var ruleTester = new RuleTester({ parserOptions });
 ruleTester.run("no-custom-classname", rule, {
   valid: [
     {
+      code: `<div className="ns-dark">Custom dark class</div>`,
+      options: [
+        {
+          config: { darkMode: ["class", ".ns-dark"] },
+        },
+      ],
+    },
+    {
       code: `<div class="group peer">Hover, Focus, & Other States</div>`,
     },
     {
@@ -614,6 +622,13 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
+      <div class="border-spacing-2">
+        Issue #148
+        https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.1.0
+      </div>`,
+    },
+    {
+      code: `
       <div class="prose prose-red prose-xl dark:prose-invert prose-img:rounded-xl prose-headings:underline prose-a:text-blue-600">
         Support for plugins
         <p class="not-prose">Not prose</p>
@@ -644,6 +659,34 @@ ruleTester.run("no-custom-classname", rule, {
         {
           config: {
             plugins: [require("daisyui")],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="text-category-example-1">
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/145
+      </div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                transparent: "transparent",
+                current: "currentColor",
+                white: "#FFFFFF",
+                black: "#000000",
+                example: {
+                  1: "#F0f025",
+                },
+                category: {
+                  example: {
+                    1: "#F0F025",
+                  },
+                },
+              },
+            },
           },
         },
       ],
@@ -683,6 +726,24 @@ ruleTester.run("no-custom-classname", rule, {
           },
         },
       ],
+    },
+    {
+      code: `
+      <div class="grid-flow-dense mix-blend-plus-lighter border-separate border-spacing-4">
+      grid-flow-dense, mix-blend-plus-lighter	
+      </div>`,
+    },
+    {
+      code: `
+      <div class="
+        border-spacing-y-0
+        border-spacing-px
+        border-spacing-x-1
+        border-spacing-y-2.5
+        border-spacing-96"
+      >
+        border-spacing
+      </div>`,
     },
   ],
 
