@@ -764,5 +764,10 @@ ruleTester.run("classnames-order", rule, {
       output: `ctl(\`\${some} container animate-spin first:flex \${bool ? "flex flex-col" : ""}\`)`,
       errors: errors,
     },
+    {
+      code: `ctl(\`p-3 border-gray-300 m-4 h-24 lg:p-4 flex border-2 lg:m-4\`)`,
+      output: `ctl(\`m-4 flex h-24 border-2 border-gray-300 p-3 lg:m-4 lg:p-4\`)`,
+      errors: errors,
+    },
   ],
 });
