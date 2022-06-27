@@ -948,6 +948,14 @@ ruleTester.run("no-custom-classname", rule, {
       errors: generateErrors("border-t-nada"),
     },
     {
+      code: `
+      <div class={\`bg-red-600 p-10\`}>
+        <p class={\`text-yellow-400 border-2 border-green-600 border-t-nada p-2\`}>border-t-nada</p>
+      </div>
+      `,
+      errors: generateErrors("border-t-nada"),
+    },
+    {
       code: `<div class="z-0 sm:z-1000 md:-z-1000 lg:z-[100] xl:z-666 dark:-z-0 sm:dark:z-1000 md:dark:-z-1000 lg:dark:z-[100] xl:dark:-z-666">Z-Index</div>`,
       options: [
         {

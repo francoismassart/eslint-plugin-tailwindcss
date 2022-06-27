@@ -323,6 +323,11 @@ ruleTester.run("shorthands", rule, {
       errors: [generateError(["scale-x-75", "scale-y-75"], "scale-75")],
     },
     {
+      code: `<img className={\`scale-x-75 scale-y-75\`} />`,
+      output: `<img className={\`scale-75\`} />`,
+      errors: [generateError(["scale-x-75", "scale-y-75"], "scale-75")],
+    },
+    {
       code: `<img class="-scale-x-50 -scale-y-50" />`,
       output: `<img class="-scale-50" />`,
       errors: [generateError(["-scale-x-50", "-scale-y-50"], "-scale-50")],

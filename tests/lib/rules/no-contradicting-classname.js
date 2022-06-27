@@ -466,6 +466,13 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>`,
       errors: generateErrors("border-spacing-y-px border-spacing-y-0"),
     },
+    {
+      code: `
+      <div className={\`border-spacing-y-px border-spacing-y-0\`}>
+        Conflicting border-spacing
+      </div>`,
+      errors: generateErrors("border-spacing-y-px border-spacing-y-0"),
+    },
     // {
     //   code: `
     //   <div class="scale-75 transform-none">

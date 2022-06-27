@@ -733,6 +733,13 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
+      <button className={\`outline-black outline-[list:2px,solid,red] outline-[list:var(--some)]\`}>outline</button>
+      `,
+      options: config,
+      errors: generateErrors("outline-[list:2px,solid,red] outline-[list:var(--some)]"),
+    },
+    {
+      code: `
       <svg class="fill-current fill-[red] fill-[length:#ABCDEF] fill-[list:var(--some)] fill-[angle:var(--some)]"></svg>
       `,
       options: config,

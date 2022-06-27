@@ -221,7 +221,7 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `
-      <div className={\`overflow-hidden relative w-full ${"className"}\`}>Issue #131</div>
+      <div className={\`relative w-full overflow-hidden \${yolo ? "flex flex-col" : "block"}\`}>Issue #131</div>
       `,
     },
   ],
@@ -767,6 +767,30 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `ctl(\`p-3 border-gray-300 m-4 h-24 lg:p-4 flex border-2 lg:m-4\`)`,
       output: `ctl(\`m-4 flex h-24 border-2 border-gray-300 p-3 lg:m-4 lg:p-4\`)`,
+      errors: errors,
+    },
+    {
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/131
+      code: "<Button className={'relative w-full h-full overflow-hidden'}>Single quotes</Button>",
+      output: "<Button className={'relative h-full w-full overflow-hidden'}>Single quotes</Button>",
+      errors: errors,
+    },
+    {
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/131
+      code: "<Button className={`relative w-full h-full overflow-hidden`}>{name}</Button>",
+      output: "<Button className={`relative h-full w-full overflow-hidden`}>{name}</Button>",
+      errors: errors,
+    },
+    {
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/131
+      code: `<Button className={\`relative w-full h-full overflow-hidden\`}>{name}</Button>`,
+      output: `<Button className={\`relative h-full w-full overflow-hidden\`}>{name}</Button>`,
+      errors: errors,
+    },
+    {
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/131
+      code: `<Button className={\`relative w-full h-full overflow-hidden\`}>{name}</Button>`,
+      output: `<Button className={\`relative h-full w-full overflow-hidden\`}>{name}</Button>`,
       errors: errors,
     },
   ],
