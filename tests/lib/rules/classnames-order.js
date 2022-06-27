@@ -224,6 +224,23 @@ ruleTester.run("classnames-order", rule, {
       <div className={\`relative w-full overflow-hidden \${yolo ? "flex flex-col" : "block"}\`}>Issue #131</div>
       `,
     },
+    {
+      code: `
+      <div>
+        <h1>Issue #142</h1>
+        <div class="unselectable absolute box-content cursor-pointer select-none rounded-full p-1.5 text-center transition-colors transition-transform duration-300">1</div>
+        <div class="dark:after:border-t-blue-dark/40 dark:after:border-l-blue-dark/40 before:border-l-blue-mid before:border-t-blue-mid after:border-t-blue-subtle after:border-l-blue-subtle border-transparent before:border-transparent dark:before:border-transparent">2</div>
+        <div class="text-neutral-750 theme-contrast:text-black absolute -right-1 -top-4 cursor-pointer rounded-tr-sm rounded-bl-sm py-2 px-2.5 text-sm opacity-0 transition-opacity group-hover:opacity-50 group-hover:hover:opacity-100">3</div>
+        <div class="text-yellow-darker/50 dark:text-yellow-strong/70 hover:text-yellow-darker dark:hover:text-yellow-strong relative flex cursor-pointer items-center justify-center pb-2 pt-2 transition-colors">4</div>
+        <div class="text-yellow-darker/50 dark:text-yellow-strong/70 hover:text-yellow-darker dark:hover:text-yellow-strong relative flex cursor-pointer items-center justify-center pb-2 pt-2 transition-colors">5</div>
+        <div class="group relative my-0 -mx-1.5 block rounded px-1.5 pt-3.5 pb-4 transition-colors duration-150 hover:text-black active:top-0 dark:hover:text-white">6</div>
+        <div class="bg-neutral-70 theme-contrast:bg-white dark:bg-gray-780 pointer-events-none fixed left-0 top-0 h-screen w-screen opacity-70">7</div>
+        <div class="dark:before:border-t-blue-dark/40 dark:before:border-l-blue-dark/40 dark:after:border-t-blue-dark/40 dark:after:border-l-blue-dark/40 before:border-t-blue-subtle before:border-l-blue-subtle after:border-t-blue-subtle after:border-l-blue-subtle border-transparent">8</div>
+        <div class="dark:bg-blue-dark/40 bg-blue-subtle dark:text-blue-strong border-none text-black">9</div>
+        <div class="m-3 inline-block h-4 w-4 rounded-full transition-transform">10</div>
+      </div>
+      `,
+    },
   ],
   invalid: [
     {
