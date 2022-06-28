@@ -618,6 +618,52 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
+      <div className={ctl(\`
+        leading-loose
+        prose
+        md:prose-xl
+        lg:prose-lg
+        lg:prose-h1:text-lg
+        lg:prose-h1:leading-[2.75rem]
+        lg:prose-h2:text-sm
+        lg:prose-h2:leading-[2.125rem]
+        lg:prose-h3:text-xl
+        lg:prose-h3:leading-[1.8125rem]
+        lg:prose-blockquote:py-60
+        lg:prose-blockquote:pr-[5rem]
+        lg:prose-blockquote:pl-[6rem]
+        lg:prose-p:text-xl
+        lg:prose-p:leading-loose
+        dark:prose-headings:text-red-100
+        dark:prose-hr:border-black
+        dark:prose-code:text-pink-100
+        dark:prose-blockquote:text-orange-100
+        dark:prose-a:bg-black
+        dark:prose-a:text-black
+        dark:prose-a:visited:bg-black
+        dark:prose-a:visited:text-teal-200
+        dark:prose-a:hover:bg-black
+        dark:prose-a:hover:text-black
+        dark:prose-a:focus:outline-white
+        dark:prose-thead:bg-purple-500
+        dark:prose-thead:text-black
+        dark:prose-tr:border-b-purple-500
+        dark:prose-pre:bg-[#1f2227]
+        dark:prose-pre:text-[#639bee]
+        dark:prose-li:before:text-green-50
+      \`)}>
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/97
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
+    },
+    {
+      code: `
       <div class="bg-[#ccc]/[75%] border-t-[#000]/[5]">Issue #130</div>`,
     },
     {
@@ -665,7 +711,7 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
-      <div class="text-category-example-1">
+      <div class="text-example-1 text-category-example-1">
         https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/145
       </div>`,
       options: [
@@ -973,6 +1019,20 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("xl:z-666"),
+    },
+    {
+      code: `
+      <div className={'prose-md'}>
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/97
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
+      errors: generateErrors("prose-md"),
     },
   ],
 });
