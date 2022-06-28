@@ -46,6 +46,9 @@ ruleTester.run("enforces-negative-arbitrary-values", rule, {
     {
       code: `<div class={ctl(\`top-[-50px]\`)}>top-[-50px]</div>`,
     },
+    {
+      code: `<div className={\`top-[-50px]\`}>top-[-50px]</div>`,
+    },
   ],
   invalid: [
     {

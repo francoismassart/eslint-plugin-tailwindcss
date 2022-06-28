@@ -190,6 +190,51 @@ ruleTester.run("no-contradicting-classname", rule, {
       <div class="m-1 mx-2 sm:mx-3">Accepts shorthands</div>`,
       parser: require.resolve("@angular-eslint/template-parser"),
     },
+    {
+      code: `
+      <div className={ctl(\`
+        leading-loose
+        prose
+        lg:prose-lg
+        lg:prose-h1:text-36
+        lg:prose-h1:leading-[2.75rem]
+        lg:prose-h2:text-28
+        lg:prose-h2:leading-[2.125rem]
+        lg:prose-h3:text-24
+        lg:prose-h3:leading-[1.8125rem]
+        lg:prose-blockquote:py-60
+        lg:prose-blockquote:pr-[5rem]
+        lg:prose-blockquote:pl-[6rem]
+        lg:prose-p:text-16
+        lg:prose-p:leading-32
+        dark:prose-headings:text-content-100
+        dark:prose-hr:border-navy-blue-800
+        dark:prose-code:text-sand-100
+        dark:prose-blockquote:text-sand-100
+        dark:prose-a:bg-navy-blue-700
+        dark:prose-a:text-navy-blue-100
+        dark:prose-a:visited:bg-navy-blue-700
+        dark:prose-a:visited:text-teal-200
+        dark:prose-a:hover:bg-navy-blue-500
+        dark:prose-a:hover:text-navy-blue-100
+        dark:prose-a:focus:outline-focus
+        dark:prose-thead:bg-purple-500
+        dark:prose-thead:text-primary
+        dark:prose-tr:border-b-purple-500
+        dark:prose-pre:bg-[#1f2227]
+        dark:prose-pre:text-[#639bee]
+        dark:prose-li:before:text-primary
+      \`)}>
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/97
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -418,6 +463,47 @@ ruleTester.run("no-contradicting-classname", rule, {
       <div class="block flex"></div>`,
       errors: [...generateErrors("w-1 w-2"), ...generateErrors("block flex")],
       parser: require.resolve("@angular-eslint/template-parser"),
+    },
+    {
+      code: `<div class="prose not-prose prose-slate prose-zinc prose-lead:container aspect-w-16 aspect-h-9 aspect-w-4 line-clamp-1 line-clamp-3"></div>`,
+      errors: [
+        ...generateErrors("prose not-prose"),
+        ...generateErrors("prose-slate prose-zinc"),
+        ...generateErrors("aspect-w-16 aspect-w-4"),
+        ...generateErrors("line-clamp-1 line-clamp-3"),
+      ],
+      options: [
+        {
+          config: {
+            plugins: [
+              require("@tailwindcss/typography"),
+              require("@tailwindcss/aspect-ratio"),
+              require("@tailwindcss/line-clamp"),
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="grid-flow-dense grid-flow-row">
+        Conflicting grid-flow
+      </div>`,
+      errors: generateErrors("grid-flow-dense grid-flow-row"),
+    },
+    {
+      code: `
+      <div class="border-spacing-y-px border-spacing-y-0">
+        Conflicting border-spacing
+      </div>`,
+      errors: generateErrors("border-spacing-y-px border-spacing-y-0"),
+    },
+    {
+      code: `
+      <div className={\`border-spacing-y-px border-spacing-y-0\`}>
+        Conflicting border-spacing
+      </div>`,
+      errors: generateErrors("border-spacing-y-px border-spacing-y-0"),
     },
     // {
     //   code: `

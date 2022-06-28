@@ -54,6 +54,10 @@ ruleTester.run("no-arbitrary-value", rule, {
       errors: generateErrors("w-[10px]"),
     },
     {
+      code: `<div className={\`w-[10px]\`}>Arbitrary width!</div>`,
+      errors: generateErrors("w-[10px]"),
+    },
+    {
       code: `<div class="bg-[rgba(10,20,30,0.5)] [mask-type:luminance]">Arbitrary values!</div>`,
       errors: generateErrors("bg-[rgba(10,20,30,0.5)] [mask-type:luminance]"),
     },

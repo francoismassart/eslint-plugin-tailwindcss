@@ -16,6 +16,7 @@ describe("parseClassname", function () {
     "Flexbox & Grid": ["Gap"],
     Spacing: ["Padding", "Margin"],
     Borders: ["Border Radius", "Border Width", "Border Color"],
+    Tables: ["Border Spacing"],
     Transforms: ["Scale"],
   };
   const targetGroups = defaultGroups.filter((g) => Object.keys(targetProperties).includes(g.type));
@@ -148,6 +149,18 @@ describe("parseClassname", function () {
     expected.parentType = "Border Width";
     expected.body = "border-t-";
     expected.value = "4";
+    assert.deepEqual(actual, expected);
+
+    // "Border Spacing"
+    name = "border-spacing-x-96";
+    actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 31);
+    expected.index = 31;
+    expected.name = name;
+    expected.shorthand = "x";
+    expected.variants = "";
+    expected.parentType = "Border Spacing";
+    expected.body = "border-spacing-x-";
+    expected.value = "96";
     assert.deepEqual(actual, expected);
 
     // "Scale"

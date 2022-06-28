@@ -323,6 +323,11 @@ ruleTester.run("shorthands", rule, {
       errors: [generateError(["scale-x-75", "scale-y-75"], "scale-75")],
     },
     {
+      code: `<img className={\`scale-x-75 scale-y-75\`} />`,
+      output: `<img className={\`scale-75\`} />`,
+      errors: [generateError(["scale-x-75", "scale-y-75"], "scale-75")],
+    },
+    {
       code: `<img class="-scale-x-50 -scale-y-50" />`,
       output: `<img class="-scale-50" />`,
       errors: [generateError(["-scale-x-50", "-scale-y-50"], "-scale-50")],
@@ -410,6 +415,8 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
       errors: [generateError(["rounded-r-full", "rounded-l-full"], "rounded-full")],
+    },
+    {
       code: `classnames('sfc-border-l-0 sfc-border-r-0')`,
       output: `classnames('sfc-border-x-0')`,
       options: [
@@ -428,6 +435,19 @@ ruleTester.run("shorthands", rule, {
         },
       ],
       errors: [generateError(["md_sfc-border-l-0", "md_sfc-border-r-0"], "md_sfc-border-x-0")],
+    },
+    {
+      code: `
+      <div class="border-spacing-x-px border-spacing-y-px">
+        Issue #148
+      </div>
+      `,
+      output: `
+      <div class="border-spacing-px">
+        Issue #148
+      </div>
+      `,
+      errors: [generateError(["border-spacing-x-px", "border-spacing-y-px"], "border-spacing-px")],
     },
   ],
 });

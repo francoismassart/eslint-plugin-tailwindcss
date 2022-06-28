@@ -44,6 +44,14 @@ var ruleTester = new RuleTester({ parserOptions });
 ruleTester.run("no-custom-classname", rule, {
   valid: [
     {
+      code: `<div className="ns-dark">Custom dark class</div>`,
+      options: [
+        {
+          config: { darkMode: ["class", ".ns-dark"] },
+        },
+      ],
+    },
+    {
       code: `<div class="group peer">Hover, Focus, & Other States</div>`,
     },
     {
@@ -608,6 +616,181 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <div class="-ml-[1px] mr-[-1px]">Negative arbitrary value</div>`,
     },
+    {
+      code: `
+      <div className={ctl(\`
+        leading-loose
+        prose
+        md:prose-xl
+        lg:prose-lg
+        lg:prose-h1:text-lg
+        lg:prose-h1:leading-[2.75rem]
+        lg:prose-h2:text-sm
+        lg:prose-h2:leading-[2.125rem]
+        lg:prose-h3:text-xl
+        lg:prose-h3:leading-[1.8125rem]
+        lg:prose-blockquote:py-60
+        lg:prose-blockquote:pr-[5rem]
+        lg:prose-blockquote:pl-[6rem]
+        lg:prose-p:text-xl
+        lg:prose-p:leading-loose
+        dark:prose-headings:text-red-100
+        dark:prose-hr:border-black
+        dark:prose-code:text-pink-100
+        dark:prose-blockquote:text-orange-100
+        dark:prose-a:bg-black
+        dark:prose-a:text-black
+        dark:prose-a:visited:bg-black
+        dark:prose-a:visited:text-teal-200
+        dark:prose-a:hover:bg-black
+        dark:prose-a:hover:text-black
+        dark:prose-a:focus:outline-white
+        dark:prose-thead:bg-purple-500
+        dark:prose-thead:text-black
+        dark:prose-tr:border-b-purple-500
+        dark:prose-pre:bg-[#1f2227]
+        dark:prose-pre:text-[#639bee]
+        dark:prose-li:before:text-green-50
+      \`)}>
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/97
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="bg-[#ccc]/[75%] border-t-[#000]/[5]">Issue #130</div>`,
+    },
+    {
+      code: `
+      <div class="border-spacing-2">
+        Issue #148
+        https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.1.0
+      </div>`,
+    },
+    {
+      code: `
+      <div class="prose prose-red prose-xl dark:prose-invert prose-img:rounded-xl prose-headings:underline prose-a:text-blue-600">
+        Support for plugins
+        <p class="not-prose">Not prose</p>
+        <div class="aspect-w-16 aspect-h-9">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="line-clamp-3">Line clamp</p>
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [
+              require("@tailwindcss/typography"),
+              require("@tailwindcss/aspect-ratio"),
+              require("@tailwindcss/line-clamp"),
+            ],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div>
+        <h1 className="text-red-500">Hello, world!</h1>
+        <button className="btn">Hello</button>
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("daisyui")],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="text-example-1 text-category-example-1">
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/145
+      </div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                transparent: "transparent",
+                current: "currentColor",
+                white: "#FFFFFF",
+                black: "#000000",
+                example: {
+                  1: "#F0f025",
+                },
+                category: {
+                  example: {
+                    1: "#F0F025",
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div>
+        <div class="bg-fnprimary">PRIMARY using a function</div>
+        <div class="bg-fnsecondary">SECONDARY using a function</div>
+        <p>See https://github.com/adamwathan/tailwind-css-variable-text-opacity-demo</p>
+      </div>`,
+      options: [
+        {
+          config: {
+            theme: {
+              colors: {
+                fnprimary: ({ opacityVariable, opacityValue }) => {
+                  if (opacityValue !== undefined) {
+                    return `rgba(var(--color-primary), ${opacityValue})`;
+                  }
+                  if (opacityVariable !== undefined) {
+                    return `rgba(var(--color-primary), var(${opacityVariable}, 1))`;
+                  }
+                  return `rgb(var(--color-primary))`;
+                },
+                fnsecondary: ({ opacityVariable, opacityValue }) => {
+                  if (opacityValue !== undefined) {
+                    return `rgba(var(--color-secondary), ${opacityValue})`;
+                  }
+                  if (opacityVariable !== undefined) {
+                    return `rgba(var(--color-secondary), var(${opacityVariable}, 1))`;
+                  }
+                  return `rgb(var(--color-secondary))`;
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="grid-flow-dense mix-blend-plus-lighter border-separate border-spacing-4">
+      grid-flow-dense, mix-blend-plus-lighter	
+      </div>`,
+    },
+    {
+      code: `
+      <div class="
+        border-spacing-y-0
+        border-spacing-px
+        border-spacing-x-1
+        border-spacing-y-2.5
+        border-spacing-96"
+      >
+        border-spacing
+      </div>`,
+    },
   ],
 
   invalid: [
@@ -630,10 +813,6 @@ ruleTester.run("no-custom-classname", rule, {
       `,
       parser: require.resolve("@typescript-eslint/parser"),
       errors: generateErrors("my-custom"),
-    },
-    {
-      code: `<input class="bg-gray-500 text-white placeholder-current" placeholder="placeholder-current not valid anymore" />`,
-      errors: generateErrors("placeholder-current"),
     },
     {
       code: `<div class="w-12 my-custom">my-custom is not defined in Tailwind CSS!</div>`,
@@ -671,18 +850,6 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("hello world"),
-    },
-    {
-      code: `<div class="arbitrary-inset-[123px]">No arbitrary value support without JIT</div>`,
-      options: [
-        {
-          config: {
-            prefix: "arbitrary-",
-            theme: { inset: {} },
-          },
-        },
-      ],
-      errors: generateErrors("arbitrary-inset-[123px]"),
     },
     {
       code: `<div className={clsx(\`hello-world flex w-full\`)}>clsx</div>`,
@@ -827,6 +994,14 @@ ruleTester.run("no-custom-classname", rule, {
       errors: generateErrors("border-t-nada"),
     },
     {
+      code: `
+      <div class={\`bg-red-600 p-10\`}>
+        <p class={\`text-yellow-400 border-2 border-green-600 border-t-nada p-2\`}>border-t-nada</p>
+      </div>
+      `,
+      errors: generateErrors("border-t-nada"),
+    },
+    {
       code: `<div class="z-0 sm:z-1000 md:-z-1000 lg:z-[100] xl:z-666 dark:-z-0 sm:dark:z-1000 md:dark:-z-1000 lg:dark:z-[100] xl:dark:-z-666">Z-Index</div>`,
       options: [
         {
@@ -844,6 +1019,20 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("xl:z-666"),
+    },
+    {
+      code: `
+      <div className={'prose-md'}>
+        https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/97
+      </div>`,
+      options: [
+        {
+          config: {
+            plugins: [require("@tailwindcss/typography")],
+          },
+        },
+      ],
+      errors: generateErrors("prose-md"),
     },
   ],
 });

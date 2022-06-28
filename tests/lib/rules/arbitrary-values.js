@@ -590,7 +590,7 @@ ruleTester.run("arbitrary-values", rule, {
       </div>
       `,
       options: config,
-      errors: generateErrors("object-[angle:0%,10%] object-[color:0%,10%] object-[length:0%,10%]"),
+      errors: generateErrors("object-[angle:0%,10%]"),
     },
     {
       code: `
@@ -619,9 +619,7 @@ ruleTester.run("arbitrary-values", rule, {
       </div>
       `,
       options: config,
-      errors: generateErrors(
-        "border-[0] border-[1cap] border-[1ic] border-[thick] border-[var(--some)] border-[1vb] border-[1vi]"
-      ),
+      errors: generateErrors("border-[1cap] border-[1ic] border-[var(--some)] border-[1vb] border-[1vi]"),
     },
     {
       code: `
@@ -630,7 +628,7 @@ ruleTester.run("arbitrary-values", rule, {
       </div>
       `,
       options: config,
-      errors: generateErrors("divide-x-[0] divide-x-[1cap] divide-x-[1ic] divide-x-[thick] divide-y-[var(--some)]"),
+      errors: generateErrors("divide-x-[1cap] divide-x-[1ic] divide-y-[var(--some)]"),
     },
     {
       code: `
@@ -639,79 +637,7 @@ ruleTester.run("arbitrary-values", rule, {
       </div>
       `,
       options: config,
-      errors: generateErrors("text-[0] text-[1cap] text-[1ic] text-[large] text-[var(--some)]"),
-    },
-    {
-      code: `
-      <div class="gap-[length:var(--some)] gap-[length:20px]">
-        Invalid arbitrary values for gap
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("gap-[length:var(--some)] gap-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="h-[length:var(--some)] h-[length:20px]">
-        Invalid arbitrary values for height
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("h-[length:var(--some)] h-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="leading-[length:var(--some)] leading-[length:20px]">
-        Invalid arbitrary values for line-height
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("leading-[length:var(--some)] leading-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="max-h-[length:var(--some)] max-h-[length:20px]">
-        Invalid arbitrary values for max-height
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("max-h-[length:var(--some)] max-h-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="max-w-[length:var(--some)] max-w-[length:20px]">
-        Invalid arbitrary values for max-width
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("max-w-[length:var(--some)] max-w-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="min-h-[length:var(--some)] min-h-[length:20px]">
-        Invalid arbitrary values for min-height
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("min-h-[length:var(--some)] min-h-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="min-w-[length:var(--some)] min-w-[length:20px]">
-        Invalid arbitrary values for min-width
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("min-w-[length:var(--some)] min-w-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="p-[length:var(--some)] p-[length:20px]">
-        Invalid arbitrary values for padding
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("p-[length:var(--some)] p-[length:20px]"),
+      errors: generateErrors("text-[1cap] text-[1ic] text-[var(--some)]"),
     },
     {
       code: `
@@ -724,66 +650,12 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="w-[length:var(--some)] w-[length:20px]">
-        Invalid arbitrary values for width
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("w-[length:var(--some)] w-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="inset-[length:var(--some)] inset-[length:20px]">
-        Invalid arbitrary values for inset
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("inset-[length:var(--some)] inset-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="tracking-[length:var(--some)] tracking-[length:20px]">
-        Invalid arbitrary values for letterSpacing
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("tracking-[length:var(--some)] tracking-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="m-[length:var(--some)] m-[length:20px]">
-        Invalid arbitrary values for margin
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("m-[length:var(--some)] m-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="space-x-[length:var(--some)] space-x-[length:20px]">
-        Invalid arbitrary values for space
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("space-x-[length:var(--some)] space-x-[length:20px]"),
-    },
-    {
-      code: `
-      <div class="opacity-[-10] opacity-[1.333]">
-        Invalid arbitrary values for opacity
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("opacity-[-10] opacity-[1.333]"),
-    },
-    {
-      code: `
       <div class="rotate-[angle:5deg] rotate-[66]">
         Invalid arbitrary values for rotate
       </div>
       `,
       options: config,
-      errors: generateErrors("rotate-[angle:5deg] rotate-[66]"),
+      errors: generateErrors("rotate-[angle:5deg]"),
     },
     {
       code: `
@@ -794,9 +666,7 @@ ruleTester.run("arbitrary-values", rule, {
       </ul>
       `,
       options: config,
-      errors: generateErrors(
-        "list-[angle:var(--some)] list-[list:var(--some)] list-[length:var(--some)] list-[color:var(--some)]"
-      ),
+      errors: generateErrors("list-[angle:var(--some)] list-[list:var(--some)]"),
     },
     {
       code: `
@@ -807,177 +677,24 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <button class="brightness-[length:0] brightness-[length:thick] brightness-[length:var(--some)] brightness-[length:calc(50%+10px)]">Invalid brightness</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "brightness-[length:0] brightness-[length:thick] brightness-[length:var(--some)] brightness-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="contrast-[length:0] contrast-[length:thick] contrast-[length:var(--some)] contrast-[length:calc(50%+10px)]">Invalid contrast</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "contrast-[length:0] contrast-[length:thick] contrast-[length:var(--some)] contrast-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="grayscale-[length:0] grayscale-[length:thick] grayscale-[length:var(--some)] grayscale-[length:calc(50%+10px)]">Invalid grayscale</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "grayscale-[length:0] grayscale-[length:thick] grayscale-[length:var(--some)] grayscale-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="hue-rotate-[length:0] hue-rotate-[length:thick] hue-rotate-[length:var(--some)] hue-rotate-[length:calc(50%+10px)]">Invalid hue-rotate</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "hue-rotate-[length:0] hue-rotate-[length:thick] hue-rotate-[length:var(--some)] hue-rotate-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="invert-[length:0] invert-[length:thick] invert-[length:var(--some)] invert-[length:calc(50%+10px)]">Invalid invert</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "invert-[length:0] invert-[length:thick] invert-[length:var(--some)] invert-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="saturate-[length:0] saturate-[length:thick] saturate-[length:var(--some)] saturate-[length:calc(50%+10px)]">Invalid saturate</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "saturate-[length:0] saturate-[length:thick] saturate-[length:var(--some)] saturate-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="sepia-[length:0] sepia-[length:thick] sepia-[length:var(--some)] sepia-[length:calc(50%+10px)]">Invalid sepia</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "sepia-[length:0] sepia-[length:thick] sepia-[length:var(--some)] sepia-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-blur-[length:0] backdrop-blur-[length:thick] backdrop-blur-[length:var(--some)] backdrop-blur-[length:calc(50%+10px)]">Invalid backdrop-blur</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-blur-[length:0] backdrop-blur-[length:thick] backdrop-blur-[length:var(--some)] backdrop-blur-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-brightness-[length:0] backdrop-brightness-[length:thick] backdrop-brightness-[length:var(--some)] backdrop-brightness-[length:calc(50%+10px)]">Invalid backdrop-brightness</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-brightness-[length:0] backdrop-brightness-[length:thick] backdrop-brightness-[length:var(--some)] backdrop-brightness-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-contrast-[length:0] backdrop-contrast-[length:thick] backdrop-contrast-[length:var(--some)] backdrop-contrast-[length:calc(50%+10px)]">Invalid backdrop-contrast</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-contrast-[length:0] backdrop-contrast-[length:thick] backdrop-contrast-[length:var(--some)] backdrop-contrast-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-grayscale-[length:0] backdrop-grayscale-[length:thick] backdrop-grayscale-[length:var(--some)] backdrop-grayscale-[length:calc(50%+10px)]">Invalid backdrop-grayscale</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-grayscale-[length:0] backdrop-grayscale-[length:thick] backdrop-grayscale-[length:var(--some)] backdrop-grayscale-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-hue-rotate-[length:0] backdrop-hue-rotate-[length:thick] backdrop-hue-rotate-[length:var(--some)] backdrop-hue-rotate-[length:calc(50%+10px)]">Invalid backdrop-hue-rotate</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-hue-rotate-[length:0] backdrop-hue-rotate-[length:thick] backdrop-hue-rotate-[length:var(--some)] backdrop-hue-rotate-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-invert-[length:0] backdrop-invert-[length:thick] backdrop-invert-[length:var(--some)] backdrop-invert-[length:calc(50%+10px)]">Invalid backdrop-invert</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-invert-[length:0] backdrop-invert-[length:thick] backdrop-invert-[length:var(--some)] backdrop-invert-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-opacity-[length:0] backdrop-opacity-[length:thick] backdrop-opacity-[length:var(--some)] backdrop-opacity-[length:calc(50%+10px)]">Invalid backdrop-opacity</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-opacity-[length:0] backdrop-opacity-[length:thick] backdrop-opacity-[length:var(--some)] backdrop-opacity-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-saturate-[length:0] backdrop-saturate-[length:thick] backdrop-saturate-[length:var(--some)] backdrop-saturate-[length:calc(50%+10px)]">Invalid backdrop-saturate</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-saturate-[length:0] backdrop-saturate-[length:thick] backdrop-saturate-[length:var(--some)] backdrop-saturate-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="backdrop-sepia-[length:0] backdrop-sepia-[length:thick] backdrop-sepia-[length:var(--some)] backdrop-sepia-[length:calc(50%+10px)]">Invalid backdrop-sepia</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "backdrop-sepia-[length:0] backdrop-sepia-[length:thick] backdrop-sepia-[length:var(--some)] backdrop-sepia-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
-      <button class="duration-[length:0] duration-[length:thick] duration-[length:var(--some)] duration-[length:calc(50%+10px)]">Invalid duration</button>
-      `,
-      options: config,
-      errors: generateErrors(
-        "duration-[length:0] duration-[length:thick] duration-[length:var(--some)] duration-[length:calc(50%+10px)]"
-      ),
-    },
-    {
-      code: `
       <button class="transition ease-in duration-700 ease-[length:cubic-bezier(0.19,1,0.22,1)] ease-[list:1px]">Accepted ease by the JIT</button>
       `,
       options: config,
-      errors: generateErrors("ease-[length:cubic-bezier(0.19,1,0.22,1)] ease-[list:1px]"),
+      errors: generateErrors("ease-[list:1px]"),
     },
     {
       code: `
       <button class="transition delay-150 duration-300 ease-in-out delay-[length:1s] delay-[list:var(--some)]">Delay</button>
       `,
       options: config,
-      errors: generateErrors("delay-[length:1s] delay-[list:var(--some)]"),
+      errors: generateErrors("delay-[list:var(--some)]"),
     },
     {
       code: `
       <button class="animate-spin animate-[list:1s] animate-[length:var(--some)]">Animate</button>
       `,
       options: config,
-      errors: generateErrors("animate-[list:1s] animate-[length:var(--some)]"),
+      errors: generateErrors("animate-[list:1s]"),
     },
     {
       code: `
@@ -988,38 +705,24 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="scale-50 scale-0 scale-[length:90%] scale-[length:0.5]">scale</div>
-      `,
-      options: config,
-      errors: generateErrors("scale-[length:90%] scale-[length:0.5]"),
-    },
-    {
-      code: `
       <div class="translate-y-6 translate-y-[length:10px] translate-y-[list:-10px]">translate</div>
       `,
       options: config,
-      errors: generateErrors("translate-y-[length:10px] translate-y-[list:-10px]"),
-    },
-    {
-      code: `
-      <div class="translate-y-6 translate-y-[length:10px] translate-y-[list:-10px]">translate</div>
-      `,
-      options: config,
-      errors: generateErrors("translate-y-[length:10px] translate-y-[list:-10px]"),
+      errors: generateErrors("translate-y-[list:-10px]"),
     },
     {
       code: `
       <div class="skew-y-6 skew-y-[length:10px] skew-y-[list:-10px]">skew</div>
       `,
       options: config,
-      errors: generateErrors("skew-y-[length:10px] skew-y-[list:-10px]"),
+      errors: generateErrors("skew-y-[list:-10px]"),
     },
     {
       code: `
       <div class="cursor-auto cursor-[list:'yolo','ftw'] cursor-[length:1px]">Cursor</div>
       `,
       options: config,
-      errors: generateErrors("cursor-[list:'yolo','ftw'] cursor-[length:1px]"),
+      errors: generateErrors("cursor-[list:'yolo','ftw']"),
     },
     {
       code: `
@@ -1030,10 +733,17 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
+      <button className={\`outline-black outline-[list:2px,solid,red] outline-[list:var(--some)]\`}>outline</button>
+      `,
+      options: config,
+      errors: generateErrors("outline-[list:2px,solid,red] outline-[list:var(--some)]"),
+    },
+    {
+      code: `
       <svg class="fill-current fill-[red] fill-[length:#ABCDEF] fill-[list:var(--some)] fill-[angle:var(--some)]"></svg>
       `,
       options: config,
-      errors: generateErrors("fill-[length:#ABCDEF] fill-[list:var(--some)] fill-[angle:var(--some)]"),
+      errors: generateErrors("fill-[list:var(--some)] fill-[angle:var(--some)]"),
     },
     {
       code: `
@@ -1050,7 +760,7 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
       errors: generateErrors(
-        "stroke-[0] stroke-[1cap] stroke-[1ic] stroke-[thick] stroke-[var(--some)] stroke-[1vb] stroke-[1vi]"
+        "stroke-[1cap] stroke-[1ic] stroke-[thick] stroke-[var(--some)] stroke-[1vb] stroke-[1vi]"
       ),
     },
   ],
