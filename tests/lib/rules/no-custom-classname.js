@@ -618,7 +618,7 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
-      <div class="bg-[#ccc]/[75%]">Issue #130</div>`,
+      <div class="bg-[#ccc]/[75%] border-t-[#000]/[5]">Issue #130</div>`,
     },
     {
       code: `
