@@ -172,6 +172,12 @@ ruleTester.run("no-contradicting-classname", rule, {
     },
     {
       code: `
+      <div class="text-left text-lg text-[color:var(--my-var,#ccc)]]">
+        Same class prefix, type prefix may be required for resolving ambiguous values
+      </div>`,
+    },
+    {
+      code: `
       <div class="scale-75 translate-x-4 skew-y-3 motion-reduce:transform-none">
         Legit transform-none
       </div>`,
@@ -243,11 +249,11 @@ ruleTester.run("no-contradicting-classname", rule, {
       export interface FakePropsInterface {
         readonly name?: string;
       }
-      
+
       function Fake({
         name = 'yolo'
       }: FakeProps) {
-      
+
         return (
           <>
             <h1 className={"container w-1 w-2"}>Welcome {name}</h1>
@@ -255,7 +261,7 @@ ruleTester.run("no-contradicting-classname", rule, {
           </>
         );
       }
-      
+
       export default Fake;
       `,
       parser: require.resolve("@typescript-eslint/parser"),
@@ -451,6 +457,30 @@ ruleTester.run("no-contradicting-classname", rule, {
       `,
       options: config,
       errors: generateErrors("rounded-xl rounded-[50%/10%] rounded-[10%,30%,50%,70%] rounded-[var(--some)]"),
+    },
+    {
+      code: `
+      <div class="text-white text-[color:var(--my-var,#ccc)]">
+        Arbitrary values for text color
+      </div>
+      `,
+      errors: generateErrors("text-white text-[color:var(--my-var,#ccc)]"),
+    },
+    {
+      code: `
+      <div class="text-lg text-[length:var(--my-var)]">
+        Arbitrary values for text font size
+      </div>
+      `,
+      errors: generateErrors("text-lg text-[length:var(--my-var)]"),
+    },
+    {
+      code: `
+      <div class="bg-white bg-[color:var(--donno)]">
+        Arbitrary values for background color
+      </div>
+      `,
+      errors: generateErrors("bg-white bg-[color:var(--donno)]"),
     },
     {
       code: `<div class="aspect-none aspect-w-16 aspect-w-10 aspect-h-9">aspect</div>`,
