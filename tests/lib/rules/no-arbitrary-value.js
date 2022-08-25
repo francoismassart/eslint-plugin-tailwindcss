@@ -46,6 +46,9 @@ ruleTester.run("no-arbitrary-value", rule, {
     {
       code: `<div class="flex shrink-0 flex-col">No arbitrary value</div>`,
     },
+    {
+      code: `<div class>No errors while typing</div>`,
+    },
   ],
 
   invalid: [

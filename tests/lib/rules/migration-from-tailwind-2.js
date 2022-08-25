@@ -36,6 +36,9 @@ ruleTester.run("migration-from-tailwind-2", rule, {
     {
       code: `<div class="transition-[var(--transform)]">transition-[var(--transform)]</div>`,
     },
+    {
+      code: `<div class>No errors while typing</div>`,
+    },
   ],
   invalid: [
     {

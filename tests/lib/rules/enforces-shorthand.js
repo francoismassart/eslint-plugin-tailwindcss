@@ -86,6 +86,9 @@ ruleTester.run("shorthands", rule, {
     {
       code: `<div className="py-2.5 md:py-3 pl-2.5 md:pl-4 font-medium uppercase">issue #91</div>`,
     },
+    {
+      code: `<div class>No errors while typing</div>`,
+    },
   ],
 
   invalid: [

@@ -49,6 +49,9 @@ ruleTester.run("enforces-negative-arbitrary-values", rule, {
     {
       code: `<div className={\`top-[-50px]\`}>top-[-50px]</div>`,
     },
+    {
+      code: `<div className>No errors while typing</div>`,
+    },
   ],
   invalid: [
     {
