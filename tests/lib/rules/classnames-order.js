@@ -241,6 +241,9 @@ ruleTester.run("classnames-order", rule, {
       </div>
       `,
     },
+    {
+      code: `<div class>No errors while typing</div>`,
+    },
   ],
   invalid: [
     {

@@ -235,6 +235,9 @@ ruleTester.run("no-contradicting-classname", rule, {
         },
       ],
     },
+    {
+      code: "<div class>No errors while typing</div>",
+    },
   ],
 
   invalid: [

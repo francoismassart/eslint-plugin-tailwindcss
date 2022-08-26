@@ -791,6 +791,9 @@ ruleTester.run("no-custom-classname", rule, {
         border-spacing
       </div>`,
     },
+    {
+      code: `<div class>No errors while typing</div>`,
+    },
   ],
 
   invalid: [
