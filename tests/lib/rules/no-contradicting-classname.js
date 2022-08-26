@@ -404,6 +404,11 @@ ruleTester.run("no-contradicting-classname", rule, {
       errors: generateErrors("px-2 px-0"),
     },
     {
+      code: `myTag\`\${enabled ? "px-2 px-0" : ""}\``,
+      options: [{ tags: ["myTag"] }],
+      errors: generateErrors("px-2 px-0"),
+    },
+    {
       code: `
       <div class="shrink shrink-0 shrink-[inherit] shrink-[initial] shrink-[unset] shrink-[var(--some)] shrink-[0.5] shrink-[5]">
         Arbitrary values for positive integers
