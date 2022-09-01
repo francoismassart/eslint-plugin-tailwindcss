@@ -37,9 +37,9 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
-- FIX: [conflicting rules with ambiguous arbitrary values](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/152)
-- FIX: [`parseNodeRecursive`: Correctly recurse into TemplateLiteral expressions](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/138)
-- FIX: [Prevent rule crash on class/className attributes with no value](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/157)
+- FIX: [conflicting rules with ambiguous arbitrary values](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/152)(by [acewf](https://github.com/acewf) 🙏)
+- FIX: [`parseNodeRecursive`: Correctly recurse into TemplateLiteral expressions](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/138) (by [mpsijm](https://github.com/mpsijm) 🙏)
+- FIX: [Prevent rule crash on class/className attributes with no value](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/157) (by [threehams](https://github.com/threehams) 🙏)
 - ADD: support for [new features from Tailwind CSS v3.1.0](https://github.com/tailwindlabs/tailwindcss/releases/tag/v3.1.0)
   > Custom `dark` class, `.grid-flow-dense`, `.text-start`, `.text-end`, `.mix-blend-plus-lighter`, `.border-spacing...`
 - **BREAKING CHANGE:** `groups`, `groupByResponsive`, `officialSorting` and `prependCustom` are deprecated ☠️.
