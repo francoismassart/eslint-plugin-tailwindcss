@@ -66,6 +66,9 @@ ruleTester.run("classnames-order", rule, {
       code: `<div class="custom container box-content lg:box-border">Simple, basic</div>`,
     },
     {
+      code: `<div tw="custom container box-content lg:box-border">Simple, using 'tw' prop</div>`,
+    },
+    {
       code: "<div className={ctl(`w-full p-10 ${live && 'bg-blue-100 dark:bg-purple-400 sm:rounded-lg'}`)}>ctl + exp</div>",
     },
     {
@@ -90,6 +93,9 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div class="space-y-0.5 ">Extra space at the end</div>`,
+    },
+    {
+      code: `<div tw="space-y-0.5 ">Extra space at the end, but with 'tw' prop</div>`,
     },
     {
       code: `<div class="p-5 sm:px-3 md:py-2 lg:p-4 xl:px-6">'p', then 'py' then 'px'</div>`,
@@ -290,6 +296,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="sm:py-5 p-4 sm:px-7 lg:p-8">Enhancing readability</div>`,
       output: `<div class="p-4 sm:py-5 sm:px-7 lg:p-8">Enhancing readability</div>`,
+      errors: errors,
+    },
+    {
+      code: `<div tw="sm:py-5 p-4 sm:px-7 lg:p-8">Enhancing readability with 'tw' prop</div>`,
+      output: `<div tw="p-4 sm:py-5 sm:px-7 lg:p-8">Enhancing readability with 'tw' prop</div>`,
       errors: errors,
     },
     {
