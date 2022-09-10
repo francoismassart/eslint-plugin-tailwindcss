@@ -244,6 +244,9 @@ ruleTester.run("no-contradicting-classname", rule, {
     {
       code: "<div class>No errors while typing</div>",
     },
+    {
+      code: '<div class="opacity-100 [&[aria-hidden=true]]:opacity-0">No errors while typing</div>',
+    },
   ],
 
   invalid: [
