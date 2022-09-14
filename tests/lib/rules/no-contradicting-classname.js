@@ -247,6 +247,34 @@ ruleTester.run("no-contradicting-classname", rule, {
     {
       code: '<div class="opacity-100 [&[aria-hidden=true]]:opacity-0">No errors while typing</div>',
     },
+    {
+      code: `
+      <div
+        className={clsx(
+          "[clip-path:circle(100%_at_center)]",
+          "[mask-image:radial-gradient(circle_at_center,transparent_51%,black_54.8%)]",
+          "bg-[conic-gradient(transparent,#9e9ab1)]",
+          "pointer-events-none h-6 w-6 animate-spin rounded-full"
+        )}
+      />`,
+    },
+    {
+      code: `
+      <div
+        className={ctl(\`
+          [clip-path:circle(100%_at_center)]
+          [mask-image:radial-gradient(circle_at_center,transparent_51%,black_54.8%)]
+          lg:[mask-image:radial-gradient(circle_at_center,transparent_10%,black_10%)]
+          bg-[conic-gradient(transparent,#ff00ff)]
+          lg:bg-[conic-gradient(transparent,#9e9ab1)]
+          pointer-events-none
+          h-6
+          w-6
+          animate-spin
+          rounded-full
+        \`)}
+      />`,
+    },
   ],
 
   invalid: [
@@ -545,6 +573,19 @@ ruleTester.run("no-contradicting-classname", rule, {
         Conflicting border-spacing
       </div>`,
       errors: generateErrors("border-spacing-y-px border-spacing-y-0"),
+    },
+    {
+      code: `
+      <div
+        className={ctl(\`
+          [clip-path:circle(90%_at_center)]
+          [clip-path:circle(100%_at_center)]
+          [mask-image:radial-gradient(circle_at_center,transparent_10%,black_10%)]
+          bg-[conic-gradient(transparent,#ff00ff)]
+          lg:bg-[conic-gradient(transparent,#9e9ab1)]
+        \`)}
+      />`,
+      errors: generateErrors("[clip-path:circle(90%_at_center)] [clip-path:circle(100%_at_center)]"),
     },
     // {
     //   code: `
