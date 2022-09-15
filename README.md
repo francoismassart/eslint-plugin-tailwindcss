@@ -37,6 +37,8 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- FIX: [prefix parsing when using attribute variants](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/164)
+- FIX: [add support for contradicting arbitrary properties](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/163)
 - FIX: [conflicting rules with ambiguous arbitrary values](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/152)(by [acewf](https://github.com/acewf) 🙏)
 - FIX: [`parseNodeRecursive`: Correctly recurse into TemplateLiteral expressions](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/138) (by [mpsijm](https://github.com/mpsijm) 🙏)
 - FIX: [Prevent rule crash on class/className attributes with no value](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/157) (by [threehams](https://github.com/threehams) 🙏)
