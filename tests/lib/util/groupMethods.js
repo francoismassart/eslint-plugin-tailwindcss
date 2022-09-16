@@ -10,6 +10,26 @@ var customConfig = require("../../../lib/util/customConfig");
 var groupUtil = require("../../../lib/util/groupMethods");
 var mergedConfig = customConfig.resolve({});
 
+describe("getPrefix", function () {
+  it("should retrieve the correct prefix", function () {
+    let prefix = "";
+    prefix = groupUtil.getPrefix("dark:[hidden]:lg:text-[color:var(--my-var,#ccc)]", ":");
+    assert.equal(prefix, "dark:[hidden]:lg:");
+    prefix = groupUtil.getPrefix("text-[color:var(--my-var,#ccc)]", ":");
+    assert.equal(prefix, "");
+  });
+});
+
+describe("getSuffix", function () {
+  it("should retrieve the correct suffix", function () {
+    let prefix = "";
+    prefix = groupUtil.getSuffix("dark:[hidden]:lg:text-[color:var(--my-var,#ccc)]", ":");
+    assert.equal(prefix, "text-[color:var(--my-var,#ccc)]");
+    prefix = groupUtil.getSuffix("text-[color:var(--my-var,#ccc)]", ":");
+    assert.equal(prefix, "text-[color:var(--my-var,#ccc)]");
+  });
+});
+
 describe("parseClassname", function () {
   const targetProperties = {
     Layout: ["Overflow", "Overscroll Behavior", "Top / Right / Bottom / Left"],
