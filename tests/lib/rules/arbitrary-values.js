@@ -556,35 +556,6 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-      <div class="placeholder:text-white placeholder:text-[var(--some)] placeholder:text-[color:var(--some)]">
-        placeholderColor using var
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("placeholder:text-[var(--some)]"),
-    },
-    {
-      code: `
-      <div class="placeholder:text-white placeholder:text-[rgba(255,0,0/0.4)] placeholder:text-[rgba(255,0,0/.4)] placeholder:text-[rgba(255,0,0/40%)]">
-        placeholderColor using rgba(255 0 0 / 0.4)
-      </div>
-      `,
-      options: config,
-      errors: generateErrors(
-        "placeholder:text-[rgba(255,0,0/0.4)] placeholder:text-[rgba(255,0,0/.4)] placeholder:text-[rgba(255,0,0/40%)]"
-      ),
-    },
-    {
-      code: `
-      <div class="bg-[var(--donno)]">
-        Invalid bg-color
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("bg-[var(--donno)]"),
-    },
-    {
-      code: `
       <div class="object-[angle:0%,10%] object-[color:0%,10%] object-[length:0%,10%]">
         Invalid object-position
       </div>
@@ -600,53 +571,6 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
       errors: generateErrors("placeholder:text-[hsla(240,100%,50%,0.7]"),
-    },
-    {
-      code: `
-      <div class="text-white text-[rgba(10%,20%,30%,100%)] text-[rgba(255,0,0/0.4)] text-[rgba(255,0,0/.4)] text-[rgba(255,0,0/40%)] text-[var(--some)]">
-        Battle testing invalid textColor
-      </div>
-      `,
-      options: config,
-      errors: generateErrors(
-        "text-[rgba(255,0,0/0.4)] text-[rgba(255,0,0/.4)] text-[rgba(255,0,0/40%)] text-[var(--some)]"
-      ),
-    },
-    {
-      code: `
-      <div class="border-[0] border-[1cap] border-[1ic] border-[thick] border-[var(--some)] border-[1vb] border-[1vi]">
-        Invalid / ambiguous arbitrary values for border-width
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("border-[1cap] border-[1ic] border-[var(--some)] border-[1vb] border-[1vi]"),
-    },
-    {
-      code: `
-      <div class="divide-x-[0] divide-x-[1cap] divide-x-[1ic] divide-x-[thick] divide-y-[var(--some)]">
-        Invalid / ambiguous arbitrary values for divide-width
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("divide-x-[1cap] divide-x-[1ic] divide-y-[var(--some)]"),
-    },
-    {
-      code: `
-      <div class="text-[0] text-[1cap] text-[1ic] text-[large] text-[var(--some)]">
-        Invalid / ambiguous arbitrary values for fontSize
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("text-[1cap] text-[1ic] text-[var(--some)]"),
-    },
-    {
-      code: `
-      <div class="ring-[var(--some)] ring-[3cap] ring-[3ic] ring-[3vb] ring-[3vi]">
-        Invalid arbitrary values for ringWidth
-      </div>
-      `,
-      options: config,
-      errors: generateErrors("ring-[var(--some)] ring-[3cap] ring-[3ic] ring-[3vb] ring-[3vi]"),
     },
     {
       code: `
@@ -667,13 +591,6 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
       errors: generateErrors("list-[angle:var(--some)] list-[list:var(--some)]"),
-    },
-    {
-      code: `
-      <button class="ring-offset-[4]">invalid ring-offset-width</button>
-      `,
-      options: config,
-      errors: generateErrors("ring-offset-[4]"),
     },
     {
       code: `
@@ -750,18 +667,7 @@ ruleTester.run("arbitrary-values", rule, {
       <svg class="stroke-[var(--some)] stroke-['yolo'] stroke-[angle:var(--some)]"></svg>
       `,
       options: config,
-      errors: generateErrors("stroke-[var(--some)] stroke-['yolo'] stroke-[angle:var(--some)]"),
-    },
-    {
-      code: `
-      <div class="stroke-[0] stroke-[1cap] stroke-[1ic] stroke-[thick] stroke-[var(--some)] stroke-[1vb] stroke-[1vi]">
-        Invalid / ambiguous arbitrary values for stroke-width
-      </div>
-      `,
-      options: config,
-      errors: generateErrors(
-        "stroke-[1cap] stroke-[1ic] stroke-[thick] stroke-[var(--some)] stroke-[1vb] stroke-[1vi]"
-      ),
+      errors: generateErrors("stroke-[angle:var(--some)]"),
     },
   ],
 });
