@@ -794,6 +794,15 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div class>No errors while typing</div>`,
     },
+    {
+      code: `<div class="supports-[transform-origin:5%_5%]:grid supports-[display:grid]:grid">https://github.com/tailwindlabs/tailwindcss/pull/9453</div>`,
+    },
+    {
+      code: `<div class="px-5 max-sm:px-2 sm:px-4">https://github.com/tailwindlabs/tailwindcss/pull/9558</div>`,
+    },
+    {
+      code: `<div aria-checked="true" class="bg-gray-600 aria-checked:bg-blue-600">https://github.com/tailwindlabs/tailwindcss/pull/9557</div>`,
+    },
   ],
 
   invalid: [
