@@ -587,6 +587,27 @@ ruleTester.run("no-contradicting-classname", rule, {
       />`,
       errors: generateErrors("[clip-path:circle(90%_at_center)] [clip-path:circle(100%_at_center)]"),
     },
+    {
+      code: `
+      <div class="fill-white fill-none">
+        Conflicting fill
+      </div>`,
+      errors: generateErrors("fill-white fill-none"),
+    },
+    {
+      code: `
+      <div class="stroke-white stroke-none">
+        Conflicting stroke
+      </div>`,
+      errors: generateErrors("stroke-white stroke-none"),
+    },
+    {
+      code: `
+      <div class="-outline-offset-2 outline-offset-4">
+        Conflicting outline offset
+      </div>`,
+      errors: generateErrors("-outline-offset-2 outline-offset-4"),
+    },
     // {
     //   code: `
     //   <div class="scale-75 transform-none">
