@@ -109,3 +109,7 @@ Finally, the plugin will [merge the provided configuration](https://tailwindcss.
 ### `tags` (default: `[]`)
 
 Optional, if you are using tagged templates, you should provide the tags in this array.
+
+### `classRegex` (default: `"^class(Name)?$"`)
+
+Optional, can be used to support custom attribues

@@ -83,6 +83,10 @@ The `whitelist` options should be set to:
 - or if you don't like regular expressions (but you should):
   `['skin\\-summer', 'skin\\-xmas', 'custom\\-1', 'custom\\-2', 'custom\\-3']`
 
+### `classRegex` (default: `"^class(Name)?$"`)
+
+Optional, can be used to support custom attribues
+
 ## Further Reading
 
 This rule will not fix the issue but will let you know about the issue.

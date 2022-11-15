@@ -176,6 +176,8 @@ All these settings have nice default values that are explained in each rules' do
       cssFilesRefreshRate: 5_000,
       removeDuplicates: true,
       whitelist: [],
+      tags: [],
+      classRegex: "^class(Name)?$" // can be modified to support custom attributes. E.g. "^tw$" for `twin.macro`
     },
   },
 }

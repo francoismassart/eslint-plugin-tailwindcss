@@ -58,3 +58,7 @@ Duplicate classnames are automatically removed but you can always disable this b
 ### `tags` (default: `[]`)
 
 Optional, if you are using tagged templates, you should provide the tags in this array.
+
+### `classRegex` (default: `"^class(Name)?$"`)
+
+Optional, can be used to support custom attribues
