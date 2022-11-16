@@ -24,6 +24,16 @@ var parserOptions = {
   },
 };
 
+const skipClassAttributeOptions = [
+  {
+    skipClassAttribute: true,
+    config: {
+      theme: {},
+      plugins: [],
+    },
+  },
+];
+
 var generateError = (classnames, shorthand) => {
   return {
     messageId: "shorthandCandidateDetected",
@@ -88,6 +98,12 @@ ruleTester.run("shorthands", rule, {
     },
     {
       code: `<div class>No errors while typing</div>`,
+    },
+    {
+      code: `
+      <div className={"px-0 py-[0]"}>skipClassAttribute</div>
+      `,
+      options: skipClassAttributeOptions,
     },
   ],
 
@@ -451,6 +467,16 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
       errors: [generateError(["border-spacing-x-px", "border-spacing-y-px"], "border-spacing-px")],
+    },
+    {
+      code: `
+      <div className={\`mr-px ml-px \${ctl('mt-0 mb-0')}\`}>skipClassAttribute</div>
+      `,
+      output: `
+      <div className={\`mr-px ml-px \${ctl('my-0')}\`}>skipClassAttribute</div>
+      `,
+      options: skipClassAttributeOptions,
+      errors: [generateError(["mt-0", "mb-0"], "my-0")],
     },
   ],
 });

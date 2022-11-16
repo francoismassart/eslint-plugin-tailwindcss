@@ -26,6 +26,7 @@ Examples of **correct** code for this rule:
   "callees": Array<string>,
   "config": <string>|<object>,
   "removeDuplicates": <boolean>,
+  "skipClassAttribute": <boolean>,
   "tags": Array<string>,
 }]
 ...
@@ -54,6 +55,11 @@ Finally, the plugin will [merge the provided configuration](https://tailwindcss.
 ### `removeDuplicates` (default: `true`)
 
 Duplicate classnames are automatically removed but you can always disable this behavior by setting `removeDuplicates` to `false`.
+
+### `skipClassAttribute` (default: `false`)
+
+Set `skipClassAttribute` to `true` if you only want to lint the classnames inside one of the `callees`.
+While, this will avoid linting the `class` and `className` attributes, it will still lint matching `callees` inside of these attributes.
 
 ### `tags` (default: `[]`)
 
