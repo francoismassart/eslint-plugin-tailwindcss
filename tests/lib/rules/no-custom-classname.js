@@ -803,6 +803,14 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div aria-checked="true" class="bg-gray-600 aria-checked:bg-blue-600">https://github.com/tailwindlabs/tailwindcss/pull/9557</div>`,
     },
+    {
+      code: `<div className="custom-but-allowed">negated whitelist will only check classes starting with "text-"</div>`,
+      options: [
+        {
+          whitelist: ["(?!text\\-).*"],
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -1050,6 +1058,19 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("prose-md"),
+    },
+    {
+      code: `
+      <div className="custom-but-allowed bg-404 bg-black text-white md:text-white lg:text-unknown text-color-not-found">
+        negated whitelist, will only detect custom classes starting with "text-"
+      </div>
+      `,
+      options: [
+        {
+          whitelist: ["(?!(bg|text)\\-).*"],
+        },
+      ],
+      errors: generateErrors("bg-404 lg:text-unknown text-color-not-found"),
     },
   ],
 });
