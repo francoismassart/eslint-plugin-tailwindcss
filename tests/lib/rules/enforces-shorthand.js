@@ -452,5 +452,18 @@ ruleTester.run("shorthands", rule, {
       `,
       errors: [generateError(["border-spacing-x-px", "border-spacing-y-px"], "border-spacing-px")],
     },
+    {
+      code: `
+      <div class="p-2 pl-2 pr-2">
+        Issue #182
+      </div>
+      `,
+      output: `
+      <div class="p-2">
+        Issue #182
+      </div>
+      `,
+      errors: [generateError(["p-2", "pl-2", "pr-2"], "p-2")],
+    },
   ],
 });
