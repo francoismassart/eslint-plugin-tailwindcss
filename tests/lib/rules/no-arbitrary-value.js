@@ -79,16 +79,11 @@ ruleTester.run("no-arbitrary-value", rule, {
     {
       code: `
       <nav
-        className={cns("flex relative flex-row rounded-lg select-none", {
+        className={classnames("flex relative flex-row rounded-lg select-none", {
           "bg-gray-200 p-1": !size,
           "bg-gray-100 p-[3px]": size === "sm",
         })}
       />`,
-      options: [
-        {
-          callees: ["cns"],
-        },
-      ],
       errors: generateErrors("p-[3px]"),
     },
     {
@@ -101,6 +96,18 @@ ruleTester.run("no-arbitrary-value", rule, {
         ]
       );`,
       errors: generateErrors("text-[length:var(--font-size)] rounded-[2em] p-[4vw] leading-[1]"),
+    },
+    {
+      code: `
+      cva({
+        primary: ["[mask-type:luminance] container flex bg-[rgba(10,20,30,0.5)] w-12 sm:w-6 lg:w-4"],
+      });`,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: generateErrors("[mask-type:luminance] bg-[rgba(10,20,30,0.5)]"),
     },
   ],
 });

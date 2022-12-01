@@ -465,5 +465,19 @@ ruleTester.run("shorthands", rule, {
       `,
       errors: [generateError(["p-2", "pl-2", "pr-2"], "p-2")],
     },
+    {
+      code: `cva({
+          primary: ["border-l-0 border-r-0"],
+        });`,
+      output: `cva({
+          primary: ["border-x-0"],
+        });`,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: [generateError(["border-l-0", "border-r-0"], "border-x-0")],
+    },
   ],
 });

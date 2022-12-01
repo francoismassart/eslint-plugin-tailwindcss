@@ -608,6 +608,18 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>`,
       errors: generateErrors("-outline-offset-2 outline-offset-4"),
     },
+    {
+      code: `
+      cva({
+        primary: ["px-2 px-4"],
+      });`,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: generateErrors(["px-2 px-4"]),
+    },
     // {
     //   code: `
     //   <div class="scale-75 transform-none">
