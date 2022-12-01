@@ -492,6 +492,20 @@ ruleTester.run("classnames-order", rule, {
       errors: errors,
     },
     {
+      code: `cva({
+          primary: ["absolute bottom-0 w-full h-[70px] flex flex-col"],
+        })`,
+      output: `cva({
+          primary: ["absolute bottom-0 flex h-[70px] w-full flex-col"],
+        })`,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: errors,
+    },
+    {
       code: `<div className={clsx(\`absolute bottom-0 w-full h-[270px] flex flex-col\`)}>clsx</div>`,
       output: `<div className={clsx(\`absolute bottom-0 flex h-[270px] w-full flex-col\`)}>clsx</div>`,
       options: [

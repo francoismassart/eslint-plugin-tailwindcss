@@ -811,6 +811,35 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+        cva({
+          variants: {
+            variant: {
+              primary: ["sm:w-6 w-8 container w-12 flex lg:w-4"],
+              primary: ["sm:w-6 w-8 container w-12 flex lg:w-4"],
+            },
+          },
+      });
+      `,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+    },
+    {
+      code: `
+        cva({
+          primary: ["sm:w-6 w-8 container w-12 flex lg:w-4"],
+        });
+      `,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+    },
   ],
 
   invalid: [
