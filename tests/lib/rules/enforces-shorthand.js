@@ -478,5 +478,18 @@ ruleTester.run("shorthands", rule, {
       options: skipClassAttributeOptions,
       errors: [generateError(["mt-0", "mb-0"], "my-0")],
     },
+    {
+      code: `
+      <div class="p-2 pl-2 pr-2">
+        Issue #182
+      </div>
+      `,
+      output: `
+      <div class="p-2">
+        Issue #182
+      </div>
+      `,
+      errors: [generateError(["p-2", "pl-2", "pr-2"], "p-2")],
+    },
   ],
 });

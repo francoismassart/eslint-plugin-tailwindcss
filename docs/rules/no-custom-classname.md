@@ -89,6 +89,19 @@ The `whitelist` options should be set to:
 - or if you don't like regular expressions (but you should):
   `['skin\\-summer', 'skin\\-xmas', 'custom\\-1', 'custom\\-2', 'custom\\-3']`
 
+### Using negative lookahead expression
+
+If you want to **allow the usage of custom classname while checking the existence of specific Tailwind CSS classnames**, you can use negative lookahead expression in the whitelisted regex.
+
+e.g. I want to allow custom classnames while checking the validity of the `text-` and `bg-` classnames:
+
+```js
+[
+  // white list any classname which does NOT start with `bg-` and `text-`
+  "(?!(bg|text)\\-).*",
+];
+```
+
 ## Further Reading
 
 This rule will not fix the issue but will let you know about the issue.
