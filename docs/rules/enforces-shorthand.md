@@ -36,6 +36,7 @@ If indeed, you are using the `classnames-order` rule, then it'll be automaticall
 "tailwindcss/enforces-shorthand": [<enabled>, {
   "callees": Array<string>,
   "config": <string>|<object>,
+  "skipClassAttribute": <boolean>,
   "tags": Array<string>,
 }]
 ...
@@ -60,6 +61,11 @@ If the external file cannot be loaded (e.g. incorrect path or deleted file), an 
 It is also possible to directly inject a configuration as plain `object` like `{ prefix: "tw-", theme: { ... } }`.
 
 Finally, the plugin will [merge the provided configuration](https://tailwindcss.com/docs/configuration#referencing-in-java-script) with [Tailwind CSS's default configuration](https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js).
+
+### `skipClassAttribute` (default: `false`)
+
+Set `skipClassAttribute` to `true` if you only want to lint the classnames inside one of the `callees`.
+While, this will avoid linting the `class` and `className` attributes, it will still lint matching `callees` inside of these attributes.
 
 ### `tags` (default: `[]`)
 

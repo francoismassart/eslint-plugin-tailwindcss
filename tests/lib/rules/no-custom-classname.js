@@ -23,6 +23,15 @@ var parserOptions = {
   },
 };
 
+const skipClassAttributeOptions = [
+  {
+    skipClassAttribute: true,
+    config: {
+      theme: {},
+      plugins: [],
+    },
+  },
+];
 var generateErrors = (classnames) => {
   const errors = [];
   if (typeof classnames === "string") {
@@ -1058,6 +1067,13 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("prose-md"),
+    },
+    {
+      code: `
+      <p className={\`yolo \${ctl('border-t-nada')}\`}>border-t-nada</p>
+      `,
+      options: skipClassAttributeOptions,
+      errors: generateErrors("border-t-nada"),
     },
     {
       code: `

@@ -60,6 +60,16 @@ const sharedOptions = [
   },
 ];
 
+const skipClassAttributeOptions = [
+  {
+    skipClassAttribute: true,
+    config: {
+      theme: {},
+      plugins: [],
+    },
+  },
+];
+
 ruleTester.run("classnames-order", rule, {
   valid: [
     {
@@ -245,6 +255,12 @@ ruleTester.run("classnames-order", rule, {
     },
     {
       code: `<div class>No errors while typing</div>`,
+    },
+    {
+      code: `
+      <div className={\`sm:flex block \${ctl('relative w-full overflow-hidden')}\`}>skipClassAttribute</div>
+      `,
+      options: skipClassAttributeOptions,
     },
   ],
   invalid: [
@@ -813,6 +829,16 @@ ruleTester.run("classnames-order", rule, {
       // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/131
       code: `<Button className={\`relative w-full h-full overflow-hidden\`}>{name}</Button>`,
       output: `<Button className={\`relative h-full w-full overflow-hidden\`}>{name}</Button>`,
+      errors: errors,
+    },
+    {
+      code: `
+      <div className={\`sm:flex block \${ctl('w-full relative')}\`}>skipClassAttribute</div>
+      `,
+      output: `
+      <div className={\`sm:flex block \${ctl('relative w-full')}\`}>skipClassAttribute</div>
+      `,
+      options: skipClassAttributeOptions,
       errors: errors,
     },
   ],

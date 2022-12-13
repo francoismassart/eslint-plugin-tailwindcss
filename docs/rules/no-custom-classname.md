@@ -27,6 +27,7 @@ Examples of **correct** code for this rule:
   "config": <string>|<object>,
   "cssFiles": Array<string>,
   "cssFilesRefreshRate": <number>,
+  "skipClassAttribute": <boolean>,
   "tags": Array<string>,
   "whitelist": Array<string>,
 }]
@@ -66,6 +67,11 @@ Each `css` files will be processed in order to extract the declared classnames i
 The plugin read and parses CSS files which can be a time consuming process depending on your files.
 
 By default, it runs the process if files were updated for at least 5 seconds (`5_000` ms) but you can increase this setting to enhance performances while reducing the update interval.
+
+### `skipClassAttribute` (default: `false`)
+
+Set `skipClassAttribute` to `true` if you only want to lint the classnames inside one of the `callees`.
+While, this will avoid linting the `class` and `className` attributes, it will still lint matching `callees` inside of these attributes.
 
 ### `tags` (default: `[]`)
 
