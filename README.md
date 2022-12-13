@@ -37,6 +37,7 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- ADD: New option `skipClassAttribute` you can turn on to only lint the `callees`
 - FIX: support for Tailwind CSS version `3.2.3`
 - FIX: [prefix parsing when using attribute variants](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/164)
 - FIX: [add support for contradicting arbitrary properties](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/163)
@@ -178,6 +179,7 @@ All these settings have nice default values that are explained in each rules' do
       ],
       cssFilesRefreshRate: 5_000,
       removeDuplicates: true,
+      skipClassAttribute: false,
       whitelist: [],
     },
   },

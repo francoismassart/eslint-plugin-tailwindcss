@@ -23,6 +23,16 @@ var parserOptions = {
   },
 };
 
+const skipClassAttributeOptions = [
+  {
+    skipClassAttribute: true,
+    config: {
+      theme: {},
+      plugins: [],
+    },
+  },
+];
+
 var generateErrors = (classnames) => {
   const errors = [];
   if (typeof classnames === "string") {
@@ -48,6 +58,10 @@ ruleTester.run("no-arbitrary-value", rule, {
     },
     {
       code: `<div class>No errors while typing</div>`,
+    },
+    {
+      code: `<div class="w-[10px]">Skip class attribute</div>`,
+      options: skipClassAttributeOptions,
     },
   ],
 
@@ -108,6 +122,11 @@ ruleTester.run("no-arbitrary-value", rule, {
         },
       ],
       errors: generateErrors("[mask-type:luminance] bg-[rgba(10,20,30,0.5)]"),
+    },
+    {
+      code: `<div className={ctl('w-[10px]')}>Skip class attribute</div>`,
+      options: skipClassAttributeOptions,
+      errors: generateErrors("w-[10px]"),
     },
   ],
 });

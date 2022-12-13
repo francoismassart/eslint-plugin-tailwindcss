@@ -23,6 +23,16 @@ var parserOptions = {
   },
 };
 
+const skipClassAttributeOptions = [
+  {
+    skipClassAttribute: true,
+    config: {
+      theme: {},
+      plugins: [],
+    },
+  },
+];
+
 var ruleTester = new RuleTester({ parserOptions });
 
 ruleTester.run("migration-from-tailwind-2", rule, {
@@ -245,6 +255,20 @@ ruleTester.run("migration-from-tailwind-2", rule, {
           data: {
             deprecated: "flex-shrink",
             updated: "shrink",
+          },
+        },
+      ],
+    },
+    {
+      code: `<div className={\`flex flex-shrink \${ctl('placeholder-red-900')}\`}></div>`,
+      output: `<div className={\`flex flex-shrink \${ctl('placeholder:text-red-900')}\`}></div>`,
+      options: skipClassAttributeOptions,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "placeholder-red-900",
+            updated: "placeholder:text-red-900",
           },
         },
       ],

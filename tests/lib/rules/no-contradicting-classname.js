@@ -23,6 +23,16 @@ var parserOptions = {
   },
 };
 
+const skipClassAttributeOptions = [
+  {
+    skipClassAttribute: true,
+    config: {
+      theme: {},
+      plugins: [],
+    },
+  },
+];
+
 var config = [
   {
     config: {
@@ -619,6 +629,14 @@ ruleTester.run("no-contradicting-classname", rule, {
         },
       ],
       errors: generateErrors(["px-2 px-4"]),
+    },
+    {
+      code: `
+      <div className={\`stroke-white stroke-none \${ctl('-outline-offset-2 outline-offset-4')}\`}>
+        Conflicting outline offset
+      </div>`,
+      options: skipClassAttributeOptions,
+      errors: generateErrors("-outline-offset-2 outline-offset-4"),
     },
     // {
     //   code: `
