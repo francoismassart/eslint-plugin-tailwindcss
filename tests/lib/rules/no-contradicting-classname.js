@@ -620,6 +620,18 @@ ruleTester.run("no-contradicting-classname", rule, {
     },
     {
       code: `
+      cva({
+        primary: ["px-2 px-4"],
+      });`,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: generateErrors(["px-2 px-4"]),
+    },
+    {
+      code: `
       <div className={\`stroke-white stroke-none \${ctl('-outline-offset-2 outline-offset-4')}\`}>
         Conflicting outline offset
       </div>`,

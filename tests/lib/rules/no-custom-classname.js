@@ -785,7 +785,7 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `
       <div class="grid-flow-dense mix-blend-plus-lighter border-separate border-spacing-4">
-      grid-flow-dense, mix-blend-plus-lighter	
+      grid-flow-dense, mix-blend-plus-lighter
       </div>`,
     },
     {
@@ -817,6 +817,35 @@ ruleTester.run("no-custom-classname", rule, {
       options: [
         {
           whitelist: ["(?!text\\-).*"],
+        },
+      ],
+    },
+    {
+      code: `
+        cva({
+          variants: {
+            variant: {
+              primary: ["sm:w-6 w-8 container w-12 flex lg:w-4"],
+              primary: ["sm:w-6 w-8 container w-12 flex lg:w-4"],
+            },
+          },
+      });
+      `,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+    },
+    {
+      code: `
+        cva({
+          primary: ["sm:w-6 w-8 container w-12 flex lg:w-4"],
+        });
+      `,
+      options: [
+        {
+          callees: ["cva"],
         },
       ],
     },
@@ -1087,6 +1116,37 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("bg-404 lg:text-unknown text-color-not-found"),
+    },
+    {
+      code: `
+        cva({
+          variants: {
+            variant: {
+              primary: ["sm:w-6 w-8 container w-12 flex lg:w-4 hello"],
+              primary: ["sm:w-6 w-8 container w-12 flex lg:w-4 world"],
+            },
+          },
+      });
+      `,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: generateErrors("hello world"),
+    },
+    {
+      code: `
+        cva({
+          primary: ["sm:w-6 w-8 container w-12 flex lg:w-4 hello"],
+        });
+      `,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: generateErrors("hello"),
     },
   ],
 });
