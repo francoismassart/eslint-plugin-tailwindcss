@@ -630,25 +630,25 @@ ruleTester.run("no-contradicting-classname", rule, {
       ],
       errors: generateErrors(["px-2 px-4"]),
     },
-    // {
-    //   /* Issue #135 */
-    //   code: `
-    //   const buttons = cva({
-    //     variants: {
-    //       variant: {
-    //         primary: "bg-white text-black font-bold px-4 bg-red",
-    //         secondary: "bg-black text-white font-semibold px-5 bg-red",
-    //       },
-    //     },
-    //   });
-    //   `,
-    //   options: [
-    //     {
-    //       callees: ["cva"],
-    //     },
-    //   ],
-    //   errors: [...generateErrors("bg-white bg-red"), ...generateErrors("bg-black bg-red")],
-    // },
+    {
+      /* Issue #135 */
+      code: `
+      const buttons = cva({
+        variants: {
+          variant: {
+            primary: "bg-white text-black font-bold px-4 bg-black",
+            secondary: "bg-black text-white font-semibold px-5 bg-transparent",
+          },
+        },
+      });
+      `,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+      errors: [...generateErrors("bg-white bg-black"), ...generateErrors("bg-black bg-transparent")],
+    },
     {
       code: `
       <div className={\`stroke-white stroke-none \${ctl('-outline-offset-2 outline-offset-4')}\`}>
