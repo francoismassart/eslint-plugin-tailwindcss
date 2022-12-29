@@ -102,6 +102,10 @@ e.g. I want to allow custom classnames while checking the validity of the `text-
 ];
 ```
 
+### `classRegex` (default: `"^class(Name)?$"`)
+
+Optional, can be used to support custom attribues
+
 ## Further Reading
 
 This rule will not fix the issue but will let you know about the issue.

@@ -61,6 +61,10 @@ While, this will avoid linting the `class` and `className` attributes, it will s
 
 Optional, if you are using tagged templates, you should provide the tags in this array.
 
+### `classRegex` (default: `"^class(Name)?$"`)
+
+Optional, can be used to support custom attribues
+
 ## Further Reading
 
 This rule will not fix the issue but will let you know about the issue.
