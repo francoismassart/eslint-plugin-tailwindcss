@@ -181,6 +181,8 @@ All these settings have nice default values that are explained in each rules' do
       removeDuplicates: true,
       skipClassAttribute: false,
       whitelist: [],
+      tags: [],
+      classRegex: "^class(Name)?$" // can be modified to support custom attributes. E.g. "^tw$" for `twin.macro`
     },
   },
 }
