@@ -10,20 +10,34 @@ While you can use the official plugin [`prettier-plugin-tailwindcss`](https://ww
 
 **`eslint-plugin-tailwindcss` offers more than 5 other rules, that you can benefit from on top of `prettier-plugin-tailwindcss`. Sounds good ? Keep reading 👇**
 
-## **🎉 Compatible with Tailwind CSS v3 and v2 🎉**
+## Supported Rules
 
-## Make sure to use the correct version
+Learn more about each supported rules by reading their documentation:
 
-- Still using Tailwind CSS v2 ? 👻
-  - You should stick with `v2.x.x` of this plugin (`npm i eslint-plugin-tailwindcss@tw2`)
-- Using Tailwind CSS v3 ? 🚀
-  - Make sure to use `v3.x.x` of this plugin (`npm i eslint-plugin-tailwindcss`
+- [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
+- [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): make sure to use negative arbitrary values classname without the negative classname e.g. `-top-[5px]` should become `top-[-5px]`
+- [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
+- [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from Tailwind CSS `v2` to `v3`.
+  Warning: at the moment you should [temporary turn off the `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88) rule if you want to see the warning from `migration-from-tailwind-2`
+- [`no-arbitrary-value`](docs/rules/no-arbitrary-value.md): forbid using arbitrary values in classnames (turned off by default)
+- [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
+- [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 
-**If you are using the eslint extension, make sure to restart VSCode in order to use the lastest version of the plugin and not the former version from the cache.**
+Using ESLint extension for Visual Studio Code, you will get these messages
+![detected-errors](.github/output.png)
+
+You can can the same information on your favorite command line software as well.
+
+## 🤝 Support `eslint-plugin-tailwindcss`
+
+|                                                                                                                                                                                                                                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Premium Sponsors** <br /> Support us by becoming a sponsor. <br /> [Become a recurring sponsor](https://github.com/sponsors/francoismassart?frequency=recurring)                                                                    | <a href="https://daily.dev/" target="_blank"><img width="150px" src="https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/master/sponsors/daily.dev.jpg"></a>                                                                                                                                                                                                                                                                                                                                                           |
+| **Current Sponsors** <br /> Any amount is appreciated.                                                                                                                                                                                | <a href="https://github.com/acewf" target="_blank"><img src="https://avatars.githubusercontent.com/u/4835572?s=60&amp;v=4" width="30" height="30" alt="@acewf"></a> <a href="https://github.com/charkour" target="_blank"><img src="https://avatars.githubusercontent.com/u/33156025?s=60&amp;v=4" width="30" height="30" alt="@charkour"></a> <a href="https://github.com/dailydotdev" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/41463883?s=60&amp;v=4" width="30" height="30" alt="@dailydotdev"></a> |
+| **Past sponsors** <br /> Even if this is just a one-time thing <br /> [Become a backer](https://github.com/sponsors/francoismassart?frequency=one-time)                                                                               | <a href="https://github.com/mongolyy" target="_blank"><img src="https://avatars.githubusercontent.com/u/10972787?s=60&amp;v=4" width="30" height="30" alt="@mongolyy"></a> <a href="https://github.com/t3dotgg" target="_blank"><img src="https://avatars.githubusercontent.com/u/6751787?s=60&amp;v=4" width="30" height="30" alt="@t3dotgg"></a>                                                                                                                                                                                             |
+| **Contributors** <br /> This project can evolve thanks to all the people who contribute. <br /> You are welcome to [contribute](CONTRIBUTING.md) to this project by reporting issues, feature requests or even opening Pull Requests. | <a href="https://github.com/francoismassart/eslint-plugin-tailwindcss/graphs/contributors"><img src="https://contrib.rocks/image?repo=francoismassart/eslint-plugin-tailwindcss&width=300" /></a>                                                                                                                                                                                                                                                                                                                                              |
 
 ## We need you ❤️
-
-Version 3 of the plugin is brand new and you will most likely experience bugs, please provide feedback by opening issues on GitHub with all the useful informations so that we can fix them all.
 
 If you enjoy my work you can:
 
@@ -43,34 +57,6 @@ If you enjoy my work you can:
 - FIX: support for Tailwind CSS version `3.2.3`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
-
-## Monthly sponsors
-
-<a href="https://daily.dev/" target="_blank">
-  <img width="150px" src="https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/master/sponsors/daily.dev.jpg">
-</a>
-
-## One-time sponsors
-
-[TheoBr](https://github.com/TheoBr) sponsorship gave me a little extra motivation. Thanks, man
-
-## Supported Rules
-
-Learn more about each supported rules by reading their documentation:
-
-- [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
-- [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): make sure to use negative arbitrary values classname without the negative classname e.g. `-top-[5px]` should become `top-[-5px]`
-- [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
-- [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from Tailwind CSS `v2` to `v3`.
-  Warning: at the moment you should [temporary turn off the `no-custom-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/88) rule if you want to see the warning from `migration-from-tailwind-2`
-- [`no-arbitrary-value`](docs/rules/no-arbitrary-value.md): forbid using arbitrary values in classnames (turned off by default)
-- [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
-- [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
-
-Using ESLint extension for Visual Studio Code, you will get these messages
-![detected-errors](.github/output.png)
-
-You can can the same information on your favorite command line software as well.
 
 ## Installation
 
@@ -189,9 +175,3 @@ I wrote this plugin after searching for existing tools which perform the same ta
 - [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss), the official plugin, only takes care of ordering classnames, do not support array of classnames, do not support blade
 - [eslint-plugin-tailwind](https://www.npmjs.com/package/eslint-plugin-tailwind), not bad but no support (yet) for variants sorting
 - [Headwind](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind), only works within Visual Studio Code
-
-## Contributing
-
-You are welcome to contribute to this project by reporting issues, feature requests or even opening Pull Requests.
-
-Learn more about [contributing to ESLint-plugin-Tailwind CSS](CONTRIBUTING.md).
