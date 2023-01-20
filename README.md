@@ -83,7 +83,7 @@ $ npm i -D eslint
 Next, install the latest version of `eslint-plugin-tailwindcss` if you are using Tailwind CSS v3
 
 ```
-$ npm i -D eslint-plugin-tailwindcss
+$ npm i -D tailwindcss eslint-plugin-tailwindcss
 ```
 
 > ### Still using Tailwind CSS v2?
