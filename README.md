@@ -51,6 +51,8 @@ If you enjoy my work you can:
 
 ## Latest changelog
 
+- fix: [default parsers in the `recommended` preset](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/165)
+- fix: [move `tailwindcss` to `peerDependencies`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/201) (by [xeho91](https://github.com/xeho91) 🙏)
 - feat: [Lint values in a object](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/135)
 - feat: [Support for Object syntax in custom callees beside `classnames`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/185)(by [dipsaus9](https://github.com/dipsaus9) 🙏)
 - feat: [New option `skipClassAttribute`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/154) you can turn on to only lint the `callees`
@@ -60,63 +62,56 @@ If you enjoy my work you can:
 
 ## Installation
 
+### 1. Install `eslint`
+
 You'll first need to install [ESLint](http://eslint.org):
 
 ```
 $ npm i -D eslint
 ```
 
-Next, install the latest version of `eslint-plugin-tailwindcss` if you are using Tailwind CSS v3
+Then, create you `.eslintrc.js` file
+
+```js
+module.exports = {
+  root: true,
+};
+```
+
+### 2. Install `eslint-plugin-tailwindcss`
 
 ```
 $ npm i -D tailwindcss eslint-plugin-tailwindcss
 ```
 
-> ### Still using Tailwind CSS v2?
->
-> 👉 Install the latest version compatible with Tailwind CSS v2 via `npm i -D eslint-plugin-tailwindcss@tw2`
->
-> Please note that new rules might not be available in the `tw2` distribution
+Edit your `.eslintrc` file to use our [`recommended` preset](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/master/lib/index.js#L24) to get reasonable defaults:
 
-Add `tailwindcss` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
-
-```json
-{
-  "plugins": ["tailwindcss"]
-}
+```js
+module.exports = {
+  root: true,
+  extends: ["plugin:tailwindcss/recommended"],
+};
 ```
 
-## Configuration
-
-Use our preset to get reasonable defaults:
-
-```
-  "extends": [
-    "plugin:tailwindcss/recommended"
-  ]
-```
-
-If you do not use a preset you will need to specify individual rules and add extra configuration:
-
-Configure the rules you want to use under the rules section.
-
-> The following lines are matching the configuration saved in the `recommended` preset...
-
-```json
-{
-  "rules": {
-    "tailwindcss/classnames-order": "warn",
-    "tailwindcss/enforces-negative-arbitrary-values": "warn",
-    "tailwindcss/enforces-shorthand": "warn",
-    "tailwindcss/migration-from-tailwind-2": "warn",
-    "tailwindcss/no-arbitrary-value": "off",
-    "tailwindcss/no-custom-classname": "warn",
-    "tailwindcss/no-contradicting-classname": "error"
-  }
-}
-```
+> If you do not use our preset you will need to specify individual rules and add extra configuration...
 
 Learn more about [Configuring Rules in ESLint](https://eslint.org/docs/user-guide/configuring/rules).
+
+### 3. Add a npm script
+
+In your `package.json` add one or more script(s) to run eslint targeting your source files:
+
+```json5
+"scripts": {
+  "lint": "eslint ./src",
+  "lint:debug": "eslint ./src --debug",
+  "lint:fix": "eslint ./src --fix"
+},
+```
+
+### 4. Run the linting task
+
+`npm run lint` can do the job on demand but you can also get live feedback using [VS Code ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), **just make sure you restart VS Code** as it can be required for the plugin to work as expected.
 
 ## Optional shared settings
 
@@ -167,11 +162,3 @@ The plugin will look for each setting value in this order and stop looking as so
 - `only-valid-arbitrary-values`:
   - e.g. avoid `top-[42]`, only `0` value can be unitless.
   - e.g. avoid `text-[rgba(10%,20%,30,50%)]`, can't mix `%` and `0-255`.
-
-## Alternatives
-
-I wrote this plugin after searching for existing tools which perform the same task but didn't satisfied my needs:
-
-- [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss), the official plugin, only takes care of ordering classnames, do not support array of classnames, do not support blade
-- [eslint-plugin-tailwind](https://www.npmjs.com/package/eslint-plugin-tailwind), not bad but no support (yet) for variants sorting
-- [Headwind](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind), only works within Visual Studio Code
