@@ -14,7 +14,7 @@ While you can use the official plugin [`prettier-plugin-tailwindcss`](https://ww
 
 Learn more about each supported rules by reading their documentation:
 
-- [`classnames-order`](docs/rules/classnames-order.md): order classnames by target properties then by variants (`[size:][theme:][state:]`)
+- [`classnames-order`](docs/rules/classnames-order.md): order classnames for consistency and it makes merge conflict a bit easier to resolve
 - [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): make sure to use negative arbitrary values classname without the negative classname e.g. `-top-[5px]` should become `top-[-5px]`
 - [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
 - [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from Tailwind CSS `v2` to `v3`.
@@ -30,27 +30,17 @@ You can can the same information on your favorite command line software as well.
 
 ## 🤝 Support `eslint-plugin-tailwindcss`
 
-|                                                                                                                                                                                                                                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Premium Sponsors** <br /> Support us by becoming a sponsor. <br /> [Become a recurring sponsor](https://github.com/sponsors/francoismassart?frequency=recurring)                                                                    | <a href="https://daily.dev/" target="_blank"><img width="150px" src="https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/master/sponsors/daily.dev.jpg"></a>                                                                                                                                                                                                                                                                                                                                                           |
-| **Current Sponsors** <br /> Any amount is appreciated.                                                                                                                                                                                | <a href="https://github.com/acewf" target="_blank"><img src="https://avatars.githubusercontent.com/u/4835572?s=60&amp;v=4" width="30" height="30" alt="@acewf"></a> <a href="https://github.com/charkour" target="_blank"><img src="https://avatars.githubusercontent.com/u/33156025?s=60&amp;v=4" width="30" height="30" alt="@charkour"></a> <a href="https://github.com/dailydotdev" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/41463883?s=60&amp;v=4" width="30" height="30" alt="@dailydotdev"></a> |
-| **Past sponsors** <br /> Even if this is just a one-time thing <br /> [Become a backer](https://github.com/sponsors/francoismassart?frequency=one-time)                                                                               | <a href="https://github.com/mongolyy" target="_blank"><img src="https://avatars.githubusercontent.com/u/10972787?s=60&amp;v=4" width="30" height="30" alt="@mongolyy"></a> <a href="https://github.com/t3dotgg" target="_blank"><img src="https://avatars.githubusercontent.com/u/6751787?s=60&amp;v=4" width="30" height="30" alt="@t3dotgg"></a>                                                                                                                                                                                             |
-| **Contributors** <br /> This project can evolve thanks to all the people who contribute. <br /> You are welcome to [contribute](CONTRIBUTING.md) to this project by reporting issues, feature requests or even opening Pull Requests. | <a href="https://github.com/francoismassart/eslint-plugin-tailwindcss/graphs/contributors"><img src="https://contrib.rocks/image?repo=francoismassart/eslint-plugin-tailwindcss&width=300&columns=4" /></a>                                                                                                                                                                                                                                                                                                                                    |
-
-## We need you ❤️
-
-If you enjoy my work you can:
-
-- [Share the plugin on Twitter](https://twitter.com/hashtag/eslint-plugin-tailwindcss)
-- Contribute to the project by:
-  - Giving feedback
-  - Creating an issue
-  - Make a pull request
-  - Write a feature request
-- Give back and [sponsor its development](https://github.com/sponsors/francoismassart)
+| 🥰 How you can support us?                                                                                                                                                                                                            | 💪 They did it!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Premium Sponsors** <br /> Support us by becoming a sponsor. <br /> [Become a recurring sponsor](https://github.com/sponsors/francoismassart?frequency=recurring)                                                                    | <a href="https://daily.dev/" target="_blank"><img width="150" src="https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/master/sponsors/daily.dev.jpg"></a>                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **Current Sponsors** <br /> Any amount is appreciated.                                                                                                                                                                                | <a href="https://github.com/acewf" target="_blank"><img src="https://avatars.githubusercontent.com/u/4835572?s=150&amp;v=4" width="75" height="75" style="border-radius:100%;" alt="@acewf"></a> <a href="https://github.com/charkour" target="_blank"><img src="https://avatars.githubusercontent.com/u/33156025?s=150&amp;v=4" width="75" height="75" style="border-radius:100%;" alt="@charkour"></a> <a href="https://github.com/dailydotdev" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/41463883?s=150&amp;v=4" width="75" height="75" style="border-radius:100%;" alt="@dailydotdev"></a> |
+| **Past sponsors** <br /> Even if this is just a one-time thing. <br /> [Become a backer](https://github.com/sponsors/francoismassart?frequency=one-time)                                                                              | <a href="https://github.com/mongolyy" target="_blank"><img src="https://avatars.githubusercontent.com/u/10972787?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@mongolyy"></a> <a href="https://github.com/t3dotgg" target="_blank"><img src="https://avatars.githubusercontent.com/u/6751787?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@t3dotgg"></a>                                                                                                                                                                                                                          |
+| **Contributors** <br /> This project can evolve thanks to all the people who contribute. <br /> You are welcome to [contribute](CONTRIBUTING.md) to this project by reporting issues, feature requests or even opening Pull Requests. | <a href="https://github.com/francoismassart/eslint-plugin-tailwindcss/graphs/contributors"><img src="https://contrib.rocks/image?repo=francoismassart/eslint-plugin-tailwindcss&width=300&columns=4" /></a>                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Supporters** <br /> Talk about the plugin on your social networks                                                                                                                                                                   | <a href="https://twitter.com/search?q=eslint-plugin-tailwindcss&src=recent_search_click" target="_blank">eslint-plugin-tailwindcss on Twitter</a>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ## Latest changelog
 
+- fix: [using `vue-eslint-parser` as default parser for `*.vue` files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/203)
 - fix: [default parsers in the `recommended` preset](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/165)
 - fix: [move `tailwindcss` to `peerDependencies`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/201) (by [xeho91](https://github.com/xeho91) 🙏)
 - feat: [Lint values in a object](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/135)
@@ -113,14 +103,19 @@ In your `package.json` add one or more script(s) to run eslint targeting your so
 
 `npm run lint` can do the job on demand but you can also get live feedback using [VS Code ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), **just make sure you restart VS Code** as it can be required for the plugin to work as expected.
 
-## Optional shared settings
+## More settings
 
-Most rules shares the same settings, instead of duplicating some options...
+The rules accept settings meant to fit your own choices, make sure to read the [documentation of each rule](https://github.com/francoismassart/eslint-plugin-tailwindcss/tree/master/docs/rules).
 
-You should also specify settings that will be shared across all the plugin rules.
-[More about eslint shared settings](https://eslint.org/docs/user-guide/configuring#adding-shared-settings).
+### Optional shared settings
 
-All these settings have nice default values that are explained in each rules' documentation. I'm listing them in the code below just to show them.
+Most rules share the same settings, instead of duplicating the options all over the place...
+
+You should define the [shared settings](https://eslint.org/docs/user-guide/configuring#adding-shared-settings) that will be shared across all the plugin rules.
+
+All these settings already have nice default values that are explained in the documentation.
+
+FYI, here are the `default` values:
 
 ```json5
 {
@@ -147,7 +142,7 @@ All these settings have nice default values that are explained in each rules' do
 }
 ```
 
-The plugin will look for each setting value in this order and stop looking as soon as it finds the settings:
+The plugin will look for each setting in this order and stops searching as soon as it finds the settings:
 
 1. In the rule option argument (rule level)
 2. In the shared settings (plugin level)
