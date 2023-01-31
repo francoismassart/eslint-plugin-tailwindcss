@@ -40,6 +40,8 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- docs: recommended parsers
+- revert: removing default parsers from `recommended` preset and `dependencies`
 - fix: [using `vue-eslint-parser` as default parser for `*.vue` files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/203)
 - fix: [default parsers in the `recommended` preset](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/165)
 - fix: [move `tailwindcss` to `peerDependencies`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/201) (by [xeho91](https://github.com/xeho91) 🙏)
@@ -71,7 +73,7 @@ module.exports = {
 ### 2. Install `eslint-plugin-tailwindcss`
 
 ```
-$ npm i -D tailwindcss eslint-plugin-tailwindcss
+$ npm i -D eslint-plugin-tailwindcss
 ```
 
 Edit your `.eslintrc` file to use our [`recommended` preset](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/master/lib/index.js#L24) to get reasonable defaults:
@@ -87,7 +89,49 @@ module.exports = {
 
 Learn more about [Configuring Rules in ESLint](https://eslint.org/docs/user-guide/configuring/rules).
 
-### 3. Add a npm script
+### 3. Configure ESLint parsers
+
+Depending on the languages you are using in your project you must tell which parser will analyze your source files.
+
+Our recommendations:
+
+- For `js[x]`, `react`, `ts[x]`:
+  - Install the parser: `npm i -D @typescript-eslint/parser`
+  - Assign it to your files in `eslintrc`:
+    ```json5
+    overrides: [
+      {
+        files: ['*.ts', '*.tsx', '*.js'],
+        parser: '@typescript-eslint/parser',
+      },
+    ],
+    ```
+- For `vue.js`:
+  - Install the parser: `npm i -D vue-eslint-parser`
+  - Assign it to your files in `eslintrc`:
+    ```json5
+    overrides: [
+      {
+        files: ['*.vue'],
+        parser: 'vue-eslint-parser',
+      },
+    ],
+    ```
+- For `HTML` and similar:
+  - Install the parser: `npm i -D @angular-eslint/template-parser`
+  - Assign it to your files in `eslintrc`:
+    ```json5
+    overrides: [
+      {
+        files: ['*.html', '*.blade.php'],
+        parser: '@angular-eslint/template-parser',
+      },
+    ],
+    ```
+
+> We removed the default parsers which were added to `v3.8.2` because it created negative impact on dependencies resolution, bundle size increase and possible conflicts with existing configurations.
+
+### 4. Add a npm script
 
 In your `package.json` add one or more script(s) to run eslint targeting your source files:
 
@@ -99,7 +143,7 @@ In your `package.json` add one or more script(s) to run eslint targeting your so
 },
 ```
 
-### 4. Run the linting task
+### 5. Run the linting task
 
 `npm run lint` can do the job on demand but you can also get live feedback using [VS Code ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), **just make sure you restart VS Code** as it can be required for the plugin to work as expected.
 
