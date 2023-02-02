@@ -273,5 +273,101 @@ ruleTester.run("migration-from-tailwind-2", rule, {
         },
       ],
     },
+    {
+      code: `
+      <template>
+        <span class="placeholder-red-900" />
+      </template>
+      `,
+      output: `
+      <template>
+        <span class="placeholder:text-red-900" />
+      </template>
+      `,
+      options: skipClassAttributeOptions,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "placeholder-red-900",
+            updated: "placeholder:text-red-900",
+          },
+        },
+      ],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <template>
+      <span :class="['flex-shrink']" />
+      </template>
+      `,
+      output: `
+      <template>
+      <span :class="['shrink']" />
+      </template>
+      `,
+      options: skipClassAttributeOptions,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "flex-shrink",
+            updated: "shrink",
+          },
+        },
+      ],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <template>
+      <span :class="{'decoration-slice': false}" />
+      </template>
+      `,
+      output: `
+      <template>
+      <span :class="{'box-decoration-slice': false}" />
+      </template>
+      `,
+      options: skipClassAttributeOptions,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "decoration-slice",
+            updated: "box-decoration-slice",
+          },
+        },
+      ],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <template>
+      <span :class="ctl('flex-grow-0')" />
+      </template>
+      `,
+      output: `
+      <template>
+      <span :class="ctl('grow-0')" />
+      </template>
+      `,
+      options: skipClassAttributeOptions,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "flex-grow-0",
+            updated: "grow-0",
+          },
+        },
+      ],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
   ],
 });
