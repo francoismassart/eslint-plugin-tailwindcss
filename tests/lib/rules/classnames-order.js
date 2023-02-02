@@ -909,5 +909,32 @@ ruleTester.run("classnames-order", rule, {
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
+    {
+      code: `
+      <template>
+        <div :class="[
+          'py-1.5 font-semibold transition', 
+          {
+            'text-white': variant === 'white',
+            'text-blue-500 hover:text-blue-400 border-blue-500': variant === 'primary',
+            'underline decoration-2 underline-offset-[10px]': active
+          }
+        ]" />
+      </template>`,
+      output: `
+      <template>
+        <div :class="[
+          'py-1.5 font-semibold transition', 
+          {
+            'text-white': variant === 'white',
+            'border-blue-500 text-blue-500 hover:text-blue-400': variant === 'primary',
+            'underline decoration-2 underline-offset-[10px]': active
+          }
+        ]" />
+      </template>`,
+      errors: errors,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
   ],
 });
