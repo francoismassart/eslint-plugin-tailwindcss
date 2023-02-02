@@ -881,5 +881,33 @@ ruleTester.run("classnames-order", rule, {
       options: skipClassAttributeOptions,
       errors: errors,
     },
+    {
+      code: `<template><div class="sm:w-6 container w-12">Classnames will be ordered</div></template>`,
+      output: `<template><div class="container w-12 sm:w-6">Classnames will be ordered</div></template>`,
+      errors: errors,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<template><div :class="['sm:py-5 p-4 sm:px-7 lg:p-8']">Enhancing readability</div></template>`,
+      output: `<template><div :class="['p-4 sm:py-5 sm:px-7 lg:p-8']">Enhancing readability</div></template>`,
+      errors: errors,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<template><div v-bind:class="{'grid grid-cols-1 sm:grid-cols-2 sm:px-8 sm:py-12 sm:gap-x-8 md:py-16': true}">:)...</div></template>`,
+      output: `<template><div v-bind:class="{'grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:px-8 sm:py-12 md:py-16': true}">:)...</div></template>`,
+      errors: errors,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<template><div :class="ctl(\`p-10 w-full \${some}\`)" /></template>`,
+      output: `<template><div :class="ctl(\`w-full p-10 \${some}\`)" /></template>`,
+      errors: errors,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
   ],
 });
