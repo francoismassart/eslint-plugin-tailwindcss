@@ -657,6 +657,30 @@ ruleTester.run("no-contradicting-classname", rule, {
       options: skipClassAttributeOptions,
       errors: generateErrors("-outline-offset-2 outline-offset-4"),
     },
+    {
+      code: `
+      <script>
+      export default {
+        data() {
+          return {
+            aClass: 'active',
+            bClass: 'text-danger',
+            cClass: ctl('text-black text-white')
+          }
+        }
+      }
+      </script>
+      <template>
+        <span class="flex block" />
+        <span :class="['p-0 p-px', aClass]" />
+        <span :class="['m-0', bClass, 'm-px']" />
+        <span :class="{'bg-black': true, 'bg-white': false, 'font-bold font-normal': false}" />
+      </template>
+      `,
+      errors: generateErrors(["text-black text-white", "flex block", "p-0 p-px", "m-0 m-px", "font-bold font-normal"]),
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
     // {
     //   code: `
     //   <div class="scale-75 transform-none">
