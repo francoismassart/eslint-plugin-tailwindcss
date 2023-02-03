@@ -912,7 +912,7 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `
       <template>
-        <div :class="[
+        <div v-bind="data" :class="[
           'py-1.5 font-semibold transition', 
           {
             'text-white': variant === 'white',
@@ -923,7 +923,7 @@ ruleTester.run("classnames-order", rule, {
       </template>`,
       output: `
       <template>
-        <div :class="[
+        <div v-bind="data" :class="[
           'py-1.5 font-semibold transition', 
           {
             'text-white': variant === 'white',
