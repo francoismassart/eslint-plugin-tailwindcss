@@ -52,6 +52,11 @@ You can can the same information on your favorite command line software as well.
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
+## Screencasts on our YouTube Channel
+
+| <a href="https://www.youtube.com/@eslint-plugin-tailwind-css"><img src=".github/youtube-eslint-plugin-tailwindcss-round.png" width="80" height="80" alt="YouTube Channel" /></a> | <span style="font-size:18px">[ESLint plugin Tailwind CSS](https://www.youtube.com/@eslint-plugin-tailwind-css)</span><br>youtube.com/@eslint-plugin-tailwindcss |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+
 ## Installation
 
 ### 1. Install `eslint`
