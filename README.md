@@ -40,6 +40,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- feat: add [support for Vue `v-bind:class`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/168)
 - docs: recommended parsers
 - revert: removing default parsers from `recommended` preset and `dependencies`
 - fix: [using `vue-eslint-parser` as default parser for `*.vue` files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/203)
