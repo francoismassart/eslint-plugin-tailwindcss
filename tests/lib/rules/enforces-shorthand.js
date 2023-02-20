@@ -505,5 +505,81 @@ ruleTester.run("shorthands", rule, {
       ],
       errors: [generateError(["border-l-0", "border-r-0"], "border-x-0")],
     },
+    {
+      code: `
+      <template>
+        <div class="overflow-x-auto overflow-y-auto block md:p-0 px-0 py-[0]">
+          Possible shorthand for overflow
+        </div>
+      </template>
+      `,
+      output: `
+      <template>
+        <div class="overflow-auto block md:p-0 px-0 py-[0]">
+          Possible shorthand for overflow
+        </div>
+      </template>
+      `,
+      errors: [generateError(["overflow-x-auto", "overflow-y-auto"], "overflow-auto")],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <template>
+        <div :class="['overscroll-x-contain overscroll-y-contain block', 'md:p-0 px-0 py-[0]']">
+          Possible shorthand for overscroll
+        </div>
+      </template>
+      `,
+      output: `
+      <template>
+        <div :class="['overscroll-contain block', 'md:p-0 px-0 py-[0]']">
+          Possible shorthand for overscroll
+        </div>
+      </template>
+      `,
+      errors: [generateError(["overscroll-x-contain", "overscroll-y-contain"], "overscroll-contain")],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <template>
+        <div :class="{'mt-0 mr-0 mb-0 ml-1': true}">
+          Possible shorthand for margin
+        </div>
+      </template>
+      `,
+      output: `
+      <template>
+        <div :class="{'my-0 mr-0 ml-1': true}">
+          Possible shorthand for margin
+        </div>
+      </template>
+      `,
+      errors: [generateError(["mt-0", "mb-0"], "my-0")],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <template>
+        <div :class="ctl('-mt-1 -mr-1 -mb-1 ml-0')">
+          Possible shorthand for negative margin
+        </div>
+      </template>
+      `,
+      output: `
+      <template>
+        <div :class="ctl('-my-1 -mr-1 ml-0')">
+          Possible shorthand for negative margin
+        </div>
+      </template>
+      `,
+      errors: [generateError(["-mt-1", "-mb-1"], "-my-1")],
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
   ],
 });

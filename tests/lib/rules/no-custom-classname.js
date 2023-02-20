@@ -1175,5 +1175,41 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       errors: generateErrors("hello"),
     },
+    {
+      code: `
+      <script>
+      export default {
+        data() {
+          return {
+            aClass: 'active',
+            bClass: 'text-danger',
+            cClass: ctl('tw-c-class')
+          }
+        }
+      }
+      </script>
+      <template>
+        <span class="tw-unknown-class" />
+        <span :class="['tw-unknown-class', 'tw-unknown-class-two', aClass]" />
+        <span :class="{'tw-unknown-class-key': true, 'tw-unknown-class-key-one tw-unknown-class-key-two': false}" />
+        <span :class="ctl('tw-template-ctl')" />
+      </template>
+      `,
+      options: [
+        {
+          config: {
+            prefix: "tw-",
+            theme: {
+              extend: {},
+            },
+          },
+        },
+      ],
+      errors: generateErrors(
+        "tw-c-class tw-unknown-class tw-unknown-class tw-unknown-class-two tw-unknown-class-key tw-unknown-class-key-one tw-unknown-class-key-two tw-template-ctl"
+      ),
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
   ],
 });

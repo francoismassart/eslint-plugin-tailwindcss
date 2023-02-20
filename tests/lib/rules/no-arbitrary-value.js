@@ -128,5 +128,29 @@ ruleTester.run("no-arbitrary-value", rule, {
       options: skipClassAttributeOptions,
       errors: generateErrors("w-[10px]"),
     },
+    {
+      code: `
+      <script>
+      export default {
+        data() {
+          return {
+            aClass: 'active',
+            bClass: 'text-danger',
+            cClass: ctl('w-[0]')
+          }
+        }
+      }
+      </script>
+      <template>
+        <span class="w-[100px]" />
+        <span :class="['bg-[red]', 'h-[50%]', aClass]" />
+        <span :class="{'w-[0]': true, 'm-[5px] py-[8px]': false}" />
+        <span :class="ctl('border-[2px]')" />
+      </template>
+      `,
+      errors: generateErrors("w-[0] w-[100px] bg-[red] h-[50%] w-[0] m-[5px] py-[8px] border-[2px]"),
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
   ],
 });
