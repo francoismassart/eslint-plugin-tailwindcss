@@ -876,6 +876,26 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    { code: `<div className="group/edit">Custom group name</div>` },
+    { code: `<div className="group-hover/edit:hidden">Custom group name variant</div>` },
+    {
+      code: `<div className="group-hover/edit:custom-class">Custom group name variant</div>`,
+      options: [
+        {
+          whitelist: ["custom-class"],
+        },
+      ],
+    },
+    { code: `<div className="peer/draft">Custom peer name</div>` },
+    { code: `<div className="peer-checked/draft:hidden">Custom peer name variant</div>` },
+    {
+      code: `<div className="peer-checked/draft:custom-class">Custom peer name variant</div>`,
+      options: [
+        {
+          whitelist: ["custom-class"],
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -1210,6 +1230,22 @@ ruleTester.run("no-custom-classname", rule, {
       ),
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<div className="group-hover/edit:unknown-class">Custom group name variant with invalid class name</div>`,
+      errors: generateErrors("group-hover/edit:unknown-class"),
+    },
+    {
+      code: `<div className="group-hover/edit:unknown-class">Custom group name variant with invalid class name</div>`,
+      errors: generateErrors("group-hover/edit:unknown-class"),
+    },
+    {
+      code: `<div className="peer-checked/draft:unknown-class">Custom peer name variant with invalid class name</div>`,
+      errors: generateErrors("peer-checked/draft:unknown-class"),
+    },
+    {
+      code: `<div className="peer-checked/draft:unknown-class">Custom peer name variant with invalid class name</div>`,
+      errors: generateErrors("peer-checked/draft:unknown-class"),
     },
   ],
 });
