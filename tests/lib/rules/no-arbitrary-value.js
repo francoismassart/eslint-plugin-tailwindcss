@@ -71,6 +71,10 @@ ruleTester.run("no-arbitrary-value", rule, {
       errors: generateErrors("w-[10px]"),
     },
     {
+      code: `<div class="group/name:w-[10px]">Arbitrary width in named group!</div>`,
+      errors: generateErrors("group/name:w-[10px]"),
+    },
+    {
       code: `<div className={\`w-[10px]\`}>Arbitrary width!</div>`,
       errors: generateErrors("w-[10px]"),
     },

@@ -532,6 +532,14 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
     },
+    {
+      code: `
+      <div class="group/edit:stroke-[green]">
+        support named group/peer syntax
+      </div>
+      `,
+      options: config,
+    },
   ],
 
   invalid: [

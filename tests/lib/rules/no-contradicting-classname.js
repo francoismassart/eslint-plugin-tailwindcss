@@ -194,6 +194,12 @@ ruleTester.run("no-contradicting-classname", rule, {
     },
     {
       code: `
+      <div class="group/name:scale-75 scale-50">
+        named group
+      </div>`,
+    },
+    {
+      code: `
       <div class="snap-mandatory snap-x">
         <div class="snap-center">
           <img src="https://images.unsplash.com/photo-1604999565976-8913ad2ddb7c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80" />
@@ -680,6 +686,13 @@ ruleTester.run("no-contradicting-classname", rule, {
       errors: generateErrors(["text-black text-white", "flex block", "p-0 p-px", "m-0 m-px", "font-bold font-normal"]),
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <div class="group/name:scale-75 group/name:scale-50">
+        named group
+      </div>`,
+      errors: generateErrors(["group/name:scale-75 group/name:scale-50"]),
     },
     // {
     //   code: `

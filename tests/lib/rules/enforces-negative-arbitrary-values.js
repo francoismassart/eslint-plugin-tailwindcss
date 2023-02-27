@@ -136,5 +136,9 @@ ruleTester.run("enforces-negative-arbitrary-values", rule, {
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
+    {
+      code: `<div class="group/edit:-inset-[1px] group/edit:top-[-1px]">support named group/peer syntax</div>`,
+      errors: generateErrors("group/edit:-inset-[1px]"),
+    },
   ],
 });

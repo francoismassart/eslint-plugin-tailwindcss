@@ -936,5 +936,10 @@ ruleTester.run("classnames-order", rule, {
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
+    {
+      code: `<div class="block group/edit:stroke-0">support named group/peer syntax</div>`,
+      output: `<div class="group/edit:stroke-0 block">support named group/peer syntax</div>`,
+      errors: errors,
+    },
   ],
 });

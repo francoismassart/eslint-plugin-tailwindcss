@@ -105,6 +105,13 @@ ruleTester.run("shorthands", rule, {
       `,
       options: skipClassAttributeOptions,
     },
+    {
+      code: `
+      <div class="group/name:rounded-r-full rounded-l-full">
+        support named group/peer syntax
+      </div>
+      `,
+    },
   ],
 
   invalid: [
@@ -580,6 +587,19 @@ ruleTester.run("shorthands", rule, {
       errors: [generateError(["-mt-1", "-mb-1"], "-my-1")],
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <div class="group/name:rounded-r-full group/name:rounded-l-full">
+        support named group/peer syntax
+      </div>
+      `,
+      output: `
+      <div class="group/name:rounded-full">
+        support named group/peer syntax
+      </div>
+      `,
+      errors: [generateError(["group/name:rounded-r-full", "group/name:rounded-l-full"], "group/name:rounded-full")],
     },
   ],
 });

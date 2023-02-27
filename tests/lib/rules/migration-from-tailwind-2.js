@@ -114,6 +114,19 @@ ruleTester.run("migration-from-tailwind-2", rule, {
       ],
     },
     {
+      code: `<div class="group/name:overflow-ellipsis">support named group/peer syntax</div>`,
+      output: `<div class="group/name:text-ellipsis">support named group/peer syntax</div>`,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "group/name:overflow-ellipsis",
+            updated: "group/name:text-ellipsis",
+          },
+        },
+      ],
+    },
+    {
       code: `<div class="flex-grow-0">flex-grow/shrink</div>`,
       output: `<div class="grow-0">flex-grow/shrink</div>`,
       errors: [
