@@ -40,6 +40,8 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- chore: fix dependency vulnerability (mocha)
+- feat: [support named group/peer syntax](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/215) (by [hampustagerud](https://github.com/hampustagerud) 🙏)
 - feat: add [support for Vue `v-bind:class`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/168)
 - docs: recommended parsers
 - revert: removing default parsers from `recommended` preset and `dependencies`
