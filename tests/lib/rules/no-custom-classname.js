@@ -1247,5 +1247,25 @@ ruleTester.run("no-custom-classname", rule, {
       code: `<div className="peer-checked/draft:unknown-class">Custom peer name variant with invalid class name</div>`,
       errors: generateErrors("peer-checked/draft:unknown-class"),
     },
+    {
+      code: `<div fooClass="foo" bazClass="baz">Issue #216</div>`,
+      errors: generateErrors("foo baz"),
+      options: [
+        {
+          classRegex: `Class$`,
+        },
+      ],
+    },
+    {
+      code: `<template><div enterActiveClass="foo" enterFromClass="baz">Issue #216</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+      errors: generateErrors("foo baz"),
+      options: [
+        {
+          classRegex: `class$`,
+        },
+      ],
+    },
   ],
 });
