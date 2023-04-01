@@ -1034,6 +1034,15 @@ ruleTester.run("no-custom-classname", rule, {
       errors: generateErrors("yo"),
     },
     {
+      code: `Style.clsx(\`\${enabled && "px-2 yo flex"}\`)`,
+      options: [
+        {
+          callees: ["Style.clsx"],
+        },
+      ],
+      errors: generateErrors("yo"),
+    },
+    {
       code: `
       <div
         className={clsx(

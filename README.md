@@ -40,6 +40,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- fix: [callees with dot](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/227)
 - fix: [`no-custom-classname` doesn't work with hyphenated group names](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/226)
 - fix: [default settings conflict](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/212)
 - fix: [`classRegex` ignored in vuejs](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/216)
