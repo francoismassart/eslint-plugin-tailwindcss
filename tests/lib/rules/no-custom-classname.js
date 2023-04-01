@@ -879,6 +879,13 @@ ruleTester.run("no-custom-classname", rule, {
     { code: `<div className="group/edit">Custom group name</div>` },
     { code: `<div className="group-hover/edit:hidden">Custom group name variant</div>` },
     {
+      code: `
+      <div class="group/nav123$#@%^&*_-">
+        <div class="group-hover/nav123$#@%^&*_-:h-0">group/nav123$#@%^&*_-</div>
+      </div>
+      `,
+    },
+    {
       code: `<div className="group-hover/edit:custom-class">Custom group name variant</div>`,
       options: [
         {
