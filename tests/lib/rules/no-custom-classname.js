@@ -903,6 +903,44 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/193
+      const button = cva(["font-semibold", "border", "rounded"], {
+        variants: {
+          intent: {
+            primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
+            secondary: [
+              "bg-white",
+              "text-gray-800",
+              "border-gray-400",
+              "hover:bg-gray-100",
+            ],
+          },
+          size: {
+            small: ["text-sm", "py-1", "px-2"],
+            medium: ["text-base", "py-2", "px-4"],
+          },
+        },
+        compoundVariants: [
+          {
+            intent: "primary",
+            size: "medium",
+            class: "uppercase",
+          },
+        ],
+        defaultVariants: {
+          intent: "primary",
+          size: "medium",
+        },
+      });
+      `,
+      options: [
+        {
+          callees: ["cva"],
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -1282,6 +1320,39 @@ ruleTester.run("no-custom-classname", rule, {
           classRegex: `class$`,
         },
       ],
+    },
+    {
+      code: `
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/193
+      const button = cva(["font-semibold", "border", "rounded"], {
+        variants: {
+          intent: {
+            primary: "yolo bg-blue-500 text-white border-transparent hover:bg-blue-600",
+            secondary: "bg-gray-500 text-black",
+          },
+          size: {
+            small: ["text-sm", "py-1", "px-2"],
+            medium: ["text-base", "py-2", "px-4"],
+          },
+        },
+        compoundVariants: [
+          {
+            intent: "primary",
+            size: "medium",
+            class: ctl("custom"),
+          },
+        ],
+        defaultVariants: {
+          intent: "primary",
+        },
+      });
+      `,
+      options: [
+        {
+          callees: ["cva", "ctl"],
+        },
+      ],
+      errors: generateErrors("yolo custom"),
     },
   ],
 });
