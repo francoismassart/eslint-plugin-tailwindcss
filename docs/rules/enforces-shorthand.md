@@ -42,11 +42,18 @@ If indeed, you are using the `classnames-order` rule, then it'll be automaticall
 ...
 ```
 
-### `callees` (default: `["classnames", "clsx", "ctl"]`)
+### `callees` (default: `["classnames", "clsx", "ctl", "cva", "tv"]`)
 
 If you use some utility library like [@netlify/classnames-template-literals](https://github.com/netlify/classnames-template-literals), you can add its name to the list to make sure it gets parsed by this rule.
 
 For best results, gather the declarative classnames together, avoid mixing conditional classnames in between, move them at the end.
+
+### `ignoredKeys` (default: `["compoundVariants", "defaultVariants"]`)
+
+Using libraries like `cva`, some of its object keys are not meant to contain classnames in its value(s).
+You can specify which key(s) won't be parsed by the plugin using this setting.
+For example, `cva` has `compoundVariants` and `defaultVariants`.
+NB: As `compoundVariants` can have classnames inside its `class` property, you can also use a callee to make sure this inner part gets parsed while its parent is ignored.
 
 ### `config` (default: `"tailwind.config.js"`)
 
