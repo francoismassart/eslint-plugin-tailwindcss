@@ -42,7 +42,7 @@ If indeed, you are using the `classnames-order` rule, then it'll be automaticall
 ...
 ```
 
-### `callees` (default: `["classnames", "clsx", "ctl", "cva"]`)
+### `callees` (default: `["classnames", "clsx", "ctl", "cva", "tv"]`)
 
 If you use some utility library like [@netlify/classnames-template-literals](https://github.com/netlify/classnames-template-literals), you can add its name to the list to make sure it gets parsed by this rule.
 
