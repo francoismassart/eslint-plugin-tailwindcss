@@ -411,10 +411,10 @@ ruleTester.run("no-custom-classname", rule, {
       ],
     },
     {
-      code: `<div className="flex skin-summer custom-2">whitelisted</div>`,
+      code: `<div className="flex skin-summer custom-2 i-heroicons:chevron-up-solid">whitelisted</div>`,
       options: [
         {
-          whitelist: ["skin\\-(summer|xmas)", "custom\\-[1-3]"],
+          whitelist: ["skin\\-(summer|xmas)", "custom\\-[1-3]", "i-heroicons:chevron-up-solid"],
         },
       ],
     },
