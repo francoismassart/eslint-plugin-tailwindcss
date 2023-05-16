@@ -1,6 +1,6 @@
 # eslint-plugin-tailwindcss
 
-![npm (scoped)](https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge) ![npm bundle size (scoped)](https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge)
+![npm latest version](https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge) ![license](https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge) ![downloads](https://img.shields.io/npm/dt/eslint-plugin-tailwindcss?style=for-the-badge)
 
 ![eslint-plugin-tailwindcss logo](.github/logo.png)
 
