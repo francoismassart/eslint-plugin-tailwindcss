@@ -877,13 +877,41 @@ ruleTester.run("no-custom-classname", rule, {
       ],
     },
     { code: `<div className="group/edit">Custom group name</div>` },
+    {
+      code: `<div className="tw-group/edit">Prefix and custom group name</div>`,
+      options: [
+        {
+          config: { prefix: "tw-" },
+        },
+      ],
+    },
     { code: `<div className="group-hover/edit:hidden">Custom group name variant</div>` },
+    {
+      code: `<div className="group-hover/edit:tw-hidden">Prefix and custom group name variant</div>`,
+      options: [
+        {
+          config: { prefix: "tw-" },
+        },
+      ],
+    },
     {
       code: `
       <div class="group/nav123$#@%^&*_-">
         <div class="group-hover/nav123$#@%^&*_-:h-0">group/nav123$#@%^&*_-</div>
       </div>
       `,
+    },
+    {
+      code: `
+      <div class="tw-group/nav123$#@%^&*_-">
+        <div class="group-hover/nav123$#@%^&*_-:tw-h-0">group/nav123$#@%^&*_-</div>
+      </div>
+      `,
+      options: [
+        {
+          config: { prefix: "tw-" },
+        },
+      ],
     },
     {
       code: `<div className="group-hover/edit:custom-class">Custom group name variant</div>`,
@@ -894,7 +922,23 @@ ruleTester.run("no-custom-classname", rule, {
       ],
     },
     { code: `<div className="peer/draft">Custom peer name</div>` },
+    {
+      code: `<div className="tw-peer/draft">Prefix and custom peer name</div>`,
+      options: [
+        {
+          config: { prefix: "tw-" },
+        },
+      ],
+    },
     { code: `<div className="peer-checked/draft:hidden">Custom peer name variant</div>` },
+    {
+      code: `<div className="peer-checked/draft:tw-hidden">Prefix and custom peer name variant</div>`,
+      options: [
+        {
+          config: { prefix: "tw-" },
+        },
+      ],
+    },
     {
       code: `<div className="peer-checked/draft:custom-class">Custom peer name variant</div>`,
       options: [
