@@ -278,6 +278,9 @@ ruleTester.run("classnames-order", rule, {
       `,
       options: skipClassAttributeOptions,
     },
+    {
+      code: `<div class="py-1\u3000px-2 block">Do not treat full width space as class separator</div>`,
+    },
   ],
   invalid: [
     {
@@ -939,11 +942,6 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="block group/edit:stroke-0">support named group/peer syntax</div>`,
       output: `<div class="group/edit:stroke-0 block">support named group/peer syntax</div>`,
-      errors: errors,
-    },
-    {
-      code: `<div class="group-hover:edit:stroke-0 py-1\u3000px-2">Do not treat full width space as class separator</div>`,
-      output: `<div class="py-1\u3000px-2 group-hover:edit:stroke-0">Do not treat full width space as class separator</div>`,
       errors: errors,
     },
   ],
