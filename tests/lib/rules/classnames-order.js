@@ -913,7 +913,7 @@ ruleTester.run("classnames-order", rule, {
       code: `
       <template>
         <div v-bind="data" :class="[
-          'py-1.5 font-semibold transition', 
+          'py-1.5 font-semibold transition',
           {
             'text-white': variant === 'white',
             'text-blue-500 hover:text-blue-400 border-blue-500': variant === 'primary',
@@ -924,7 +924,7 @@ ruleTester.run("classnames-order", rule, {
       output: `
       <template>
         <div v-bind="data" :class="[
-          'py-1.5 font-semibold transition', 
+          'py-1.5 font-semibold transition',
           {
             'text-white': variant === 'white',
             'border-blue-500 text-blue-500 hover:text-blue-400': variant === 'primary',
@@ -939,6 +939,11 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="block group/edit:stroke-0">support named group/peer syntax</div>`,
       output: `<div class="group/edit:stroke-0 block">support named group/peer syntax</div>`,
+      errors: errors,
+    },
+    {
+      code: `<div class="group-hover:edit:stroke-0 py-1\u3000px-2">Do not treat full width space as class separator</div>`,
+      output: `<div class="py-1\u3000px-2 group-hover:edit:stroke-0">Do not treat full width space as class separator</div>`,
       errors: errors,
     },
   ],
