@@ -1354,5 +1354,13 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       errors: generateErrors("yolo custom"),
     },
+    {
+      code: `<div className="px-1\u3000py-2">Full-width space between classes</div>`,
+      errors: generateErrors("px-1\u3000py-2"),
+    },
+    {
+      code: `<div className="\u3000px-1 py-2\u3000">Full-width space before and after classes</div>`,
+      errors: generateErrors("\u3000px-1 py-2\u3000"),
+    },
   ],
 });
