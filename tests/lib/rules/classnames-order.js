@@ -278,6 +278,9 @@ ruleTester.run("classnames-order", rule, {
       `,
       options: skipClassAttributeOptions,
     },
+    {
+      code: `<div class="py-1\u3000px-2 block">Do not treat full width space as class separator</div>`,
+    },
   ],
   invalid: [
     {
@@ -913,7 +916,7 @@ ruleTester.run("classnames-order", rule, {
       code: `
       <template>
         <div v-bind="data" :class="[
-          'py-1.5 font-semibold transition', 
+          'py-1.5 font-semibold transition',
           {
             'text-white': variant === 'white',
             'text-blue-500 hover:text-blue-400 border-blue-500': variant === 'primary',
@@ -924,7 +927,7 @@ ruleTester.run("classnames-order", rule, {
       output: `
       <template>
         <div v-bind="data" :class="[
-          'py-1.5 font-semibold transition', 
+          'py-1.5 font-semibold transition',
           {
             'text-white': variant === 'white',
             'border-blue-500 text-blue-500 hover:text-blue-400': variant === 'primary',
