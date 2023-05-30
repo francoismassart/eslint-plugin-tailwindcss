@@ -244,3 +244,54 @@ describe("parseClassname", function () {
     assert.equal(regex1.exec(str1).groups.negPos, "0");
   });
 });
+
+describe("getGroupIndex", function () {
+  const targetProperties = {
+    Backgrounds: [
+      "Background Image URL",
+      "Background Attachment",
+      "Background Clip",
+      "Background Color",
+      "Deprecated Background Opacity",
+      "Background Origin",
+      "Background Position",
+      "Background Repeat",
+      "Background Size",
+      "Background Image",
+      "Gradient Color Stops",
+    ],
+  };
+  const targetGroups = defaultGroups.filter((g) => Object.keys(targetProperties).includes(g.type));
+
+  it("should have filtered `targetGroups`", function () {
+    assert.equal(targetGroups.length, Object.keys(targetProperties).length);
+  });
+
+  it(`should parse classnames`, function () {
+    let name, actual, expected;
+    name = "md:bg-[url('/image-md.jpg')]";
+    actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 0);
+    expected = {
+      index: 0,
+      name: name,
+      variants: "md:",
+      parentType: "Backgrounds",
+      body: "bg-[url('/",
+      value: "'/image-md.jpg'",
+      shorthand: "",
+      leading: "",
+      trailing: "",
+      important: false,
+    };
+    assert.deepEqual(actual, expected);
+  });
+
+  it(`should get correct group index`, function () {
+    let name, actual, expected;
+    const groups = groupUtil.getGroups(targetGroups, mergedConfig);
+    name = "md:bg-[url(some)]";
+    actual = groupUtil.getGroupIndex(name, groups, mergedConfig.separator);
+    expected = 0;
+    assert.equal(actual, expected);
+  });
+});
