@@ -40,6 +40,8 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- fix: [do not handle non-ASCII whitespace as separator](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/246) (by [uhyo](https://github.com/uhyo) 🙏)
+- fix: [prefix support for named group/peer syntax](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/244) (by [bezbac](https://github.com/bezbac) 🙏)
 - feat: [support tailwind config in typescript](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/242) (by [quesabe](https://github.com/quesabe) 🙏)
   **You may have to upgrade your Tailwind CSS version to `3.3.2`**
 - feat: [add `ignoredKeys` in settings](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/232) used for `cva` or similar
