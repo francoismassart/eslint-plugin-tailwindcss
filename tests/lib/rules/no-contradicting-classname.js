@@ -295,6 +295,9 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `
       <div class="bg-[url('/image.jpg')] bg-center">Issue #186</div>`,
     },
+    {
+      code: `<a href="#" class={['bg-white block']}>issue #177</a>`,
+    },
   ],
 
   invalid: [
@@ -418,7 +421,7 @@ ruleTester.run("no-contradicting-classname", rule, {
           someBoolean ? ["py-1 py-2"] : { "px-2 px-4": someOtherFlag },
         ]
       );`,
-      errors: generateErrors(["p-2 p-4", "w-1 w-2", "py-1 py-2", "px-2 px-4"]),
+      errors: generateErrors(["px-2 px-4", "p-2 p-4", "py-1 py-2", "w-1 w-2"]),
     },
     {
       code: `
