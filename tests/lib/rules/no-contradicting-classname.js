@@ -291,6 +291,10 @@ ruleTester.run("no-contradicting-classname", rule, {
         \`)}
       />`,
     },
+    {
+      code: `
+      <div class="bg-[url('/image.jpg')] bg-center">Issue #186</div>`,
+    },
   ],
 
   invalid: [
@@ -693,6 +697,13 @@ ruleTester.run("no-contradicting-classname", rule, {
         named group
       </div>`,
       errors: generateErrors(["group/name:scale-75 group/name:scale-50"]),
+    },
+    {
+      code: `
+      <div class="bg-[url('default.jpg')] sm:bg-[url('foo.jpg')] sm:bg-[url('bar.jpg')]">
+        named group
+      </div>`,
+      errors: generateErrors(["sm:bg-[url('foo.jpg')] sm:bg-[url('bar.jpg')]"]),
     },
     // {
     //   code: `
