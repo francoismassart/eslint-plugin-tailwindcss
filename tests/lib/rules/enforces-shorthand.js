@@ -112,6 +112,20 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
     },
+    {
+      code: `
+      <div class="overflow-hidden text-ellipsis hover:whitespace-nowrap">
+        Possible shorthand available for truncate, but some of the classes have modifiers
+      </div>
+      `,
+    },
+    {
+      code: `
+      <div class="overflow-hidden text-ellipsis !whitespace-nowrap">
+        Possible shorthand available for truncate, but some of the classes have important
+      </div>
+      `,
+    },
   ],
 
   invalid: [
@@ -600,6 +614,76 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
       errors: [generateError(["group/name:rounded-r-full", "group/name:rounded-l-full"], "group/name:rounded-full")],
+    },
+    {
+      code: `
+      <div class="overflow-hidden text-ellipsis whitespace-nowrap">
+        Possible shorthand when using truncate
+      </div>
+      `,
+      output: `
+      <div class="truncate">
+        Possible shorthand when using truncate
+      </div>
+      `,
+      errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
+    },
+    {
+      code: `
+      <div class="md:overflow-hidden md:text-ellipsis md:whitespace-nowrap">
+        Possible shorthand when using truncate with breakpoint
+      </div>
+      `,
+      output: `
+      <div class="md:truncate">
+        Possible shorthand when using truncate with breakpoint
+      </div>
+      `,
+      errors: [generateError(["md:overflow-hidden", "md:text-ellipsis", "md:whitespace-nowrap"], "md:truncate")],
+    },
+    {
+      code: `
+      <div class="hover:overflow-hidden hover:text-ellipsis hover:whitespace-nowrap">
+        Possible shorthand when using truncate with hover
+      </div>
+      `,
+      output: `
+      <div class="hover:truncate">
+        Possible shorthand when using truncate with hover
+      </div>
+      `,
+      errors: [generateError(["hover:overflow-hidden", "hover:text-ellipsis", "hover:whitespace-nowrap"], "hover:truncate")],
+    },
+    {
+      code: `
+      <div class="hover:sm:!tw-overflow-hidden hover:sm:!tw-text-ellipsis hover:sm:!tw-whitespace-nowrap">
+        Possible shorthand when using truncate with hover, breakpoint, important and prefix
+      </div>
+      `,
+      output: `
+      <div class="hover:sm:!tw-truncate">
+        Possible shorthand when using truncate with hover, breakpoint, important and prefix
+      </div>
+      `,
+      errors: [generateError(["hover:sm:!tw-overflow-hidden", "hover:sm:!tw-text-ellipsis", "hover:sm:!tw-whitespace-nowrap"], "hover:sm:!tw-truncate")],
+      options: [
+        {
+          config: { prefix: "tw-" },
+        },
+      ],
+    },
+    {
+      code: `
+      <div class="overflow-hidden text-ellipsis whitespace-nowrap text-white text-xl">
+        Possible shorthand when using truncate, tested with additional classnames
+      </div>
+      `,
+      output: `
+      <div class="truncate text-white text-xl">
+        Possible shorthand when using truncate, tested with additional classnames
+      </div>
+      `,
+      errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
     },
   ],
 });
