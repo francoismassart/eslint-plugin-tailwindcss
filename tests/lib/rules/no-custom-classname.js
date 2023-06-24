@@ -985,6 +985,14 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
+    {
+      code: `
+        const obj = { a: 12 };
+        <div className={{
+          ...obj
+        }}>Spread inside classname object</div>
+      `,
+    },
   ],
 
   invalid: [
