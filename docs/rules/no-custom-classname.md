@@ -111,7 +111,7 @@ e.g. I want to allow custom classnames while checking the validity of the `text-
 
 ### `classRegex` (default: `"^class(Name)?$"`)
 
-Optional, can be used to support custom attribues
+Optional, can be used to support custom attributes
 
 ## Further Reading
 

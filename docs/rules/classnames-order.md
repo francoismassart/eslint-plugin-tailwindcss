@@ -74,4 +74,4 @@ Optional, if you are using tagged templates, you should provide the tags in this
 
 ### `classRegex` (default: `"^class(Name)?$"`)
 
-Optional, can be used to support custom attribues
+Optional, can be used to support custom attributes
