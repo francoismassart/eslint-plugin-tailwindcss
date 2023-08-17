@@ -26,6 +26,11 @@
   "peerDependencies": {
     "tailwindcss": "^3.3.2"
   },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "fast-glob": "^3.2.5",
     "postcss": "^8.4.4"
