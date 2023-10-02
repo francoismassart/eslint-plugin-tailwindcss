@@ -295,6 +295,10 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `
       <div class="bg-[url('/image.jpg')] bg-center">Issue #186</div>`,
     },
+    {
+      code: `
+      <section className="bg-[image:var(--bg-small)] bg-center" />`,
+    },
   ],
 
   invalid: [

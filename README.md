@@ -40,6 +40,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- fix: [bg-center mark as conflicting with bg-[image:xxx]](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/260)
 - feat: [support enforcing truncate shorthand](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/255) (by [bezbac](https://github.com/bezbac) 🙏)
 - fix: [parsing spreads in object expressions](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/251) (by [bezbac](https://github.com/bezbac) 🙏)
 - fix: [do not handle non-ASCII whitespace as separator](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/246) (by [uhyo](https://github.com/uhyo) 🙏)
