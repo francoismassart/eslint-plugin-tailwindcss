@@ -198,7 +198,7 @@ FYI, here are the `default` values:
       removeDuplicates: true,
       skipClassAttribute: false,
       whitelist: [],
-      tags: [],
+      tags: [], // can be set to e.g. ['tw'] for use in tw`bg-blue`
       classRegex: "^class(Name)?$", // can be modified to support custom attributes. E.g. "^tw$" for `twin.macro`
     },
   },
