@@ -1002,6 +1002,11 @@ ruleTester.run("no-custom-classname", rule, {
         </div>
       `,
     },
+    {
+      code: `
+      <label class="has-[:checked]:ring-indigo-500 has-[:checked]:text-indigo-900 has-[:checked]:bg-indigo-50">New :has() variant</label>
+      `,
+    },
   ],
 
   invalid: [
