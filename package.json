@@ -18,13 +18,14 @@
   "bugs": "https://github.com/francoismassart/eslint-plugin-tailwindcss/issues",
   "main": "lib/index.js",
   "scripts": {
+    "wip": "mocha tests/lib/rules/no-arbitrary-value.js",
     "test": "mocha tests --recursive"
   },
   "files": [
     "lib"
   ],
   "peerDependencies": {
-    "tailwindcss": "^3.3.2"
+    "tailwindcss": "^3.4.0"
   },
   "dependencies": {
     "fast-glob": "^3.2.5",
@@ -41,7 +42,7 @@
     "daisyui": "^2.6.4",
     "eslint": "^7.1.0",
     "mocha": "^10.2.0",
-    "tailwindcss": "^3.3.2",
+    "tailwindcss": "^3.4.0",
     "typescript": "4.3.5",
     "vue-eslint-parser": "^9.1.0"
   },

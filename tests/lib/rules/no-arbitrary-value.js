@@ -156,5 +156,9 @@ ruleTester.run("no-arbitrary-value", rule, {
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
+    {
+      code: `<div className={'min-h-[75dvh]'}>Dynamic viewport units</div>`,
+      errors: generateErrors(["min-h-[75dvh]"]),
+    },
   ],
 });

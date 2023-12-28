@@ -295,6 +295,15 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `
       <div class="bg-[url('/image.jpg')] bg-center">Issue #186</div>`,
     },
+    {
+      code: `
+        <div>
+          <div className={'h-svh min-h-svh max-h-svh'}>Dynamic viewport units</div>
+          <div className={'h-lvh min-h-lvh max-h-lvh'}>Dynamic viewport units</div>
+          <div className={'h-dvh min-h-dvh max-h-dvh'}>Dynamic viewport units</div>
+        </div>
+      `,
+    },
   ],
 
   invalid: [
@@ -705,6 +714,11 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>`,
       errors: generateErrors(["sm:bg-[url('foo.jpg')] sm:bg-[url('bar.jpg')]"]),
     },
+    {
+      code: `<div className={'h-svh h-lvh h-dvh min-h-svh min-h-lvh min-h-dvh max-h-svh max-h-lvh max-h-dvh'}>Dynamic viewport units</div>`,
+      errors: generateErrors(["h-svh h-lvh h-dvh", "min-h-svh min-h-lvh min-h-dvh", "max-h-svh max-h-lvh max-h-dvh"]),
+    },
+
     // {
     //   code: `
     //   <div class="scale-75 transform-none">

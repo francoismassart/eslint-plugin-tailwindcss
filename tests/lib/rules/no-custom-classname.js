@@ -993,6 +993,15 @@ ruleTester.run("no-custom-classname", rule, {
         }}>Spread inside classname object</div>
       `,
     },
+    {
+      code: `
+        <div>
+          <div className={'h-svh min-h-svh max-h-svh'}>Dynamic viewport units</div>
+          <div className={'h-lvh min-h-lvh max-h-lvh'}>Dynamic viewport units</div>
+          <div className={'h-dvh min-h-dvh max-h-dvh'}>Dynamic viewport units</div>
+        </div>
+      `,
+    },
   ],
 
   invalid: [
