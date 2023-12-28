@@ -1007,6 +1007,15 @@ ruleTester.run("no-custom-classname", rule, {
       <label class="has-[:checked]:ring-indigo-500 has-[:checked]:text-indigo-900 has-[:checked]:bg-indigo-50">New :has() variant</label>
       `,
     },
+    {
+      code: `
+      <ul class="*:rounded-full *:border *:border-sky-100 *:bg-sky-50 *:px-2 *:py-0.5 dark:text-sky-300 dark:*:border-sky-500/15 dark:*:bg-sky-500/10">
+        <li>Sales</li>
+        <li>Marketing</li>
+        <li>SEO</li>
+      </ul>
+      `,
+    },
   ],
 
   invalid: [
