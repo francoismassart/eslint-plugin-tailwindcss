@@ -1044,6 +1044,9 @@ ruleTester.run("no-custom-classname", rule, {
         <div>10</div>
       </div>`,
     },
+    {
+      code: `<div class="min-w-12">Extended min-width, max-width, and min-height scales</div>`,
+    },
   ],
 
   invalid: [
