@@ -701,5 +701,15 @@ ruleTester.run("shorthands", rule, {
       output: `<div class="h-10 md:size-5 lg:w-10">New size-* utilities</div>`,
       errors: [generateError(["md:h-5", "md:w-5"], "md:size-5")],
     },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+      code: `${tag}\`overflow-hidden text-ellipsis whitespace-nowrap text-white text-xl\``,
+      output: `${tag}\`truncate text-white text-xl\``,
+      errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    }))),
   ],
 });

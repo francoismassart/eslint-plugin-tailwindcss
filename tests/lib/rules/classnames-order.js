@@ -187,8 +187,8 @@ ruleTester.run("classnames-order", rule, {
         },
       },
     },
-    {
-      code: `myTag\`
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+      code: `${tag}\`
         container
         flex
         w-12
@@ -200,7 +200,7 @@ ruleTester.run("classnames-order", rule, {
           tags: ["myTag"],
         },
       ],
-    },
+    }))),
     {
       code: `<div class="z-dialog flex w-12">Number values</div>`,
       settings: {
@@ -691,86 +691,88 @@ ruleTester.run("classnames-order", rule, {
       `,
       errors: generateErrors(2),
     },
-    {
-      code: `
-      myTag\`
-        invalid
-        sm:w-6
-        container
-        w-12
-        flex
-        lg:w-4
-      \`;`,
-      output: `
-      myTag\`
-        invalid
-        container
-        flex
-        w-12
-        sm:w-6
-        lg:w-4
-      \`;`,
-      options: [
-        {
-          tags: ["myTag"],
-        },
-      ],
-      errors: errors,
-    },
-    {
-      code: `
-      const buttonClasses = myTag\`
-        \${fullWidth ? "w-12" : "w-6"}
-        container
-        \${fullWidth ? "sm:w-8" : "sm:w-4"}
-        lg:w-9
-        flex
-        \${hasError && "bg-red"}
-      \`;`,
-      output: `
-      const buttonClasses = myTag\`
-        \${fullWidth ? "w-12" : "w-6"}
-        container
-        \${fullWidth ? "sm:w-8" : "sm:w-4"}
-        flex
-        lg:w-9
-        \${hasError && "bg-red"}
-      \`;`,
-      options: [
-        {
-          tags: ["myTag"],
-        },
-      ],
-      errors: errors,
-    },
-    {
-      code: `
-      const buttonClasses = myTag\`
-        \${fullWidth ? "w-12" : "w-6"}
-        flex
-        container
-        \${fullWidth ? "sm:w-7" : "sm:w-4"}
-        lg:py-4
-        sm:py-6
-        \${hasError && "bg-red"}
-      \`;`,
-      output: `
-      const buttonClasses = myTag\`
-        \${fullWidth ? "w-12" : "w-6"}
-        container
-        flex
-        \${fullWidth ? "sm:w-7" : "sm:w-4"}
-        sm:py-6
-        lg:py-4
-        \${hasError && "bg-red"}
-      \`;`,
-      options: [
-        {
-          tags: ["myTag"],
-        },
-      ],
-      errors: generateErrors(2),
-    },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].flatMap(tag => ([
+      {
+        code: `
+        ${tag}\`
+          invalid
+          sm:w-6
+          container
+          w-12
+          flex
+          lg:w-4
+        \`;`,
+        output: `
+        ${tag}\`
+          invalid
+          container
+          flex
+          w-12
+          sm:w-6
+          lg:w-4
+        \`;`,
+        options: [
+          {
+            tags: ["myTag"],
+          },
+        ],
+        errors: errors,
+      },
+      {
+        code: `
+        const buttonClasses = ${tag}\`
+          \${fullWidth ? "w-12" : "w-6"}
+          container
+          \${fullWidth ? "sm:w-8" : "sm:w-4"}
+          lg:w-9
+          flex
+          \${hasError && "bg-red"}
+        \`;`,
+        output: `
+        const buttonClasses = ${tag}\`
+          \${fullWidth ? "w-12" : "w-6"}
+          container
+          \${fullWidth ? "sm:w-8" : "sm:w-4"}
+          flex
+          lg:w-9
+          \${hasError && "bg-red"}
+        \`;`,
+        options: [
+          {
+            tags: ["myTag"],
+          },
+        ],
+        errors: errors,
+      },
+      {
+        code: `
+        const buttonClasses = ${tag}\`
+          \${fullWidth ? "w-12" : "w-6"}
+          flex
+          container
+          \${fullWidth ? "sm:w-7" : "sm:w-4"}
+          lg:py-4
+          sm:py-6
+          \${hasError && "bg-red"}
+        \`;`,
+        output: `
+        const buttonClasses = ${tag}\`
+          \${fullWidth ? "w-12" : "w-6"}
+          container
+          flex
+          \${fullWidth ? "sm:w-7" : "sm:w-4"}
+          sm:py-6
+          lg:py-4
+          \${hasError && "bg-red"}
+        \`;`,
+        options: [
+          {
+            tags: ["myTag"],
+          },
+        ],
+        errors: generateErrors(2),
+      },
+    ]))),
     {
       code: `
       classnames([
