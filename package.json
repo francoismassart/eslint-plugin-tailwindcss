@@ -45,6 +45,7 @@
     "typescript": "4.3.5",
     "vue-eslint-parser": "^9.1.0"
   },
+  "packageManager": "npm@10.2.5+sha256.8002e3e7305d2abd4016e1368af48d49b066c269079eeb10a56e7d6598acfdaa",
   "engines": {
     "node": ">=12.13.0"
   },
