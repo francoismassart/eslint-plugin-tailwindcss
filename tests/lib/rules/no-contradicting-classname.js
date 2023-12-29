@@ -296,6 +296,9 @@ ruleTester.run("no-contradicting-classname", rule, {
       <div class="bg-[url('/image.jpg')] bg-center">Issue #186</div>`,
     },
     {
+      code: `<section className="bg-[image:var(--bg-small)] bg-center" />`,
+    },
+    {
       code: `
         <div>
           <div className={'h-svh min-h-svh max-h-svh'}>Dynamic viewport units</div>
