@@ -1047,6 +1047,9 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div class="min-w-12">Extended min-width, max-width, and min-height scales</div>`,
     },
+    {
+      code: `<div class="opacity-35">Extended opacity scale</div>`,
+    },
   ],
 
   invalid: [
