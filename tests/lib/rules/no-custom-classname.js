@@ -1053,6 +1053,12 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div class="grid grid-rows-9">Extended grid-rows-* scale</div>`,
     },
+    {
+      code: `
+      <form>
+        <input type="checkbox" class="appearance-none forced-colors:appearance-auto" />
+      </form>`,
+    },
   ],
 
   invalid: [
