@@ -1050,6 +1050,9 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div class="opacity-35">Extended opacity scale</div>`,
     },
+    {
+      code: `<div class="grid grid-rows-9">Extended grid-rows-* scale</div>`,
+    },
   ],
 
   invalid: [
