@@ -1059,6 +1059,10 @@ ruleTester.run("no-custom-classname", rule, {
         <input type="checkbox" class="appearance-none forced-colors:appearance-auto" />
       </form>`,
     },
+    {
+      code: `
+      <h1 class="forced-color-adjust-none">New forced-color-adjust utilities</h1>`,
+    },
   ],
 
   invalid: [
