@@ -1019,6 +1019,9 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<button class="size-10">New size-* utilities</button>`,
     },
+    {
+      code: `<h1 class="text-wrap sm:text-nowrap md:text-balance lg:text-pretty">Balanced headlines with text-wrap utilities</h1>`,
+    },
   ],
 
   invalid: [

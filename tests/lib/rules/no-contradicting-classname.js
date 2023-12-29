@@ -725,7 +725,10 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `<div className={'size-5 size-10'}>Dynamic viewport units</div>`,
       errors: generateErrors(["size-5 size-10"]),
     },
-
+    {
+      code: `<h1 class="text-wrap text-nowrap">Balanced headlines with text-wrap utilities</h1>`,
+      errors: generateErrors(["text-wrap text-nowrap"]),
+    },
     // {
     //   code: `
     //   <div class="scale-75 transform-none">
