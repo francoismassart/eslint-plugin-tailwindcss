@@ -1022,6 +1022,28 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<h1 class="text-wrap sm:text-nowrap md:text-balance lg:text-pretty">Balanced headlines with text-wrap utilities</h1>`,
     },
+    {
+      code: `
+      <div class="grid grid-cols-4 gap-4">
+        <div>01</div>
+        <div>05</div>
+        <div class="grid grid-cols-subgrid gap-4 col-span-3">
+          <div class="col-start-2">06</div>
+        </div>
+      </div>`,
+    },
+    {
+      code: `
+      <div class="grid grid-rows-4 grid-flow-col gap-4">
+        <div>01</div>
+        <div>05</div>
+        <div class="grid grid-rows-subgrid gap-4 row-span-3">
+            <div class="row-start-2">06</div>
+        </div>
+        <div>07</div>
+        <div>10</div>
+      </div>`,
+    },
   ],
 
   invalid: [
@@ -1442,6 +1464,10 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div className="\u3000px-1 py-2\u3000">Full-width space before and after classes</div>`,
       errors: generateErrors("\u3000px-1 py-2\u3000"),
+    },
+    {
+      code: `<div class="grid grid-flow-col gap-4 grid-rows-supagrid">Subgrid support</div>`,
+      errors: generateErrors("grid-rows-supagrid"),
     },
   ],
 });

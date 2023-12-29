@@ -729,6 +729,10 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `<h1 class="text-wrap text-nowrap">Balanced headlines with text-wrap utilities</h1>`,
       errors: generateErrors(["text-wrap text-nowrap"]),
     },
+    {
+      code: `<div class="grid grid-rows-4 grid-flow-col gap-4 grid-rows-subgrid">Subgrid support</div>`,
+      errors: generateErrors(["grid-rows-4 grid-rows-subgrid"]),
+    },
     // {
     //   code: `
     //   <div class="scale-75 transform-none">
