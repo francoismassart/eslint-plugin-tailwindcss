@@ -721,6 +721,10 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `<div className={'h-svh h-lvh h-dvh min-h-svh min-h-lvh min-h-dvh max-h-svh max-h-lvh max-h-dvh'}>Dynamic viewport units</div>`,
       errors: generateErrors(["h-svh h-lvh h-dvh", "min-h-svh min-h-lvh min-h-dvh", "max-h-svh max-h-lvh max-h-dvh"]),
     },
+    {
+      code: `<div className={'size-5 size-10'}>Dynamic viewport units</div>`,
+      errors: generateErrors(["size-5 size-10"]),
+    },
 
     // {
     //   code: `
