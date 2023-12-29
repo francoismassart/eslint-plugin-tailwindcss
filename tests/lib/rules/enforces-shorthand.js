@@ -393,8 +393,7 @@ ruleTester.run("shorthands", rule, {
       output: `
       <div className={ctl(\`
         p-8
-        w-48
-        h-48
+        size-48
         text-white
         bg-black/50
         hover:bg-black/70
@@ -406,21 +405,21 @@ ruleTester.run("shorthands", rule, {
       \`)}>
         Multilines
       </div>`,
-      errors: [generateError(["py-8", "px-8"], "p-8")],
+      errors: [generateError(["w-48", "h-48"], "size-48"), generateError(["py-8", "px-8"], "p-8")],
     },
     {
       code: `classnames(['py-8 px-8 w-48 h-48 text-white'])`,
-      output: `classnames(['p-8 w-48 h-48 text-white'])`,
+      output: `classnames(['p-8 size-48 text-white'])`,
+      errors: [generateError(["w-48", "h-48"], "size-48"), generateError(["py-8", "px-8"], "p-8")],
+    },
+    {
+      code: `classnames({'py-8 px-8 text-white': true})`,
+      output: `classnames({'p-8 text-white': true})`,
       errors: [generateError(["py-8", "px-8"], "p-8")],
     },
     {
-      code: `classnames({'py-8 px-8 w-48 h-48 text-white': true})`,
-      output: `classnames({'p-8 w-48 h-48 text-white': true})`,
-      errors: [generateError(["py-8", "px-8"], "p-8")],
-    },
-    {
-      code: `classnames({'!py-8 !px-8 w-48 h-48 text-white': true})`,
-      output: `classnames({'!p-8 w-48 h-48 text-white': true})`,
+      code: `classnames({'!py-8 !px-8 text-white': true})`,
+      output: `classnames({'!p-8 text-white': true})`,
       errors: [generateError(["!py-8", "!px-8"], "!p-8")],
     },
     {
@@ -652,7 +651,9 @@ ruleTester.run("shorthands", rule, {
         Possible shorthand when using truncate with hover
       </div>
       `,
-      errors: [generateError(["hover:overflow-hidden", "hover:text-ellipsis", "hover:whitespace-nowrap"], "hover:truncate")],
+      errors: [
+        generateError(["hover:overflow-hidden", "hover:text-ellipsis", "hover:whitespace-nowrap"], "hover:truncate"),
+      ],
     },
     {
       code: `
@@ -665,7 +666,12 @@ ruleTester.run("shorthands", rule, {
         Possible shorthand when using truncate with hover, breakpoint, important and prefix
       </div>
       `,
-      errors: [generateError(["hover:sm:!tw-overflow-hidden", "hover:sm:!tw-text-ellipsis", "hover:sm:!tw-whitespace-nowrap"], "hover:sm:!tw-truncate")],
+      errors: [
+        generateError(
+          ["hover:sm:!tw-overflow-hidden", "hover:sm:!tw-text-ellipsis", "hover:sm:!tw-whitespace-nowrap"],
+          "hover:sm:!tw-truncate"
+        ),
+      ],
       options: [
         {
           config: { prefix: "tw-" },
@@ -684,6 +690,16 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
       errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
+    },
+    {
+      code: `<div class="h-10 w-10">New size-* utilities</div>`,
+      output: `<div class="size-10">New size-* utilities</div>`,
+      errors: [generateError(["h-10", "w-10"], "size-10")],
+    },
+    {
+      code: `<div class="h-10 md:h-5 md:w-5 lg:w-10">New size-* utilities</div>`,
+      output: `<div class="h-10 md:size-5 lg:w-10">New size-* utilities</div>`,
+      errors: [generateError(["md:h-5", "md:w-5"], "md:size-5")],
     },
   ],
 });

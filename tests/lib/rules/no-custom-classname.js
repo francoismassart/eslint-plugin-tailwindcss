@@ -1016,6 +1016,9 @@ ruleTester.run("no-custom-classname", rule, {
       </ul>
       `,
     },
+    {
+      code: `<button class="size-10">New size-* utilities</button>`,
+    },
   ],
 
   invalid: [
