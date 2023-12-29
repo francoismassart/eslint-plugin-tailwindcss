@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwindcss",
-  "version": "3.13.1-beta.0",
+  "version": "3.13.1",
   "description": "Rules enforcing best practices while using Tailwind CSS",
   "keywords": [
     "eslint",
