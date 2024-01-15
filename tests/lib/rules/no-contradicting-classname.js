@@ -296,8 +296,16 @@ ruleTester.run("no-contradicting-classname", rule, {
       <div class="bg-[url('/image.jpg')] bg-center">Issue #186</div>`,
     },
     {
+      code: `<section className="bg-[image:var(--bg-small)] bg-center" />`,
+    },
+    {
       code: `
-      <section className="bg-[image:var(--bg-small)] bg-center" />`,
+        <div>
+          <div className={'h-svh min-h-svh max-h-svh'}>Dynamic viewport units</div>
+          <div className={'h-lvh min-h-lvh max-h-lvh'}>Dynamic viewport units</div>
+          <div className={'h-dvh min-h-dvh max-h-dvh'}>Dynamic viewport units</div>
+        </div>
+      `,
     },
   ],
 
@@ -708,6 +716,22 @@ ruleTester.run("no-contradicting-classname", rule, {
         named group
       </div>`,
       errors: generateErrors(["sm:bg-[url('foo.jpg')] sm:bg-[url('bar.jpg')]"]),
+    },
+    {
+      code: `<div className={'h-svh h-lvh h-dvh min-h-svh min-h-lvh min-h-dvh max-h-svh max-h-lvh max-h-dvh'}>Dynamic viewport units</div>`,
+      errors: generateErrors(["h-svh h-lvh h-dvh", "min-h-svh min-h-lvh min-h-dvh", "max-h-svh max-h-lvh max-h-dvh"]),
+    },
+    {
+      code: `<div className={'size-5 size-10'}>Dynamic viewport units</div>`,
+      errors: generateErrors(["size-5 size-10"]),
+    },
+    {
+      code: `<h1 class="text-wrap text-nowrap">Balanced headlines with text-wrap utilities</h1>`,
+      errors: generateErrors(["text-wrap text-nowrap"]),
+    },
+    {
+      code: `<div class="grid grid-rows-4 grid-flow-col gap-4 grid-rows-subgrid">Subgrid support</div>`,
+      errors: generateErrors(["grid-rows-4 grid-rows-subgrid"]),
     },
     // {
     //   code: `
