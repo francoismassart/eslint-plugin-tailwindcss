@@ -692,6 +692,26 @@ ruleTester.run("shorthands", rule, {
       errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
     },
     {
+      code: "<div className={ctl(`${live && 'bg-white'} w-full px-10 py-10`)}>Leading space trim issue with fix</div>",
+      output: "<div className={ctl(`${live && 'bg-white'} w-full p-10`)}>Leading space trim issue with fix</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
+      code: "<div className={ctl(`${live && 'bg-white'} w-full px-10 py-10 `)}>Leading space trim issue with fix (2)</div>",
+      output: "<div className={ctl(`${live && 'bg-white'} w-full p-10 `)}>Leading space trim issue with fix (2)</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
+      code: "<div className={ctl(`w-full px-10 py-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix</div>",
+      output: "<div className={ctl(`w-full p-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
+      code: "<div className={ctl(` w-full px-10 py-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix (2)</div>",
+      output: "<div className={ctl(` w-full p-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix (2)</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
       code: `<div class="h-10 w-10">New size-* utilities</div>`,
       output: `<div class="size-10">New size-* utilities</div>`,
       errors: [generateError(["h-10", "w-10"], "size-10")],
