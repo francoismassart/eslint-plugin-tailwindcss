@@ -126,6 +126,9 @@ ruleTester.run("shorthands", rule, {
       </div>
       `,
     },
+    {
+      code: "<div className={`absolute inset-y-0 left-0 w-1/3 rounded-[inherit] shadow-lg ${className}`}>issue #312</div>",
+    },
   ],
 
   invalid: [
