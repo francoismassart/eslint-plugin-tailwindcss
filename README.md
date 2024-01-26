@@ -40,6 +40,9 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- fix: [there is no `size-screen` 😅](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/307)
+- fix: [edge cases with whitespace in `enforces-shorthand`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/308)(by [kachkaev](https://github.com/kachkaev) 🙏)
+- fix: [parsing spreads in function call returns](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/285)(by [egorpavlikhin](https://github.com/egorpavlikhin) 🙏)
 - feat: [support for Tailwind CSS 3.4.0](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/297)
 - ci: [add github actions workflow](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/303) (by [nihalgonsalves](https://github.com/nihalgonsalves) 🙏)
 - fix: [bg-center mark as conflicting with bg-[image:xxx]](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/260)
@@ -49,23 +52,6 @@ You can can the same information on your favorite command line software as well.
 - fix: [prefix support for named group/peer syntax](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/244) (by [bezbac](https://github.com/bezbac) 🙏)
 - feat: [support tailwind config in typescript](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/242) (by [quesabe](https://github.com/quesabe) 🙏)
   **You may have to upgrade your Tailwind CSS version to `3.3.2`**
-- feat: [add `ignoredKeys` in settings](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/232) used for `cva` or similar
-- fix: [callees with dot](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/227)
-- fix: [`no-custom-classname` doesn't work with hyphenated group names](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/226)
-- fix: [default settings conflict](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/212)
-- fix: [`classRegex` ignored in vuejs](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/216)
-- chore: fix dependency vulnerability (mocha)
-- feat: [support named group/peer syntax](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/215) (by [hampustagerud](https://github.com/hampustagerud) 🙏)
-- feat: add [support for Vue `v-bind:class`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/168)
-- docs: recommended parsers
-- revert: removing default parsers from `recommended` preset and `dependencies`
-- fix: [using `vue-eslint-parser` as default parser for `*.vue` files](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/203)
-- fix: [default parsers in the `recommended` preset](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/165)
-- fix: [move `tailwindcss` to `peerDependencies`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/201) (by [xeho91](https://github.com/xeho91) 🙏)
-- feat: [Lint values in a object](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/135)
-- feat: [Support for Object syntax in custom callees beside `classnames`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/185)(by [dipsaus9](https://github.com/dipsaus9) 🙏)
-- feat: [New option `skipClassAttribute`](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/154) you can turn on to only lint the `callees`
-- FIX: support for Tailwind CSS version `3.2.3`
 
 [View all releases on github](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases)
 
