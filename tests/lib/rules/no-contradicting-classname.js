@@ -307,6 +307,9 @@ ruleTester.run("no-contradicting-classname", rule, {
         </div>
       `,
     },
+    {
+      code: `<div class="diagonal-fractions tabular-nums lining-nums">Font Variant Numeric #316</div>`,
+    },
   ],
 
   invalid: [
@@ -732,6 +735,18 @@ ruleTester.run("no-contradicting-classname", rule, {
     {
       code: `<div class="grid grid-rows-4 grid-flow-col gap-4 grid-rows-subgrid">Subgrid support</div>`,
       errors: generateErrors(["grid-rows-4 grid-rows-subgrid"]),
+    },
+    {
+      code: `<div class="lining-nums oldstyle-nums">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["lining-nums oldstyle-nums"]),
+    },
+    {
+      code: `<div class="proportional-nums tabular-nums">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["proportional-nums tabular-nums"]),
+    },
+    {
+      code: `<div class="diagonal-fractions stacked-fractions">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["diagonal-fractions stacked-fractions"]),
     },
     // {
     //   code: `
