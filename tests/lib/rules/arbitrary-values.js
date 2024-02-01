@@ -677,5 +677,14 @@ ruleTester.run("arbitrary-values", rule, {
       options: config,
       errors: generateErrors("stroke-[angle:var(--some)]"),
     },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+      code: `${tag}\`stroke-[var(--some)] stroke-['yolo'] stroke-[angle:var(--some)]\``,
+      errors: generateErrors("stroke-[angle:var(--some)]"),
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    }))),
   ],
 });

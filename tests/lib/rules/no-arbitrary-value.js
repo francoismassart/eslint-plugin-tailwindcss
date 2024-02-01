@@ -160,5 +160,14 @@ ruleTester.run("no-arbitrary-value", rule, {
       code: `<div className={'min-h-[75dvh]'}>Dynamic viewport units</div>`,
       errors: generateErrors(["min-h-[75dvh]"]),
     },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+      code: `${tag}\`w-[100px]\``,
+      errors: generateErrors("w-[100px]"),
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    }))),
   ],
 });
