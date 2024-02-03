@@ -34,6 +34,33 @@ const skipClassAttributeOptions = [
   },
 ];
 
+const customWidthHeightOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          width: { custom: "100px" },
+          height: { custom: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
+const customSpacingOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          spacing: { custom: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
 var generateError = (classnames, shorthand) => {
   return {
     messageId: "shorthandCandidateDetected",
@@ -131,6 +158,10 @@ ruleTester.run("shorthands", rule, {
     },
     {
       code: "<div className={'w-screen h-screen'}>issue #307</div>",
+    },
+    {
+      code: `<div class="h-custom w-custom">size-* is based on spacing</div>`,
+      options: customWidthHeightOptions,
     },
   ],
 
@@ -726,6 +757,12 @@ ruleTester.run("shorthands", rule, {
       code: `<div class="h-10 md:h-5 md:w-5 lg:w-10">New size-* utilities</div>`,
       output: `<div class="h-10 md:size-5 lg:w-10">New size-* utilities</div>`,
       errors: [generateError(["md:h-5", "md:w-5"], "md:size-5")],
+    },
+    {
+      code: `<div class="h-custom w-custom">size-* is based on spacing</div>`,
+      output: `<div class="size-custom">size-* is based on spacing</div>`,
+      errors: [generateError(["h-custom", "w-custom"], "size-custom")],
+      options: customSpacingOptions,
     },
   ],
 });
