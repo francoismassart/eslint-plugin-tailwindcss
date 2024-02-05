@@ -34,7 +34,7 @@ const skipClassAttributeOptions = [
   },
 ];
 
-const customWidthHeightOptions = [
+const incompleteCustomWidthHeightOptions = [
   {
     config: {
       theme: {
@@ -48,12 +48,40 @@ const customWidthHeightOptions = [
   },
 ];
 
-const customSpacingOptions = [
+const customSpacingOnlyOptions = [
   {
     config: {
       theme: {
         extend: {
           spacing: { custom: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
+const customSizeOnlyOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          size: { size: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
+const ambiguousOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          width: { ambiguous: "75px" },
+          height: { ambiguous: "120px" },
+          size: { ambiguous: "100px" },
         },
       },
       plugins: [],
@@ -160,8 +188,16 @@ ruleTester.run("shorthands", rule, {
       code: "<div className={'w-screen h-screen'}>issue #307</div>",
     },
     {
-      code: `<div class="h-custom w-custom">size-* is based on spacing</div>`,
-      options: customWidthHeightOptions,
+      code: `<div class="h-custom w-custom">Incomplete config should not use size-*</div>`,
+      options: incompleteCustomWidthHeightOptions,
+    },
+    {
+      code: `<div class="h-custom w-custom">Ambiguous cannot size-*</div>`,
+      options: ambiguousOptions,
+    },
+    {
+      code: `<div class="h-custom w-custom">h-custom & w-custom don't exist... no size-*</div>`,
+      options: customSizeOnlyOptions,
     },
   ],
 
@@ -759,10 +795,10 @@ ruleTester.run("shorthands", rule, {
       errors: [generateError(["md:h-5", "md:w-5"], "md:size-5")],
     },
     {
-      code: `<div class="h-custom w-custom">size-* is based on spacing</div>`,
-      output: `<div class="size-custom">size-* is based on spacing</div>`,
+      code: `<div class="h-custom w-custom">size-*</div>`,
+      output: `<div class="size-custom">size-*</div>`,
       errors: [generateError(["h-custom", "w-custom"], "size-custom")],
-      options: customSpacingOptions,
+      options: customSpacingOnlyOptions,
     },
   ],
 });
