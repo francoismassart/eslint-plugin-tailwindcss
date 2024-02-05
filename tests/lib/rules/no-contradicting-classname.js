@@ -310,6 +310,9 @@ ruleTester.run("no-contradicting-classname", rule, {
     {
       code: `<div class="diagonal-fractions tabular-nums lining-nums">Font Variant Numeric #316</div>`,
     },
+    {
+      code: `<div class="shadow-md shadow-[#aabbcc]">Issue #298</div>`,
+    },
   ],
 
   invalid: [
