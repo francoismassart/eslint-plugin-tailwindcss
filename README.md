@@ -40,6 +40,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- fix: [`shadow-md` + `shadow-[#color]`can be used together 🤝](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/298)
 - fix: [`tabular-nums` and `slashed-zero` can be used together 🤝](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/316)
 - fix: [`size-*` based `size` 🤓](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/315)
 - fix: [there is no `size-screen` 😅](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/307)
