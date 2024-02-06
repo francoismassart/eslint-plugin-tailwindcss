@@ -60,6 +60,7 @@ describe("parseClassname", function () {
       leading: "",
       trailing: "",
       important: false,
+      internal: true,
     };
     assert.deepEqual(actual, expected);
     name = "md:overflow-y-auto";
@@ -69,6 +70,7 @@ describe("parseClassname", function () {
     expected.body = "overflow-y-";
     expected.shorthand = "y";
     expected.variants = "md:";
+    expected.internal = true;
     assert.deepEqual(actual, expected);
     name = "lg:dark:overflow-auto";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 2);
@@ -77,6 +79,7 @@ describe("parseClassname", function () {
     expected.body = "overflow-";
     expected.shorthand = "all";
     expected.variants = "lg:dark:";
+    expected.internal = true;
     assert.deepEqual(actual, expected);
     name = "sm:dark:overscroll-x-none";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 3);
@@ -87,6 +90,7 @@ describe("parseClassname", function () {
     expected.parentType = "Overscroll Behavior";
     expected.body = "overscroll-x-";
     expected.value = "none";
+    expected.internal = true;
     assert.deepEqual(actual, expected);
     name = "inset-0";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 4);
@@ -97,6 +101,7 @@ describe("parseClassname", function () {
     expected.parentType = "Top / Right / Bottom / Left";
     expected.body = "inset-";
     expected.value = "0";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
     name = "sm:-inset-x-1";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 5);
@@ -106,6 +111,7 @@ describe("parseClassname", function () {
     expected.variants = "sm:";
     expected.body = "inset-x-";
     expected.value = "-1";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
     name = "sm:-inset-x-1";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 6);
@@ -115,6 +121,7 @@ describe("parseClassname", function () {
     expected.variants = "sm:";
     expected.body = "inset-x-";
     expected.value = "-1";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
     name = "gap-px";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 7);
@@ -125,6 +132,7 @@ describe("parseClassname", function () {
     expected.parentType = "Gap";
     expected.body = "gap-";
     expected.value = "px";
+    expected.internal = true;
     assert.deepEqual(actual, expected);
     name = "p-5";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 8);
@@ -135,6 +143,7 @@ describe("parseClassname", function () {
     expected.parentType = "Padding";
     expected.body = "p-";
     expected.value = "5";
+    expected.internal = true;
     assert.deepEqual(actual, expected);
     name = "-my-px";
     actual = groupUtil.parseClassname(name, targetGroups, mergedConfig, 9);
@@ -145,6 +154,7 @@ describe("parseClassname", function () {
     expected.parentType = "Margin";
     expected.body = "my-";
     expected.value = "-px";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
 
     // "Border Radius"
@@ -157,6 +167,7 @@ describe("parseClassname", function () {
     expected.parentType = "Border Radius";
     expected.body = "rounded-tl-";
     expected.value = "lg";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
 
     // "Border Width"
@@ -169,6 +180,7 @@ describe("parseClassname", function () {
     expected.parentType = "Border Width";
     expected.body = "border-t-";
     expected.value = "4";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
 
     // "Border Spacing"
@@ -181,6 +193,7 @@ describe("parseClassname", function () {
     expected.parentType = "Border Spacing";
     expected.body = "border-spacing-x-";
     expected.value = "96";
+    expected.internal = true;
     assert.deepEqual(actual, expected);
 
     // "Scale"
@@ -193,6 +206,7 @@ describe("parseClassname", function () {
     expected.parentType = "Scale";
     expected.body = "scale-x-";
     expected.value = "150";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
 
     // Margin arbitrary value
@@ -205,6 +219,7 @@ describe("parseClassname", function () {
     expected.parentType = "Margin";
     expected.body = "m-";
     expected.value = "[0]";
+    expected.internal = undefined;
     assert.deepEqual(actual, expected);
 
     // Leading / Trailing
@@ -219,6 +234,7 @@ describe("parseClassname", function () {
     expected.value = "2";
     expected.leading = "  ";
     expected.trailing = "  ";
+    expected.internal = true;
     assert.deepEqual(actual, expected);
 
     // Important
@@ -235,6 +251,7 @@ describe("parseClassname", function () {
     expected.variants = "md:";
     expected.value = "8";
     expected.important = true;
+    expected.internal = true;
     assert.deepEqual(actual, expected);
   });
 
@@ -282,6 +299,7 @@ describe("getGroupIndex", function () {
       leading: "",
       trailing: "",
       important: false,
+      internal: true,
     };
     assert.deepEqual(actual, expected);
   });
