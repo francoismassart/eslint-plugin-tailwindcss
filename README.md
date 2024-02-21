@@ -40,6 +40,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- fix: retro compatibily for older Tailwind CSS (before typescript config)
 - fix: [composable touch action classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/293)
 - fix: [`shadow-md` + `shadow-[#color]`can be used together 🤝](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/298)
 - fix: [`tabular-nums` and `slashed-zero` can be used together 🤝](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/316)
