@@ -22,6 +22,7 @@ Learn more about each supported rules by reading their documentation:
 - [`no-arbitrary-value`](docs/rules/no-arbitrary-value.md): forbid using arbitrary values in classnames (turned off by default)
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
+- [`no-unnecessary-arbitrary-value`](docs/rules/no-unnecessary-arbitrary-value.md): e.g. replace `m-[1.25rem]` by its matching preset `m-5`
 
 Using ESLint extension for Visual Studio Code, you will get these messages
 ![detected-errors](.github/output.png)
@@ -40,6 +41,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- feat: new rule [**`no-unnecessary-arbitrary-value`**](docs/rules/no-unnecessary-arbitrary-value.md) 🎉
 - fix: retro compatibility for older Tailwind CSS (before typescript config)
 - fix: [composable touch action classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/293)
 - fix: [`shadow-md` + `shadow-[#color]`can be used together 🤝](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/298)
