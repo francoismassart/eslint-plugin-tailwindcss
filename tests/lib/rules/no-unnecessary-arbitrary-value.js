@@ -144,5 +144,21 @@ ruleTester.run("arbitrary-values", rule, {
       options: config,
       errors: generateErrors(["sm:-m-[2.5rem]"], [["sm:-m-10"]]),
     },
+    {
+      code: `
+ctl(\`
+  \${big ? 'sm:-m-[2.5rem] lg:h-100' : 'h-[60px] md:h-[80px] lg:h-100'}
+  group
+  w-[160px]
+\`)`,
+      output: `
+ctl(\`
+  \${big ? 'sm:-m-10 lg:h-100' : 'h-[60px] md:h-[80px] lg:h-100'}
+  group
+  w-[160px]
+\`)`,
+      options: config,
+      errors: generateErrors(["sm:-m-[2.5rem]"], [["sm:-m-10"]]),
+    },
   ],
 });
