@@ -46,31 +46,15 @@ var config = [
 
 var generateErrors = (classnamesArr, presetsArr) => {
   const errors = [];
-  const fixables = [];
-  const fixablesPresets = [];
   classnamesArr.map((classname, idx) => {
-    if (presetsArr[idx].length === 1) {
-      fixables.push(classname);
-      fixablesPresets.push(presetsArr[idx]);
-    } else {
-      errors.push({
-        messageId: "unnecessaryArbitraryValueDetectedMultiple",
-        data: {
-          classname: classname,
-          presets: presetsArr[idx].join("' or '"),
-        },
-      });
-    }
-  });
-  if (fixables.length) {
     errors.push({
       messageId: "unnecessaryArbitraryValueDetected",
       data: {
-        classname: fixables.join("', '"),
-        presets: fixablesPresets.join("', '"),
+        classname: classname,
+        presets: presetsArr[idx].join("' or '"),
       },
     });
-  }
+  });
   return errors;
 };
 
@@ -132,7 +116,7 @@ ruleTester.run("arbitrary-values", rule, {
       <pre class="-m-5 z-10">-m-5 z-10</pre>
       `,
       options: config,
-      errors: generateErrors(["m-[-1.25rem]", "-z-[-10]"], [["-m-5"], ["z-10"]]),
+      errors: generateErrors(["m-[-1.25rem], -z-[-10]"], [["-m-5, z-10"]]),
     },
     {
       code: `
@@ -146,17 +130,99 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
-ctl(\`
-  \${big ? 'sm:-m-[2.5rem] lg:h-100' : 'h-[60px] md:h-[80px] lg:h-100'}
-  group
-  w-[160px]
-\`)`,
+      <pre class={\`m-[0]\`}>...</pre>
+      `,
       output: `
-ctl(\`
-  \${big ? 'sm:-m-10 lg:h-100' : 'h-[60px] md:h-[80px] lg:h-100'}
-  group
-  w-[160px]
-\`)`,
+      <pre class={\`m-0\`}>...</pre>
+      `,
+      options: config,
+      errors: generateErrors(["m-[0]"], [["m-0"]]),
+    },
+    {
+      code: `
+      <pre class={\`m-[0] \${some}\`}>...</pre>
+      `,
+      output: `
+      <pre class={\`m-0 \${some}\`}>...</pre>
+      `,
+      options: config,
+      errors: generateErrors(["m-[0]"], [["m-0"]]),
+    },
+    {
+      code: `
+      <pre class={\`m-[0] \${some} p-[0]\`}>...</pre>
+      `,
+      output: `
+      <pre class={\`m-0 \${some} p-0\`}>...</pre>
+      `,
+      options: config,
+      errors: generateErrors(["m-[0]", "p-[0]"], [["m-0"], ["p-0"]]),
+    },
+    {
+      code: `
+      <pre class={\`m-[0] \${cellHoverClasses} hidden w-[0px] dark:block\`}>...</pre>
+      `,
+      output: `
+      <pre class={\`m-0 \${cellHoverClasses} hidden w-0 dark:block\`}>...</pre>
+      `,
+      options: config,
+      errors: generateErrors(["m-[0]", "w-[0px]"], [["m-0"], ["w-0"]]),
+    },
+    {
+      code: `
+      <pre class={\`\${cellHoverClasses} hidden w-[0px] dark:block\`}>...</pre>
+      `,
+      output: `
+      <pre class={\`\${cellHoverClasses} hidden w-0 dark:block\`}>...</pre>
+      `,
+      options: config,
+      errors: generateErrors(["w-[0px]"], [["w-0"]]),
+    },
+    {
+      code: `
+      <pre class={\`block h-[100%] \${logoLargeSize}\`}>...</pre>
+      `,
+      output: `
+      <pre class={\`block h-full \${logoLargeSize}\`}>...</pre>
+      `,
+      options: config,
+      errors: generateErrors(["h-[100%]"], [["h-full"]]),
+    },
+    {
+      code: `
+<section
+  className={ctl(\`
+    fixed h-[100%] lg:top-[116px]
+    \${!isStuck && 'hidden'}
+  \`)}
+>
+  section
+</section>`,
+      output: `
+<section
+  className={ctl(\`
+    fixed h-full lg:top-[116px]
+    \${!isStuck && 'hidden'}
+  \`)}
+>
+  section
+</section>`,
+      options: config,
+      errors: generateErrors(["h-[100%]"], [["h-full"]]),
+    },
+    {
+      code: `
+    ctl(\`
+      \${big ? 'sm:-m-[2.5rem] lg:h-100' : 'h-[60px] md:h-[80px] lg:h-100'}
+      group
+      w-[160px]
+    \`)`,
+      output: `
+    ctl(\`
+      \${big ? 'sm:-m-10 lg:h-100' : 'h-[60px] md:h-[80px] lg:h-100'}
+      group
+      w-[160px]
+    \`)`,
       options: config,
       errors: generateErrors(["sm:-m-[2.5rem]"], [["sm:-m-10"]]),
     },
