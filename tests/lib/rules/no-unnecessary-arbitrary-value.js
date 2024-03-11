@@ -68,6 +68,12 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
     },
+    {
+      code: `
+      <pre class="![clip:rect(0,0,0,0)]">issue #317</pre>
+      `,
+      options: config,
+    },
   ],
 
   invalid: [
