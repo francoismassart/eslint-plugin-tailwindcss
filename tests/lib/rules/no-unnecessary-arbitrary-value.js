@@ -74,6 +74,26 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
     },
+    {
+      code: `
+      <pre class="bg-[url('/chevron-down.svg')] bg-[size:20px_20px] bg-[position:right_16px_center] bg-no-repeat">issue #324</pre>
+      `,
+      options: config,
+    },
+    {
+      code: `
+      <pre className={clsx(
+        "relative h-10 appearance-none truncate rounded-lg border-2 bg-background-tertiary px-4 pr-10 text-[16px] leading-[20px] text-content-primary outline-none invalid:text-content-inverse-tertiary focus:bg-surface disabled:text-content-disabled",
+        "bg-[url('/chevron-down.svg')] bg-[size:20px_20px] bg-[position:right_16px_center] bg-no-repeat",
+        error
+          ? "border-border-negative"
+          : "border-background-tertiary focus:border-border-accent",
+        fullWidth && "w-full",
+        className
+      )}>issue #324</pre>
+      `,
+      options: config,
+    },
   ],
 
   invalid: [
