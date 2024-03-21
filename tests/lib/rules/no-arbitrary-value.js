@@ -63,6 +63,9 @@ ruleTester.run("no-arbitrary-value", rule, {
       code: `<div class="w-[10px]">Skip class attribute</div>`,
       options: skipClassAttributeOptions,
     },
+    {
+      code: `<div class="data-[state=open]:pb-8">Issue #318</div>`,
+    },
   ],
 
   invalid: [
