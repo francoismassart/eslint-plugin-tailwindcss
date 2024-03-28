@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "name": "integration-test-for-flat-config",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Integration test for flat config",
+  "dependencies": {
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.24.0",
+    "eslint-plugin-tailwindcss": "file:../../..",
+    "vue-eslint-parser": "^9.4.2"
+  }
+}

@@ -26,4 +26,8 @@ describe("configurations", function () {
   it(`should export a "recommended" configuration`, function () {
     assert(plugin.configs.recommended);
   });
+
+  it(`should export a "flat/recommended" configuration`, function () {
+    assert(plugin.configs["flat/recommended"]);
+  });
 });
