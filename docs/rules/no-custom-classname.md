@@ -40,7 +40,7 @@ If you use some utility library like [@netlify/classnames-template-literals](htt
 
 For best results, gather the declarative classnames together, avoid mixing conditional classnames in between, move them at the end.
 
-### `ignoredKeys` (default: `["compoundVariants", "defaultVariants"]`)
+### `ignoredKeys` (default: `["compoundVariants", "defaultVariants", "responsiveVariants"]`)
 
 Using libraries like `cva`, some of its object keys are not meant to contain classnames in its value(s).
 You can specify which key(s) won't be parsed by the plugin using this setting.
