@@ -1545,6 +1545,7 @@ ruleTester.run("no-custom-classname", rule, {
           callees: ["tv"],
         },
       ],
+      // Before #323 is resolved, sm and md in responsiveVariants are also detected as Custom ClassName
       errors: generateErrors("sushi"),
     },
     {
