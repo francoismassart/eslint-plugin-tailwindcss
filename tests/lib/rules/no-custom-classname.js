@@ -441,6 +441,7 @@ ruleTester.run("no-custom-classname", rule, {
       options: [
         {
           cssFiles: ["./tests/**/*.css"],
+          cssFilesRefreshRate: 0,
         },
       ],
     },
