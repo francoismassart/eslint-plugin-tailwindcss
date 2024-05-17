@@ -252,5 +252,21 @@ ruleTester.run("arbitrary-values", rule, {
       options: config,
       errors: generateErrors(["sm:-m-[2.5rem]"], [["sm:-m-10"]]),
     },
+    {
+      code: `
+      <section>
+        <pre class={'border-[1px]'}>...</pre>
+        <pre class={'rounded-[0.25rem]'}>...</pre>
+      </section>
+      `,
+      output: `
+      <section>
+        <pre class={'border'}>...</pre>
+        <pre class={'rounded'}>...</pre>
+      </section>
+      `,
+      options: config,
+      errors: generateErrors(["border-[1px]", "rounded-[0.25rem]"], [["border"], ["rounded"]]),
+    },
   ],
 });
