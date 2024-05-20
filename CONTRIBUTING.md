@@ -1,11 +1,16 @@
 # Contributing to `esLint-plugin-tailwindcss`
 
-# Contributing
+## Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change.
 
 Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+
+## Development
+
+You can use [Corepack](https://nodejs.org/api/corepack.html) to ensure you're using the same package
+manager. Run `corepack enabled` before running `npm install`.
 
 ## Pull Request Process
 

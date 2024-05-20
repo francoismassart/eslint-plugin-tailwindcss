@@ -993,6 +993,76 @@ ruleTester.run("no-custom-classname", rule, {
         }}>Spread inside classname object</div>
       `,
     },
+    {
+      code: `
+        <div>
+          <div className={'h-svh min-h-svh max-h-svh'}>Dynamic viewport units</div>
+          <div className={'h-lvh min-h-lvh max-h-lvh'}>Dynamic viewport units</div>
+          <div className={'h-dvh min-h-dvh max-h-dvh'}>Dynamic viewport units</div>
+        </div>
+      `,
+    },
+    {
+      code: `
+      <label class="has-[:checked]:ring-indigo-500 has-[:checked]:text-indigo-900 has-[:checked]:bg-indigo-50">New :has() variant</label>
+      `,
+    },
+    {
+      code: `
+      <ul class="*:rounded-full *:border *:border-sky-100 *:bg-sky-50 *:px-2 *:py-0.5 dark:text-sky-300 dark:*:border-sky-500/15 dark:*:bg-sky-500/10">
+        <li>Sales</li>
+        <li>Marketing</li>
+        <li>SEO</li>
+      </ul>
+      `,
+    },
+    {
+      code: `<button class="size-10">New size-* utilities</button>`,
+    },
+    {
+      code: `<h1 class="text-wrap sm:text-nowrap md:text-balance lg:text-pretty">Balanced headlines with text-wrap utilities</h1>`,
+    },
+    {
+      code: `
+      <div class="grid grid-cols-4 gap-4">
+        <div>01</div>
+        <div>05</div>
+        <div class="grid grid-cols-subgrid gap-4 col-span-3">
+          <div class="col-start-2">06</div>
+        </div>
+      </div>`,
+    },
+    {
+      code: `
+      <div class="grid grid-rows-4 grid-flow-col gap-4">
+        <div>01</div>
+        <div>05</div>
+        <div class="grid grid-rows-subgrid gap-4 row-span-3">
+            <div class="row-start-2">06</div>
+        </div>
+        <div>07</div>
+        <div>10</div>
+      </div>`,
+    },
+    {
+      code: `<div class="min-w-12">Extended min-width, max-width, and min-height scales</div>`,
+    },
+    {
+      code: `<div class="opacity-35">Extended opacity scale</div>`,
+    },
+    {
+      code: `<div class="grid grid-rows-9">Extended grid-rows-* scale</div>`,
+    },
+    {
+      code: `
+      <form>
+        <input type="checkbox" class="appearance-none forced-colors:appearance-auto" />
+      </form>`,
+    },
+    {
+      code: `
+      <h1 class="forced-color-adjust-none">New forced-color-adjust utilities</h1>`,
+    },
   ],
 
   invalid: [
@@ -1413,6 +1483,10 @@ ruleTester.run("no-custom-classname", rule, {
     {
       code: `<div className="\u3000px-1 py-2\u3000">Full-width space before and after classes</div>`,
       errors: generateErrors("\u3000px-1 py-2\u3000"),
+    },
+    {
+      code: `<div class="grid grid-flow-col gap-4 grid-rows-supagrid">Subgrid support</div>`,
+      errors: generateErrors("grid-rows-supagrid"),
     },
   ],
 });

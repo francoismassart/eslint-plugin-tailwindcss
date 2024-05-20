@@ -295,6 +295,27 @@ ruleTester.run("no-contradicting-classname", rule, {
       code: `
       <div class="bg-[url('/image.jpg')] bg-center">Issue #186</div>`,
     },
+    {
+      code: `<section className="bg-[image:var(--bg-small)] bg-center" />`,
+    },
+    {
+      code: `
+        <div>
+          <div className={'h-svh min-h-svh max-h-svh'}>Dynamic viewport units</div>
+          <div className={'h-lvh min-h-lvh max-h-lvh'}>Dynamic viewport units</div>
+          <div className={'h-dvh min-h-dvh max-h-dvh'}>Dynamic viewport units</div>
+        </div>
+      `,
+    },
+    {
+      code: `<div class="diagonal-fractions tabular-nums lining-nums">Font Variant Numeric #316</div>`,
+    },
+    {
+      code: `<div class="shadow-md shadow-[#aabbcc]">Issue #298</div>`,
+    },
+    {
+      code: `<pre class="touch-pan-left touch-pan-y touch-pinch-zoom touch-manipulation">valid combo for issue #293</pre>`,
+    },
   ],
 
   invalid: [
@@ -704,6 +725,42 @@ ruleTester.run("no-contradicting-classname", rule, {
         named group
       </div>`,
       errors: generateErrors(["sm:bg-[url('foo.jpg')] sm:bg-[url('bar.jpg')]"]),
+    },
+    {
+      code: `<div className={'h-svh h-lvh h-dvh min-h-svh min-h-lvh min-h-dvh max-h-svh max-h-lvh max-h-dvh'}>Dynamic viewport units</div>`,
+      errors: generateErrors(["h-svh h-lvh h-dvh", "min-h-svh min-h-lvh min-h-dvh", "max-h-svh max-h-lvh max-h-dvh"]),
+    },
+    {
+      code: `<div className={'size-5 size-10'}>Dynamic viewport units</div>`,
+      errors: generateErrors(["size-5 size-10"]),
+    },
+    {
+      code: `<h1 class="text-wrap text-nowrap">Balanced headlines with text-wrap utilities</h1>`,
+      errors: generateErrors(["text-wrap text-nowrap"]),
+    },
+    {
+      code: `<div class="grid grid-rows-4 grid-flow-col gap-4 grid-rows-subgrid">Subgrid support</div>`,
+      errors: generateErrors(["grid-rows-4 grid-rows-subgrid"]),
+    },
+    {
+      code: `<div class="lining-nums oldstyle-nums">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["lining-nums oldstyle-nums"]),
+    },
+    {
+      code: `<div class="proportional-nums tabular-nums">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["proportional-nums tabular-nums"]),
+    },
+    {
+      code: `<div class="diagonal-fractions stacked-fractions">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["diagonal-fractions stacked-fractions"]),
+    },
+    {
+      code: `<pre class="touch-auto touch-none touch-pan-x touch-pan-left touch-pan-right touch-pan-y touch-pan-up touch-pan-down touch-pinch-zoom touch-manipulation">KitchenSink with errors for issue #293</pre>`,
+      errors: generateErrors([
+        "touch-auto touch-none touch-manipulation",
+        "touch-pan-x touch-pan-left touch-pan-right",
+        "touch-pan-y touch-pan-up touch-pan-down",
+      ]),
     },
     // {
     //   code: `

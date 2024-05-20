@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwindcss",
-  "version": "3.13.0",
+  "version": "3.15.2",
   "description": "Rules enforcing best practices while using Tailwind CSS",
   "keywords": [
     "eslint",
@@ -24,7 +24,7 @@
     "lib"
   ],
   "peerDependencies": {
-    "tailwindcss": "^3.3.2"
+    "tailwindcss": "^3.4.0"
   },
   "dependencies": {
     "fast-glob": "^3.2.5",
@@ -41,10 +41,11 @@
     "daisyui": "^2.6.4",
     "eslint": "^7.1.0",
     "mocha": "^10.2.0",
-    "tailwindcss": "^3.3.2",
+    "tailwindcss": "^3.4.0",
     "typescript": "4.3.5",
     "vue-eslint-parser": "^9.1.0"
   },
+  "packageManager": "npm@10.2.5+sha256.8002e3e7305d2abd4016e1368af48d49b066c269079eeb10a56e7d6598acfdaa",
   "engines": {
     "node": ">=12.13.0"
   },
