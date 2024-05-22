@@ -41,6 +41,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- feat: [**support flat config and ESLint 9**](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/330) (by [kazupon](https://github.com/kazupon) 🙏)
 - feat: new rule [**`no-unnecessary-arbitrary-value`**](docs/rules/no-unnecessary-arbitrary-value.md) 🎉
 - fix: retro compatibility for older Tailwind CSS (before typescript config)
 - fix: [composable touch action classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/293)
@@ -82,7 +83,7 @@ $ npm i -D eslint eslint-plugin-tailwindcss
 
 #### `.eslintrc`
 
-Use .eslintrc.* file to configure rules in ESLint < v9. See also: https://eslint.org/docs/latest/use/configure/.
+Use .eslintrc.\* file to configure rules in ESLint < v9. See also: https://eslint.org/docs/latest/use/configure/.
 
 ```js
 module.exports = {
@@ -93,7 +94,6 @@ module.exports = {
 
 If you would like to know about configuration, Learn more in [ESLint docs](https://eslint.org/docs/latest/use/configure/configuration-files)
 
-
 #### `eslint.config.js`
 
 Use `eslint.config.js` file to configure rules. This is the default in ESLint v9, but can be used starting from ESLint v8.57.0. See also: https://eslint.org/docs/latest/use/configure/configuration-files-new.
@@ -101,9 +101,7 @@ Use `eslint.config.js` file to configure rules. This is the default in ESLint v9
 ```js
 import tailwind from "eslint-plugin-tailwindcss";
 
-export default [
-  ...tailwind.configs["flat/recommended"],
-];
+export default [...tailwind.configs["flat/recommended"]];
 ```
 
 If you would like to know about configuration, Learn more in [ESLint docs](https://eslint.org/docs/latest/use/configure/configuration-files-new)
@@ -155,8 +153,10 @@ Our recommendations:
 #### For `eslint.config.js`
 
 - For `js[x]`, `ts[x]`:
+
   - Install the parser: `npm i -D @eslint/js typescript-eslint`
   - Assign it to your files in `eslint.config.js`:
+
     ```js
     import js from "@eslint/js";
     import ts from "typescript-eslint";
@@ -172,9 +172,12 @@ Our recommendations:
       ...tailwind.configs["flat/recommended"],
     ];
     ```
+
 - For `vue.js`:
+
   - Install the parser: `npm i -D eslint-plugin-vue`
   - Assign it to your files in `eslint.config.js`:
+
     ```js
     import vue from "eslint-plugin-vue";
     import tailwind from "eslint-plugin-tailwindcss";
@@ -273,7 +276,7 @@ export default [
         classRegex: "^class(Name)?$", // can be modified to support custom attributes. E.g. "^tw$" for `twin.macro`
       },
     },
-  }
+  },
 ];
 ```
 
