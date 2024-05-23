@@ -441,10 +441,11 @@ ruleTester.run("no-custom-classname", rule, {
       options: [
         {
           cssFiles: ["./tests/lib/**/*.css"],
+          cssFilesRefreshRate: 0,
         },
       ],
     },
-    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].map((tag) => ({
       code: `
       ${tag}\`
         sm:w-6
@@ -455,7 +456,7 @@ ruleTester.run("no-custom-classname", rule, {
         lg:w-4
       \`;`,
       options: [{ tags: ["myTag"] }],
-    }))),
+    })),
     {
       code: `
       <div class="flex flex-row-reverse space-x-4 space-x-reverse">
@@ -1224,7 +1225,7 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       errors: generateErrors("dark"),
     },
-    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].flatMap(tag => ([
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].flatMap((tag) => [
       {
         code: `
         ${tag}\`
@@ -1272,7 +1273,7 @@ ruleTester.run("no-custom-classname", rule, {
         options: [{ tags: ["myTag"] }],
         errors: generateErrors("custom-2 custom-1"),
       },
-    ]))),
+    ]),
     {
       code: `
       <div class="bg-red-600 p-10">
