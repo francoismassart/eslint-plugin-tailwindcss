@@ -307,6 +307,15 @@ ruleTester.run("no-contradicting-classname", rule, {
         </div>
       `,
     },
+    {
+      code: `<div class="diagonal-fractions tabular-nums lining-nums">Font Variant Numeric #316</div>`,
+    },
+    {
+      code: `<div class="shadow-md shadow-[#aabbcc]">Issue #298</div>`,
+    },
+    {
+      code: `<pre class="touch-pan-left touch-pan-y touch-pinch-zoom touch-manipulation">valid combo for issue #293</pre>`,
+    },
   ],
 
   invalid: [
@@ -734,6 +743,26 @@ ruleTester.run("no-contradicting-classname", rule, {
     {
       code: `<div class="grid grid-rows-4 grid-flow-col gap-4 grid-rows-subgrid">Subgrid support</div>`,
       errors: generateErrors(["grid-rows-4 grid-rows-subgrid"]),
+    },
+    {
+      code: `<div class="lining-nums oldstyle-nums">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["lining-nums oldstyle-nums"]),
+    },
+    {
+      code: `<div class="proportional-nums tabular-nums">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["proportional-nums tabular-nums"]),
+    },
+    {
+      code: `<div class="diagonal-fractions stacked-fractions">Font Variant Numeric #316</div>`,
+      errors: generateErrors(["diagonal-fractions stacked-fractions"]),
+    },
+    {
+      code: `<pre class="touch-auto touch-none touch-pan-x touch-pan-left touch-pan-right touch-pan-y touch-pan-up touch-pan-down touch-pinch-zoom touch-manipulation">KitchenSink with errors for issue #293</pre>`,
+      errors: generateErrors([
+        "touch-auto touch-none touch-manipulation",
+        "touch-pan-x touch-pan-left touch-pan-right",
+        "touch-pan-y touch-pan-up touch-pan-down",
+      ]),
     },
     // {
     //   code: `

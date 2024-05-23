@@ -440,7 +440,7 @@ ruleTester.run("no-custom-classname", rule, {
       </div>`,
       options: [
         {
-          cssFiles: ["./tests/**/*.css"],
+          cssFiles: ["./tests/lib/**/*.css"],
         },
       ],
     },

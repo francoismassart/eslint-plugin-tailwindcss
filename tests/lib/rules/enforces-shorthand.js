@@ -34,6 +34,61 @@ const skipClassAttributeOptions = [
   },
 ];
 
+const incompleteCustomWidthHeightOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          width: { custom: "100px" },
+          height: { custom: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
+const customSpacingOnlyOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          spacing: { custom: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
+const customSizeOnlyOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          size: { size: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
+const ambiguousOptions = [
+  {
+    config: {
+      theme: {
+        extend: {
+          width: { ambiguous: "75px" },
+          height: { ambiguous: "120px" },
+          size: { ambiguous: "100px" },
+        },
+      },
+      plugins: [],
+    },
+  },
+];
+
 var generateError = (classnames, shorthand) => {
   return {
     messageId: "shorthandCandidateDetected",
@@ -125,6 +180,24 @@ ruleTester.run("shorthands", rule, {
         Possible shorthand available for truncate, but some of the classes have important
       </div>
       `,
+    },
+    {
+      code: "<div className={`absolute inset-y-0 left-0 w-1/3 rounded-[inherit] shadow-lg ${className}`}>issue #312</div>",
+    },
+    {
+      code: "<div className={'w-screen h-screen'}>issue #307</div>",
+    },
+    {
+      code: `<div class="h-custom w-custom">Incomplete config should not use size-*</div>`,
+      options: incompleteCustomWidthHeightOptions,
+    },
+    {
+      code: `<div class="h-custom w-custom">Ambiguous cannot size-*</div>`,
+      options: ambiguousOptions,
+    },
+    {
+      code: `<div class="h-custom w-custom">h-custom & w-custom don't exist... no size-*</div>`,
+      options: customSizeOnlyOptions,
     },
   ],
 
@@ -692,6 +765,26 @@ ruleTester.run("shorthands", rule, {
       errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
     },
     {
+      code: "<div className={ctl(`${live && 'bg-white'} w-full px-10 py-10`)}>Leading space trim issue with fix</div>",
+      output: "<div className={ctl(`${live && 'bg-white'} w-full p-10`)}>Leading space trim issue with fix</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
+      code: "<div className={ctl(`${live && 'bg-white'} w-full px-10 py-10 `)}>Leading space trim issue with fix (2)</div>",
+      output: "<div className={ctl(`${live && 'bg-white'} w-full p-10 `)}>Leading space trim issue with fix (2)</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
+      code: "<div className={ctl(`w-full px-10 py-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix</div>",
+      output: "<div className={ctl(`w-full p-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
+      code: "<div className={ctl(` w-full px-10 py-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix (2)</div>",
+      output: "<div className={ctl(` w-full p-10 ${live && 'bg-white'}`)}>Trailing space trim issue with fix (2)</div>",
+      errors: [generateError(["px-10", "py-10"], "p-10")],
+    },
+    {
       code: `<div class="h-10 w-10">New size-* utilities</div>`,
       output: `<div class="size-10">New size-* utilities</div>`,
       errors: [generateError(["h-10", "w-10"], "size-10")],
@@ -701,7 +794,13 @@ ruleTester.run("shorthands", rule, {
       output: `<div class="h-10 md:size-5 lg:w-10">New size-* utilities</div>`,
       errors: [generateError(["md:h-5", "md:w-5"], "md:size-5")],
     },
-    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+    {
+      code: `<div class="h-custom w-custom">size-*</div>`,
+      output: `<div class="size-custom">size-*</div>`,
+      errors: [generateError(["h-custom", "w-custom"], "size-custom")],
+      options: customSpacingOnlyOptions,
+    },
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].map((tag) => ({
       code: `${tag}\`overflow-hidden text-ellipsis whitespace-nowrap text-white text-xl\``,
       output: `${tag}\`truncate text-white text-xl\``,
       errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
@@ -710,6 +809,6 @@ ruleTester.run("shorthands", rule, {
           tags: ["myTag"],
         },
       ],
-    }))),
+    })),
   ],
 });

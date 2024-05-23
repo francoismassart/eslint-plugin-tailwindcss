@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": ["plugin:vue/vue3-recommended", "plugin:tailwindcss/recommended"],
+  "rules": {
+    "vue/multi-word-component-names": "off",
+    "tailwindcss/classnames-order": "warn"
+  }
+}

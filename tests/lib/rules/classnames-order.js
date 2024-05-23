@@ -281,6 +281,14 @@ ruleTester.run("classnames-order", rule, {
     {
       code: `<div class="py-1\u3000px-2 block">Do not treat full width space as class separator</div>`,
     },
+    {
+      code: `
+        const func = () => ({ a: 12 });
+        <div className={clsx(['text-sm', {
+          ...func()
+        }])}>Spread of a function return inside clsx</div>
+      `,
+    },
   ],
   invalid: [
     {
