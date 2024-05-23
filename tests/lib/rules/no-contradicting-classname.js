@@ -135,9 +135,9 @@ ruleTester.run("no-contradicting-classname", rule, {
       </div>`,
       options: config,
     },
-    {
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
       code: `
-      myTag\`
+      ${tag}\`
         text-white
         rounded-md
         py-5
@@ -165,7 +165,7 @@ ruleTester.run("no-contradicting-classname", rule, {
           tags: ["myTag"],
         },
       ],
-    },
+    }))),
     {
       code: `
       <div class="flex flex-row-reverse space-x-4 space-x-reverse">
@@ -441,54 +441,56 @@ ruleTester.run("no-contradicting-classname", rule, {
       );`,
       errors: generateErrors(["p-2 p-4", "w-1 w-2", "py-1 py-2", "px-2 px-4"]),
     },
-    {
-      code: `
-      myTag\`
-        invalid bis
-        sm:w-6
-        w-8
-        container
-        w-12
-        flex
-        lg:w-4
-      \`;`,
-      options: [{ tags: ["myTag"] }],
-      errors: generateErrors("w-8 w-12"),
-    },
-    {
-      code: `
-      myTag\`
-        px-2
-        px-4
-        \${
-          !isDisabled &&
-          \`
-            py-1
-            py-2
-          \`
-        }
-        \${
-          isDisabled &&
-          \`
-            w-1
-            w-2
-          \`
-        }
-      \`
-      `,
-      options: [{ tags: ["myTag"] }],
-      errors: generateErrors(["py-1 py-2", "w-1 w-2", "px-2 px-4"]),
-    },
-    {
-      code: `myTag\`\${enabled && "px-2 px-0"}\``,
-      options: [{ tags: ["myTag"] }],
-      errors: generateErrors("px-2 px-0"),
-    },
-    {
-      code: `myTag\`\${enabled ? "px-2 px-0" : ""}\``,
-      options: [{ tags: ["myTag"] }],
-      errors: generateErrors("px-2 px-0"),
-    },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].flatMap(tag => [
+      {
+        code: `
+        ${tag}\`
+          invalid bis
+          sm:w-6
+          w-8
+          container
+          w-12
+          flex
+          lg:w-4
+        \`;`,
+        options: [{ tags: ["myTag"] }],
+        errors: generateErrors("w-8 w-12"),
+      },
+      {
+        code: `
+        ${tag}\`
+          px-2
+          px-4
+          \${
+            !isDisabled &&
+            \`
+              py-1
+              py-2
+            \`
+          }
+          \${
+            isDisabled &&
+            \`
+              w-1
+              w-2
+            \`
+          }
+        \`
+        `,
+        options: [{ tags: ["myTag"] }],
+        errors: generateErrors(["py-1 py-2", "w-1 w-2", "px-2 px-4"]),
+      },
+      {
+        code: `${tag}\`\${enabled && "px-2 px-0"}\``,
+        options: [{ tags: ["myTag"] }],
+        errors: generateErrors("px-2 px-0"),
+      },
+      {
+        code: `${tag}\`\${enabled ? "px-2 px-0" : ""}\``,
+        options: [{ tags: ["myTag"] }],
+        errors: generateErrors("px-2 px-0"),
+      },
+    ])),
     {
       code: `
       <div class="shrink shrink-0 shrink-[inherit] shrink-[initial] shrink-[unset] shrink-[var(--some)] shrink-[0.5] shrink-[5]">
