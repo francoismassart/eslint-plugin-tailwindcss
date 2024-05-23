@@ -382,5 +382,23 @@ ruleTester.run("migration-from-tailwind-2", rule, {
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+      code: `${tag}\`flex-grow-0\``,
+      output: `${tag}\`grow-0\``,
+      errors: [
+        {
+          messageId: "classnameChanged",
+          data: {
+            deprecated: "flex-grow-0",
+            updated: "grow-0",
+          },
+        },
+      ],
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    }))),
   ],
 });

@@ -140,5 +140,14 @@ ruleTester.run("enforces-negative-arbitrary-values", rule, {
       code: `<div class="group/edit:-inset-[1px] group/edit:top-[-1px]">support named group/peer syntax</div>`,
       errors: generateErrors("group/edit:-inset-[1px]"),
     },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+      code: `${tag}\`-my-[1px] -mx-[1px]\``,
+      errors: generateErrors("-my-[1px] -mx-[1px]"),
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    }))),
   ],
 });
