@@ -41,6 +41,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- perf: [`no-custom-classname` optimization](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/338) (by [XantreDev](https://github.com/XantreDev) 🙏)
 - fix: [support `tag.div` and `tag(Component)`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/302) (by [nihalgonsalves](https://github.com/nihalgonsalves) 🙏)
 - feat: [**support flat config and ESLint 9**](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/330) (by [kazupon](https://github.com/kazupon) 🙏)
 - feat: new rule [**`no-unnecessary-arbitrary-value`**](docs/rules/no-unnecessary-arbitrary-value.md) 🎉
