@@ -440,13 +440,13 @@ ruleTester.run("no-custom-classname", rule, {
       </div>`,
       options: [
         {
-          cssFiles: ["./tests/**/*.css"],
+          cssFiles: ["./tests/lib/**/*.css"],
         },
       ],
     },
-    {
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
       code: `
-      myTag\`
+      ${tag}\`
         sm:w-6
         w-8
         container
@@ -455,7 +455,7 @@ ruleTester.run("no-custom-classname", rule, {
         lg:w-4
       \`;`,
       options: [{ tags: ["myTag"] }],
-    },
+    }))),
     {
       code: `
       <div class="flex flex-row-reverse space-x-4 space-x-reverse">
@@ -1224,53 +1224,55 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       errors: generateErrors("dark"),
     },
-    {
-      code: `
-      myTag\`
-        sm:w-6
-        hello
-        w-8
-        container
-        w-12
-        world
-        flex
-        lg:w-4
-      \`;`,
-      options: [{ tags: ["myTag"] }],
-      errors: generateErrors("hello world"),
-    },
-    {
-      code: `
-      myTag\`
-        px-4
-        custom-1
-        py-1
-        \${
-          !isDisabled &&
-          \`
-            lg:focus:ring-1
-            custom-2
-            focus:ring-2
-          \`
-        }
-        \${
-          isDisabled &&
-          \`
-            lg:opacity-25
-            custom-3
-            opacity-50
-          \`
-        }
-      \`
-      `,
-      options: [{ tags: ["myTag"] }],
-      errors: generateErrors("custom-2 custom-3 custom-1"),
-    },
-    {
-      code: `myTag\`custom-1 \${isDisabled ? "custom-2" : "m-4"}\``,
-      options: [{ tags: ["myTag"] }],
-      errors: generateErrors("custom-2 custom-1"),
-    },
+    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].flatMap(tag => ([
+      {
+        code: `
+        ${tag}\`
+          sm:w-6
+          hello
+          w-8
+          container
+          w-12
+          world
+          flex
+          lg:w-4
+        \`;`,
+        options: [{ tags: ["myTag"] }],
+        errors: generateErrors("hello world"),
+      },
+      {
+        code: `
+        ${tag}\`
+          px-4
+          custom-1
+          py-1
+          \${
+            !isDisabled &&
+            \`
+              lg:focus:ring-1
+              custom-2
+              focus:ring-2
+            \`
+          }
+          \${
+            isDisabled &&
+            \`
+              lg:opacity-25
+              custom-3
+              opacity-50
+            \`
+          }
+        \`
+        `,
+        options: [{ tags: ["myTag"] }],
+        errors: generateErrors("custom-2 custom-3 custom-1"),
+      },
+      {
+        code: `${tag}\`custom-1 \${isDisabled ? "custom-2" : "m-4"}\``,
+        options: [{ tags: ["myTag"] }],
+        errors: generateErrors("custom-2 custom-1"),
+      },
+    ]))),
     {
       code: `
       <div class="bg-red-600 p-10">

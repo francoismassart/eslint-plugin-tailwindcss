@@ -800,5 +800,15 @@ ruleTester.run("shorthands", rule, {
       errors: [generateError(["h-custom", "w-custom"], "size-custom")],
       options: customSpacingOnlyOptions,
     },
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].map((tag) => ({
+      code: `${tag}\`overflow-hidden text-ellipsis whitespace-nowrap text-white text-xl\``,
+      output: `${tag}\`truncate text-white text-xl\``,
+      errors: [generateError(["overflow-hidden", "text-ellipsis", "whitespace-nowrap"], "truncate")],
+      options: [
+        {
+          tags: ["myTag"],
+        },
+      ],
+    })),
   ],
 });
