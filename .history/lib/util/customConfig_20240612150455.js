@@ -39,8 +39,8 @@ function loadConfig(config) {
       const stats = fs.statSync(resolvedPath);
       if (stats === null) {
         loadedConfig = {};
-      } else if (lastModifiedDate !== stats.mtime.getTime()) {
-        lastModifiedDate = stats.mtime.getTime();
+      } else if (lastModifiedDate !== stats.mtime) {
+        lastModifiedDate = stats.mtime;
         loadedConfig = requireUncached(resolvedPath);
       } else {
         loadedConfig = null;
