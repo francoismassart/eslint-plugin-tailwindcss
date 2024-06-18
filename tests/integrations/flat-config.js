@@ -5,7 +5,7 @@ const cp = require("child_process");
 const path = require("path");
 const semver = require("semver");
 
-const ESLINT = `.${path.sep}node_modules${path.sep}.bin${path.sep}eslint`;
+const ESLINT_BIN_PATH = [".", "node_modules", ".bin", "eslint"].join(path.sep);
 
 describe("Integration with flat config", () => {
   let originalCwd;
@@ -29,11 +29,10 @@ describe("Integration with flat config", () => {
       return;
     }
 
-    const result = JSON.parse(
-      cp.execSync(`${ESLINT} a.vue --format=json`, {
-        encoding: "utf8",
-      })
-    );
+    const lintResult = cp.execSync(`${ESLINT_BIN_PATH} a.vue --format=json`, {
+      encoding: "utf8",
+    });
+    const result = JSON.parse(lintResult);
     assert.strictEqual(result.length, 1);
     assert.deepStrictEqual(result[0].messages[0].messageId, "invalidOrder");
   });
