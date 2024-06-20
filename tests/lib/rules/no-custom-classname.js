@@ -444,7 +444,7 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
     },
-    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].map((tag) => ({
       code: `
       ${tag}\`
         sm:w-6
@@ -455,7 +455,7 @@ ruleTester.run("no-custom-classname", rule, {
         lg:w-4
       \`;`,
       options: [{ tags: ["myTag"] }],
-    }))),
+    })),
     {
       code: `
       <div class="flex flex-row-reverse space-x-4 space-x-reverse">
@@ -1063,6 +1063,32 @@ ruleTester.run("no-custom-classname", rule, {
       code: `
       <h1 class="forced-color-adjust-none">New forced-color-adjust utilities</h1>`,
     },
+    {
+      // fix ast expression tests for null expressions
+      // @see https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/345
+      code: `
+      <template>
+        <div
+          class="text-end"
+          :class="(marketValue ?? 0) < (totalCost ?? 0) ? 'text-danger' : 'text-success'"
+        >
+          {{ marketValue?.toFixed(2) }}
+        </div>
+      </template>
+
+      <script>
+      export default {
+        data () {
+          return {
+            marketValue: 10,
+            totalCost: 10
+          };
+        }
+      };
+      </script>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
   ],
 
   invalid: [
@@ -1224,7 +1250,7 @@ ruleTester.run("no-custom-classname", rule, {
       ],
       errors: generateErrors("dark"),
     },
-    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].flatMap(tag => ([
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].flatMap((tag) => [
       {
         code: `
         ${tag}\`
@@ -1272,7 +1298,7 @@ ruleTester.run("no-custom-classname", rule, {
         options: [{ tags: ["myTag"] }],
         errors: generateErrors("custom-2 custom-1"),
       },
-    ]))),
+    ]),
     {
       code: `
       <div class="bg-red-600 p-10">
