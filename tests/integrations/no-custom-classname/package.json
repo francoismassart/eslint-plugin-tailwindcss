@@ -1,0 +1,13 @@
+{
+  "name": "integration-test-no-custom-classname",
+  "version": "1.0.0",
+  "description": "Integration test to check how no-custom-classname performs",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "eslint": "^8.57.0",
+    "eslint-plugin-tailwindcss": "file:../../.."
+  },
+  "author": "",
+  "license": "ISC"
+}
