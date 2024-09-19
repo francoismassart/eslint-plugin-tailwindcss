@@ -1089,6 +1089,36 @@ ruleTester.run("no-custom-classname", rule, {
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
+    {
+      code: `<template><div :class="[{'text-red-500': true, 'bg-transparent': false}]">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<template><div :class="['hidden',{'text-red-500': true, 'bg-transparent': false}, 'text-red-200']">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<template><div :class="['tw-hidden',{'tw-text-red-500': true, 'tw-bg-transparent': false}, 'tw-text-red-200']">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+      options: [
+        {
+          config: {
+            prefix: "tw-",
+            theme: {
+              extend: {},
+            },
+          },
+        },
+      ],
+    },
+    {
+      code: `<template><div :class="['hidden',{'text-red-500': true, 'bg-transparent': false}, {'text-green-500': true}, 'bg-white']">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    }
   ],
 
   invalid: [
@@ -1434,6 +1464,59 @@ ruleTester.run("no-custom-classname", rule, {
       ),
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `
+      <script>
+      export default {
+        data() {
+          return {}
+        }
+      }
+      </script>
+      <template>
+        <span :class="['text-red-200', {'tw-unknown-class': true, 'tw-unknown-class-two': false}, 'tw-unknown-class-three', 'tw-bg-transparent']" /> 
+      </template>
+      `,
+      options: [
+        {
+          config: {
+            prefix: "tw-",
+            theme: {
+              extend: {},
+            },
+          },
+        },
+      ],
+      errors: generateErrors(
+        "text-red-200 tw-unknown-class tw-unknown-class-two tw-unknown-class-three"
+      ),
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<template><div :class="[{'baz': true, 'foo': false}]">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+      errors: generateErrors("baz foo"),
+    },
+    {
+      code: `<template><div :class="['unknown',{'baz': true, 'foo': false}]">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+      errors: generateErrors("unknown baz foo"),
+    },
+    {
+      code: `<template><div :class="['text-red-200','unknown',{'baz': true, 'foo': false}, 'tw-unknown-class']">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+      errors: generateErrors("unknown baz foo tw-unknown-class"),
+    },
+    {
+      code: `<template><div :class="['tw-hidden',{'custom': true, '🧑‍💻': false}, {'text-green-500': true}, 'bg-tw']">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+      errors: generateErrors("tw-hidden custom 🧑‍💻 bg-tw"),
     },
     {
       code: `<div className="group-hover/edit:unknown-class">Custom group name variant with invalid class name</div>`,
