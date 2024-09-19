@@ -20,7 +20,6 @@
   "scripts": {
     "test": "npm run test:base && npm run test:integration",
     "test:base": "mocha \"tests/lib/**/*.js\"",
-    "test:no-custom-classname": "mocha \"tests/lib/rules/no-custom-classname.js\"",
     "test:integration": "mocha \"tests/integrations/*.js\" --timeout 60000"
   },
   "files": [
