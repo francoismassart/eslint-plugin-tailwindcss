@@ -1100,6 +1100,11 @@ ruleTester.run("no-custom-classname", rule, {
       parser: require.resolve("vue-eslint-parser"),
     },
     {
+      code: `<template><div :class="[{'text-red-500': true}, 'bg-white']" :prop="['baz', true, 'foo']" :other="['val', {'baz': true, 'text-green-400': false}]">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+    },
+    {
       code: `<template><div :class="['tw-hidden',{'tw-text-red-500': true, 'tw-bg-transparent': false}, 'tw-text-red-200']">Issue #319</div></template>`,
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
@@ -1517,6 +1522,12 @@ ruleTester.run("no-custom-classname", rule, {
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
       errors: generateErrors("tw-hidden custom 🧑‍💻 bg-tw"),
+    },
+    {
+      code: `<template><div :class="[{'baz': true, 'foo': false}]" :prop="['baz', true, 'foo']" :other="['val', {'baz': true, 'foo': false}]">Issue #319</div></template>`,
+      filename: "test.vue",
+      parser: require.resolve("vue-eslint-parser"),
+      errors: generateErrors("baz foo"),
     },
     {
       code: `<div className="group-hover/edit:unknown-class">Custom group name variant with invalid class name</div>`,
