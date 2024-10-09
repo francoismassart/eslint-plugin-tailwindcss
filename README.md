@@ -41,6 +41,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Latest changelog
 
+- fix: [custom classnames rule with VueJS objects within list](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/359) (by [Ericlm](https://github.com/Ericlm) 🙏)
 - fix: config loading cache
 - fix: Avoid re-parsing unchanged CSS files
 - fix: [AST expression tests for null expressions](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/345) (by [kesor](https://github.com/kesor) 🙏)
