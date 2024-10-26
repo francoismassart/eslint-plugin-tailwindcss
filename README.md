@@ -23,6 +23,7 @@ Learn more about each supported rules by reading their documentation:
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
 - [`no-unnecessary-arbitrary-value`](docs/rules/no-unnecessary-arbitrary-value.md): e.g. replacing `m-[1.25rem]` by its configuration based classname `m-5`
+- [`no-multiple-whitespace`](docs/rules/no-multiple-whitespace.md): removes unnecessary whitespaces between Tailwind CSS classnames
 
 Using ESLint extension for Visual Studio Code, you will get these messages
 ![detected-errors](.github/output.png)
