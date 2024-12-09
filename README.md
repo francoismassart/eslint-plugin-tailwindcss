@@ -13,9 +13,12 @@ Version 4 of the `eslint-plugin-tailwindcss` is:
 
 This version is far from finished, yet it is available and open for contributions.
 
-### Next steps
+### Completed steps
 
 - restore the automated tests running on the merge requests of the repo
+
+### Next steps
+
 - read the settings from eslint (shared settings & rules settings)
 - create the config utility
 - use the config utility to generate the arguments of `generateRules`
@@ -85,9 +88,9 @@ You can see an example of generated documentation in the next section.
 
 💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                             | Description            | 💡 |
-| :------------------------------- | :--------------------- | :- |
-| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | 💡 |
+| Name                             | Description            | 💡  |
+| :------------------------------- | :--------------------- | :-- |
+| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | 💡  |
 
 <!-- end auto-generated rules list -->
 
