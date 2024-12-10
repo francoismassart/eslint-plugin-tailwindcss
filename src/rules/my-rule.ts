@@ -53,6 +53,13 @@ export const myRule = createRule<Options, MessageIds>({
     ],
     type: "suggestion",
   },
+  /**
+   * About `defaultOptions`:
+   * - `defaultOptions` is not used in the generated documentation
+   * - `defaultOptions` is used when options are not provided in the rules configuration
+   * - If some configuration is provided as the second argument, it is ignored, not merged
+   * - In other words, the `defaultOptions` is only used when the rule is used without configuration
+   */
   defaultOptions: [{ someBool: false, someEnum: "always" }],
   create: (context, options) => {
     return {

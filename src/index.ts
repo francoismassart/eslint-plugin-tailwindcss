@@ -16,6 +16,10 @@ const { name, version } =
   require("../package.json") as typeof import("../package.json");
 
 const plugin: Plugin = {
+  /**
+   * TODO: Add configs (recommended, etc.)
+   * @see https://github.com/typescript-eslint/examples/blob/main/packages/eslint-plugin-example-typed-linting/src/index.ts
+   */
   meta: {
     name,
     version,
