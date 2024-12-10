@@ -1,4 +1,8 @@
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
+
+import { PluginSharedSettings } from "../types";
+import urlCreator from "../url-creator";
+
 export { ESLintUtils } from "@typescript-eslint/utils";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way
@@ -12,17 +16,9 @@ type Options = [
   }
 ];
 
-interface SharedConfigurationSettings {
-  demoTypescript?: {
-    sharedSetting: string;
-  };
-}
-
 // The Rule creator returns a function that is used to create a well-typed ESLint rule
 // The parameter passed into RuleCreator is a URL generator function.
-export const createRule = RuleCreator(
-  (name) => `https://my-website.io/eslint/${name}`
-);
+export const createRule = RuleCreator(urlCreator);
 
 export const myRule = createRule<Options, MessageIds>({
   name: "my-rule",
@@ -66,11 +62,11 @@ export const myRule = createRule<Options, MessageIds>({
           console.log(options[0]);
 
           // Shared settings
-          const demoTypeScriptSharedSettings = (context.settings
-            ?.demoTypeScriptSettings || {
-            sharedSetting: "default",
-          }) as SharedConfigurationSettings;
-          console.log(demoTypeScriptSharedSettings);
+          const sharedSettings = (context.settings?.tailwindcss || {
+            stylesheet: "",
+            functions: [],
+          }) as PluginSharedSettings;
+          console.log(sharedSettings);
 
           const rangeStart = node.range[0];
           const range: readonly [number, number] = [
