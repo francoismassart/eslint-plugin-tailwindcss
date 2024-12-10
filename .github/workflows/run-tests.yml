@@ -25,4 +25,5 @@ jobs:
         run: |
           node --version
           pnpm --version
+          pnpm run lint
           pnpm run test
