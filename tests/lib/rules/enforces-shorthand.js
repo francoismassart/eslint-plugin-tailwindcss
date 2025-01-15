@@ -810,5 +810,18 @@ ruleTester.run("shorthands", rule, {
         },
       ],
     })),
+    {
+      code: `<div class="pfx-h-5 pfx-w-5 sm:pfx-h-10 sm:pfx-w-10">New size-* utilities</div>`,
+      output: `<div class="pfx-size-5 sm:pfx-size-10">New size-* utilities</div>`,
+      errors: [
+        generateError(["pfx-h-5", "pfx-w-5"], "pfx-size-5"),
+        generateError(["sm:pfx-h-10", "sm:pfx-w-10"], "sm:pfx-size-10"),
+      ],
+      options: [
+        {
+          config: { prefix: "pfx-" },
+        },
+      ],
+    },
   ],
 });
