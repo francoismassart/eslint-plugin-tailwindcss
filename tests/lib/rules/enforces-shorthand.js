@@ -823,5 +823,14 @@ ruleTester.run("shorthands", rule, {
         },
       ],
     },
+    {
+      code: `<div class="content-center justify-center sm:items-start sm:justify-items-start md:self-end md:justify-self-end lg:self-start lg:justify-self-center">issue #376</div>`,
+      output: `<div class="place-content-center sm:place-items-start md:place-self-end lg:self-start lg:justify-self-center">issue #376</div>`,
+      errors: [
+        generateError(["content-center", "justify-center"], "place-content-center"),
+        generateError(["sm:items-start", "sm:justify-items-start"], "sm:place-items-start"),
+        generateError(["md:self-end", "md:justify-self-end"], "md:place-self-end"),
+      ],
+    },
   ],
 });
