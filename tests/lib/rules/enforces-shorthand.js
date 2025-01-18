@@ -810,5 +810,27 @@ ruleTester.run("shorthands", rule, {
         },
       ],
     })),
+    {
+      code: `<div class="pfx-h-5 pfx-w-5 sm:pfx-h-10 sm:pfx-w-10">New size-* utilities</div>`,
+      output: `<div class="pfx-size-5 sm:pfx-size-10">New size-* utilities</div>`,
+      errors: [
+        generateError(["pfx-h-5", "pfx-w-5"], "pfx-size-5"),
+        generateError(["sm:pfx-h-10", "sm:pfx-w-10"], "sm:pfx-size-10"),
+      ],
+      options: [
+        {
+          config: { prefix: "pfx-" },
+        },
+      ],
+    },
+    {
+      code: `<div class="content-center justify-center sm:items-start sm:justify-items-start md:self-end md:justify-self-end lg:self-start lg:justify-self-center">issue #376</div>`,
+      output: `<div class="place-content-center sm:place-items-start md:place-self-end lg:self-start lg:justify-self-center">issue #376</div>`,
+      errors: [
+        generateError(["content-center", "justify-center"], "place-content-center"),
+        generateError(["sm:items-start", "sm:justify-items-start"], "sm:place-items-start"),
+        generateError(["md:self-end", "md:justify-self-end"], "md:place-self-end"),
+      ],
+    },
   ],
 });
