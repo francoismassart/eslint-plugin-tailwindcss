@@ -42,6 +42,16 @@ ruleTester.run("multiple whitespace", rule, {
       <span class="bg-red-50 text-xl"></span>
       `,
     },
+    {
+      code: `
+      ctl(\`
+        sm:w-6
+        container
+        w-12
+        flex
+        lg:w-4
+      \`);`,
+    },
   ],
 
   invalid: [
