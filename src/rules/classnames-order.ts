@@ -4,6 +4,7 @@
  */
 'use strict';
 
+import { createContext as createContextFallback } from 'tailwindcss/lib/lib/setupContextUtils';
 import astUtil from '../util/ast';
 import customConfig from '../util/customConfig';
 import docsUrl from '../util/docsUrl';
@@ -11,7 +12,6 @@ import parserUtil from '../util/parser';
 import order from '../util/prettier/order';
 import removeDuplicatesFromClassnamesAndWhitespaces from '../util/removeDuplicatesFromClassnamesAndWhitespaces';
 import getOption from '../util/settings';
-const createContextFallback = require('tailwindcss/lib/lib/setupContextUtils').createContext;
 
 //------------------------------------------------------------------------------
 // Rule Definition

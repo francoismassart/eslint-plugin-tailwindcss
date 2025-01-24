@@ -6,7 +6,7 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 let twLoadConfig: { loadConfig: (arg0: any) => any } | null;
 
 try {
-  twLoadConfig = require('tailwindcss/lib/lib/load-config');
+  twLoadConfig = await import('tailwindcss/lib/lib/load-config');
 } catch (err) {
   twLoadConfig = null;
 }
@@ -14,7 +14,7 @@ try {
 const CHECK_REFRESH_RATE = 1_000;
 let previousConfig: null = null;
 let lastCheck: number | null = null;
-let mergedConfig: null = null;
+let mergedConfig: null | ReturnType<typeof resolveConfig> = null;
 let lastModifiedDate: string | null = null;
 
 /**

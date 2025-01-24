@@ -1,10 +1,10 @@
 'use strict';
 
-const fg = require('fast-glob');
-const fs = require('fs');
-const postcss = require('postcss');
+import fg from 'fast-glob';
+import fs from 'fs';
+import postcss from 'postcss';
+import removeDuplicatesFromArray from './removeDuplicatesFromArray';
 const lastClassFromSelectorRegexp = /\.([^\.\,\s\n\:\(\)\[\]\'~\+\>\*\\]*)/gim;
-const removeDuplicatesFromArray = require('./removeDuplicatesFromArray');
 
 const cssFilesInfos = new Map();
 let lastUpdate = null;

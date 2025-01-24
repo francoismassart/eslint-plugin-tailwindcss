@@ -9,7 +9,7 @@ import { separatorRegEx } from './regex';
 // /.../eslint-plugin-tailwindcss/node_modules/espree/espree.js
 // /.../eslint-plugin-tailwindcss/node_modules/@angular-eslint/template-parser/dist/index.js
 
-const removeDuplicatesFromArray = require('./removeDuplicatesFromArray');
+import removeDuplicatesFromArray from './removeDuplicatesFromArray';
 
 function calleeToString(calleeNode) {
   if (calleeNode.type === 'Identifier') {

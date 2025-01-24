@@ -4,6 +4,7 @@
  */
 'use strict';
 
+import { createContext as createContextFallback } from 'tailwindcss/lib/lib/setupContextUtils';
 import { groups as defaultGroups } from '../configs/groups';
 import astUtil from '../util/ast';
 import getClassnamesFromCSS from '../util/cssFiles';
@@ -12,9 +13,8 @@ import docsUrl from '../util/docsUrl';
 import generated from '../util/generated';
 import groupUtil from '../util/groupMethods';
 import parserUtil from '../util/parser';
+import { escapeRegex } from '../util/regex';
 import getOption from '../util/settings';
-const createContextFallback = require('tailwindcss/lib/lib/setupContextUtils').createContext;
-const escapeRegex = require('../util/regex').escapeRegex;
 
 //------------------------------------------------------------------------------
 // Rule Definition

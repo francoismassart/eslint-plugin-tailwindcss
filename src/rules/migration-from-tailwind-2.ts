@@ -4,12 +4,12 @@
  */
 'use strict';
 
-const docsUrl = require('../util/docsUrl');
-const customConfig = require('../util/customConfig');
-const astUtil = require('../util/ast');
-const groupUtil = require('../util/groupMethods');
-const getOption = require('../util/settings');
-const parserUtil = require('../util/parser');
+import astUtil from '../util/ast';
+import customConfig from '../util/customConfig';
+import docsUrl from '../util/docsUrl';
+import groupUtil from '../util/groupMethods';
+import parserUtil from '../util/parser';
+import getOption from '../util/settings';
 
 //------------------------------------------------------------------------------
 // Rule Definition

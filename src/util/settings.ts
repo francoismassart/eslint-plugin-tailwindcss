@@ -2,7 +2,7 @@
 let resolveDefaultConfigPathAlias: (() => any) | null;
 
 try {
-  const { resolveDefaultConfigPath } = require('tailwindcss/lib/util/resolveConfigPath');
+  const { resolveDefaultConfigPath } = await import('tailwindcss/lib/util/resolveConfigPath');
   resolveDefaultConfigPathAlias = resolveDefaultConfigPath;
 } catch (err) {
   resolveDefaultConfigPathAlias = null;
