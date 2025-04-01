@@ -1123,7 +1123,28 @@ ruleTester.run("no-custom-classname", rule, {
       code: `<template><div :class="['hidden',{'text-red-500': true, 'bg-transparent': false}, {'text-green-500': true}, 'bg-white']">Issue #319</div></template>`,
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
+    },
+    {
+      code: `<div class="flex text-center sm:block md:flex"></div>`,
+      parser: require.resolve("@html-eslint/parser"),
+    },
+    {
+      code: `<div x-data="{ open: true }" class="bg-white rounded-md">Alpine.js x-data</div>`,
+      parser: require.resolve("@html-eslint/parser"),
+    },
+    {
+      code: `<div :class="{ 'text-blue-500': isOpen, 'hidden': !isOpen }"></div>`,
+      parser: require.resolve("@html-eslint/parser"),
+    },
+    {
+      code: `<div class="hover:bg-gray-100 x-transition x-cloak">Should ignore Alpine extras</div>`,
+      parser: require.resolve("@html-eslint/parser"),
+    },
+    {
+      code: `<div class="flex" :class="{ 'bg-white': open, 'text-red-500': !open }">Hybrid class binding</div>`,
+      parser: require.resolve("@html-eslint/parser"),
     }
+
   ],
 
   invalid: [
@@ -1610,5 +1631,31 @@ ruleTester.run("no-custom-classname", rule, {
       code: `<div class="grid grid-flow-col gap-4 grid-rows-supagrid">Subgrid support</div>`,
       errors: generateErrors("grid-rows-supagrid"),
     },
+    {
+      code: `<div class="unknown-class tailwind-fail">Invalid HTML classes</div>`,
+      parser: require.resolve("@html-eslint/parser"),
+      errors: generateErrors("unknown-class tailwind-fail"),
+    },
+    {
+      code: `<div :class="{ 'bg-custom': isActive, 'text-💥': hasError }"></div>`,
+      parser: require.resolve("@html-eslint/parser"),
+      errors: generateErrors("bg-custom text-💥"),
+    },
+    {
+      code: `<div class="rounded shadow custom-btn">Basic + invalid class</div>`,
+      parser: require.resolve("@html-eslint/parser"),
+      errors: generateErrors("custom-btn"),
+    },
+    {
+      code: `<div :class="{ 'foo-bar': isFoo, 'bar-baz': isBar }"></div>`,
+      parser: require.resolve("@html-eslint/parser"),
+      errors: generateErrors("foo-bar bar-baz"),
+    },
+    {
+      code: `<div class="bg-white" :class="{ 'bg-offwhite': hasAlt, 'text-neon': mode === 'neon' }"></div>`,
+      parser: require.resolve("@html-eslint/parser"),
+      errors: generateErrors("bg-offwhite text-neon"),
+    }
+    
   ],
 });
