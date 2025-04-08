@@ -287,6 +287,19 @@ ruleTester.run("migration-from-tailwind-2", rule, {
       ],
     },
     {
+      code: `<div class={"transform scale-50" satisfies string}>Automatic transform</div>`,
+      output: `<div class={"scale-50" satisfies string}>Automatic transform</div>`,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: [
+        {
+          messageId: "classnameNotNeeded",
+          data: {
+            classnames: "transform",
+          },
+        },
+      ],
+    },
+    {
       code: `
       <template>
         <span class="placeholder-red-900" />

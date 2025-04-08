@@ -1148,6 +1148,26 @@ ruleTester.run("no-custom-classname", rule, {
       errors: generateErrors("my-custom"),
     },
     {
+      code: `
+      export interface FakePropsInterface {
+        readonly name?: string;
+      }
+      function Fake({
+        name = 'yolo'
+      }: FakeProps) {
+        return (
+          <>
+            <h1 className={"w-12 my-custom" satisfies string}>Welcome {name}</h1>
+            <p>Bye {name}</p>
+          </>
+        );
+      }
+      export default Fake;
+      `,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: generateErrors("my-custom"),
+    },
+    {
       code: `<div class="w-12 my-custom">my-custom is not defined in Tailwind CSS!</div>`,
       errors: generateErrors("my-custom"),
     },

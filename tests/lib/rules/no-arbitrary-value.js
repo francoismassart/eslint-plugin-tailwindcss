@@ -136,6 +136,11 @@ ruleTester.run("no-arbitrary-value", rule, {
       errors: generateErrors("w-[10px]"),
     },
     {
+      code: `<div class={"w-[10px]" satisfies string}>Arbitrary width!</div>`,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: generateErrors("w-[10px]"),
+    },
+    {
       code: `
       <script>
       export default {

@@ -268,5 +268,16 @@ ruleTester.run("arbitrary-values", rule, {
       options: config,
       errors: generateErrors(["border-[1px]", "rounded-[0.25rem]"], [["border"], ["rounded"]]),
     },
+    {
+      code: `
+      <pre class={"-z-[-10]" satisfies string}>z-10</pre>
+      `,
+      output: `
+      <pre class={"z-10" satisfies string}>z-10</pre>
+      `,
+      options: config,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: generateErrors(["-z-[-10]"], [["z-10"]]),
+    },
   ],
 });
