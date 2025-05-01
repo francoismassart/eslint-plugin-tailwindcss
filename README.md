@@ -15,6 +15,7 @@ While you can use the official plugin [`prettier-plugin-tailwindcss`](https://ww
 Learn more about each supported rules by reading their documentation:
 
 - [`classnames-order`](docs/rules/classnames-order.md): order classnames for consistency and it makes merge conflict a bit easier to resolve
+- [`enforces-arbitrary-value-syntax`](docs/rules/enforces-arbitrary-value-syntax.md): enforce correct arbitrary value syntax using square brackets (e.g. `p-10px` should be `p-[10px]`)
 - [`enforces-negative-arbitrary-values`](docs/rules/enforces-negative-arbitrary-values.md): make sure to use negative arbitrary values classname without the negative classname e.g. `-top-[5px]` should become `top-[-5px]`
 - [`enforces-shorthand`](docs/rules/enforces-shorthand.md): merge multiple classnames into shorthand if possible e.g. `mx-5 my-5` should become `m-5`
 - [`migration-from-tailwind-2`](docs/rules/migration-from-tailwind-2.md) for easy upgrade from Tailwind CSS `v2` to `v3`.
