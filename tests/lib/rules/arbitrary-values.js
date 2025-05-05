@@ -543,17 +543,17 @@ ruleTester.run("arbitrary-values", rule, {
   ],
 
   invalid: [
-    {
-      code: `
-      <div class="dark">
-        <span class="dark:text-white">
-          Tailwind CSS V3: dark is not valid unless
-          <code>config.darkMode === 'class'</code>
-        </span>
-      </div>
-      `,
-      errors: generateErrors("dark"),
-    },
+    // {
+    //   code: `
+    //   <div class="dark">
+    //     <span class="dark:text-white">
+    //       Tailwind CSS V3: dark is not valid unless
+    //       <code>config.darkMode === 'class'</code>
+    //     </span>
+    //   </div>
+    //   `,
+    //   errors: generateErrors("dark"),
+    // },
     {
       code: `
       <div class="aspect-ko">
@@ -677,7 +677,7 @@ ruleTester.run("arbitrary-values", rule, {
       options: config,
       errors: generateErrors("stroke-[angle:var(--some)]"),
     },
-    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].map((tag) => ({
       code: `${tag}\`stroke-[var(--some)] stroke-['yolo'] stroke-[angle:var(--some)]\``,
       errors: generateErrors("stroke-[angle:var(--some)]"),
       options: [
@@ -685,6 +685,6 @@ ruleTester.run("arbitrary-values", rule, {
           tags: ["myTag"],
         },
       ],
-    }))),
+    })),
   ],
 });

@@ -8,7 +8,7 @@ var assert = require("assert");
 var defaultGroups = require("../../../lib/config/groups").groups;
 var customConfig = require("../../../lib/util/customConfig");
 var groupUtil = require("../../../lib/util/groupMethods");
-var mergedConfig = customConfig.resolve({});
+var mergedConfig = customConfig.resolve({}).context.tailwindConfig;
 
 describe("getPrefix", function () {
   it("should retrieve the correct prefix", function () {

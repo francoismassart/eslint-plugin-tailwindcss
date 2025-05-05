@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "fast-glob": "^3.2.5",
-    "postcss": "^8.4.4"
+    "postcss": "^8.4.4",
+    "tailwind-api-utils": "^1.0.0"
   },
   "devDependencies": {
     "@angular-eslint/template-parser": "^15.2.0",
