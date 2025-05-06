@@ -1,6 +1,6 @@
 {
   "name": "@hyoban/eslint-plugin-tailwindcss",
-  "version": "4.0.0-alpha.9",
+  "version": "4.0.0-alpha.10",
   "description": "Rules enforcing best practices while using Tailwind CSS",
   "keywords": [
     "eslint",
@@ -26,7 +26,7 @@
     "lib"
   ],
   "peerDependencies": {
-    "tailwindcss": "^3.4.0"
+    "tailwindcss": "^3.4.0 || ^4.0.0"
   },
   "dependencies": {
     "fast-glob": "^3.2.5",
