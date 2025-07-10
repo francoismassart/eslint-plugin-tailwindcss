@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwindcss",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-alpha.1",
   "description": "Rules enforcing best practices while using Tailwind CSS",
   "keywords": [
     "eslint",
@@ -22,6 +22,9 @@
     "docs/",
     "lib/"
   ],
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  },
   "type": "commonjs",
   "exports": {
     ".": {
@@ -43,7 +46,10 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@typescript-eslint/utils": "^7.13.0"
+    "@typescript-eslint/utils": "^7.13.0",
+    "postcss": "^8.4.4",
+    "synckit": "^0.11.4",
+    "tailwind-api-utils": "^1.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",

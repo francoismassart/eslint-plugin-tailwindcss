@@ -1,4 +1,5 @@
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
+import { createSyncFn } from "synckit";
 
 import { PluginSharedSettings } from "../types";
 import urlCreator from "../url-creator";
@@ -15,6 +16,8 @@ type Options = [
     someEnum: string;
   }
 ];
+
+const syncFunction = createSyncFn(require.resolve("../worker.mjs"));
 
 // The Rule creator returns a function that is used to create a well-typed ESLint rule
 // The parameter passed into RuleCreator is a URL generator function.
@@ -65,6 +68,10 @@ export const myRule = createRule<Options, MessageIds>({
     return {
       VariableDeclaration: (node) => {
         if (node.kind === "var") {
+          console.log("!!VAR!!!");
+          console.log("!!VAR!!!");
+          const asyncResult = syncFunction();
+          console.log(asyncResult);
           // Reading inline configuration
           console.log(options[0]);
 
