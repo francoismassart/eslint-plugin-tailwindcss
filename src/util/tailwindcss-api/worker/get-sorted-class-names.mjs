@@ -21,7 +21,11 @@ runAsWorker(
     /**
      * @type {string} The path to the Tailwind CSS config file
      */
-    cssConfigPath
+    cssConfigPath,
+    /**
+     * @type {Array<string>} List of class names to sort
+     */
+    unorderedClassNames
   ) => {
     const utils = new TailwindUtils();
     await utils.loadConfigV4(cssConfigPath);
@@ -30,7 +34,7 @@ runAsWorker(
         `Failed to load the Tailwind CSS theme using: "${cssConfigPath}"`
       );
     }
-    // @ts-expect-error Property 'theme' does not exist on type 'DesignSystem'.ts(2339)
-    return utils.context?.theme;
+    const sorted = await utils.getSortedClassNames(unorderedClassNames);
+    return sorted;
   }
 );
