@@ -1,8 +1,8 @@
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
-import { createSyncFn } from "synckit";
 
 import { PluginSharedSettings } from "../types";
 import urlCreator from "../url-creator";
+import { loadThemeWorker } from "../util/tailwindcss-api";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -16,8 +16,6 @@ type Options = [
     someEnum: string;
   }
 ];
-
-const syncFunction = createSyncFn(require.resolve("../worker.mjs"));
 
 // The Rule creator returns a function that is used to create a well-typed ESLint rule
 // The parameter passed into RuleCreator is a URL generator function.
@@ -69,18 +67,21 @@ export const myRule = createRule<Options, MessageIds>({
       VariableDeclaration: (node) => {
         if (node.kind === "var") {
           console.log("!!VAR!!!");
-          console.log("!!VAR!!!");
-          const asyncResult = syncFunction();
-          console.log(asyncResult);
+          const result = loadThemeWorker(
+            require.resolve("../../tests/stubs/css/tiny.css")
+          );
+          console.log("Tailwind config result:");
+          console.log("=======================");
+          console.log(result);
           // Reading inline configuration
-          console.log(options[0]);
+          console.log("\n", "Options:", "\n", options[0]);
 
           // Shared settings
           const sharedSettings = (context.settings?.tailwindcss || {
             stylesheet: "",
             functions: [],
           }) as PluginSharedSettings;
-          console.log(sharedSettings);
+          console.log("\n", "sharedSettings:", "\n", sharedSettings);
 
           const rangeStart = node.range[0];
           const range: readonly [number, number] = [
