@@ -22,5 +22,6 @@ export type Theme = {
   prefix: string;
   values: Map<string, ThemeValue>;
   // @ts-expect-error Unexpected any. Specify a different type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   keyframes: Set<any>;
 };
