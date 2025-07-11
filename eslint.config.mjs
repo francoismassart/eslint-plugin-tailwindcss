@@ -1,17 +1,18 @@
-import pluginJs from "@eslint/js";
+// @ts-check
+
+import eslint from "@eslint/js";
 import importPlugin from "eslint-plugin-import";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
+export default tseslint.config(
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
   { files: ["**/*.{js,mjs,cjs,ts}"] },
   { ignores: ["lib/**"] },
   { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
   {
     plugins: {
       import: importPlugin,
@@ -31,5 +32,5 @@ export default [
       // Already covered
       "unicorn/prefer-module": "off",
     },
-  },
-];
+  }
+);

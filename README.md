@@ -88,12 +88,13 @@ You can see an example of generated documentation in the next section.
 
 <!-- begin auto-generated rules list -->
 
+🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
 💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                                               | Description                                                           | 💡  |
-| :------------------------------------------------- | :-------------------------------------------------------------------- | :-- |
-| [classnames-order](docs/rules/classnames-order.md) | Enforce a consistent and logical order of the Tailwind CSS classnames | 💡  |
-| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                | 💡  |
+| Name                                               | Description                                                           | 🔧 | 💡 |
+| :------------------------------------------------- | :-------------------------------------------------------------------- | :- | :- |
+| [classnames-order](docs/rules/classnames-order.md) | Enforce a consistent and logical order of the Tailwind CSS classnames | 🔧 | 💡 |
+| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                |    | 💡 |
 
 <!-- end auto-generated rules list -->
 

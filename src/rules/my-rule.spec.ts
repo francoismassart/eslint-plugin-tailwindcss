@@ -2,16 +2,9 @@ import { RuleTester } from "@typescript-eslint/rule-tester";
 
 import { myRule } from "./my-rule";
 
-const ruleTester = new RuleTester({
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-  },
-});
+const ruleTester = new RuleTester();
 
-ruleTester.run("eslint-plugin-tailwindcss/my-rule", myRule, {
+ruleTester.run("my-rule", myRule, {
   valid: [
     {
       // a code snippet that should pass the linter

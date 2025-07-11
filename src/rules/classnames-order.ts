@@ -29,7 +29,6 @@ export const classnamesOrder = createRule<Options, MessageIds>({
     docs: {
       description:
         "Enforce a consistent and logical order of the Tailwind CSS classnames",
-      recommended: "stylistic",
     },
     hasSuggestions: true,
     messages: {

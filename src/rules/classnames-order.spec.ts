@@ -2,14 +2,7 @@ import { RuleTester } from "@typescript-eslint/rule-tester";
 
 import { classnamesOrder } from "./classnames-order";
 
-const ruleTester = new RuleTester({
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-  },
-});
+const ruleTester = new RuleTester();
 
 const sharedOptions = {
   callees: ["c1"],
@@ -20,20 +13,35 @@ const sharedOptions = {
   skipClassAttribute: false,
   tags: ["t1"],
 };
-ruleTester.run("eslint-plugin-tailwindcss/classnames-order", classnamesOrder, {
+
+const withJSX = {
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+};
+
+ruleTester.run("classnames-order", classnamesOrder, {
   valid: [
     {
       code: `<div className="flex">flex</div>`,
+      // @ts-expect-error ts(2353)
+      languageOptions: withJSX,
       options: [sharedOptions],
     },
     {
       code: `<div className={cn('flex')}>cn flex</div>`,
+      // @ts-expect-error ts(2353)
+      languageOptions: withJSX,
       options: [sharedOptions],
     },
   ],
   invalid: [
     {
       code: `<div className={ctl('flex')}>cn flex</div>`,
+      // @ts-expect-error ts(2353)
+      languageOptions: withJSX,
       options: [sharedOptions],
       errors: [
         {
