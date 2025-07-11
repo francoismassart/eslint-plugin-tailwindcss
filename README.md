@@ -80,6 +80,8 @@ NB: In order to use, the [`RuleTester`](https://typescript-eslint.io/packages/ru
 
 `pnpm docs:update` will update existing files and the rules list.
 
+> The doc generation is generated based on the `build` process, you may need to build before running the `docs:...` scripts.
+
 You can see an example of generated documentation in the next section.
 
 ### Rules
@@ -88,9 +90,10 @@ You can see an example of generated documentation in the next section.
 
 💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                             | Description            | 💡  |
-| :------------------------------- | :--------------------- | :-- |
-| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | 💡  |
+| Name                                               | Description                                                           | 💡  |
+| :------------------------------------------------- | :-------------------------------------------------------------------- | :-- |
+| [classnames-order](docs/rules/classnames-order.md) | Enforce a consistent and logical order of the Tailwind CSS classnames | 💡  |
+| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                | 💡  |
 
 <!-- end auto-generated rules list -->
 

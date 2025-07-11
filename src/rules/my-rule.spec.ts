@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
   },
 });
 
-ruleTester.run("eslint-plugin/my-rule", myRule, {
+ruleTester.run("eslint-plugin-tailwindcss/my-rule", myRule, {
   valid: [
     {
       // a code snippet that should pass the linter
