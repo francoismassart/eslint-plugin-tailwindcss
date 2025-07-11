@@ -58,6 +58,12 @@ export const classnamesOrder = createRule<Options, MessageIds>({
             type: "boolean",
             default: true,
           },
+          skipClassAttribute: {
+            description:
+              "If you only want to lint the classnames inside one of the `callees`.",
+            type: "boolean",
+            default: false,
+          },
           tags: {
             description: "List of tags to be detected in template literals",
             type: "array",
@@ -66,7 +72,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
             default: ["dt"],
           },
         },
-        //additionalProperties: false, // TODO understand why this is breaking the tests
+        additionalProperties: false,
       },
     ],
     type: "suggestion",
