@@ -24,12 +24,11 @@ runAsWorker(
     cssConfigPath
   ) => {
     const utils = new TailwindUtils();
-    // TODO use the config manager ?
+    await utils.loadConfigV4(cssConfigPath);
     if (!utils.context) {
-      await utils.loadConfigV4(cssConfigPath);
-    }
-    if (!utils.context) {
-      return;
+      throw new Error(
+        `Failed to load the Talwind CSS theme using: "${cssConfigPath}"`
+      );
     }
     // @ts-expect-error Property 'theme' does not exist on type 'DesignSystem'.ts(2339)
     return utils.context?.theme;
