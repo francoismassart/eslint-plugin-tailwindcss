@@ -66,14 +66,14 @@ export const myRule = createRule<Options, MessageIds>({
       VariableDeclaration: (node) => {
         if (node.kind === "var") {
           // Reading inline configuration
-          console.log(options[0]);
+          console.log("\n", "Options:", "\n", options[0]);
 
           // Shared settings
           const sharedSettings = (context.settings?.tailwindcss || {
             stylesheet: "",
             functions: [],
           }) as PluginSharedSettings;
-          console.log(sharedSettings);
+          console.log("\n", "sharedSettings:", "\n", sharedSettings);
 
           const rangeStart = node.range[0];
           const range: readonly [number, number] = [
