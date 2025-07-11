@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Minimalist theme used for testing */
+@theme {
+  --color-primary: #123456;
+}
