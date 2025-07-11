@@ -2,7 +2,6 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 
 import { PluginSharedSettings } from "../types";
 import urlCreator from "../url-creator";
-import { loadThemeWorker } from "../util/tailwindcss-api";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -66,13 +65,6 @@ export const myRule = createRule<Options, MessageIds>({
     return {
       VariableDeclaration: (node) => {
         if (node.kind === "var") {
-          console.log("!!VAR!!!");
-          const result = loadThemeWorker(
-            require.resolve("../../tests/stubs/css/tiny.css")
-          );
-          console.log("Tailwind config result:");
-          console.log("=======================");
-          console.log(result);
           // Reading inline configuration
           console.log("\n", "Options:", "\n", options[0]);
 
