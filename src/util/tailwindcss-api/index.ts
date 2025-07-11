@@ -11,3 +11,9 @@ export const getSortedClassNamesWorker: (
 ) => Array<string> = createSyncFn(
   require.resolve("./worker/get-sorted-class-names.mjs")
 );
+export const isValidClassNameWorker: (
+  cssConfigPath: string,
+  className: string
+) => boolean = createSyncFn(
+  require.resolve("./worker/is-valid-class-name.mjs")
+);
