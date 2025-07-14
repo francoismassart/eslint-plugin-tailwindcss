@@ -26,13 +26,11 @@ ruleTester.run("classnames-order", classnamesOrder, {
   valid: [
     {
       code: `<div className="flex">flex</div>`,
-      // @ts-expect-error ts(2353)
       languageOptions: withJSX,
       options: [sharedOptions],
     },
     {
       code: `<div className={cn('flex')}>cn flex</div>`,
-      // @ts-expect-error ts(2353)
       languageOptions: withJSX,
       options: [sharedOptions],
     },
@@ -40,7 +38,6 @@ ruleTester.run("classnames-order", classnamesOrder, {
   invalid: [
     {
       code: `<div className={ctl('flex')}>cn flex</div>`,
-      // @ts-expect-error ts(2353)
       languageOptions: withJSX,
       options: [sharedOptions],
       errors: [
