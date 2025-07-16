@@ -987,6 +987,41 @@ ruleTester.run("no-custom-classname", rule, {
     },
     {
       code: `
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/323
+      const button = tv(
+        {
+          base: "cursor-pointer transition duration-300 ease-in-out disabled:cursor-not-allowed disabled:brightness-50",
+          defaultVariants: {
+            color: "green",
+            size: "md",
+          },
+          variants: {
+            color: {
+              green:
+                "bg-green-600 text-zinc-100 hover:bg-green-700 focus:bg-green-700",
+              red: "bg-red-600 text-zinc-100 hover:bg-red-700 focus:bg-red-700",
+              sky: "bg-sky-600 text-zinc-100 hover:bg-sky-700 focus:bg-sky-700",
+            },
+            size: {
+              lg: "rounded-md px-6 py-3 text-lg",
+              md: "rounded-md px-4 py-2 text-base",
+              sm: "rounded px-2 py-1 text-sm",
+            },
+          },
+        },
+        {
+          responsiveVariants: ["sm", "md"],
+        },
+      )
+      `,
+      options: [
+        {
+          callees: ["tv"],
+        },
+      ],
+    },
+    {
+      code: `
         const obj = { a: 12 };
         <div className={{
           ...obj
@@ -1595,6 +1630,43 @@ ruleTester.run("no-custom-classname", rule, {
         },
       ],
       errors: generateErrors("yolo custom"),
+    },
+    {
+      code: `
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/323
+      const button = tv(
+        {
+          base: "sushi cursor-pointer transition duration-300 ease-in-out disabled:cursor-not-allowed disabled:brightness-50",
+          defaultVariants: {
+            color: "green",
+            size: "md",
+          },
+          variants: {
+            color: {
+              green:
+                "bg-green-600 text-zinc-100 hover:bg-green-700 focus:bg-green-700",
+              red: "bg-red-600 text-zinc-100 hover:bg-red-700 focus:bg-red-700",
+              sky: "bg-sky-600 text-zinc-100 hover:bg-sky-700 focus:bg-sky-700",
+            },
+            size: {
+              lg: "rounded-md px-6 py-3 text-lg",
+              md: "rounded-md px-4 py-2 text-base",
+              sm: "rounded px-2 py-1 text-sm",
+            },
+          },
+        },
+        {
+          responsiveVariants: ["sm", "md"],
+        },
+      );
+      `,
+      options: [
+        {
+          callees: ["tv"],
+        },
+      ],
+      // Before #323 is resolved, sm and md in responsiveVariants are also detected as Custom ClassName
+      errors: generateErrors("sushi"),
     },
     {
       code: `<div className="px-1\u3000py-2">Full-width space between classes</div>`,
