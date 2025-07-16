@@ -6,8 +6,20 @@ Version 4 of the `eslint-plugin-tailwindcss` is:
 
 - re-written from scratch
 - using TypeScript
-- based on the official plugin [`prettier-plugin-tailwindcss`](https://www.npmjs.com/package/prettier-plugin-tailwindcss)
-- only compatible with Tailwind CSS v4.x.x
+- Based as much as possible on internal assets of Tailwind CSS:
+  - via the [`prettier-plugin-tailwindcss` plugin](https://www.npmjs.com/package/prettier-plugin-tailwindcss)
+  - via [`tailwind-api-utils`](https://github.com/hyoban/tailwind-api-utils)
+- only compatible with:
+  - Tailwind CSS v4.x.x
+  - ESLint flat config format
+
+## Status
+
+This branch was started back in 2024, and I was quickly stuck while trying to use the internal mechanics of the `tailwindcss` package.
+
+Simple tasks, like loading the CSS config, was impossible inside an ESLint plugin because ESLint plugins are synchronous by design while the tailwindcss package uses plenty of async functions.
+
+😇 Hopefully, [hyoban](https://github.com/hyoban) made [`tailwind-api-utils`](https://github.com/hyoban/tailwind-api-utils) and [demonstrated in a PR](https://github.com/hyoban/eslint-plugin-tailwindcss/pull/3) how I could use it via [`synckit`](https://www.npmjs.com/package/synckit) 👏.
 
 ## Work in progress
 
@@ -16,12 +28,13 @@ This version is far from finished, yet it is available and open for contribution
 ### Completed steps
 
 - restore the automated tests running on the merge requests of the repo
+- implement and test the usage of `tailwind-api-utils`
 
 ### Next steps
 
 - read the settings from eslint (shared settings & rules settings)
 - create the config utility
-- use the config utility to generate the arguments of `generateRules`
+- implement the `classnames-order` rule and its tests
 
 ## Getting started
 
