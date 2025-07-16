@@ -250,7 +250,7 @@ FYI, here are the `default` values:
   settings: {
     tailwindcss: {
       // These are the default values but feel free to customize
-      callees: ["classnames", "clsx", "ctl"],
+      callees: ["classNames", "classnames", "clsx", "ctl"],
       config: "tailwind.config.js", // returned from `loadConfig()` utility if not provided
       cssFiles: [
         "**/*.css",
