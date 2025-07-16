@@ -600,6 +600,20 @@ ruleTester.run("shorthands", rule, {
     },
     {
       code: `
+      <div class={"mt-0 mr-0 mb-0 ml-1" satisfies string}>
+        Possible shorthand for margin
+      </div>
+      `,
+      output: `
+      <div class={"my-0 mr-0 ml-1" satisfies string}>
+        Possible shorthand for margin
+      </div>
+      `,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: [generateError(["mt-0", "mb-0"], "my-0")],
+    },
+    {
+      code: `
       <template>
         <div class="overflow-x-auto overflow-y-auto block md:p-0 px-0 py-[0]">
           Possible shorthand for overflow

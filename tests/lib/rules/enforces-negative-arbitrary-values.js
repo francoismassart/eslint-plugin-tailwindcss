@@ -97,6 +97,13 @@ ruleTester.run("enforces-negative-arbitrary-values", rule, {
       ),
     },
     {
+      code: `<div class={"-inset-[1px] -inset-y-[1px] -inset-x-[1px] -top-[1px] -right-[1px] -bottom-[1px] -left-[1px] -top-[1px] -z-[2] -order-[2] -m-[1px] -my-[1px] -mx-[1px] -mt-[1px] -mr-[1px] -mb-[1px] -ml-[1px] -mt-[1px] -space-y-[1px] -space-x-[1px] -tracking-[1px] -indent-[1px] -hue-rotate-[50%] -backdrop-hue-rotate-[50%] -scale-[50%] -scale-y-[50%] -scale-x-[50%] -rotate-[45deg] -translate-x-[1px] -translate-y-[1px] -skew-x-[45deg] -skew-y-[45deg] -scroll-m-[1px] -scroll-my-[1px] -scroll-mx-[1px] -scroll-mt-[1px] -scroll-mr-[1px] -scroll-mb-[1px] -scroll-ml-[1px] -scroll-mt-[1px]" satisfies string}>all</div>`,
+      parser: require.resolve("@typescript-eslint/parser"),
+      errors: generateErrors(
+        "-inset-[1px] -inset-y-[1px] -inset-x-[1px] -top-[1px] -right-[1px] -bottom-[1px] -left-[1px] -top-[1px] -z-[2] -order-[2] -m-[1px] -my-[1px] -mx-[1px] -mt-[1px] -mr-[1px] -mb-[1px] -ml-[1px] -mt-[1px] -space-y-[1px] -space-x-[1px] -tracking-[1px] -indent-[1px] -hue-rotate-[50%] -backdrop-hue-rotate-[50%] -scale-[50%] -scale-y-[50%] -scale-x-[50%] -rotate-[45deg] -translate-x-[1px] -translate-y-[1px] -skew-x-[45deg] -skew-y-[45deg] -scroll-m-[1px] -scroll-my-[1px] -scroll-mx-[1px] -scroll-mt-[1px] -scroll-mr-[1px] -scroll-mb-[1px] -scroll-ml-[1px] -scroll-mt-[1px]"
+      ),
+    },
+    {
       code: `
       <template>
         <div class="-inset-[1px] -inset-y-[1px]" />
