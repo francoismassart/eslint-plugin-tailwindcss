@@ -36,6 +36,17 @@ This version is far from finished, yet it is available and open for contribution
 - create the config utility
 - implement the `classnames-order` rule and its tests
 
+### New rules ideas
+
+- `eslint-plugin-tailwindcss/important-modifier-as-suffix` e.g. converting `!top-0` to `top-0!`
+- `eslint-plugin-tailwindcss/modifiers-order`
+  - The optional prefix is always first
+  - The following modifiers are sorted alphabetically
+  - Same order results in less classnames generated more classnames shared
+  - examples:
+    - converting `md:dark:bg-black` to `dark:md:bg-black`
+    - converting prefixed `tw:md:first:dark:not-focus:bg-white` to `tw:dark:first:md:not-focus:bg-white`
+
 ## Getting started
 
 I worked on this repo using `pnpm` but it should work with other package manager.
@@ -104,10 +115,10 @@ You can see an example of generated documentation in the next section.
 🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
 💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                                               | Description                                                           | 🔧 | 💡 |
-| :------------------------------------------------- | :-------------------------------------------------------------------- | :- | :- |
-| [classnames-order](docs/rules/classnames-order.md) | Enforce a consistent and logical order of the Tailwind CSS classnames | 🔧 | 💡 |
-| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                |    | 💡 |
+| Name                                               | Description                                                           | 🔧  | 💡  |
+| :------------------------------------------------- | :-------------------------------------------------------------------- | :-- | :-- |
+| [classnames-order](docs/rules/classnames-order.md) | Enforce a consistent and logical order of the Tailwind CSS classnames | 🔧  | 💡  |
+| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                |     | 💡  |
 
 <!-- end auto-generated rules list -->
 
