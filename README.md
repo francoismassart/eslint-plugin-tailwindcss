@@ -87,7 +87,7 @@ You can can the same information on your favorite command line software as well.
 
 ## Screencasts on our YouTube Channel
 
-| <a href="https://www.youtube.com/@eslint-plugin-tailwind-css"><img src=".github/youtube-eslint-plugin-tailwindcss-round.png" width="80" height="80" alt="YouTube Channel" /></a> | <span style="font-size:18px">[ESLint plugin Tailwind CSS](https://www.youtube.com/@eslint-plugin-tailwind-css)</span><br>youtube.com/@eslint-plugin-tailwindcss |
+| <a href="https://www.youtube.com/@eslint-plugin-tailwindcss"><img src=".github/youtube-eslint-plugin-tailwindcss-round.png" width="80" height="80" alt="YouTube Channel" /></a> | <span style="font-size:18px">[ESLint plugin Tailwind CSS](https://www.youtube.com/@eslint-plugin-tailwindcss)</span><br>youtube.com/@eslint-plugin-tailwindcss |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## Installation
