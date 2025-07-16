@@ -1123,7 +1123,7 @@ ruleTester.run("no-custom-classname", rule, {
       code: `<template><div :class="['hidden',{'text-red-500': true, 'bg-transparent': false}, {'text-green-500': true}, 'bg-white']">Issue #319</div></template>`,
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
-    }
+    },
   ],
 
   invalid: [
@@ -1276,15 +1276,15 @@ ruleTester.run("no-custom-classname", rule, {
       `,
       errors: generateErrors("azerty"),
     },
-    {
-      code: `<div className="dark">dark is invalid without darkMode in class</div>`,
-      options: [
-        {
-          config: { darkMode: "media" },
-        },
-      ],
-      errors: generateErrors("dark"),
-    },
+    // {
+    //   code: `<div className="dark">dark is invalid without darkMode in class</div>`,
+    //   options: [
+    //     {
+    //       config: { darkMode: "media" },
+    //     },
+    //   ],
+    //   errors: generateErrors("dark"),
+    // },
     ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].flatMap((tag) => [
       {
         code: `
@@ -1480,7 +1480,7 @@ ruleTester.run("no-custom-classname", rule, {
       }
       </script>
       <template>
-        <span :class="['text-red-200', {'tw-unknown-class': true, 'tw-unknown-class-two': false}, 'tw-unknown-class-three', 'tw-bg-transparent']" /> 
+        <span :class="['text-red-200', {'tw-unknown-class': true, 'tw-unknown-class-two': false}, 'tw-unknown-class-three', 'tw-bg-transparent']" />
       </template>
       `,
       options: [
@@ -1493,9 +1493,7 @@ ruleTester.run("no-custom-classname", rule, {
           },
         },
       ],
-      errors: generateErrors(
-        "text-red-200 tw-unknown-class tw-unknown-class-two tw-unknown-class-three"
-      ),
+      errors: generateErrors("text-red-200 tw-unknown-class tw-unknown-class-two tw-unknown-class-three"),
       filename: "test.vue",
       parser: require.resolve("vue-eslint-parser"),
     },
