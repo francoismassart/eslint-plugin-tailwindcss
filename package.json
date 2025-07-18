@@ -40,8 +40,8 @@
     "watch": "tsc --watch",
     "tsup": "tsup ./src/index.ts --outDir lib/",
     "tsup:watch": "tsup ./src/index.ts --watch --outDir lib/",
-    "docs:init": "eslint-doc-generator --init-rule-docs",
-    "docs:update": "eslint-doc-generator",
+    "docs:init": "pnpm build && eslint-doc-generator --init-rule-docs",
+    "docs:update": "pnpm build && eslint-doc-generator",
     "test:jest": "jest",
     "test": "vitest"
   },
