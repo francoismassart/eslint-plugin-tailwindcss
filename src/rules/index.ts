@@ -1,5 +1,5 @@
-import { myRule } from "./my-rule";
+import { myRule, RULE_NAME as MY_RULE } from "./my-rule";
 
 export const rules = {
-  "my-rule": myRule,
+  [MY_RULE]: myRule,
 };

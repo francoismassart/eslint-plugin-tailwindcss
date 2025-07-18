@@ -3,6 +3,7 @@
     "declaration": false,
     "declarationMap": false,
     "esModuleInterop": true,
+    "isolatedModules": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "noFallthroughCasesInSwitch": true,
