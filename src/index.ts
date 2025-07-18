@@ -1,30 +1,38 @@
-import { RuleModule } from "@typescript-eslint/utils/ts-eslint";
-import { ESLint } from "eslint";
+import * as parserBase from "@typescript-eslint/parser";
+import { TSESLint } from "@typescript-eslint/utils";
+import { Linter } from "@typescript-eslint/utils/ts-eslint";
 
 import { rules } from "./rules";
 
-type RuleKey = keyof typeof rules;
-
-interface Plugin extends Omit<ESLint.Plugin, "rules"> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rules: Record<RuleKey, RuleModule<any, any, any>>;
-}
+export const parser: TSESLint.FlatConfig.Parser = {
+  meta: parserBase.meta,
+  parseForESLint: parserBase.parseForESLint,
+};
 
 const { name, version } =
   // `import`ing here would bypass the TSConfig's `"rootDir": "src"`
+  // Also an import statement will make TSC copy the package.json to the dist folder
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("../package.json") as typeof import("../package.json");
+  require("../package.json") as {
+    name: string;
+    version: string;
+  };
 
-const plugin: Plugin = {
-  /**
-   * TODO: Add configs (recommended, etc.)
-   * @see https://github.com/typescript-eslint/examples/blob/main/packages/eslint-plugin-example-typed-linting/src/index.ts
-   */
+/**
+ * TODO: Add configs (recommended, etc.)
+ * @see https://github.com/typescript-eslint/examples/blob/main/packages/eslint-plugin-example-typed-linting/src/index.ts
+ */
+
+// Plugin not fully initialized yet.
+// See https://eslint.org/docs/latest/extend/plugins#configs-in-plugins
+const plugin = {
+  // `configs`, assigned later
+  configs: {},
+  rules,
   meta: {
     name,
     version,
   },
-  rules,
-};
+} satisfies Linter.Plugin;
 
-export = plugin;
+export default plugin;
