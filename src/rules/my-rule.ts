@@ -5,6 +5,8 @@ import urlCreator from "../url-creator";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
+export const RULE_NAME = "my-rule";
+
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way
 type MessageIds = "issue:var" | "fix:let" | "fix:const";
 
@@ -21,7 +23,7 @@ type Options = [
 export const createRule = RuleCreator(urlCreator);
 
 export const myRule = createRule<Options, MessageIds>({
-  name: "my-rule",
+  name: RULE_NAME,
   meta: {
     docs: {
       description: "An example ESLint rule",

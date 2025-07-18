@@ -1,17 +1,21 @@
 import { RuleTester } from "@typescript-eslint/rule-tester";
 
-import { myRule } from "./my-rule";
+import { myRule, RULE_NAME } from "./my-rule";
 
-const ruleTester = new RuleTester({
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-  },
-});
+// const ruleTester = new RuleTester({
+//   languageOptions: {
+//     parser: require("@typescript-eslint/parser"),
+//     parserOptions: {
+//       ecmaFeatures: {
+//         jsx: true,
+//       },
+//     },
+//   },
+// });
 
-ruleTester.run("eslint-plugin/my-rule", myRule, {
+const ruleTester = new RuleTester();
+
+ruleTester.run(RULE_NAME, myRule, {
   valid: [
     {
       // a code snippet that should pass the linter
