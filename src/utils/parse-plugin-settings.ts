@@ -66,14 +66,14 @@ export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
  * @param settings The shared settings from the ESLint configuration.
  * @returns The parsed plugin settings.
  */
-export function parsePluginSettings(
+export function parsePluginSettings<RuleOptions>(
   settings: SharedConfigurationSettings
-): PluginSettings {
-  const noConfig =
-    typeof settings.tailwindcss !== "object" || settings.tailwindcss === null;
+): PluginSettings & RuleOptions {
   const tailwindcssSettings = (
-    noConfig ? {} : settings.tailwindcss
-  ) as PluginSettings;
+    typeof settings.tailwindcss !== "object" || settings.tailwindcss === null
+      ? {}
+      : settings.tailwindcss
+  ) as PluginSettings & RuleOptions;
 
   return {
     ...DEFAULTS,

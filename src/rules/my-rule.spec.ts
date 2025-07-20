@@ -33,6 +33,16 @@ ruleTester.run(RULE_NAME, myRule, {
     {
       code: `<button onClick={() => { const name = 'John'; alert(name); }}>JSX</button>`,
     },
+    {
+      // a code snippet that should pass the linter
+      code: `var x = 5;`,
+      options: [
+        {
+          someBool: true,
+          someEnum: "always",
+        },
+      ],
+    },
   ],
   invalid: [
     {

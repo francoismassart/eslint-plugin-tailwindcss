@@ -22,7 +22,7 @@ Examples would normally go here.
 | `cssConfigPath`      | Path to the Tailwind CSS configuration file (*.css)                  | String   |                   | `default-path/app.css` |
 | `removeDuplicates`   | Remove duplicated classnames                                         | Boolean  |                   | `true`                 |
 | `skipClassAttribute` | If you only want to lint the classnames inside one of the `callees`. | Boolean  |                   | `false`                |
-| `someBool`           | someBool description.                                                | Boolean  |                   | `true`                 |
+| `someBool`           | someBool description.                                                | Boolean  |                   | `false`                |
 | `someEnum`           | someEnum description.                                                | String   | `always`, `never` | `always`               |
 | `tags`               | List of tags to be detected in template literals                     | String[] |                   | [`tw`]                 |
 
