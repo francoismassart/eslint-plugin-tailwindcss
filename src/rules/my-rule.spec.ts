@@ -19,12 +19,29 @@ ruleTester.run(RULE_NAME, myRule, {
     {
       // a code snippet that should pass the linter
       code: `const x = 5;`,
+      options: [
+        {
+          callees: ["ctl2"],
+          someBool: true,
+          someEnum: "always",
+        },
+      ],
     },
     {
       code: `let y = 'abc123';`,
     },
     {
       code: `<button onClick={() => { const name = 'John'; alert(name); }}>JSX</button>`,
+    },
+    {
+      // a code snippet that should pass the linter
+      code: `var x = 5;`,
+      options: [
+        {
+          someBool: true,
+          someEnum: "always",
+        },
+      ],
     },
   ],
   invalid: [

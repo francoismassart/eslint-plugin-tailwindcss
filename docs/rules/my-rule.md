@@ -16,9 +16,14 @@ Examples would normally go here.
 
 <!-- begin auto-generated rule options list -->
 
-| Name       | Description           | Type    | Choices           | Default  |
-| :--------- | :-------------------- | :------ | :---------------- | :------- |
-| `someBool` | someBool description. | Boolean |                   | `true`   |
-| `someEnum` | someEnum description. | String  | `always`, `never` | `always` |
+| Name                 | Description                                                          | Type     | Choices           | Default                |
+| :------------------- | :------------------------------------------------------------------- | :------- | :---------------- | :--------------------- |
+| `callees`            | List of function names to validate classnames                        | String[] |                   | [`ctl`]                |
+| `cssConfigPath`      | Path to the Tailwind CSS configuration file (*.css)                  | String   |                   | `default-path/app.css` |
+| `removeDuplicates`   | Remove duplicated classnames                                         | Boolean  |                   | `true`                 |
+| `skipClassAttribute` | If you only want to lint the classnames inside one of the `callees`. | Boolean  |                   | `false`                |
+| `someBool`           | someBool description.                                                | Boolean  |                   | `false`                |
+| `someEnum`           | someEnum description.                                                | String   | `always`, `never` | `always`               |
+| `tags`               | List of tags to be detected in template literals                     | String[] |                   | [`tw`]                 |
 
 <!-- end auto-generated rule options list -->
