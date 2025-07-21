@@ -48,7 +48,7 @@
   "dependencies": {
     "@typescript-eslint/utils": "^8.37.0",
     "postcss": "^8.4.4",
-    "synckit": "^0.11.4",
+    "synckit": "^0.11.11",
     "tailwind-api-utils": "^1.0.3"
   },
   "devDependencies": {
