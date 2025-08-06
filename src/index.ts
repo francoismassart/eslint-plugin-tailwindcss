@@ -21,6 +21,7 @@ const { name, version } =
 /**
  * TODO: Add configs (recommended, etc.)
  * @see https://github.com/typescript-eslint/examples/blob/main/packages/eslint-plugin-example-typed-linting/src/index.ts
+ * @see eslint-plugin-vitest/src/index.ts
  */
 
 // Plugin not fully initialized yet.
