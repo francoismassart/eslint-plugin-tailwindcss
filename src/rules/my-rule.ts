@@ -34,9 +34,6 @@ const RULE_DEFAULT: RuleOptions = {
   someEnum: "always",
 };
 
-// TODO which one ?
-// - type Options = [RuleOptions];
-// - type Options = [MergedOptions];
 type Options = [MergedOptions];
 
 // The Rule creator returns a function that is used to create a well-typed ESLint rule

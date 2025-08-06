@@ -29,10 +29,10 @@ This version is far from finished, yet it is available and open for contribution
 
 - restore the automated tests running on the merge requests of the repo
 - implement and test the usage of `tailwind-api-utils`
+- read the settings from eslint (shared settings & rules settings)
 
 ### Next steps
 
-- read the settings from eslint (shared settings & rules settings)
 - create the config utility
 - implement the `classnames-order` rule and its tests
 
@@ -58,7 +58,7 @@ or
 
 #### `jest` or `vitest`
 
-Tests were setup to work with `jest` and `vitest` both comes with pros and cons...
+Tests were setup to work with `jest` and `vitest` both comes with pros and cons…
 
 I would recommend Vitest but I also added Jest in case you want it.
 
@@ -99,11 +99,13 @@ You can see an example of generated documentation in the next section.
 
 <!-- begin auto-generated rules list -->
 
+🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
 💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                             | Description            | 💡 |
-| :------------------------------- | :--------------------- | :- |
-| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | 💡 |
+| Name                                               | Description                                                           | 🔧  | 💡  |
+| :------------------------------------------------- | :-------------------------------------------------------------------- | :-- | :-- |
+| [classnames-order](docs/rules/classnames-order.md) | Enforce a consistent and logical order of the Tailwind CSS classnames | 🔧  | 💡  |
+| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                |     | 💡  |
 
 <!-- end auto-generated rules list -->
 
@@ -111,7 +113,7 @@ You can see an example of generated documentation in the next section.
 
 See [`eslint-plugin-example-typed-linting`](https://github.com/typescript-eslint/examples/tree/main/packages/eslint-plugin-example-typed-linting) for an example plugin that supports typed linting.
 
-Another example of eslint-plugin using `typescript-eslint` is [`eslint-plugin-vitest`](https://github.com/vitest-dev/eslint-plugin-vitest)...
+Another example of eslint-plugin using `typescript-eslint` is [`eslint-plugin-vitest`](https://github.com/vitest-dev/eslint-plugin-vitest)…
 
 ## 🤝 Support `eslint-plugin-tailwindcss`
 
