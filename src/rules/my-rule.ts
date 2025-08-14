@@ -3,10 +3,8 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { PluginSharedSettings } from "../types";
 import urlCreator from "../url-creator";
 import {
-  DEFAULTS,
+  DEFAULT_SETTINGS,
   parsePluginSettings,
-  type PluginSettings,
-  sharedSettingsSchema,
 } from "../utils/parse-plugin-settings";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
@@ -23,18 +21,16 @@ type MessageIds = "issue:var" | "fix:let" | "fix:const";
  * Yet, it is useful for the IDE to provide autocompletion and type checking.
  */
 type RuleOptions = {
-  someBool: boolean;
-  someEnum: string;
+  someBool?: boolean;
+  someEnum?: string;
 };
-
-export type MergedOptions = RuleOptions & PluginSettings;
 
 const RULE_DEFAULT: RuleOptions = {
   someBool: false,
   someEnum: "always",
 };
 
-type Options = [MergedOptions];
+type Options = [RuleOptions];
 
 // The Rule creator returns a function that is used to create a well-typed ESLint rule
 // The parameter passed into RuleCreator is a URL generator function.
@@ -57,7 +53,6 @@ export const myRule = createRule<Options, MessageIds>({
       {
         type: "object",
         properties: {
-          ...sharedSettingsSchema,
           someBool: {
             description: "someBool description.",
             type: "boolean",
@@ -84,32 +79,30 @@ export const myRule = createRule<Options, MessageIds>({
    */
   defaultOptions: [
     {
-      ...DEFAULTS,
+      ...DEFAULT_SETTINGS,
       someBool: false,
       someEnum: "always",
     },
   ],
   create: (context, options) => {
     // Reading inline configuration
-    console.log("\n", new Date(), "\n", "Options (rule):", "\n", options[0]);
+    // console.log("\n", new Date(), "\n", "Options (rule):", "\n", options[0]);
 
     // Shared settings
     const sharedSettings = (context.settings?.tailwindcss ||
-      DEFAULTS) as PluginSharedSettings;
+      DEFAULT_SETTINGS) as PluginSharedSettings;
     console.log("\n", "sharedSettings (rule):", "\n", sharedSettings);
 
     // Merged settings
-    // const merged = parsePluginSettings(options[0]) as RuleOptions;
-    const merged = parsePluginSettings<RuleOptions>({
-      tailwindcss: options[0],
-    }) as RuleOptions;
-    console.log("\n", "merged (rule):", "\n", merged);
+    // const settings = parsePluginSettings(options[0]) as RuleOptions;
+    const settings = parsePluginSettings(context.settings);
+    console.log("\n", "settings (rule):", "\n", settings);
 
     return {
       VariableDeclaration: (node) => {
-        console.log("\n", "merged.someBool:", "\n", merged.someBool);
-        if (merged.someBool === true) {
-          console.log("someBool is true, processing VariableDeclaration");
+        // console.log("\n", "merged.someBool:", "\n", merged.someBool);
+        if (options[0].someBool === true) {
+          // console.log("someBool is true, processing VariableDeclaration");
           return;
         }
         if (node.kind === "var") {

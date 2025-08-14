@@ -35,7 +35,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc --build",
+    "build": "tsc --build && rsync src/utils/tailwindcss-api/worker/*.mjs lib/utils/tailwindcss-api/worker",
     "build:diagnostics": "tsc --build --diagnostics",
     "watch": "tsc --watch",
     "tsup": "tsup ./src/index.ts --outDir lib/",
@@ -52,7 +52,9 @@
     "tailwind-api-utils": "^1.0.3"
   },
   "devDependencies": {
+    "@angular-eslint/template-parser": "^20.1.1",
     "@eslint/js": "^9.16.0",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/eslint": "^8.56.10",
     "@types/jest": "^29.5.12",
     "@typescript-eslint/parser": "^8.37.0",
@@ -69,7 +71,8 @@
     "tsup": "^8.1.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^8.18.0",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "vue-eslint-parser": "^10.2.0"
   },
   "engines": {
     "node": ">=20.10.0"

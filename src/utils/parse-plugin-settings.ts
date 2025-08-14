@@ -7,76 +7,90 @@ import type { SharedConfigurationSettings } from "@typescript-eslint/utils/ts-es
  * Typing of the shared settings of the eslint-plugin-tailwindcss.
  */
 export type PluginSettings = {
-  callees?: Array<string>; // TODO can we use a {Set<string>} instead ?
-  cssConfigPath?: string;
-  removeDuplicates?: boolean;
-  skipClassAttribute?: boolean;
-  tags?: Array<string>; // TODO can we use a {Set<string>} instead ?
+  attributes?: Array<string>; // TODO can we use a {Set<string>} instead ?
+  cssConfigPath: string;
+  functions?: Array<string>; // TODO can we use a {Set<string>} instead ?
 };
 
 /**
  * The default values for the shared settings.
  */
-export const DEFAULTS: PluginSettings = {
-  callees: ["ctl"],
+export const DEFAULT_SETTINGS: PluginSettings = {
+  attributes: [
+    // Regular HTML + VDirectiveKey
+    "class",
+    // React
+    "className",
+    // Angular
+    "ngClass",
+    // Tailwind CSS directive
+    "@apply",
+  ],
   cssConfigPath: "default-path/app.css",
-  removeDuplicates: true,
-  skipClassAttribute: false,
-  tags: ["tw"],
+  functions: [
+    // @see https://www.npmjs.com/package/classnames
+    "classnames",
+    // @see https://www.npmjs.com/package/clsx
+    "clsx",
+    // @see https://www.npmjs.com/package/@netlify/classnames-template-literals
+    "ctl",
+    // @see https://www.npmjs.com/package/class-variance-authority
+    "cva",
+    // @see https://www.npmjs.com/package/tailwind-variants
+    "tv",
+    // Template Literals
+    "tw",
+  ],
 };
+
+// attributes ✅
+// cssConfigPath ✅
+// functions ✅ (callees + templateliterals)
+
+// tailwindPreserveWhitespace => New rule
+// tailwindPreserveDuplicates => New rule
 
 /**
  * The JSON schema for the shared settings to be reused in many of the rule's configuration.
  */
 export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
-  callees: {
-    description: "List of function names to validate classnames",
+  attributes: {
+    description: "List of attribute names to validate classnames",
     type: "array",
     items: { type: "string", minLength: 0 },
     uniqueItems: true,
-    default: DEFAULTS.callees,
+    default: DEFAULT_SETTINGS.attributes,
   },
   cssConfigPath: {
     description: "Path to the Tailwind CSS configuration file (*.css)",
     type: "string",
-    default: DEFAULTS.cssConfigPath,
+    default: DEFAULT_SETTINGS.cssConfigPath,
   },
-  removeDuplicates: {
-    description: "Remove duplicated classnames",
-    type: "boolean",
-    default: DEFAULTS.removeDuplicates,
-  },
-  skipClassAttribute: {
+  functions: {
     description:
-      "If you only want to lint the classnames inside one of the `callees`.",
-    type: "boolean",
-    default: DEFAULTS.skipClassAttribute,
-  },
-  tags: {
-    description: "List of tags to be detected in template literals",
+      "List of function names to validate classnames, also used for template literals",
     type: "array",
     items: { type: "string", minLength: 0 },
     uniqueItems: true,
-    default: DEFAULTS.tags,
+    default: DEFAULT_SETTINGS.functions,
   },
 };
 
 /**
- * @description Parses the global eslint settings and merge.
+ * @description Parses the global eslint settings and merge it with the defaults.
  * @param settings The shared settings from the ESLint configuration.
- * @returns The parsed plugin settings.
+ * @returns The merged plugin settings.
  */
-export function parsePluginSettings<RuleOptions>(
+export function parsePluginSettings(
   settings: SharedConfigurationSettings
-): PluginSettings & RuleOptions {
+): PluginSettings {
   const tailwindcssSettings = (
     typeof settings.tailwindcss !== "object" || settings.tailwindcss === null
       ? {}
       : settings.tailwindcss
-  ) as PluginSettings & RuleOptions;
-
+  ) as PluginSettings;
   return {
-    ...DEFAULTS,
+    ...DEFAULT_SETTINGS,
     ...tailwindcssSettings,
   };
 }
