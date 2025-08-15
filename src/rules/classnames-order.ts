@@ -208,9 +208,8 @@ export const classnamesOrder = createRule<Options, MessageIds>({
             //*/
             break;
           }
-          default: {
-            console.log("child.type: " + child.type);
-          }
+          default:
+          // console.log("child.type: " + child.type);
         }
       }
       // Process the extracted classnames and report
@@ -315,8 +314,9 @@ export const classnamesOrder = createRule<Options, MessageIds>({
           }
           case "ObjectExpression": {
             for (const property of expressionContainer.expression.properties) {
-              // sortNodeArgumentValue(node, property); // 🎯
-              console.log(property);
+              if (property.type === "Property") {
+                sortNodeArgumentValue(node, property); // 🎯
+              }
             }
             break;
           }

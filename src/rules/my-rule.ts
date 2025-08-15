@@ -85,18 +85,17 @@ export const myRule = createRule<Options, MessageIds>({
     },
   ],
   create: (context, options) => {
-    // Reading inline configuration
-    // console.log("\n", new Date(), "\n", "Options (rule):", "\n", options[0]);
-
     // Shared settings
+    // @ts-expect-error 'sharedSettings' is declared but its value is never read.ts(6133)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const sharedSettings = (context.settings?.tailwindcss ||
       DEFAULT_SETTINGS) as PluginSharedSettings;
-    console.log("\n", "sharedSettings (rule):", "\n", sharedSettings);
 
     // Merged settings
     // const settings = parsePluginSettings(options[0]) as RuleOptions;
+    // @ts-expect-error 'sharedSettings' is declared but its value is never read.ts(6133)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const settings = parsePluginSettings(context.settings);
-    console.log("\n", "settings (rule):", "\n", settings);
 
     return {
       VariableDeclaration: (node) => {
