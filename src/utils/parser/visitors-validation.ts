@@ -1,33 +1,10 @@
 import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
 import { AST as VueAST } from "vue-eslint-parser";
 
-import { TextAttribute } from "../types";
-import { type PluginSettings } from "./parse-plugin-settings";
-
-export const getJSXAttributeName = (node: TSESTree.JSXAttribute): string => {
-  switch (node.name.type) {
-    case AST_NODE_TYPES.JSXIdentifier: {
-      return node.name.name;
-    }
-    case AST_NODE_TYPES.JSXNamespacedName: {
-      return `${node.name.namespace.name}:${node.name.name}`;
-    }
-    default: {
-      return "";
-    }
-  }
-};
-
-export const getVAttributeName = (node: VueAST.VAttribute): string => {
-  if (node.key.type === "VIdentifier") return node.key.name;
-  if (node.key.type === "VDirectiveKey") {
-    const directiveKey = node.key as unknown as VueAST.VDirectiveKey;
-    const argument = directiveKey.argument;
-    if (!argument) return "";
-    if (argument.type === "VIdentifier") return argument.name;
-  }
-  return "";
-};
+import { TextAttribute } from "../../types";
+import { SupportedAttribute } from "../../types";
+import { type PluginSettings } from "../parse-plugin-settings";
+import { getJSXAttributeName, getVAttributeName } from "./node";
 
 /**
  * Validates a `JSXAttribute` for `eslint-plugin-tailwindcss`
@@ -82,7 +59,8 @@ export const isValidVAttribute = (
   const attributes = (settings && settings.attributes) || [];
   // Ignored VAttribute
   const keyName = getVAttributeName(node);
-  if (!node.directive && !attributes.includes(keyName)) return false;
+  // if (!node.directive && !attributes.includes(keyName)) return false;
+  if (!attributes.includes(keyName)) return false;
   // No value
   if (!node.value) return false;
   // Valid VLiteral
@@ -115,4 +93,37 @@ export const isValidCallExpression = (
     }
   }
   return false;
+};
+
+export const isLiteralAttributeValue = (node: SupportedAttribute) => {
+  // No value
+  if (!node.value) return false;
+  // TextAttribute via AngularParser (HTML)
+  if (node.type === "TextAttribute") return true;
+  // Literal
+  if (
+    node.value.type === TSESTree.AST_NODE_TYPES.Literal &&
+    typeof node.value.value === "string"
+  ) {
+    // No support for dynamic or conditional...
+    return !/\{|\?|\}/.test(node.value.value);
+  }
+  // number | bigint | boolean | RegExp | null
+  return false;
+};
+
+export const isValidExpressionAttributeValue = (
+  node: TSESTree.JSXAttribute
+) => {
+  // No value
+  if (!node.value) return false;
+  // Unsupported type
+  if (node.value.type !== TSESTree.AST_NODE_TYPES.JSXExpressionContainer)
+    return false;
+  // No expression
+  if (!node.value.expression) return false;
+  // Empty expression
+  if (node.value.expression.type === TSESTree.AST_NODE_TYPES.JSXEmptyExpression)
+    return false;
+  return true;
 };

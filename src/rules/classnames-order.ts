@@ -8,7 +8,7 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleFunction } from "@typescript-eslint/utils/ts-eslint";
 import { AST as VueAST } from "vue-eslint-parser";
 
-import {
+import type {
   ScriptVisitor,
   SupportedChildNode,
   SupportedNode,
@@ -19,22 +19,22 @@ import {
 import urlCreator from "../url-creator";
 import { parsePluginSettings } from "../utils/parse-plugin-settings";
 import {
-  extractClassnamesFromValue,
-  extractRangeFromNode,
-  extractValueFromNode,
+  getClassnamesFromValue,
+  getRangeFromNode,
   getTagNameFromTaggedTemplateExpression,
   getTemplateElementAffixes,
-  isExpressionAttributeValue,
-  isLiteralAttributeValue,
+  getValueFromNodeAtom,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
-import { getSortedClassNamesWorker } from "../utils/tailwindcss-api";
 import {
+  isLiteralAttributeValue,
   isValidCallExpression,
+  isValidExpressionAttributeValue,
   isValidJSXAttribute,
   isValidTextAttribute,
   isValidVAttribute,
-} from "../utils/visitors-validation";
+} from "../utils/parser/visitors-validation";
+import { getSortedClassNamesWorker } from "../utils/tailwindcss-api";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -104,10 +104,10 @@ export const classnamesOrder = createRule<Options, MessageIds>({
       let suffix = "";
       if (child === undefined) {
         // Simple case: the node is a JSXAttribute or TextAttribute or VueAST.VAttribute
-        originalClassNamesValue = extractValueFromNode(
+        originalClassNamesValue = getValueFromNodeAtom(
           node as ValueSupportedNode
         );
-        const range = extractRangeFromNode(node as ValueSupportedNode);
+        const range = getRangeFromNode(node as ValueSupportedNode);
         if (node.type === "TextAttribute") {
           [start, end] = range;
         } else {
@@ -215,7 +215,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
       // Process the extracted classnames and report
       {
         const { classNames, whitespaces, headSpace, tailSpace } =
-          extractClassnamesFromValue(originalClassNamesValue);
+          getClassnamesFromValue(originalClassNamesValue);
         // Skip empty/Single className
         if (classNames.length <= 1) return;
 
@@ -264,7 +264,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
       if (isLiteralAttributeValue(node)) {
         sortNodeArgumentValue(node);
       }
-      if (isExpressionAttributeValue(node)) {
+      if (isValidExpressionAttributeValue(node)) {
         // @ts-expect-error Property 'expression' does not exist on type. ts(2339)
         sortNodeArgumentValue(node, node.value.expression);
       }

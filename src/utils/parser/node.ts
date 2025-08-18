@@ -1,36 +1,11 @@
-import { TSESTree } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
+import { AST as VueAST } from "vue-eslint-parser";
 
-import { SupportedAttribute, ValueSupportedNode } from "../../types";
+import { ValueSupportedNode } from "../../types";
 
-export const isLiteralAttributeValue = (node: SupportedAttribute) => {
-  // No value
-  if (!node.value) return false;
-  // TextAttribute via AngularParser (HTML)
-  if (node.type === "TextAttribute") return true;
-  // Literal
-  if (
-    node.value.type === TSESTree.AST_NODE_TYPES.Literal &&
-    typeof node.value.value === "string"
-  ) {
-    // No support for dynamic or conditional...
-    return !/\{|\?|\}/.test(node.value.value);
-  }
-  // number | bigint | boolean | RegExp | null
-  return false;
-};
+const separatorRegEx = /([\t\n\f\r ]+)/;
 
-export const isExpressionAttributeValue = (node: TSESTree.JSXAttribute) => {
-  // No value
-  if (!node.value) return false;
-  if (node.value.type !== TSESTree.AST_NODE_TYPES.JSXExpressionContainer)
-    return false;
-  if (!node.value.expression) return false;
-  if (node.value.expression.type === TSESTree.AST_NODE_TYPES.JSXEmptyExpression)
-    return false;
-  return true;
-};
-
-export const extractValueFromNode = (node: ValueSupportedNode) => {
+export const getValueFromNodeAtom = (node: ValueSupportedNode) => {
   // No value
   if (!node.value) return "";
   // TextAttribute via AngularParser (HTML)
@@ -59,9 +34,7 @@ export const extractValueFromNode = (node: ValueSupportedNode) => {
   }
 };
 
-const separatorRegEx = /([\t\n\f\r ]+)/;
-
-export const extractClassnamesFromValue = (classString: string) => {
+export const getClassnamesFromValue = (classString: string) => {
   const parts = classString.split(separatorRegEx);
   const empty = {
     classNames: [],
@@ -94,12 +67,12 @@ export const extractClassnamesFromValue = (classString: string) => {
   };
 };
 
-export const extractRangeFromNode = (node: ValueSupportedNode) => {
-  if (node.type === "TextAttribute") {
-    return [node.valueSpan.fullStart.offset, node.valueSpan.end.offset];
-  }
+export const getRangeFromNode = (node: ValueSupportedNode) => {
   if (!node.value) {
     return [0, 0];
+  }
+  if (node.type === "TextAttribute") {
+    return [node.valueSpan.fullStart.offset, node.valueSpan.end.offset];
   }
   switch (node.value.type) {
     case TSESTree.AST_NODE_TYPES.JSXExpressionContainer: {
@@ -175,6 +148,36 @@ export const getTagNameFromTaggedTemplateExpression = (
     case "Identifier": {
       return node.tag.name || "";
     }
+  }
+  return "";
+};
+
+export const getJSXAttributeName = (node: TSESTree.JSXAttribute): string => {
+  switch (node.name.type) {
+    case AST_NODE_TYPES.JSXIdentifier: {
+      return node.name.name;
+    }
+    case AST_NODE_TYPES.JSXNamespacedName: {
+      return `${node.name.namespace.name}:${node.name.name.name}`;
+    }
+    default: {
+      return "";
+    }
+  }
+};
+
+export const getVAttributeName = (node: VueAST.VAttribute): string => {
+  /*
+  ⚠️ `key.name` will convert to lowercase
+  e.g. `className` becomes `classname`
+  🤓 use `key.rawName` instead 😅
+  */
+  if (node.key.type === "VIdentifier") return node.key.rawName;
+  if (node.key.type === "VDirectiveKey") {
+    const directiveKey = node.key as unknown as VueAST.VDirectiveKey;
+    const argument = directiveKey.argument;
+    if (!argument) return "";
+    if (argument.type === "VIdentifier") return argument.rawName;
   }
   return "";
 };
