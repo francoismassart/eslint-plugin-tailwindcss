@@ -2,6 +2,48 @@
 
 ![eslint-plugin-tailwindcss logo](.github/logo.png)
 
+## Rules
+
+<!-- begin auto-generated rules list -->
+
+🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
+💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
+
+| Name                                               | Description                                                                         | 🔧  | 💡  |
+| :------------------------------------------------- | :---------------------------------------------------------------------------------- | :-- | :-- |
+| [classnames-order](docs/rules/classnames-order.md) | Enforces a consistent order for the Tailwind CSS classnames, based on the compiler. | 🔧  | 💡  |
+| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                              |     | 💡  |
+
+<!-- end auto-generated rules list -->
+
+## Settings
+
+You should specify settings that will be shared across all the plugin rules. ([More about eslint shared settings](https://eslint.org/docs/latest/use/configure/configuration-files#configuring-shared-settings))
+
+```js
+// eslint.config.mjs
+{
+  settings: {
+    tailwindcss: {
+      // Attributes/props that could contain Tailwind CSS classes...
+      // Optional, default values: ["class", "className", "ngClass", "@apply"]
+      attributes: ["class"],
+      // The absolute path pointing to you main Tailwind CSS v4 config file.
+      // It must be a `.css` file (v4), not a `.js` file (v3)
+      // REQUIRED, default value will not help
+      cssConfigPath: dirname(fileURLToPath(import.meta.url)) + "/styles/tailwind.css",
+      // Functions/tagFunctions that will be parsed by the plugin.
+      // Optional, default values: ["classnames", "clsx", "ctl", "cva", "tv", "tw"]
+      functions: ["twClasses"]
+    },
+  }
+}
+```
+
+The default settings are exported via the [`DEFAULT_SETTINGS`](src/utils/parse-plugin-settings.ts).
+
+## Made fro Tailwind CSS v4
+
 Version 4 of the `eslint-plugin-tailwindcss` is:
 
 - re-written from scratch
@@ -36,84 +78,9 @@ This version is far from finished, yet it is available and open for contribution
 - create the config utility
 - implement the `classnames-order` rule and its tests
 
-## Getting started
+## Contributing
 
-I worked on this repo using `pnpm` but it should work with other package manager.
-
-### Install
-
-`pnpm i`
-
-### Build
-
-`pnpm build`
-
-### Test
-
-`pnpm test`
-
-or
-
-`pnpm test:jest`
-
-#### `jest` or `vitest`
-
-Tests were setup to work with `jest` and `vitest` both comes with pros and cons…
-
-I would recommend Vitest but I also added Jest in case you want it.
-
-| Jest                     | Vitest                                         |
-| :----------------------- | :--------------------------------------------- |
-| Based on `commonjs`      | Based on `ESM`                                 |
-| ✅ Mocking               | ✅ Mocking                                     |
-| ✅ Snapshots             | ✅ Snapshots                                   |
-| ✅ Parallel testing      | ✅ Parallel testing                            |
-| ✅ Fast                  | ✅ Often faster                                |
-| -                        | ✅ Support benches                             |
-| ❌ Require `ts-jest` lib | ❌ Requires `setupFile` and `vitest.config.ts` |
-
-NB: In order to use, the [`RuleTester`](https://typescript-eslint.io/packages/rule-tester) from `@typescript-eslint/rule-tester`, we must:
-
-- Have a `tsconfig.json` with:
-  ```
-  {
-    "compilerOptions": {
-      "module": "nodenext",
-      "moduleResolution": "nodenext"
-    }
-  }
-  ```
-  More info can be found on [`v6`: Cannot find module `@typescript-eslint/*` or its corresponding type declarations](https://github.com/typescript-eslint/typescript-eslint/issues/7284).
-  > You can use `bundler`, `node16`, or `nodenext` for `moduleResolution`.
-- Use `eslint` with `v8`, [`typescript-eslint` does not support `v9` yet](https://github.com/typescript-eslint/typescript-eslint/issues/8211)
-
-### Docs
-
-`pnpm docs:init` will create new files for each rule if necessary.
-
-`pnpm docs:update` will update existing files and the rules list.
-
-You can see an example of generated documentation in the next section.
-
-### Rules
-
-<!-- begin auto-generated rules list -->
-
-🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
-💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
-
-| Name                                               | Description                                                                         | 🔧 | 💡 |
-| :------------------------------------------------- | :---------------------------------------------------------------------------------- | :- | :- |
-| [classnames-order](docs/rules/classnames-order.md) | Enforces a consistent order for the Tailwind CSS classnames, based on the compiler. | 🔧 | 💡 |
-| [my-rule](docs/rules/my-rule.md)                   | An example ESLint rule                                                              |    | 💡 |
-
-<!-- end auto-generated rules list -->
-
-## Additional resources
-
-See [`eslint-plugin-example-typed-linting`](https://github.com/typescript-eslint/examples/tree/main/packages/eslint-plugin-example-typed-linting) for an example plugin that supports typed linting.
-
-Another example of eslint-plugin using `typescript-eslint` is [`eslint-plugin-vitest`](https://github.com/vitest-dev/eslint-plugin-vitest)…
+The project is open to all developers, you can [contribute the `eslint-plugin-tailwindcss`](CONTRIBUTING.md).
 
 ## 🤝 Support `eslint-plugin-tailwindcss`
 

@@ -90,7 +90,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
     /**
      * Recursive function crawling into child nodes
      * @param node The root node of the current parsing (JSXAttribute)
-     * @param child The child node of node
+     * @param child The child node of the root node
      * @returns {void}
      */
     const sortNodeArgumentValue = (
@@ -104,45 +104,40 @@ export const classnamesOrder = createRule<Options, MessageIds>({
       let suffix = "";
       if (child === undefined) {
         // Simple case: the node is a JSXAttribute or TextAttribute or VueAST.VAttribute
+        // and may not need to be called recursively
         originalClassNamesValue = getValueFromNodeAtom(
           node as ValueSupportedNode
         );
-        const range = getRangeFromNode(node as ValueSupportedNode);
-        if (node.type === "TextAttribute") {
-          [start, end] = range;
-        } else {
-          start = range[0] + 1;
-          end = range[1] - 1;
-        }
-      } else {
+        [start, end] = getRangeFromNode(node as ValueSupportedNode);
+      } else if (child !== undefined) {
         switch (child.type) {
           case "TemplateLiteral": {
             for (const exp of child.expressions) {
-              sortNodeArgumentValue(node, exp);
+              sortNodeArgumentValue(node, exp); // ↩️
             }
             for (const quasis of child.quasis) {
-              sortNodeArgumentValue(node, quasis);
+              sortNodeArgumentValue(node, quasis); // ↩️
             }
             return;
           }
           case "ConditionalExpression": {
-            sortNodeArgumentValue(node, child.consequent);
-            sortNodeArgumentValue(node, child.alternate);
+            sortNodeArgumentValue(node, child.consequent); // ↩️
+            sortNodeArgumentValue(node, child.alternate); // ↩️
             return;
           }
           case "LogicalExpression": {
-            sortNodeArgumentValue(node, child.right);
+            sortNodeArgumentValue(node, child.right); // ↩️
             return;
           }
           case "ArrayExpression": {
             for (const element of child.elements) {
-              sortNodeArgumentValue(node, element);
+              sortNodeArgumentValue(node, element); // ↩️
             }
             return;
           }
           case "ObjectExpression": {
             // e.g. `{ 'bg-active': isActive }`
-            // @example `classnames({ 'bg-active': isActive })`
+            // `classnames({ 'bg-active': isActive })`
             const isUsedByClassNamesPlugin =
               node.type === "CallExpression" &&
               node.callee &&
@@ -172,12 +167,12 @@ export const classnamesOrder = createRule<Options, MessageIds>({
                   ? property.key
                   : property.value;
               // @ts-expect-error Type 'ESLintObjectPattern' is not assignable to type 'SupportedChildNode | undefined'.
-              sortNodeArgumentValue(node, propertyValue);
+              sortNodeArgumentValue(node, propertyValue); // ↩️
             }
             return;
           }
           case "Property": {
-            sortNodeArgumentValue(node, child.key);
+            sortNodeArgumentValue(node, child.key); // ↩️
             break;
           }
 
@@ -193,19 +188,17 @@ export const classnamesOrder = createRule<Options, MessageIds>({
               return;
             }
             [start, end] = child.range;
-            // TODO Mess should be cleaned
-            //*/
             // https://github.com/eslint/eslint/issues/13360
             // The problem is that range computation includes the backticks (`test`)
-            // but value.raw does not include them, so there is a mismatch.
+            // but `value.raw` does not include them, so there is a mismatch.
             // start/end does not include the backticks, therefore it matches value.raw.
-            // @ts-expect-error TODO fix typing
-            const rawCode = context.sourceCode.getText(child);
+            const rawCode = context.sourceCode.getText(
+              child as unknown as TSESTree.Node
+            );
             [prefix, suffix] = getTemplateElementAffixes(
               rawCode,
               originalClassNamesValue
             );
-            //*/
             break;
           }
           default:
@@ -262,11 +255,11 @@ export const classnamesOrder = createRule<Options, MessageIds>({
     const attributeVisitor: RuleFunction<TSESTree.JSXAttribute> = (node) => {
       if (!isValidJSXAttribute(node, settings)) return;
       if (isLiteralAttributeValue(node)) {
-        sortNodeArgumentValue(node);
+        sortNodeArgumentValue(node); // 🏁
       }
       if (isValidExpressionAttributeValue(node)) {
         // @ts-expect-error Property 'expression' does not exist on type. ts(2339)
-        sortNodeArgumentValue(node, node.value.expression);
+        sortNodeArgumentValue(node, node.value.expression); // 🏁
       }
     };
 
@@ -274,7 +267,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
     const textAttributeVisitor: RuleFunction<TextAttribute> = (node) => {
       if (!isValidTextAttribute(node, settings)) return;
       if (isLiteralAttributeValue(node)) {
-        sortNodeArgumentValue(node);
+        sortNodeArgumentValue(node); // 🏁
       }
     };
 
@@ -286,13 +279,13 @@ export const classnamesOrder = createRule<Options, MessageIds>({
     const vAttributeVisitor: RuleFunction<VueAST.VAttribute> = (node) => {
       if (!isValidVAttribute(node, settings)) return;
       if (node.value?.type === "VLiteral") {
-        sortNodeArgumentValue(node);
+        sortNodeArgumentValue(node); // 🏁
       } else if (node.value?.type === "VExpressionContainer") {
         const expressionContainer =
           node.value as unknown as VueAST.VExpressionContainer;
         switch (expressionContainer.expression?.type) {
           case "Literal": {
-            sortNodeArgumentValue(node, expressionContainer.expression); // 🎯
+            sortNodeArgumentValue(node, expressionContainer.expression); // 🏁
             break;
           }
           case "CallExpression": {
@@ -301,21 +294,21 @@ export const classnamesOrder = createRule<Options, MessageIds>({
               isValidCallExpression(expressionContainer.expression, settings)
             ) {
               for (const argument of expressionContainer.expression.arguments) {
-                sortNodeArgumentValue(node, argument as SupportedNode); // 🎯
+                sortNodeArgumentValue(node, argument as SupportedNode); // 🏁
               }
             }
             break;
           }
           case "ArrayExpression": {
             for (const argument of expressionContainer.expression.elements) {
-              sortNodeArgumentValue(node, argument); // 🎯
+              sortNodeArgumentValue(node, argument); // 🏁
             }
             break;
           }
           case "ObjectExpression": {
             for (const property of expressionContainer.expression.properties) {
               if (property.type === "Property") {
-                sortNodeArgumentValue(node, property); // 🎯
+                sortNodeArgumentValue(node, property); // 🏁
               }
             }
             break;
@@ -329,7 +322,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
     ) => {
       if (isValidCallExpression(node, settings)) {
         for (const argument of node.arguments) {
-          sortNodeArgumentValue(node, argument as SupportedNode); // 🎯
+          sortNodeArgumentValue(node, argument as SupportedNode); // 🏁
         }
       }
     };
@@ -340,7 +333,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
       if (!settings.functions || settings.functions.length === 0) return;
       const tagName = getTagNameFromTaggedTemplateExpression(node);
       if (!settings.functions.includes(tagName)) return;
-      sortNodeArgumentValue(node, node.quasi); // 🎯
+      sortNodeArgumentValue(node, node.quasi); // 🏁
     };
 
     /**

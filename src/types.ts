@@ -121,7 +121,6 @@ export type ScriptVisitor = {
    */
   // @ts-expect-error Type 'TextAttribute' does not satisfy the constraint 'NodeOrTokenData'.
   TextAttribute: RuleFunction<TextAttribute>;
-  // TODO can we use a different type for TextAttribute
 };
 
 export type TemplateVisitor = {

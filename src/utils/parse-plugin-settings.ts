@@ -4,12 +4,15 @@ import { JSONSchema4 } from "@typescript-eslint/utils/json-schema";
 import type { SharedConfigurationSettings } from "@typescript-eslint/utils/ts-eslint";
 
 /**
- * Typing of the shared settings of the eslint-plugin-tailwindcss.
+ * Typing of the shared settings of the `eslint-plugin-tailwindcss`
  */
 export type PluginSettings = {
-  attributes?: Array<string>; // TODO can we use a {Set<string>} instead ?
+  // attributes which should be parsed
+  attributes?: Array<string>; // No support for `Set<string>`
+  // Must be an absolute path, not a relative path
   cssConfigPath: string;
-  functions?: Array<string>; // TODO can we use a {Set<string>} instead ?
+  // functions are use for both callees and template literals
+  functions?: Array<string>; // No support for `Set<string>`
 };
 
 /**
@@ -38,17 +41,13 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     "cva",
     // @see https://www.npmjs.com/package/tailwind-variants
     "tv",
-    // Template Literals
+    // Template Literals or custom function
     "tw",
   ],
 };
 
-// attributes ✅
-// cssConfigPath ✅
-// functions ✅ (callees + templateliterals)
-
-// tailwindPreserveWhitespace => New rule
-// tailwindPreserveDuplicates => New rule
+// TODO tailwindPreserveWhitespace => New rule
+// TODO tailwindPreserveDuplicates => New rule
 
 /**
  * The JSON schema for the shared settings to be reused in many of the rule's configuration.
@@ -80,6 +79,12 @@ export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
  * @description Parses the global eslint settings and merge it with the defaults.
  * @param settings The shared settings from the ESLint configuration.
  * @returns The merged plugin settings.
+ * @example
+ * const settings = parsePluginSettings({
+ *   tailwindcss: {
+ *     cssConfigPath: "/path/to/tailwind.css",
+ *   },
+ * });
  */
 export function parsePluginSettings(
   settings: SharedConfigurationSettings

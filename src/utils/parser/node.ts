@@ -3,8 +3,15 @@ import { AST as VueAST } from "vue-eslint-parser";
 
 import { ValueSupportedNode } from "../../types";
 
+// TODO Investigate the differences between VueAST types and its runtime values
+
 const separatorRegEx = /([\t\n\f\r ]+)/;
 
+/**
+ * @example
+ * // <h1 className={'block'}>jsx</h1>
+ * getValueFromNodeAtom(nodeAttribute); // 'block'
+ */
 export const getValueFromNodeAtom = (node: ValueSupportedNode) => {
   // No value
   if (!node.value) return "";
@@ -34,6 +41,17 @@ export const getValueFromNodeAtom = (node: ValueSupportedNode) => {
   }
 };
 
+/**
+ * @example
+ * getClassnamesFromValue(` flex  grow   `);
+ * // returns
+ * // {
+ * //   classNames: ['flex', 'grow'],
+ * //   whitespaces: [" ", "  ", "   "],
+ * //   headSpace: true,
+ * //   tailSpace: true
+ * // }
+ */
 export const getClassnamesFromValue = (classString: string) => {
   const parts = classString.split(separatorRegEx);
   const empty = {
@@ -67,21 +85,38 @@ export const getClassnamesFromValue = (classString: string) => {
   };
 };
 
-export const getRangeFromNode = (node: ValueSupportedNode) => {
+/**
+ * @example
+ * // <h1 class="flex">html</h1>
+ * //            ^11 ^15 (flex without quotes)
+ * getRangeFromNode(nodeAttribute); // [11, 15]
+ */
+export const getRangeFromNode = (
+  node: ValueSupportedNode
+): [number, number] => {
+  let start = 0;
+  let end = 0;
   if (!node.value) {
-    return [0, 0];
+    return [start, end];
   }
   if (node.type === "TextAttribute") {
-    return [node.valueSpan.fullStart.offset, node.valueSpan.end.offset];
+    start = node.valueSpan.fullStart.offset;
+    end = node.valueSpan.end.offset;
+    return [start, end];
   }
   switch (node.value.type) {
     case TSESTree.AST_NODE_TYPES.JSXExpressionContainer: {
-      return node.value.expression.range;
+      [start, end] = node.value.expression.range;
+      break;
     }
     default: {
-      return node.value.range;
+      [start, end] = node.value.range;
+      break;
     }
   }
+  start++;
+  end--;
+  return [start, end];
 };
 
 /**
@@ -131,6 +166,11 @@ export const getTemplateElementAffixes = (haystack: string, needle: string) => {
   ];
 };
 
+/**
+ * @example
+ * // tw`flex`
+ * getTagNameFromTaggedTemplateExpression(node); // 'tw'
+ */
 export const getTagNameFromTaggedTemplateExpression = (
   node: TSESTree.TaggedTemplateExpression
 ) => {
@@ -152,6 +192,11 @@ export const getTagNameFromTaggedTemplateExpression = (
   return "";
 };
 
+/**
+ * @example
+ * getJSXAttributeName(<div className="flex" />); // className
+ * getJSXAttributeName(<div ns:demo="flex" />); // ns:demo
+ */
 export const getJSXAttributeName = (node: TSESTree.JSXAttribute): string => {
   switch (node.name.type) {
     case AST_NODE_TYPES.JSXIdentifier: {
@@ -166,6 +211,11 @@ export const getJSXAttributeName = (node: TSESTree.JSXAttribute): string => {
   }
 };
 
+/**
+ * @example
+ * getVAttributeName(<template><p class="flex"></p></template>); // class
+ * getVAttributeName(<template><p v-bind:class="classes"></p></template>); // class
+ */
 export const getVAttributeName = (node: VueAST.VAttribute): string => {
   /*
   ⚠️ `key.name` will convert to lowercase

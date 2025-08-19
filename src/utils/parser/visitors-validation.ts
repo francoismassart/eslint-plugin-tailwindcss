@@ -8,7 +8,7 @@ import { getJSXAttributeName, getVAttributeName } from "./node";
 
 /**
  * Validates a `JSXAttribute` for `eslint-plugin-tailwindcss`
- * Returns `false` if the `JSXAttribute` can be skipped.
+ * @returns `false` if the `JSXAttribute` can be skipped.
  */
 export const isValidJSXAttribute = (
   node: TSESTree.JSXAttribute,
@@ -34,6 +34,10 @@ export const isValidJSXAttribute = (
   return true;
 };
 
+/**
+ * Validates a `TextAttribute` for `eslint-plugin-tailwindcss`
+ * @returns `false` if the `TextAttribute` can be skipped.
+ */
 export const isValidTextAttribute = (
   node: TextAttribute,
   settings: PluginSettings
@@ -50,7 +54,7 @@ export const isValidTextAttribute = (
 /**
  * Validates a `VAttribute` for `eslint-plugin-tailwindcss`
  * `VAttribute` only contains `VLiteral` or `null` value
- * Returns `false` if the `VAttribute` can be skipped.
+ * @returns `false` if the `VAttribute` can be skipped.
  */
 export const isValidVAttribute = (
   node: VueAST.VAttribute,
@@ -72,7 +76,7 @@ export const isValidVAttribute = (
 
 /**
  * Validates a `CallExpression` for `eslint-plugin-tailwindcss`
- * Returns `false` if the `CallExpression` can be skipped.
+ * @returns `false` if the `CallExpression` can be skipped.
  */
 export const isValidCallExpression = (
   node: TSESTree.CallExpression,
@@ -95,6 +99,9 @@ export const isValidCallExpression = (
   return false;
 };
 
+/**
+ * @returns `true` if the value can be validated as is
+ */
 export const isLiteralAttributeValue = (node: SupportedAttribute) => {
   // No value
   if (!node.value) return false;
@@ -112,6 +119,9 @@ export const isLiteralAttributeValue = (node: SupportedAttribute) => {
   return false;
 };
 
+/**
+ * Validates a `Expression` contained within a `JSXAttribute` for `eslint-plugin-tailwindcss`
+ * @returns `false` if the `Expression` can be skipped. */
 export const isValidExpressionAttributeValue = (
   node: TSESTree.JSXAttribute
 ) => {

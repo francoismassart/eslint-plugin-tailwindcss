@@ -6,6 +6,8 @@ import { VStartTag } from "vue-eslint-parser/ast/index";
 
 import { GenericElement, TextAttribute } from "../../types";
 
+// This file exposes utils only used during the tests
+
 const withJSX = {
   ecmaFeatures: { jsx: true },
 };
