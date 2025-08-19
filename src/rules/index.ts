@@ -1,5 +1,8 @@
-import { myRule, RULE_NAME as MY_RULE } from "./my-rule";
+import {
+  classnamesOrder,
+  RULE_NAME as CLASSNAMES_ORDER,
+} from "./classnames-order";
 
 export const rules = {
-  [MY_RULE]: myRule,
+  [CLASSNAMES_ORDER]: classnamesOrder,
 };

@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/typography';
+
+/* Minimalist theme used for testing */
+@theme {
+  --color-primary: #123456;
+}

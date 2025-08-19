@@ -9,6 +9,5 @@ test(`load theme from "tiny-prefixed.css"`, () => {
   expect(theme.keyframes.size).toBe(
     ["spin", "ping", "pulse", "bounce"].length * 2
   );
-  console.log("Theme values:", theme.values);
   expect(theme.values.size).toBe(3);
 });

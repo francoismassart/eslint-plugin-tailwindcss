@@ -2,10 +2,10 @@
  * ⚠️ This is a worker script which is ran in node's `worker_threads`.
  * 🤓 This means that it is not executed in the main thread, but in a separate thread.
  * 😅 Because of this, expect some disturbances, like:
- *   - `console.log` won't work `vitest`... (seems to work with `jest`).
+ *   - `console.log` won't work `vitest`… (seems to work with `jest`).
  *   - You cannot pass complex objects as arguments, only serializable ones.
  *   - You cannot retun complex objects, only serializable ones.
- *   - e.g. You cannot return the `utils.context` directly, but you can return some of its properties...
+ *   - e.g. You cannot return the `utils.context` directly, but you can return some of its properties…
  *
  * ℹ️ It uses the `*.mjs` extension to indicate that it is an ES module.
  * ✅ We still check the syntax with TypeScript, but it is not a TypeScript file.
