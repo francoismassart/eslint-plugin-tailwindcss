@@ -279,6 +279,12 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         `<h1 class="block group/edit:stroke-0">support named group/peer syntax</h1>`,
         `<h1 class="group/edit:stroke-0 block">support named group/peer syntax</h1>`,
       ],
+      [
+        /* prettier-ignore */
+        "tw`flex unknown relative`",
+        /* prettier-ignore */
+        "tw`unknown relative flex`",
+      ],
     ].map(([input, result]) => ({
       code: input,
       output: result,

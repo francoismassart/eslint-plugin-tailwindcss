@@ -79,15 +79,15 @@ test("getRangeFromNode", () => {
   const jsx = getFirstJSXOpeningElement(`<h1 class={'flex'}>html</h1>`);
   const jsxAttribute = getJSXAttribute(jsx);
   expect(getRangeFromNode(jsxAttribute)).toStrictEqual([
-    `<h1 class={`.length,
-    `<h1 class={'flex'`.length,
+    `<h1 class={'`.length,
+    `<h1 class={'flex`.length,
   ]);
   // default
   const defaultJsx = getFirstJSXOpeningElement(`<h1 class="flex">html</h1>`);
   const defaultJsxAttribute = getJSXAttribute(defaultJsx);
   expect(getRangeFromNode(defaultJsxAttribute)).toStrictEqual([
-    `<h1 class=`.length,
-    `<h1 class="flex'`.length,
+    `<h1 class="`.length,
+    `<h1 class="flex`.length,
   ]);
 });
 
