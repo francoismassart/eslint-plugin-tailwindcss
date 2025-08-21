@@ -12,10 +12,7 @@ import {
   parsePluginSettings,
   PluginSettings,
 } from "../utils/parse-plugin-settings";
-import {
-  getClassnamesFromValue,
-  getTemplateElementAffixes,
-} from "../utils/parser/node";
+import { getClassnamesFromValue } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
 import {
   AtomicNode,
@@ -51,8 +48,6 @@ const detectCustomClassnames = (
     let originalClassNamesValue = "";
     let start = 0;
     let end = 0;
-    let prefix = "";
-    let suffix = "";
     switch (node.type) {
       case TSESTree.AST_NODE_TYPES.Literal: {
         originalClassNamesValue = "" + node.value;
@@ -67,17 +62,6 @@ const detectCustomClassnames = (
           break;
         }
         [start, end] = node.range;
-        // https://github.com/eslint/eslint/issues/13360
-        // The problem is that range computation includes the backticks (`test`)
-        // but `value.raw` does not include them, so there is a mismatch.
-        // start/end does not include the backticks, therefore it matches value.raw.
-        const rawCode = context.sourceCode.getText(
-          node as unknown as TSESTree.Node
-        );
-        [prefix, suffix] = getTemplateElementAffixes(
-          rawCode,
-          originalClassNamesValue
-        );
         break;
       }
       case "TextAttribute": {
