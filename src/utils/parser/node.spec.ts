@@ -4,10 +4,8 @@ import { expect, test } from "vitest";
 import {
   getClassnamesFromValue,
   getJSXAttributeName,
-  getRangeFromNode,
   getTagNameFromTaggedTemplateExpression,
   getTemplateElementAffixes,
-  getValueFromNodeAtom,
   getVAttributeName,
 } from "./node";
 import {
@@ -15,26 +13,9 @@ import {
   getFirstJSXOpeningElement,
   getHTMLAttribute,
   getJSXAttribute,
-  htmlAttribute,
   jsxAttribute,
   vAttribute,
 } from "./test-helpers";
-
-test("getValueFromNodeAtom", () => {
-  [
-    // No value
-    [htmlAttribute(`<h1 class>html</h1>`), ""],
-    // Normal case: "TextAttribute" via AngularParser (HTML)
-    [htmlAttribute(`<h1 class="flex">html</h1>`), "flex"],
-    // JSXLiteral
-    [jsxAttribute(`<h1 class="m-0 flex">jsx</h1>`), "m-0 flex"],
-    // JSXExpressionContainer
-    [jsxAttribute(`<h1 className={'block'}>jsx</h1>`), "block"],
-  ].map(([input, expected]) => {
-    // @ts-expect-error Argument of type 'string | TextAttribute' is not assignable to parameter of type 'ValueSupportedNode'.
-    expect(getValueFromNodeAtom(input)).toBe(expected);
-  });
-});
 
 test("getClassnamesFromValue", () => {
   expect(getClassnamesFromValue(`flex grow`)).toStrictEqual({
@@ -61,34 +42,6 @@ test("getClassnamesFromValue", () => {
     headSpace: false,
     tailSpace: true,
   });
-});
-
-test("getRangeFromNode", () => {
-  // No value
-  const emptyHtml = getFirstHTMLOpeningElement(`<h1 hidden>html</h1>`);
-  const emptyAttribute = getHTMLAttribute(emptyHtml);
-  expect(getRangeFromNode(emptyAttribute)).toStrictEqual([0, 0]);
-  // Normal case: "TextAttribute" via AngularParser (HTML)
-  const simpleHtml = getFirstHTMLOpeningElement(`<h1 class="flex">html</h1>`);
-  const textAttribute = getHTMLAttribute(simpleHtml);
-  expect(getRangeFromNode(textAttribute)).toStrictEqual([
-    `<h1 class="`.length,
-    `<h1 class="flex`.length,
-  ]);
-  // JSX attribute
-  const jsx = getFirstJSXOpeningElement(`<h1 class={'flex'}>html</h1>`);
-  const jsxAttribute = getJSXAttribute(jsx);
-  expect(getRangeFromNode(jsxAttribute)).toStrictEqual([
-    `<h1 class={'`.length,
-    `<h1 class={'flex`.length,
-  ]);
-  // default
-  const defaultJsx = getFirstJSXOpeningElement(`<h1 class="flex">html</h1>`);
-  const defaultJsxAttribute = getJSXAttribute(defaultJsx);
-  expect(getRangeFromNode(defaultJsxAttribute)).toStrictEqual([
-    `<h1 class="`.length,
-    `<h1 class="flex`.length,
-  ]);
 });
 
 test("getTemplateElementAffixes", () => {

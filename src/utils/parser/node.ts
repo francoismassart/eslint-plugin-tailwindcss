@@ -1,45 +1,9 @@
 import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
 import { AST as VueAST } from "vue-eslint-parser";
 
-import { ValueSupportedNode } from "../../types";
-
 // TODO Investigate the differences between VueAST types and its runtime values
 
 const separatorRegEx = /([\t\n\f\r ]+)/;
-
-/**
- * @example
- * // <h1 className={'block'}>jsx</h1>
- * getValueFromNodeAtom(nodeAttribute); // 'block'
- */
-export const getValueFromNodeAtom = (node: ValueSupportedNode) => {
-  // No value
-  if (!node.value) return "";
-  // TextAttribute via AngularParser (HTML)
-  if (node.type === "TextAttribute") return node.value;
-  if (node.type === "VAttribute") return node.value.value;
-  // JSXAttribute
-  switch (node.value.type) {
-    case TSESTree.AST_NODE_TYPES.JSXExpressionContainer: {
-      const expression = node.value.expression;
-      switch (expression.type) {
-        case TSESTree.AST_NODE_TYPES.Literal: {
-          if (expression.value) return "" + expression.value;
-          return "";
-        }
-        default: {
-          return "";
-        }
-      }
-    }
-    case TSESTree.AST_NODE_TYPES.Literal: {
-      return "" + node.value.value;
-    }
-    default: {
-      return "";
-    }
-  }
-};
 
 /**
  * @example
@@ -83,40 +47,6 @@ export const getClassnamesFromValue = (classString: string) => {
     headSpace: headSpace,
     tailSpace: tailSpace,
   };
-};
-
-/**
- * @example
- * // <h1 class="flex">html</h1>
- * //            ^11 ^15 (flex without quotes)
- * getRangeFromNode(nodeAttribute); // [11, 15]
- */
-export const getRangeFromNode = (
-  node: ValueSupportedNode
-): [number, number] => {
-  let start = 0;
-  let end = 0;
-  if (!node.value) {
-    return [start, end];
-  }
-  if (node.type === "TextAttribute") {
-    start = node.valueSpan.fullStart.offset;
-    end = node.valueSpan.end.offset;
-    return [start, end];
-  }
-  switch (node.value.type) {
-    case TSESTree.AST_NODE_TYPES.JSXExpressionContainer: {
-      [start, end] = node.value.expression.range;
-      break;
-    }
-    default: {
-      [start, end] = node.value.range;
-      break;
-    }
-  }
-  start++;
-  end--;
-  return [start, end];
 };
 
 /**
