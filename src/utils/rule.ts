@@ -228,7 +228,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
     literals: Array<AtomicNode>
   ) => void
 ): RuleListener => {
-  const callExpression = {
+  return {
     /**
      * In JSX + inside <script> section of Vue SFC…
      * @example
@@ -254,9 +254,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
       );
       lintLiterals(context, settings, literals);
     },
-  };
 
-  const jsxAttribute = {
     /**
      * Only the JSXAttributes
      * @example
@@ -274,9 +272,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
       );
       lintLiterals(context, settings, literals);
     },
-  };
 
-  const taggedTemplateExpression = {
     /**
      * In JSX + inside <script> section of Vue SFC…
      * @example
@@ -300,9 +296,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
       );
       lintLiterals(context, settings, literals);
     },
-  };
 
-  const textAttribute = {
     /**
      * Useful for regular HTML (non JSX)
      * @example
@@ -314,13 +308,6 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
       const literals = [textAttributeNode];
       lintLiterals(context, settings, literals);
     },
-  };
-
-  return {
-    ...callExpression,
-    ...jsxAttribute,
-    ...taggedTemplateExpression,
-    ...textAttribute,
   };
 };
 
@@ -344,7 +331,7 @@ export const createTemplateVisitors = <TRuleContext, TOptions>(
     literals: Array<AtomicNode>
   ) => void
 ): RuleListener => {
-  const vAttribute = {
+  return {
     /**
      * Visitor for VAttribute within Vue SFC's `<template>`
      * @example
@@ -406,8 +393,5 @@ export const createTemplateVisitors = <TRuleContext, TOptions>(
       }
       lintLiterals(context, settings, literals);
     },
-  };
-  return {
-    ...vAttribute,
   };
 };

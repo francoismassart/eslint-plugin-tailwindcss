@@ -3,10 +3,10 @@ import { expect, test } from "vitest";
 
 import { parsePluginSettings, PluginSettings } from "../parse-plugin-settings";
 import {
-  callExpression,
-  htmlAttribute,
-  jsxAttribute,
-  vAttribute,
+  _callExpression,
+  _htmlAttribute,
+  _jsxAttribute,
+  _vAttribute,
 } from "./test-helpers";
 import {
   isLiteralAttributeValue,
@@ -43,7 +43,7 @@ test("isValidJSXAttribute", () => {
     [`<p custom={'value'}>p</p>`, customAttributeSettings],
   ];
   valid.map(([input, settings]) => {
-    const node = jsxAttribute(input);
+    const node = _jsxAttribute(input);
     expect(isValidJSXAttribute(node, settings)).toBe(true);
   });
 });
@@ -60,7 +60,7 @@ test("isValidTextAttribute", () => {
     [`<p custom="value">p</p>`, customAttributeSettings],
   ];
   valid.map(([input, settings]) => {
-    const node = htmlAttribute(input);
+    const node = _htmlAttribute(input);
     expect(isValidTextAttribute(node, settings)).toBe(true);
   });
   // Invalid expressions
@@ -74,7 +74,7 @@ test("isValidTextAttribute", () => {
     [`<p className="value">p</p>`, noAttributeSettings],
   ];
   invalid.map(([input, settings]) => {
-    const node = htmlAttribute(input);
+    const node = _htmlAttribute(input);
     expect(isValidTextAttribute(node, settings)).toBe(false);
   });
 });
@@ -90,7 +90,7 @@ test("isValidVAttribute", () => {
     [`<p :custom="value">p</p>`, customAttributeSettings],
   ];
   valid.map(([input, settings]) => {
-    const node = vAttribute(`<template>${input}</template>`);
+    const node = _vAttribute(`<template>${input}</template>`);
     // @ts-expect-error Argument of type 'VAttribute | VDirective' is not assignable to parameter of type 'VAttribute'.
     expect(isValidVAttribute(node, settings)).toBe(true);
   });
@@ -106,7 +106,7 @@ test("isValidVAttribute", () => {
     [`<p className="value">p</p>`, noAttributeSettings],
   ];
   invalid.map(([input, settings]) => {
-    const node = vAttribute(`<template>${input}</template>`);
+    const node = _vAttribute(`<template>${input}</template>`);
     // @ts-expect-error Argument of type 'VAttribute | VDirective' is not assignable to parameter of type 'VAttribute'.
     expect(isValidVAttribute(node, settings)).toBe(false);
   });
@@ -117,10 +117,10 @@ test("isValidCallExpression", () => {
   // Valid expressions
   const valid: Array<TestConfig> = [
     // Defaults
-    [callExpression(`ctl('flex')`), defaultSettings],
-    [callExpression(`obj.ctl('flex')`), defaultSettings],
+    [_callExpression(`ctl('flex')`), defaultSettings],
+    [_callExpression(`obj.ctl('flex')`), defaultSettings],
     // Custom
-    [callExpression(`custom('flex')`), customFunctionSettings],
+    [_callExpression(`custom('flex')`), customFunctionSettings],
   ];
   valid.map(([input, settings]) => {
     expect(isValidCallExpression(input, settings)).toBe(true);
@@ -128,12 +128,12 @@ test("isValidCallExpression", () => {
   // Invalid expressions
   const invalid: Array<TestConfig> = [
     // Defaults
-    [callExpression(`nope('flex')`), defaultSettings],
-    [callExpression(`ctl.member('flex')`), defaultSettings],
+    [_callExpression(`nope('flex')`), defaultSettings],
+    [_callExpression(`ctl.member('flex')`), defaultSettings],
     // Custom
-    [callExpression(`ctl('flex')`), customFunctionSettings],
+    [_callExpression(`ctl('flex')`), customFunctionSettings],
     // No function
-    [callExpression(`ctl('flex')`), noFunctionSettings],
+    [_callExpression(`ctl('flex')`), noFunctionSettings],
   ];
   invalid.map(([input, settings]) => {
     expect(isValidCallExpression(input, settings)).toBe(false);
@@ -144,20 +144,20 @@ test("isLiteralAttributeValue", () => {
   // Valid expressions
   [
     // Normal case: "TextAttribute" via AngularParser (HTML)
-    htmlAttribute(`<h1 class="flex">normal</h1>`),
+    _htmlAttribute(`<h1 class="flex">normal</h1>`),
     // Normal case (JSX)
-    jsxAttribute(`<h1 className="flex">normal jsx</h1>`),
+    _jsxAttribute(`<h1 className="flex">normal jsx</h1>`),
   ].map((input) => {
     expect(isLiteralAttributeValue(input)).toBe(true);
   });
   // Invalid expressions
   [
     // No value case via AngularParser (HTML)
-    htmlAttribute(`<h1 hidden>no value</h1>`),
+    _htmlAttribute(`<h1 hidden>no value</h1>`),
     // No value case (JSX)
-    jsxAttribute(`<h1 hidden>hidden jsx</h1>`),
+    _jsxAttribute(`<h1 hidden>hidden jsx</h1>`),
     // CallExpression (JSX)
-    jsxAttribute(`<h1 class={ctl('flex')}>ctl</h1>`),
+    _jsxAttribute(`<h1 class={ctl('flex')}>ctl</h1>`),
   ].map((input) => {
     expect(isLiteralAttributeValue(input)).toBe(false);
   });
@@ -171,7 +171,7 @@ test("isValidExpressionAttributeValue", () => {
     "<p class={tw`flex`}>p</p>",
     "<p class={ctl('flex')}>p</p>",
   ].map((input) => {
-    const validExpression = jsxAttribute(input);
+    const validExpression = _jsxAttribute(input);
     expect(isValidExpressionAttributeValue(validExpression)).toBe(true);
   });
   // Invalid expressions
@@ -183,7 +183,7 @@ test("isValidExpressionAttributeValue", () => {
     // Empty expression
     `<p class={}>p</p>`,
   ].map((input) => {
-    const invalidExpression = jsxAttribute(input);
+    const invalidExpression = _jsxAttribute(input);
     expect(isValidExpressionAttributeValue(invalidExpression)).toBe(false);
   });
 });

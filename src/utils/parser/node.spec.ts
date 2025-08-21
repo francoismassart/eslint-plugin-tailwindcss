@@ -8,7 +8,7 @@ import {
   getTemplateElementAffixes,
   getVAttributeName,
 } from "./node";
-import { jsxAttribute, vAttribute } from "./test-helpers";
+import { _jsxAttribute, _vAttribute } from "./test-helpers";
 
 test("getClassnamesFromValue", () => {
   expect(getClassnamesFromValue(`flex grow`)).toStrictEqual({
@@ -49,7 +49,7 @@ test("getTemplateElementAffixes", () => {
 });
 
 test("getTagNameFromTaggedTemplateExpression", () => {
-  const attribute = jsxAttribute("<h1 className={tw`flex`}>html</h1>");
+  const attribute = _jsxAttribute("<h1 className={tw`flex`}>html</h1>");
   if (
     attribute.value?.type === TSESTree.AST_NODE_TYPES.JSXExpressionContainer &&
     attribute.value.expression.type ===
@@ -68,11 +68,11 @@ test("getTagNameFromTaggedTemplateExpression", () => {
 test("getJSXAttributeName", () => {
   [
     // JSXLiteral
-    [jsxAttribute(`<h1 class="m-0 flex">jsx</h1>`), "class"],
+    [_jsxAttribute(`<h1 class="m-0 flex">jsx</h1>`), "class"],
     // JSXExpressionContainer
-    [jsxAttribute(`<h1 className={'block'}>jsx</h1>`), "className"],
+    [_jsxAttribute(`<h1 className={'block'}>jsx</h1>`), "className"],
     // JSXNamespacedName
-    [jsxAttribute(`<h1 ns:className={'block'}>jsx</h1>`), "ns:className"],
+    [_jsxAttribute(`<h1 ns:className={'block'}>jsx</h1>`), "ns:className"],
   ].map(([input, expected]) => {
     // @ts-expect-error Argument of type 'string | JSXAttribute' is not assignable to parameter of type 'JSXAttribute'.
     expect(getJSXAttributeName(input)).toBe(expected);
@@ -88,7 +88,7 @@ test("getVAttributeName", () => {
     // VDirectiveKey
     [`<h1 :short="{'block': true}">jsx</h1>`, "short"],
   ].map(([templateCode, expected]) => {
-    const input = vAttribute(`<template>${templateCode}</template>`);
+    const input = _vAttribute(`<template>${templateCode}</template>`);
     // @ts-expect-error Argument of type 'string | VAttribute' is not assignable to parameter of type 'VAttribute'.
     expect(getVAttributeName(input)).toBe(expected);
   });
