@@ -1,45 +1,17 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-import * as AngularParser from "@angular-eslint/template-parser";
 import * as Parser from "@typescript-eslint/parser";
-import {
-  RuleTester,
-  TestCaseError,
-  TestLanguageOptions,
-} from "@typescript-eslint/rule-tester";
-// @ts-ignore
-import * as VueParser from "vue-eslint-parser";
+import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 
-import { PluginSettings } from "../utils/parse-plugin-settings";
+import {
+  generalSettings,
+  prefixedSettings,
+  withAngularParser,
+  withTypographySettings,
+  withVueParser,
+} from "../utils/parser/test-helpers";
 import { classnamesOrder, RULE_NAME } from "./classnames-order";
 
 const error: TestCaseError<"fix:sort"> = { messageId: "fix:sort" };
 const errors = [error];
-
-const withAngularParser: TestLanguageOptions = {
-  parser: AngularParser,
-};
-const withVueParser: TestLanguageOptions = {
-  parser: VueParser,
-};
-
-const generalSettings: PluginSettings = {
-  cssConfigPath:
-    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
-    `${import.meta.dirname}/../../tests/stubs/css/normal.css`,
-};
-
-const prefixedSettings: PluginSettings = {
-  cssConfigPath:
-    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
-    `${import.meta.dirname}/../../tests/stubs/css/tiny-prefixed.css`,
-};
-
-const withTypographySettings: PluginSettings = {
-  cssConfigPath:
-    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
-    `${import.meta.dirname}/../../tests/stubs/css/with-typography.css`,
-};
 
 const ruleTester = new RuleTester({
   languageOptions: {
