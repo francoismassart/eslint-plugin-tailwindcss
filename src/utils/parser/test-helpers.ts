@@ -12,7 +12,7 @@ const withJSX = {
   ecmaFeatures: { jsx: true },
 };
 
-export const getFirstHTMLOpeningElement = (code: string) => {
+const getFirstHTMLOpeningElement = (code: string) => {
   const program = AngularParser.parse(code, { filePath: "node.spec.ts" });
   const node = program.templateNodes.at(0);
   if (node === undefined) {
@@ -21,7 +21,7 @@ export const getFirstHTMLOpeningElement = (code: string) => {
   return node;
 };
 
-export const getHTMLAttribute = (node: GenericElement): TextAttribute => {
+const getHTMLAttribute = (node: GenericElement): TextAttribute => {
   const htmlAttribute = node.attributes.at(0);
   if (htmlAttribute === undefined) {
     throw new Error("No HTMLAttribute found");
@@ -29,7 +29,7 @@ export const getHTMLAttribute = (node: GenericElement): TextAttribute => {
   return htmlAttribute;
 };
 
-export const getFirstJSXOpeningElement = (code: string) => {
+const getFirstJSXOpeningElement = (code: string) => {
   const program = Parser.parse(code, withJSX);
   const body = program.body.at(0);
   if (body === undefined) {
@@ -44,7 +44,7 @@ export const getFirstJSXOpeningElement = (code: string) => {
   return body.expression.openingElement;
 };
 
-export const getJSXAttribute = (node: TSESTree.JSXOpeningElement) => {
+const getJSXAttribute = (node: TSESTree.JSXOpeningElement) => {
   const jsxAttribute = node.attributes.at(0);
   if (jsxAttribute === undefined) throw new Error("No JSXAttribute found");
   if (jsxAttribute.type === TSESTree.AST_NODE_TYPES.JSXSpreadAttribute)
@@ -71,22 +71,22 @@ const getVAttribute = (node: VStartTag) => {
   return vAttribute;
 };
 
-export const htmlAttribute = (code: string) => {
+export const _htmlAttribute = (code: string) => {
   const element = getFirstHTMLOpeningElement(code);
   return getHTMLAttribute(element);
 };
 
-export const jsxAttribute = (code: string) => {
+export const _jsxAttribute = (code: string) => {
   const jsxElement = getFirstJSXOpeningElement(code);
   return getJSXAttribute(jsxElement);
 };
 
-export const vAttribute = (code: string) => {
+export const _vAttribute = (code: string) => {
   const vElement = getFirstVOpeningElement(code);
   return getVAttribute(vElement);
 };
 
-export const callExpression = (code: string) => {
+export const _callExpression = (code: string) => {
   const program = Parser.parse(code, withJSX);
   const body = program.body.at(0);
   if (body === undefined) {
