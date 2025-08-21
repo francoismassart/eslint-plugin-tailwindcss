@@ -46,14 +46,9 @@ const detectCustomClassnames = (
 ) => {
   for (const node of literals) {
     let originalClassNamesValue = "";
-    let start = 0;
-    let end = 0;
     switch (node.type) {
       case TSESTree.AST_NODE_TYPES.Literal: {
         originalClassNamesValue = "" + node.value;
-        [start, end] = node.range;
-        start++;
-        end--;
         break;
       }
       case TSESTree.AST_NODE_TYPES.TemplateElement: {
@@ -61,20 +56,14 @@ const detectCustomClassnames = (
         if (originalClassNamesValue === "") {
           break;
         }
-        [start, end] = node.range;
         break;
       }
       case "TextAttribute": {
         originalClassNamesValue = node.value;
-        start = node.valueSpan.fullStart.offset;
-        end = node.valueSpan.end.offset;
         break;
       }
       case "VLiteral": {
         originalClassNamesValue = "" + node.value;
-        [start, end] = node.range;
-        start++;
-        end--;
         break;
       }
       default: {
@@ -89,6 +78,9 @@ const detectCustomClassnames = (
         if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
           context.report({
             node: node as TSESTree.Node,
+            // TODO see if useful
+            // loc: { column: 1, line: 1 },
+            // loc: { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } },
             messageId: "issue:unknown-classname",
             data: {
               classname: className,
