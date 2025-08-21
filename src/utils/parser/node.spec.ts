@@ -8,14 +8,7 @@ import {
   getTemplateElementAffixes,
   getVAttributeName,
 } from "./node";
-import {
-  getFirstHTMLOpeningElement,
-  getFirstJSXOpeningElement,
-  getHTMLAttribute,
-  getJSXAttribute,
-  jsxAttribute,
-  vAttribute,
-} from "./test-helpers";
+import { jsxAttribute, vAttribute } from "./test-helpers";
 
 test("getClassnamesFromValue", () => {
   expect(getClassnamesFromValue(`flex grow`)).toStrictEqual({
