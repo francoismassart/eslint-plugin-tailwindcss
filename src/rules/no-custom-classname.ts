@@ -79,6 +79,7 @@ const detectCustomClassnames = (
           context.report({
             node: node as TSESTree.Node,
             // TODO see if useful
+            // context.sourceCode.getLocFromIndex(0)
             // loc: { column: 1, line: 1 },
             // loc: { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } },
             messageId: "issue:unknown-classname",
