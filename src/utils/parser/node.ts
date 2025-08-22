@@ -1,6 +1,9 @@
 import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
 import { AST as VueAST } from "vue-eslint-parser";
 
+import { AtomicNode } from "../rule";
+import { GenericRuleContext } from "./visitors";
+
 // TODO Investigate the differences between VueAST types and its runtime values
 
 const separatorRegEx = /([\t\n\f\r ]+)/;
@@ -160,4 +163,78 @@ export const getVAttributeName = (node: VueAST.VAttribute): string => {
     if (argument.type === "VIdentifier") return argument.rawName;
   }
   return "";
+};
+
+/**
+ * @example
+ * // Given a TemplateElement ` absolute ${` returns
+ * {
+ *   originalClassNamesValue: " absolute ",
+ *   start: 0, // index of the first backtick
+ *   end: 15, // length of the template element
+ *   prefix: "`", // used for rebuilding
+ *   suffix: "${" // used for rebuilding
+ * }
+ */
+export const dissectAtomicNode = (
+  node: AtomicNode,
+  context: GenericRuleContext
+) => {
+  let originalClassNamesValue = "";
+  let start = 0;
+  let end = 0;
+  let prefix = "";
+  let suffix = "";
+  switch (node.type) {
+    case TSESTree.AST_NODE_TYPES.Literal: {
+      originalClassNamesValue = "" + node.value;
+      [start, end] = node.range;
+      start++;
+      end--;
+      break;
+    }
+    case TSESTree.AST_NODE_TYPES.TemplateElement: {
+      originalClassNamesValue = node.value.raw;
+      if (originalClassNamesValue === "") {
+        break;
+      }
+      [start, end] = node.range;
+      // https://github.com/eslint/eslint/issues/13360
+      // The problem is that range computation includes the backticks (`test`)
+      // but `value.raw` does not include them, so there is a mismatch.
+      // start/end does not include the backticks, therefore it matches value.raw.
+      const rawCode = context.sourceCode.getText(
+        node as unknown as TSESTree.Node
+      );
+      [prefix, suffix] = getTemplateElementAffixes(
+        rawCode,
+        originalClassNamesValue
+      );
+      break;
+    }
+    case "TextAttribute": {
+      originalClassNamesValue = node.value;
+      start = node.valueSpan.fullStart.offset;
+      end = node.valueSpan.end.offset;
+      break;
+    }
+    case "VLiteral": {
+      originalClassNamesValue = "" + node.value;
+      [start, end] = node.range;
+      start++;
+      end--;
+      break;
+    }
+    default: {
+      // console.log(index, "Unhandled literal type", literal.type);
+      break;
+    }
+  }
+  return {
+    originalClassNamesValue,
+    start,
+    end,
+    prefix,
+    suffix,
+  };
 };

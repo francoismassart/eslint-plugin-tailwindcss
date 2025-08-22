@@ -12,7 +12,10 @@ import {
   parsePluginSettings,
   PluginSettings,
 } from "../utils/parse-plugin-settings";
-import { getClassnamesFromValue } from "../utils/parser/node";
+import {
+  dissectAtomicNode,
+  getClassnamesFromValue,
+} from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
 import {
   AtomicNode,
@@ -45,49 +48,25 @@ const detectCustomClassnames = (
   literals: Array<AtomicNode>
 ) => {
   for (const node of literals) {
-    let originalClassNamesValue = "";
-    switch (node.type) {
-      case TSESTree.AST_NODE_TYPES.Literal: {
-        originalClassNamesValue = "" + node.value;
-        break;
-      }
-      case TSESTree.AST_NODE_TYPES.TemplateElement: {
-        originalClassNamesValue = node.value.raw;
-        if (originalClassNamesValue === "") {
-          break;
-        }
-        break;
-      }
-      case "TextAttribute": {
-        originalClassNamesValue = node.value;
-        break;
-      }
-      case "VLiteral": {
-        originalClassNamesValue = "" + node.value;
-        break;
-      }
-      default: {
-        // console.log(index, "Unhandled literal type", literal.type);
-        break;
-      }
-    }
+    const { originalClassNamesValue } = dissectAtomicNode(
+      node,
+      context as unknown as GenericRuleContext
+    );
     // Process the extracted classnames and report
-    {
-      const { classNames } = getClassnamesFromValue(originalClassNamesValue);
-      for (const className of classNames) {
-        if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
-          context.report({
-            node: node as TSESTree.Node,
-            // TODO see if useful
-            // context.sourceCode.getLocFromIndex(0)
-            // loc: { column: 1, line: 1 },
-            // loc: { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } },
-            messageId: "issue:unknown-classname",
-            data: {
-              classname: className,
-            },
-          });
-        }
+    const { classNames } = getClassnamesFromValue(originalClassNamesValue);
+    for (const className of classNames) {
+      if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
+        context.report({
+          node: node as TSESTree.Node,
+          // TODO see if useful
+          // context.sourceCode.getLocFromIndex(0)
+          // loc: { column: 1, line: 1 },
+          // loc: { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } },
+          messageId: "issue:unknown-classname",
+          data: {
+            classname: className,
+          },
+        });
       }
     }
   }
