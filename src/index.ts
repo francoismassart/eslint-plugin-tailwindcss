@@ -1,8 +1,8 @@
 import * as parserBase from "@typescript-eslint/parser";
 import { TSESLint } from "@typescript-eslint/utils";
-import { Linter } from "@typescript-eslint/utils/ts-eslint";
+import { FlatConfig, Linter } from "@typescript-eslint/utils/ts-eslint";
 
-import { rules } from "./rules";
+import { recommendedRulesConfig, rules } from "./rules";
 
 export const parser: TSESLint.FlatConfig.Parser = {
   meta: parserBase.meta,
@@ -27,13 +27,46 @@ const { name, version } =
 // Plugin not fully initialized yet.
 // See https://eslint.org/docs/latest/extend/plugins#configs-in-plugins
 const plugin = {
-  // `configs`, assigned later
-  configs: {},
-  rules,
   meta: {
     name,
     version,
   },
+  // `configs`, assigned later
+  configs: {},
+  rules,
 } satisfies Linter.Plugin;
+
+// Config base for all configurations
+const configBase: FlatConfig.Config = {
+  name: "tailwindcss/base",
+  plugins: {
+    tailwindcss: plugin,
+  },
+  settings: {
+    tailwindcss: {},
+  },
+  files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  languageOptions: {
+    parserOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      ecmaFeatures: {
+        jsx: true,
+      },
+    },
+  },
+};
+
+// Prepare configs here so we can reference `plugin`
+const sharedConfigs: FlatConfig.SharedConfigs = {
+  recommended: {
+    ...configBase,
+    name: "tailwindcss/recommended",
+    rules: recommendedRulesConfig,
+  },
+};
+
+// Inject shared configs into the plugin
+Object.assign(plugin.configs, sharedConfigs);
 
 export default plugin;
