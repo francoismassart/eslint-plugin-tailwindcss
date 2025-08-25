@@ -10,13 +10,13 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "outDir": "lib/",
     "resolveJsonModule": true,
+    "rootDir": "src/",
     "skipLibCheck": true,
     "strict": true,
     "sourceMap": false,
-    "target": "es2015",
-    "rootDir": "src/",
-    "outDir": "lib/"
+    "target": "es2015"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/_sandbox/*"]
