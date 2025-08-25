@@ -18,6 +18,7 @@
   "homepage": "https://github.com/francoismassart/eslint-plugin-tailwindcss",
   "bugs": "https://github.com/francoismassart/eslint-plugin-tailwindcss/issues",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "docs/",
     "lib/"
