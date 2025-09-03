@@ -26,7 +26,7 @@
   "peerDependencies": {
     "tailwindcss": "^4.0.0"
   },
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": {
       "default": "./lib/index.js"
@@ -36,7 +36,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc --build && rsync src/utils/tailwindcss-api/worker/*.mjs lib/utils/tailwindcss-api/worker",
+    "build": "tsc --build",
     "build:diagnostics": "tsc --build --diagnostics",
     "watch": "tsc --watch",
     "tsup": "tsup ./src/index.ts --outDir lib/",

@@ -1,20 +1,11 @@
 import { Linter } from "@typescript-eslint/utils/ts-eslint";
 
-import {
-  classnamesOrder,
-  RULE_NAME as CLASSNAMES_ORDER,
-} from "./classnames-order";
-import {
-  noCustomClassname,
-  RULE_NAME as NO_CUSTOM_CLASSNAME,
-} from "./no-custom-classname";
+import { myRule, RULE_NAME as MY_RULE } from "./my-rule.js";
 
 export const rules: Linter.PluginRules = {
-  [CLASSNAMES_ORDER]: classnamesOrder,
-  [NO_CUSTOM_CLASSNAME]: noCustomClassname,
+  [MY_RULE]: myRule,
 };
 
 export const recommendedRulesConfig: Linter.RulesRecord = {
-  [CLASSNAMES_ORDER]: "error",
-  [NO_CUSTOM_CLASSNAME]: "warn",
+  [MY_RULE]: "error",
 };

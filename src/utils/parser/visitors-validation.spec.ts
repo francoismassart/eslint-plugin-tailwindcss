@@ -7,7 +7,7 @@ import {
   _htmlAttribute,
   _jsxAttribute,
   _vAttribute,
-} from "./test-helpers";
+} from "./test-helpers.js";
 import {
   isLiteralAttributeValue,
   isValidCallExpression,
@@ -15,7 +15,7 @@ import {
   isValidJSXAttribute,
   isValidTextAttribute,
   isValidVAttribute,
-} from "./visitors-validation";
+} from "./visitors-validation.js";
 
 const defaultSettings = parsePluginSettings({});
 const customAttributeSettings = parsePluginSettings({

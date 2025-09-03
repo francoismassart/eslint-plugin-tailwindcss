@@ -7,8 +7,8 @@ import {
   getTagNameFromTaggedTemplateExpression,
   getTemplateElementAffixes,
   getVAttributeName,
-} from "./node";
-import { _jsxAttribute, _vAttribute } from "./test-helpers";
+} from "./node.js";
+import { _jsxAttribute, _vAttribute } from "./test-helpers.js";
 
 test("getClassnamesFromValue", () => {
   expect(getClassnamesFromValue(`flex grow`)).toStrictEqual({

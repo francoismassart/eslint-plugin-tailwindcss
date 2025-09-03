@@ -4,7 +4,7 @@ import { AST as VueAST } from "vue-eslint-parser";
 import { TextAttribute } from "../../types";
 import { SupportedAttribute } from "../../types";
 import { type PluginSettings } from "../parse-plugin-settings";
-import { getJSXAttributeName, getVAttributeName } from "./node";
+import { getJSXAttributeName, getVAttributeName } from "./node.js";
 
 /**
  * Validates a `JSXAttribute` for `eslint-plugin-tailwindcss`

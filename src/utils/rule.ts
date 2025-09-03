@@ -3,8 +3,8 @@ import { RuleListener } from "@typescript-eslint/utils/ts-eslint";
 import { AST as VueAST } from "vue-eslint-parser";
 
 import { TextAttribute } from "../types";
-import { PluginSettings } from "./parse-plugin-settings";
-import { getTagNameFromTaggedTemplateExpression } from "./parser/node";
+import type { PluginSettings } from "./parse-plugin-settings";
+import { getTagNameFromTaggedTemplateExpression } from "./parser/node.js";
 import {
   isLiteralAttributeValue,
   isValidCallExpression,
@@ -12,7 +12,7 @@ import {
   isValidJSXAttribute,
   isValidTextAttribute,
   isValidVAttribute,
-} from "./parser/visitors-validation";
+} from "./parser/visitors-validation.js";
 
 export type AtomicNode =
   | TSESTree.Literal

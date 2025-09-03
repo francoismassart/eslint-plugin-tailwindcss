@@ -4,8 +4,8 @@
     "declarationMap": false,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
@@ -19,5 +19,5 @@
     "target": "es2015"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/_sandbox/*"]
+  "exclude": ["src/**/*.spec.ts", "src/_sandbox/*"]
 }
