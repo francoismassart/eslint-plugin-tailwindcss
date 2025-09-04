@@ -1,9 +1,7 @@
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 
 import type { PluginSharedSettings } from "../types";
-import urlCreator from "../url-creator.js";
-
-export { ESLintUtils } from "@typescript-eslint/utils";
+import urlCreator from "../url-creator";
 
 export const RULE_NAME = "my-rule";
 
@@ -15,7 +13,7 @@ type Options = [
   {
     someBool: boolean;
     someEnum: string;
-  }
+  },
 ];
 
 // The Rule creator returns a function that is used to create a well-typed ESLint rule
@@ -30,9 +28,9 @@ export const myRule = createRule<Options, MessageIds>({
     },
     hasSuggestions: true,
     messages: {
-      "issue:var": "Prefer using `let` or `const`",
-      "fix:let": "Replace this `var` declaration with `let`",
-      "fix:const": "Replace this `var` declaration with `const`",
+      "issue:var": "Prefer using `let` or `const` ❌",
+      "fix:let": "Replace this `var` declaration with `let` 🔧",
+      "fix:const": "Replace this `var` declaration with `const` 🔧",
     },
     schema: [
       {

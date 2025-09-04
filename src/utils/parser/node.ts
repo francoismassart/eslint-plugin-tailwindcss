@@ -2,7 +2,7 @@ import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
 import { AST as VueAST } from "vue-eslint-parser";
 
 import { AtomicNode } from "../rule";
-import { GenericRuleContext } from "./visitors.js";
+import { GenericRuleContext } from "./visitors";
 
 // TODO Investigate the differences between VueAST types and its runtime values
 

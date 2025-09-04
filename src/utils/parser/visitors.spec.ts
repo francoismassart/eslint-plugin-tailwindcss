@@ -1,6 +1,6 @@
 import { expect, test, vi } from "vitest";
 
-import { defineVisitors, GenericRuleContext } from "./visitors.js";
+import { defineVisitors, GenericRuleContext } from "./visitors";
 
 const modernContext: GenericRuleContext = {
   sourceCode: {

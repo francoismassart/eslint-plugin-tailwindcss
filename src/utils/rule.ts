@@ -4,7 +4,7 @@ import { AST as VueAST } from "vue-eslint-parser";
 
 import { TextAttribute } from "../types";
 import type { PluginSettings } from "./parse-plugin-settings";
-import { getTagNameFromTaggedTemplateExpression } from "./parser/node.js";
+import { getTagNameFromTaggedTemplateExpression } from "./parser/node";
 import {
   isLiteralAttributeValue,
   isValidCallExpression,
@@ -12,7 +12,7 @@ import {
   isValidJSXAttribute,
   isValidTextAttribute,
   isValidVAttribute,
-} from "./parser/visitors-validation.js";
+} from "./parser/visitors-validation";
 
 export type AtomicNode =
   | TSESTree.Literal
@@ -26,7 +26,7 @@ const getLiteralsFromNode = <TRuleContext>(
   context: TRuleContext,
   node: TSESTree.Node | VueAST.VAttribute,
   rootNode: TSESTree.Node | VueAST.VAttribute,
-  depth: number = 0
+  depth: number = 0,
 ): Array<AtomicNode> => {
   //   const indent = "  ".repeat(depth);
   //   console.log(indent, "getLiteralsFromNode", node.type);
@@ -44,8 +44,8 @@ const getLiteralsFromNode = <TRuleContext>(
             context,
             element,
             rootNode,
-            depth + 1
-          )
+            depth + 1,
+          ),
         );
       }
       break;
@@ -64,8 +64,8 @@ const getLiteralsFromNode = <TRuleContext>(
             context,
             argument,
             rootNode,
-            depth + 1
-          )
+            depth + 1,
+          ),
         );
       }
       break;
@@ -77,15 +77,15 @@ const getLiteralsFromNode = <TRuleContext>(
           context,
           node.consequent,
           rootNode,
-          depth + 1
+          depth + 1,
         ),
         ...getLiteralsFromNode(
           settings,
           context,
           node.alternate,
           rootNode,
-          depth + 1
-        )
+          depth + 1,
+        ),
       );
       break;
     }
@@ -103,8 +103,8 @@ const getLiteralsFromNode = <TRuleContext>(
           context,
           node.value,
           rootNode,
-          depth + 1
-        )
+          depth + 1,
+        ),
       );
       break;
     }
@@ -115,8 +115,8 @@ const getLiteralsFromNode = <TRuleContext>(
           context,
           node.expression,
           rootNode,
-          depth + 1
-        )
+          depth + 1,
+        ),
       );
       break;
     }
@@ -131,8 +131,8 @@ const getLiteralsFromNode = <TRuleContext>(
           context,
           node.right,
           rootNode,
-          depth + 1
-        )
+          depth + 1,
+        ),
       );
       break;
     }
@@ -163,8 +163,8 @@ const getLiteralsFromNode = <TRuleContext>(
             context,
             propertyValue,
             rootNode,
-            depth + 1
-          )
+            depth + 1,
+          ),
         );
       }
       break;
@@ -176,8 +176,8 @@ const getLiteralsFromNode = <TRuleContext>(
           context,
           node.quasi,
           rootNode,
-          depth + 1
-        )
+          depth + 1,
+        ),
       );
       break;
     }
@@ -193,13 +193,13 @@ const getLiteralsFromNode = <TRuleContext>(
             context,
             expression,
             rootNode,
-            depth + 1
-          )
+            depth + 1,
+          ),
         );
       }
       for (const quasi of node.quasis) {
         literals.push(
-          ...getLiteralsFromNode(settings, context, quasi, rootNode, depth + 1)
+          ...getLiteralsFromNode(settings, context, quasi, rootNode, depth + 1),
         );
       }
       break;
@@ -220,13 +220,12 @@ const getLiteralsFromNode = <TRuleContext>(
 export const createScriptVisitors = <TRuleContext, TOptions>(
   context: TRuleContext,
   settings: PluginSettings,
-  // @ts-expect-error 'options' is declared but its value is never read.ts(6133)
   options: TOptions,
   lintLiterals: (
     context: TRuleContext,
     settings: PluginSettings,
-    literals: Array<AtomicNode>
-  ) => void
+    literals: Array<AtomicNode>,
+  ) => void,
 ): RuleListener => {
   return {
     /**
@@ -250,7 +249,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
         context,
         callExpressionNode,
         callExpressionNode,
-        0
+        0,
       );
       lintLiterals(context, settings, literals);
     },
@@ -268,7 +267,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
         context,
         jsxAttributeNode,
         jsxAttributeNode,
-        0
+        0,
       );
       lintLiterals(context, settings, literals);
     },
@@ -283,7 +282,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
       const taggedTemplateExpressionNode =
         node as TSESTree.TaggedTemplateExpression;
       const tagName = getTagNameFromTaggedTemplateExpression(
-        taggedTemplateExpressionNode
+        taggedTemplateExpressionNode,
       );
       if (!settings.functions.includes(tagName)) return;
 
@@ -292,7 +291,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
         context,
         taggedTemplateExpressionNode,
         taggedTemplateExpressionNode,
-        0
+        0,
       );
       lintLiterals(context, settings, literals);
     },
@@ -323,13 +322,12 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
 export const createTemplateVisitors = <TRuleContext, TOptions>(
   context: TRuleContext,
   settings: PluginSettings,
-  // @ts-expect-error 'options' is declared but its value is never read.ts(6133)
   options: TOptions,
   lintLiterals: (
     context: TRuleContext,
     settings: PluginSettings,
-    literals: Array<AtomicNode>
-  ) => void
+    literals: Array<AtomicNode>,
+  ) => void,
 ): RuleListener => {
   return {
     /**
@@ -368,7 +366,7 @@ export const createTemplateVisitors = <TRuleContext, TOptions>(
         case "CallExpression":
         case "Literal": {
           literals.push(
-            ...getLiteralsFromNode(settings, context, current, node, 0)
+            ...getLiteralsFromNode(settings, context, current, node, 0),
           );
           break;
         }
@@ -383,7 +381,7 @@ export const createTemplateVisitors = <TRuleContext, TOptions>(
               if (property.type === "Property") {
                 const key = property.key as TSESTree.Node;
                 literals.push(
-                  ...getLiteralsFromNode(settings, context, key, node, 0)
+                  ...getLiteralsFromNode(settings, context, key, node, 0),
                 );
               }
             }

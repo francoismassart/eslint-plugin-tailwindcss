@@ -1,22 +1,15 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "declarationMap": false,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "module": "preserve",
-    "moduleResolution": "bundler",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "outDir": "lib/",
     "resolveJsonModule": true,
-    "rootDir": "src/",
     "skipLibCheck": true,
+    "strictNullChecks": true,
     "strict": true,
     "sourceMap": false,
-    "target": "es2015"
+    "target": "ESNext"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/_sandbox/*"]

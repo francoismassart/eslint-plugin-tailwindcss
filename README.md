@@ -5,6 +5,13 @@
 ## Rules
 
 <!-- begin auto-generated rules list -->
+
+💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
+
+| Name                             | Description            | 💡  |
+| :------------------------------- | :--------------------- | :-- |
+| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | 💡  |
+
 <!-- end auto-generated rules list -->
 
 ## Settings

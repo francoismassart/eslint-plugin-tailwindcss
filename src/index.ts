@@ -1,14 +1,7 @@
-import * as parserBase from "@typescript-eslint/parser";
-import { TSESLint } from "@typescript-eslint/utils";
-import { FlatConfig, Linter } from "@typescript-eslint/utils/ts-eslint";
+import type { FlatConfig, Linter } from "@typescript-eslint/utils/ts-eslint";
 
 import packageJson from '../package.json' with { type: 'json' };
-import { recommendedRulesConfig, rules } from "./rules/index.js";
-
-export const parser: TSESLint.FlatConfig.Parser = {
-  meta: parserBase.meta,
-  parseForESLint: parserBase.parseForESLint,
-};
+import { recommendedRulesConfig, rules } from "./rules/index";
 
 /**
  * TODO: Add configs (recommended, etc.)
