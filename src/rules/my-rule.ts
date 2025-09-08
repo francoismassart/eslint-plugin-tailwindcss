@@ -23,7 +23,7 @@ type Options = [
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const defaultOptions = { someBool: true, someEnum: "always" };
+const defaultOptions: Options[0] = { someBool: true, someEnum: "always" };
 
 export const myRule = createRule<Options, MessageIds>({
   name: RULE_NAME,
