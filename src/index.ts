@@ -1,27 +1,38 @@
 import type { FlatConfig, Linter } from "@typescript-eslint/utils/ts-eslint";
 
-import packageJson from '../package.json' with { type: 'json' };
-import { recommendedRulesConfig, rules } from "./rules/index";
+import packageJson from "../package.json" with { type: "json" };
+import { myRule, RULE_NAME as MY_RULE } from "./rules/my-rule";
 
-/**
- * TODO: Add configs (recommended, etc.)
- * @see https://github.com/typescript-eslint/examples/blob/main/packages/eslint-plugin-example-typed-linting/src/index.ts
- * @see eslint-plugin-vitest/src/index.ts
- */
+const createConfig = <R extends Linter.RulesRecord>(rules: R) => {
+  const result = {} as {
+    [K in keyof R as `tailwindcss/${Extract<K, string>}`]: R[K];
+  };
+  for (const ruleName of Object.keys(rules)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (result as any)[`tailwindcss/${ruleName}`] = rules[ruleName];
+  }
+  return result;
+};
 
-// Plugin not fully initialized yet.
-// See https://eslint.org/docs/latest/extend/plugins#configs-in-plugins
 const plugin = {
   meta: {
     name: packageJson.name,
     version: packageJson.version,
   },
-  // `configs`, assigned later
-  configs: {},
-  rules: rules,
-} satisfies Linter.Plugin;
+  configs: {
+    get recommended() {
+      return sharedConfigs.recommended;
+    },
+  },
+  rules: {
+    [MY_RULE]: myRule,
+  },
+} satisfies FlatConfig.Plugin;
 
-// Config base for all configurations
+const recommended = {
+  [MY_RULE]: "warn",
+} as const;
+
 const configBase: FlatConfig.Config = {
   name: "tailwindcss/base",
   plugins: {
@@ -42,16 +53,12 @@ const configBase: FlatConfig.Config = {
   },
 };
 
-// Prepare configs here so we can reference `plugin`
 const sharedConfigs: FlatConfig.SharedConfigs = {
   recommended: {
     ...configBase,
     name: "tailwindcss/recommended",
-    rules: recommendedRulesConfig,
+    rules: createConfig(recommended),
   },
 };
-
-// Inject shared configs into the plugin
-Object.assign(plugin.configs, sharedConfigs);
 
 export default plugin;
