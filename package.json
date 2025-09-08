@@ -67,6 +67,7 @@
     "@typescript-eslint/rule-tester": "^8.37.0",
     "eslint": "^9.31.0",
     "eslint-doc-generator": "^2.2.2",
+    "eslint-plugin-eslint-plugin": "^7.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unicorn": "^56.0.1",

@@ -1,3 +1,6 @@
+/* eslint-disable eslint-plugin/no-meta-schema-default */
+// Meta schema `default` is read by the `eslint-doc-generator`
+
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 
 import type { PluginSharedSettings } from "../types";
@@ -19,6 +22,8 @@ type Options = [
 // The Rule creator returns a function that is used to create a well-typed ESLint rule
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
+
+const defaultOptions = { someBool: true, someEnum: "always" };
 
 export const myRule = createRule<Options, MessageIds>({
   name: RULE_NAME,
@@ -51,6 +56,7 @@ export const myRule = createRule<Options, MessageIds>({
         additionalProperties: false,
       },
     ],
+    defaultOptions: [defaultOptions],
     type: "suggestion",
   },
   /**
@@ -60,7 +66,7 @@ export const myRule = createRule<Options, MessageIds>({
    * - If some configuration is provided as the second argument, it is ignored, not merged
    * - In other words, the `defaultOptions` is only used when the rule is used without configuration
    */
-  defaultOptions: [{ someBool: false, someEnum: "always" }],
+  defaultOptions: [defaultOptions],
   create: (context, options) => {
     return {
       VariableDeclaration: (node) => {

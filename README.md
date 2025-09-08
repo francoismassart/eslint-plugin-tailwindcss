@@ -6,11 +6,13 @@
 
 <!-- begin auto-generated rules list -->
 
+⚠️ Configurations set to warn in.\
+✅ Set in the `recommended` configuration.\
 💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                             | Description            | 💡  |
-| :------------------------------- | :--------------------- | :-- |
-| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | 💡  |
+| Name                             | Description            | ⚠️  | 💡  |
+| :------------------------------- | :--------------------- | :-- | :-- |
+| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | ✅  | 💡  |
 
 <!-- end auto-generated rules list -->
 

@@ -2,6 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import pluginJs from "@eslint/js";
+import eslintPlugin from "eslint-plugin-eslint-plugin";
 import importPlugin from "eslint-plugin-import";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
@@ -22,6 +23,7 @@ export default [
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
+  eslintPlugin.configs.recommended,
   {
     plugins: {
       import: importPlugin,
