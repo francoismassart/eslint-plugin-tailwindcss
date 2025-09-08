@@ -41,7 +41,7 @@ You should specify settings that will be shared across all the plugin rules. ([M
 
 The default settings are exported via the [`DEFAULT_SETTINGS`](src/utils/parse-plugin-settings.ts).
 
-## Made fro Tailwind CSS v4
+## Made for Tailwind CSS v4
 
 Version 4 of the `eslint-plugin-tailwindcss` is:
 
