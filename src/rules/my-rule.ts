@@ -1,6 +1,3 @@
-/* eslint-disable eslint-plugin/no-meta-schema-default */
-// Meta schema `default` is read by the `eslint-doc-generator`
-
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 
 import type { PluginSharedSettings } from "../types";

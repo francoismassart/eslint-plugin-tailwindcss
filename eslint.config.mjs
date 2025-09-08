@@ -25,6 +25,12 @@ export default [
   ...tseslint.configs.recommended,
   eslintPlugin.configs.recommended,
   {
+    rules: {
+      // Meta schema `default` is read by the `eslint-doc-generator`
+      "eslint-plugin/no-meta-schema-default": "off",
+    },
+  },
+  {
     plugins: {
       import: importPlugin,
       "simple-import-sort": simpleImportSort,
