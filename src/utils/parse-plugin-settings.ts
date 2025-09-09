@@ -87,7 +87,7 @@ export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
  * });
  */
 export function parsePluginSettings(
-  settings: SharedConfigurationSettings
+  settings: SharedConfigurationSettings,
 ): PluginSettings {
   const tailwindcssSettings = (
     typeof settings.tailwindcss !== "object" || settings.tailwindcss === null
