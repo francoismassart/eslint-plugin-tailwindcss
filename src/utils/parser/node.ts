@@ -281,7 +281,6 @@ export const generateLocForClassname = (
   // @ts-expect-error unkown loc property
   const nodeLoc: TSESTree.SourceLocation = node.loc;
   const nodeLocStart: TSESTree.Position = nodeLoc.start;
-  const nodeLocEnd: TSESTree.Position = nodeLoc.end;
 
   const index = getIndexOfNeedle(originalClassNamesValue, needle);
   if (index === -1) {
