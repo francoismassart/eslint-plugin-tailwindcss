@@ -11,8 +11,6 @@
  * ✅ We still check the syntax with TypeScript, but it is not a TypeScript file.
  */
 
-// @ts-check
-
 import { runAsWorker } from "synckit";
 import { TailwindUtils } from "tailwind-api-utils";
 
@@ -22,19 +20,15 @@ runAsWorker(
      * @type {string} The path to the Tailwind CSS config file
      */
     cssConfigPath,
-    /**
-     * @type {string} Class name to validate
-     */
-    className
   ) => {
     const utils = new TailwindUtils();
     await utils.loadConfigV4(cssConfigPath);
     if (!utils.context) {
       throw new Error(
-        `Failed to load the Tailwind CSS theme using: "${cssConfigPath}"`
+        `Failed to load the Tailwind CSS theme using: "${cssConfigPath}"`,
       );
     }
-    const sorted = await utils.isValidClassName(className);
-    return sorted;
-  }
+    // @ts-expect-error Property 'theme' does not exist on type 'DesignSystem'.ts(2339)
+    return utils.context?.theme;
+  },
 );
