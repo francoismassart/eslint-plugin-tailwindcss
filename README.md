@@ -8,11 +8,14 @@
 
 ⚠️ Configurations set to warn in.\
 ✅ Set in the `recommended` configuration.\
+🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
 💡 Manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
-| Name                             | Description            | ⚠️  | 💡  |
-| :------------------------------- | :--------------------- | :-- | :-- |
-| [my-rule](docs/rules/my-rule.md) | An example ESLint rule | ✅  | 💡  |
+| Name                                                     | Description                                                                         | ⚠️  | 🔧  | 💡  |
+| :------------------------------------------------------- | :---------------------------------------------------------------------------------- | :-- | :-- | :-- |
+| [classnames-order](docs/rules/classnames-order.md)       | Enforces a consistent order for the Tailwind CSS classnames, based on the compiler. | ✅  | 🔧  |     |
+| [my-rule](docs/rules/my-rule.md)                         | An example ESLint rule                                                              | ✅  |     | 💡  |
+| [no-custom-classname](docs/rules/no-custom-classname.md) | Detects classnames which do not belong to Tailwind CSS.                             | ✅  |     | 💡  |
 
 <!-- end auto-generated rules list -->
 

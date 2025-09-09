@@ -1,0 +1,28 @@
+import { createRequire } from "node:module";
+
+import { createSyncFn } from "synckit";
+
+import { type Theme } from "./types";
+
+const require = createRequire(import.meta.url);
+
+export const loadThemeWorker: (cssConfigPath: string) => Theme = createSyncFn(
+  require.resolve("./worker/load-theme.mjs"),
+);
+// import.meta.resolve("./worker/load-theme.mjs") // async!
+// import.meta.url + "../worker/load-theme.mjs", // Error: Cannot find module '/Users/fma/eslint-plugin-tailwindcss/lib/index.mjs../worker/is-valid-class-name.mjs
+// require.resolve("./worker/load-theme.mjs"), // ES error
+
+export const getSortedClassNamesWorker: (
+  cssConfigPath: string,
+  unorderedClassNames: Array<string>,
+) => Array<string> = createSyncFn(
+  require.resolve("./worker/get-sorted-class-names.mjs"),
+);
+
+export const isValidClassNameWorker: (
+  cssConfigPath: string,
+  className: string,
+) => boolean = createSyncFn(
+  require.resolve("./worker/is-valid-class-name.mjs"),
+);
