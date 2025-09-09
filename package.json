@@ -46,7 +46,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "unbuild --config unbuild.config.ts",
+    "build": "unbuild --config unbuild.config.ts  && rsync src/utils/tailwindcss-api/worker/*.mjs lib/worker",
     "xdocs:init": "pnpm build && eslint-doc-generator --init-rule-docs",
     "docs:init": "eslint-doc-generator --init-rule-docs",
     "xdocs:update": "pnpm build && eslint-doc-generator",

@@ -105,7 +105,7 @@ export const getTemplateElementAffixes = (haystack: string, needle: string) => {
  * getTagNameFromTaggedTemplateExpression(node); // 'tw'
  */
 export const getTagNameFromTaggedTemplateExpression = (
-  node: TSESTree.TaggedTemplateExpression
+  node: TSESTree.TaggedTemplateExpression,
 ) => {
   switch (node.tag.type) {
     case "CallExpression": {
@@ -178,7 +178,7 @@ export const getVAttributeName = (node: VueAST.VAttribute): string => {
  */
 export const dissectAtomicNode = (
   node: AtomicNode,
-  context: GenericRuleContext
+  context: GenericRuleContext,
 ) => {
   let originalClassNamesValue = "";
   let start = 0;
@@ -204,11 +204,11 @@ export const dissectAtomicNode = (
       // but `value.raw` does not include them, so there is a mismatch.
       // start/end does not include the backticks, therefore it matches value.raw.
       const rawCode = context.sourceCode.getText(
-        node as unknown as TSESTree.Node
+        node as unknown as TSESTree.Node,
       );
       [prefix, suffix] = getTemplateElementAffixes(
         rawCode,
-        originalClassNamesValue
+        originalClassNamesValue,
       );
       break;
     }

@@ -11,6 +11,6 @@
     "sourceMap": false,
     "target": "ESNext"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/utils/tailwindcss-api/worker/load-theme.mjs", "src/utils/tailwindcss-api/worker/is-valid-class-name.mjs", "src/utils/tailwindcss-api/worker/get-sorted-class-names.mjs"],
   "exclude": ["src/**/*.spec.ts", "src/_sandbox/*"]
 }

@@ -39,7 +39,7 @@ test("getClassnamesFromValue", () => {
 
 test("getTemplateElementAffixes", () => {
   expect(
-    getTemplateElementAffixes("`relative grid`", "relative grid")
+    getTemplateElementAffixes("`relative grid`", "relative grid"),
   ).toStrictEqual(["`", "`"]);
   expect(getTemplateElementAffixes("`absolute ${", "absolute ")).toStrictEqual([
     "`",
@@ -56,11 +56,11 @@ test("getTagNameFromTaggedTemplateExpression", () => {
       TSESTree.AST_NODE_TYPES.TaggedTemplateExpression
   ) {
     expect(
-      getTagNameFromTaggedTemplateExpression(attribute.value.expression)
+      getTagNameFromTaggedTemplateExpression(attribute.value.expression),
     ).toStrictEqual("tw");
   } else {
     throw new Error(
-      "Invalid attribute value for `getTagNameFromTaggedTemplateExpression`"
+      "Invalid attribute value for `getTagNameFromTaggedTemplateExpression`",
     );
   }
 });

@@ -45,12 +45,12 @@ export const createRule = RuleCreator(urlCreator);
 const detectCustomClassnames = (
   context: RuleContext,
   settings: PluginSettings,
-  literals: Array<AtomicNode>
+  literals: Array<AtomicNode>,
 ) => {
   for (const node of literals) {
     const { originalClassNamesValue } = dissectAtomicNode(
       node,
-      context as unknown as GenericRuleContext
+      context as unknown as GenericRuleContext,
     );
     // Process the extracted classnames and report
     const { classNames } = getClassnamesFromValue(originalClassNamesValue);
@@ -78,7 +78,7 @@ export const noCustomClassname = createRule<Options, MessageIds>({
     docs: {
       description: "Detects classnames which do not belong to Tailwind CSS.",
     },
-    hasSuggestions: true,
+    hasSuggestions: false,
     messages: {
       "issue:unknown-classname": `Classname '{{classname}}' is not a Tailwind CSS class!`,
     },
@@ -88,6 +88,8 @@ export const noCustomClassname = createRule<Options, MessageIds>({
         type: "object",
         properties: {
           whitelist: {
+            description:
+              "List of classnames to ignore (whitelist). Exact match or regular expression.",
             type: "array",
             items: { type: "string", minLength: 0 },
             uniqueItems: true,
@@ -96,6 +98,7 @@ export const noCustomClassname = createRule<Options, MessageIds>({
         additionalProperties: false,
       },
     ],
+    defaultOptions: [{}],
     type: "suggestion",
   },
   /**
@@ -119,10 +122,10 @@ export const noCustomClassname = createRule<Options, MessageIds>({
         context,
         settings,
         options,
-        detectCustomClassnames
+        detectCustomClassnames,
       ),
       // Script visitor is used within both JSX and Vue SFC files (inside <script> section).
-      createScriptVisitors(context, settings, options, detectCustomClassnames)
+      createScriptVisitors(context, settings, options, detectCustomClassnames),
     );
   },
 });

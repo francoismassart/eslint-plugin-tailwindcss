@@ -7,7 +7,7 @@ test(`load theme from "tiny-prefixed.css"`, () => {
   const theme = loadThemeWorker(path);
   expect(theme.prefix).toBe("tw");
   expect(theme.keyframes.size).toBe(
-    ["spin", "ping", "pulse", "bounce"].length * 2
+    ["spin", "ping", "pulse", "bounce"].length * 2,
   );
   expect(theme.values.size).toBe(3);
 });
