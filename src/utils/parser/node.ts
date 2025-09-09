@@ -238,3 +238,97 @@ export const dissectAtomicNode = (
     suffix,
   };
 };
+
+/**
+ * Used to safely find the index of a classname in a string of classnames.
+ * Ensures that the found classname is not a substring of another classname.
+ *
+ * @example
+ * getIndexOfNeedle("flex-col md:flex", "flex"); // -1
+ * getIndexOfNeedle("flex-col flex", "flex"); // 9
+ */
+export const getIndexOfNeedle = (haystack: string, needle: string): number => {
+  const validChars = new Set([undefined, " ", "\n", "\t", "\r", "\f"]);
+  let position = 0;
+
+  while (position <= haystack.length - needle.length) {
+    const index = haystack.indexOf(needle, position);
+    if (index === -1) return -1;
+
+    const previousCharacter = index > 0 ? haystack[index - 1] : undefined;
+    const nextChar =
+      index + needle.length < haystack.length
+        ? haystack[index + needle.length]
+        : undefined;
+
+    if (validChars.has(previousCharacter) && validChars.has(nextChar)) {
+      return index;
+    }
+    position = index + needle.length;
+  }
+
+  return -1;
+};
+
+export const generateLocForClassname = (
+  node: AtomicNode,
+  needle: string,
+  originalClassNamesValue: string,
+  context: GenericRuleContext,
+) => {
+  const isTemplateElement =
+    node.type === TSESTree.AST_NODE_TYPES.TemplateElement;
+  // @ts-expect-error unkown loc property
+  const nodeLoc: TSESTree.SourceLocation = node.loc;
+  const nodeLocStart: TSESTree.Position = nodeLoc.start;
+  const nodeLocEnd: TSESTree.Position = nodeLoc.end;
+
+  const index = getIndexOfNeedle(originalClassNamesValue, needle);
+  if (index === -1) {
+    return nodeLoc;
+  }
+  const needleLocStart = context.sourceCode.getLocFromIndex(index);
+  const needleLocEnd = context.sourceCode.getLocFromIndex(
+    index + needle.length,
+  );
+  // TemplateElement needs special handling
+  if (isTemplateElement) {
+    const sliceEnd = Math.max(0, index);
+    const prefix = originalClassNamesValue.slice(0, sliceEnd);
+    const newLines = (prefix.match(/\n/g) || []).length;
+    needleLocStart.line = newLines;
+    needleLocEnd.line = newLines;
+    const lastNewlineIndex = prefix.lastIndexOf("\n");
+    const charsSinceLastNewline =
+      lastNewlineIndex === -1
+        ? needleLocStart.column
+        : prefix.length - lastNewlineIndex - 1;
+    needleLocStart.column = charsSinceLastNewline;
+    needleLocEnd.column = needleLocStart.column + needle.length;
+  }
+  // Lines
+  const lineOffset =
+    node.type === TSESTree.AST_NODE_TYPES.TemplateElement ? 0 : 1;
+  const patchedLineStart = nodeLocStart.line + needleLocStart.line - lineOffset; // -1 because locStart.line is 1-based
+  const patchedLineEnd = patchedLineStart;
+  // Columns
+  let patchedColumnStart = needleLocStart.column;
+  if (
+    (isTemplateElement && needleLocStart.line === 0) ||
+    (!isTemplateElement && needleLocStart.line === 1)
+  ) {
+    patchedColumnStart = nodeLocStart.column + needleLocStart.column + 1; // Jump the starting quote
+  }
+  const patchedColumnEnd = patchedColumnStart + needle.length;
+  const patchedLoc = {
+    start: {
+      column: patchedColumnStart,
+      line: patchedLineStart,
+    },
+    end: {
+      column: patchedColumnEnd,
+      line: patchedLineEnd,
+    },
+  };
+  return patchedLoc;
+};

@@ -3,7 +3,6 @@
  * @author François Massart
  */
 
-import { TSESTree } from "@typescript-eslint/utils";
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
@@ -14,6 +13,7 @@ import {
 } from "../utils/parse-plugin-settings";
 import {
   dissectAtomicNode,
+  generateLocForClassname,
   getClassnamesFromValue,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
@@ -56,12 +56,14 @@ const detectCustomClassnames = (
     const { classNames } = getClassnamesFromValue(originalClassNamesValue);
     for (const className of classNames) {
       if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
+        const patchedLoc = generateLocForClassname(
+          node,
+          className,
+          originalClassNamesValue,
+          context as unknown as GenericRuleContext,
+        );
         context.report({
-          node: node as TSESTree.Node,
-          // TODO see if useful
-          // context.sourceCode.getLocFromIndex(0)
-          // loc: { column: 1, line: 1 },
-          // loc: { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } },
+          loc: patchedLoc,
           messageId: "issue:unknown-classname",
           data: {
             classname: className,
