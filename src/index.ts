@@ -5,7 +5,6 @@ import {
   classnamesOrder,
   RULE_NAME as CLASSNAMES_ORDER,
 } from "./rules/classnames-order";
-import { myRule, RULE_NAME as MY_RULE } from "./rules/my-rule";
 import {
   noCustomClassname,
   RULE_NAME as NO_CUSTOM_CLASSNAME,
@@ -33,14 +32,12 @@ const plugin = {
     },
   },
   rules: {
-    [MY_RULE]: myRule,
     [CLASSNAMES_ORDER]: classnamesOrder,
     [NO_CUSTOM_CLASSNAME]: noCustomClassname,
   },
 } satisfies FlatConfig.Plugin;
 
 const recommended = {
-  [MY_RULE]: "warn",
   [CLASSNAMES_ORDER]: "warn",
   [NO_CUSTOM_CLASSNAME]: "warn",
 } as const;

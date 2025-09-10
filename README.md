@@ -14,8 +14,7 @@
 | Name                                                     | Description                                                                         | ⚠️  | 🔧  | 💡  |
 | :------------------------------------------------------- | :---------------------------------------------------------------------------------- | :-- | :-- | :-- |
 | [classnames-order](docs/rules/classnames-order.md)       | Enforces a consistent order for the Tailwind CSS classnames, based on the compiler. | ✅  | 🔧  |     |
-| [my-rule](docs/rules/my-rule.md)                         | An example ESLint rule                                                              | ✅  |     | 💡  |
-| [no-custom-classname](docs/rules/no-custom-classname.md) | Detects classnames which do not belong to Tailwind CSS.                             | ✅  |     |     |
+| [no-custom-classname](docs/rules/no-custom-classname.md) | Detects classnames which do not belong to Tailwind CSS.                             | ✅  |     | 💡  |
 
 <!-- end auto-generated rules list -->
 
