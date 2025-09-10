@@ -29,7 +29,7 @@ export { ESLintUtils } from "@typescript-eslint/utils";
 export const RULE_NAME = "classnames-order";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way
-type MessageIds = "fix:sort";
+export type MessageIds = "fix:sort";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type RuleOptions = {};

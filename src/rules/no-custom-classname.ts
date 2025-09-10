@@ -15,6 +15,7 @@ import {
   dissectAtomicNode,
   generateLocForClassname,
   getClassnamesFromValue,
+  getRange,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
 import {
@@ -29,7 +30,9 @@ export { ESLintUtils } from "@typescript-eslint/utils";
 export const RULE_NAME = "no-custom-classname";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way
-type MessageIds = "issue:unknown-classname";
+export type MessageIds =
+  | "issue:unknown-classname"
+  | "fix:unknown-classname:remove";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type RuleOptions = {};
@@ -62,12 +65,26 @@ const detectCustomClassnames = (
           originalClassNamesValue,
           context as unknown as GenericRuleContext,
         );
+        const range = getRange(node, className, originalClassNamesValue);
         context.report({
           loc: patchedLoc,
           messageId: "issue:unknown-classname",
           data: {
             classname: className,
           },
+          suggest:
+            range[0] && range[1]
+              ? [
+                  {
+                    messageId: "fix:unknown-classname:remove",
+                    data: {
+                      classname: className,
+                    },
+                    // TODO enhance the fix to remove also the extra space (head or tail) if any
+                    fix: (fixer) => fixer.replaceTextRange(range, ""),
+                  },
+                ]
+              : [],
         });
       }
     }
@@ -80,9 +97,11 @@ export const noCustomClassname = createRule<Options, MessageIds>({
     docs: {
       description: "Detects classnames which do not belong to Tailwind CSS.",
     },
-    hasSuggestions: false,
+    hasSuggestions: true,
     messages: {
       "issue:unknown-classname": `Classname '{{classname}}' is not a Tailwind CSS class!`,
+      "fix:unknown-classname:remove":
+        "Remove unknown classname '{{classname}}'",
     },
     // Schema is also parsed by `eslint-doc-generator`
     schema: [
@@ -114,8 +133,6 @@ export const noCustomClassname = createRule<Options, MessageIds>({
   create: (context, options) => {
     // Merged settings
     const settings = parsePluginSettings(context.settings);
-
-    console.log(options);
 
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,

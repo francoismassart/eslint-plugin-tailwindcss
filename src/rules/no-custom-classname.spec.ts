@@ -5,12 +5,27 @@ import {
   generalSettings,
   withAngularParser,
 } from "../utils/parser/test-helpers";
-import { noCustomClassname, RULE_NAME } from "./no-custom-classname";
+import {
+  MessageIds,
+  noCustomClassname,
+  RULE_NAME,
+} from "./no-custom-classname";
 
-const error: TestCaseError<"issue:unknown-classname"> = {
-  messageId: "issue:unknown-classname",
+const suggest = (
+  classname: string,
+  output: string,
+): TestCaseError<MessageIds> => {
+  return {
+    messageId: "issue:unknown-classname",
+    suggestions: [
+      {
+        messageId: "fix:unknown-classname:remove",
+        data: { classname: classname },
+        output: output,
+      },
+    ],
+  };
 };
-const errors = [error];
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -41,9 +56,34 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
     })),
   invalid: [
     {
-      code: `<h1 class="unknown relative">basic</h1>`,
-      errors,
+      code: `<h1 class="unknown relative">head</h1>`,
+      errors: [suggest("unknown", `<h1 class=" relative">head</h1>`)],
       languageOptions: withAngularParser,
+    },
+    {
+      code: `<h1 class="relative unknown flex">body</h1>`,
+      errors: [suggest("unknown", `<h1 class="relative  flex">body</h1>`)],
+      languageOptions: withAngularParser,
+    },
+    {
+      code: `<h1 class="relative unknown">tail</h1>`,
+      errors: [suggest("unknown", `<h1 class="relative ">tail</h1>`)],
+      languageOptions: withAngularParser,
+    },
+    {
+      code: `<h1 className={"unknownreact relative"}>head</h1>`,
+      errors: [
+        suggest("unknownreact", `<h1 className={" relative"}>head</h1>`),
+      ],
+    },
+    {
+      code: "<h1 className={`unknown-template-element relative`}>head</h1>",
+      errors: [
+        suggest(
+          "unknown-template-element",
+          "<h1 className={` relative`}>head</h1>",
+        ),
+      ],
     },
   ],
 });

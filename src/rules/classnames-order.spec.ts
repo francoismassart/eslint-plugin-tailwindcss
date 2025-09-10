@@ -8,9 +8,13 @@ import {
   withTypographySettings,
   withVueParser,
 } from "../utils/parser/test-helpers";
-import { classnamesOrder, RULE_NAME } from "./classnames-order";
+import {
+  classnamesOrder,
+  type MessageIds,
+  RULE_NAME,
+} from "./classnames-order";
 
-const error: TestCaseError<"fix:sort"> = { messageId: "fix:sort" };
+const error: TestCaseError<MessageIds> = { messageId: "fix:sort" };
 const errors = [error];
 
 const ruleTester = new RuleTester({

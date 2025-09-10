@@ -4,8 +4,6 @@ import { AST as VueAST } from "vue-eslint-parser";
 import { AtomicNode } from "../rule";
 import { GenericRuleContext } from "./visitors";
 
-// TODO Investigate the differences between VueAST types and its runtime values
-
 const separatorRegEx = /([\t\n\f\r ]+)/;
 
 /**
@@ -330,4 +328,40 @@ export const generateLocForClassname = (
     },
   };
   return patchedLoc;
+};
+
+export const getRange = (
+  node: AtomicNode,
+  needle: string,
+  originalClassNamesValue: string,
+): [number, number] => {
+  // @ts-expect-error unknown loc property
+  const nodeLoc = node.loc;
+  let offset = nodeLoc.start.column;
+  switch (node.type) {
+    case "TextAttribute": {
+      // @ts-expect-error col is unknown
+      offset = node.valueSpan.start.col;
+      break;
+    }
+    case "Literal": {
+      offset = nodeLoc.start.column + 1; // Jump the starting quote
+      break;
+    }
+    case "TemplateElement": {
+      console.log(node);
+      offset = node.range[0] + 1;
+      break;
+    }
+    default: {
+      console.info("");
+      console.info("Unknown node type:", node.type);
+      console.info("");
+      return [0, 0];
+      break;
+    }
+  }
+  const index = getIndexOfNeedle(originalClassNamesValue, needle);
+  if (index === -1) return [0, 0];
+  return [offset + index, offset + index + needle.length];
 };
