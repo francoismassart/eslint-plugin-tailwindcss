@@ -47,11 +47,12 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
   valid:
     // Angular / Native HTML + static text
     [
-      `<h1 class="flex">attributeVisitor with TextAttribute (single class gets skipped)</h1>`,
+      `<h1 class="whitelisted flex">attributeVisitor with TextAttribute (single class gets skipped)</h1>`,
       `<h1 class="  relative ">extra spaces</h1>`,
       `<h1 class=" relative " className=' flex'>Single + double quotes</h1>`,
     ].map((testedNgCode) => ({
       code: testedNgCode,
+      options: [{ whitelist: ["whitelisted"] }],
       languageOptions: withAngularParser,
     })),
   invalid: [

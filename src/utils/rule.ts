@@ -224,9 +224,11 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
   lintLiterals: (
     context: TRuleContext,
     settings: PluginSettings,
+    options: TOptions,
     literals: Array<AtomicNode>,
   ) => void,
 ): RuleListener => {
+  console.log(options);
   return {
     /**
      * In JSX + inside <script> section of Vue SFC…
@@ -251,7 +253,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
         callExpressionNode,
         0,
       );
-      lintLiterals(context, settings, literals);
+      lintLiterals(context, settings, options, literals);
     },
 
     /**
@@ -269,7 +271,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
         jsxAttributeNode,
         0,
       );
-      lintLiterals(context, settings, literals);
+      lintLiterals(context, settings, options, literals);
     },
 
     /**
@@ -293,7 +295,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
         taggedTemplateExpressionNode,
         0,
       );
-      lintLiterals(context, settings, literals);
+      lintLiterals(context, settings, options, literals);
     },
 
     /**
@@ -305,7 +307,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
       const textAttributeNode = node as unknown as TextAttribute;
       if (!isValidTextAttribute(textAttributeNode, settings)) return;
       const literals = [textAttributeNode];
-      lintLiterals(context, settings, literals);
+      lintLiterals(context, settings, options, literals);
     },
   };
 };
@@ -326,6 +328,7 @@ export const createTemplateVisitors = <TRuleContext, TOptions>(
   lintLiterals: (
     context: TRuleContext,
     settings: PluginSettings,
+    options: TOptions,
     literals: Array<AtomicNode>,
   ) => void,
 ): RuleListener => {
@@ -340,7 +343,7 @@ export const createTemplateVisitors = <TRuleContext, TOptions>(
     VAttribute(node: VueAST.VAttribute) {
       if (!isValidVAttribute(node, settings)) return;
       if (node.value?.type === "VLiteral") {
-        lintLiterals(context, settings, [node.value]);
+        lintLiterals(context, settings, options, [node.value]);
       }
       // @ts-expect-error Types have no overlap.ts(2367)
       if (node.value?.type !== "VExpressionContainer") return;
@@ -389,7 +392,7 @@ export const createTemplateVisitors = <TRuleContext, TOptions>(
           break;
         }
       }
-      lintLiterals(context, settings, literals);
+      lintLiterals(context, settings, options, literals);
     },
   };
 };

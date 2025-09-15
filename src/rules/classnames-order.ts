@@ -45,8 +45,10 @@ export const createRule = RuleCreator(urlCreator);
 const sortClassnames = (
   context: RuleContext,
   settings: PluginSettings,
+  options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
+  console.log(options);
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, context as unknown as GenericRuleContext);

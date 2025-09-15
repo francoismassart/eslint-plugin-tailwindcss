@@ -34,8 +34,9 @@ export type MessageIds =
   | "issue:unknown-classname"
   | "fix:unknown-classname:remove";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type RuleOptions = {};
+export type RuleOptions = {
+  whitelist: Array<string>;
+};
 
 type Options = [RuleOptions];
 
@@ -48,8 +49,11 @@ export const createRule = RuleCreator(urlCreator);
 const detectCustomClassnames = (
   context: RuleContext,
   settings: PluginSettings,
+  options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
+  const parsedOptions: RuleOptions = options || { whitelist: [] };
+  // console.log(parsedOptions);
   for (const node of literals) {
     const { originalClassNamesValue } = dissectAtomicNode(
       node,
@@ -58,6 +62,12 @@ const detectCustomClassnames = (
     // Process the extracted classnames and report
     const { classNames } = getClassnamesFromValue(originalClassNamesValue);
     for (const className of classNames) {
+      // TODO extract base class without modifiers
+      // TODO make a set from the whitelist array
+      // TODO allow regular expressions
+      if (parsedOptions.whitelist.includes(className)) {
+        continue;
+      }
       if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
         const patchedLoc = generateLocForClassname(
           node,
@@ -119,7 +129,7 @@ export const noCustomClassname = createRule<Options, MessageIds>({
         additionalProperties: false,
       },
     ],
-    defaultOptions: [{}],
+    defaultOptions: [{ whitelist: [] }],
     type: "suggestion",
   },
   /**
@@ -140,11 +150,16 @@ export const noCustomClassname = createRule<Options, MessageIds>({
       createTemplateVisitors(
         context,
         settings,
-        options,
+        options[0],
         detectCustomClassnames,
       ),
       // Script visitor is used within both JSX and Vue SFC files (inside <script> section).
-      createScriptVisitors(context, settings, options, detectCustomClassnames),
+      createScriptVisitors(
+        context,
+        settings,
+        options[0],
+        detectCustomClassnames,
+      ),
     );
   },
 });
