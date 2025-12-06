@@ -28,6 +28,18 @@ var config = [
   {
     config: {
       theme: {
+        colors: {
+          primary: "#8000ff",
+          foreground: {
+            positive: "#6eff00",
+          },
+          background: {
+            positive: "#6eff00",
+          },
+          action: {
+            primary: "#ff5733",
+          },
+        },
         extend: {
           spacing: {
             spacing: "99px",
@@ -70,6 +82,36 @@ ruleTester.run("arbitrary-values", rule, {
     },
     {
       code: `
+      <pre class="text-foreground-positive">text-foreground-positive</pre>
+      `,
+      options: config,
+    },
+    {
+      code: `
+      <pre class="text-background-positive">text-background-positive</pre>
+      `,
+      options: config,
+    },
+    {
+      code: `
+      <pre class="bg-action-primary">bg-action-primary</pre>
+      `,
+      options: config,
+    },
+    {
+      code: `
+      <pre class="text-primary">text-primary</pre>
+      `,
+      options: config,
+    },
+    {
+      code: `
+      <pre class="text-[#58cc00]">arbitrary hex color</pre>
+      `,
+      options: config,
+    },
+    {
+      code: `
       <pre class="![clip:rect(0,0,0,0)]">issue #317</pre>
       `,
       options: config,
@@ -103,6 +145,33 @@ ruleTester.run("arbitrary-values", rule, {
       `,
       options: config,
       errors: generateErrors(["h-[0]"], [["h-0", "h-zerodotzero", "h-none", "h-zeropx"]]),
+    },
+    {
+      code: `
+      <pre class="text-[#6eff00]">text with multiple matches</pre>
+      `,
+      options: config,
+      errors: generateErrors(["text-[#6eff00]"], [["text-foreground-positive", "text-background-positive"]]),
+    },
+    {
+      code: `
+      <pre class="bg-[#ff5733]">bg with single match</pre>
+      `,
+      output: `
+      <pre class="bg-action-primary">bg with single match</pre>
+      `,
+      options: config,
+      errors: generateErrors(["bg-[#ff5733]"], [["bg-action-primary"]]),
+    },
+    {
+      code: `
+      <pre class="text-[#8000ff]">simple flat color key</pre>
+      `,
+      output: `
+      <pre class="text-primary">simple flat color key</pre>
+      `,
+      options: config,
+      errors: generateErrors(["text-[#8000ff]"], [["text-primary"]]),
     },
     {
       code: `
