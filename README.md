@@ -34,6 +34,7 @@ Learn more about each supported rules by reading their documentation:
 - [`no-arbitrary-value`](docs/rules/no-arbitrary-value.md): forbid using arbitrary values in classnames (turned off by default)
 - [`no-custom-classname`](docs/rules/no-custom-classname.md): only allow classnames from Tailwind CSS and the values from the `whitelist` option
 - [`no-contradicting-classname`](docs/rules/no-contradicting-classname.md): e.g. avoid `p-2 p-3`, different Tailwind CSS classnames (`pt-2` & `pt-3`) but targeting the same property several times for the same variant.
+- [`no-string-interpolation`](docs/rules/no-string-interpolation.md): forbid dynamic Tailwind class construction
 - [`no-unnecessary-arbitrary-value`](docs/rules/no-unnecessary-arbitrary-value.md): e.g. replacing `m-[1.25rem]` by its configuration based classname `m-5`
 
 Using ESLint extension for Visual Studio Code, you will get these messages
@@ -175,7 +176,6 @@ Our recommendations:
 #### For `eslint.config.js`
 
 - For `js[x]`, `ts[x]`:
-
   - Install the parser: `npm i -D @eslint/js typescript-eslint`
   - Assign it to your files in `eslint.config.js`:
 
@@ -196,7 +196,6 @@ Our recommendations:
     ```
 
 - For `vue.js`:
-
   - Install the parser: `npm i -D eslint-plugin-vue`
   - Assign it to your files in `eslint.config.js`:
 
@@ -315,6 +314,5 @@ The plugin will look for each setting in this order and stops searching as soon 
 - `no-redundant-variant`: e.g. avoid `mx-5 sm:mx-5`, no need to redefine `mx` in `sm:` variant as it uses the same value (`5`)
 
 - `only-valid-arbitrary-values`:
-
   - e.g. avoid `top-[42]`, only `0` value can be unitless.
   - e.g. avoid `text-[rgba(10%,20%,30,50%)]`, can't mix `%` and `0-255`.
