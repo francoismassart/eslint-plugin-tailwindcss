@@ -41,6 +41,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     "cva",
     // @see https://www.npmjs.com/package/tailwind-variants
     "tv",
+    // @see https://www.npmjs.com/package/shadcn
+    "cn",
     // Template Literals or custom function
     "tw",
   ],

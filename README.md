@@ -32,7 +32,7 @@ You should specify settings that will be shared across all the plugin rules. ([M
       // REQUIRED, default value will not help
       cssConfigPath: dirname(fileURLToPath(import.meta.url)) + "/styles/tailwind.css",
       // Functions/tagFunctions that will be parsed by the plugin.
-      // Optional, default values: ["classnames", "clsx", "ctl", "cva", "tv", "tw"]
+      // Optional, default values: ["classnames", "clsx", "ctl", "cva", "tv", "tw", "cn"]
       functions: ["twClasses"]
     },
   }
