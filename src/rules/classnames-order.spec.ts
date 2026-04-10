@@ -108,7 +108,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
     })),
     // Vue SFC + Disabled attribute
     ...[
-      `<template><div class="flex unkown relative">No attribute (skipped)</div></template>`,
+      `<template><div class="flex unknown relative">No attribute (skipped because attributes are empty in settings)</div></template>`,
       `<template><div :class="tw('unknown relative')">No attribute but via CallExpression</div></template>`,
     ].map((testedVueCode) => ({
       code: testedVueCode,

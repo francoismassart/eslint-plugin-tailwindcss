@@ -228,7 +228,7 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
     literals: Array<AtomicNode>,
   ) => void,
 ): RuleListener => {
-  console.log(options);
+  // console.log(options);
   return {
     /**
      * In JSX + inside <script> section of Vue SFC…

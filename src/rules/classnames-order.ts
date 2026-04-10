@@ -48,7 +48,7 @@ const sortClassnames = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  console.log(options);
+  // console.log(options);
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, context as unknown as GenericRuleContext);
