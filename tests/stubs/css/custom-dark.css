@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark-theme, .dark-theme *));
+
+/* Minimalist theme used for testing */
+@theme {
+  --*: initial;
+  --color-tiny: #123456;
+  --spacing: 1px;
+  --font-body: Inter, sans-serif;
+}

@@ -6,8 +6,30 @@
 
 <!-- end auto-generated rule header -->
 
+The ordering is solely done using the [order process from the official `prettier-plugin-tailwindcss`](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted).
+
+## Rule Details
+
+Examples of **incorrect** code for this rule:
+
+```html
+<div
+  class="text-gray-700 shadow-md p-3 border-gray-300 ml-4 h-24 flex border-2"
+></div>
+```
+
+Examples of **correct** code for this rule:
+
+```html
+<div
+  class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md"
+></div>
+```
+
 ## Options
 
 <!-- begin auto-generated rule options list -->
 
 <!-- end auto-generated rule options list -->
+
+There are no specific options for this rule, yet it uses the general [settings](../../README.md#settings).

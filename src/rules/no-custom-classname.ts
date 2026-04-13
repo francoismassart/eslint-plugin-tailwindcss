@@ -11,6 +11,7 @@ import {
   parsePluginSettings,
   PluginSettings,
 } from "../utils/parse-plugin-settings";
+import { passRegexTest } from "../utils/parser/classname";
 import {
   dissectAtomicNode,
   generateLocForClassname,
@@ -52,7 +53,12 @@ const detectCustomClassnames = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
+  const internalWhitelist = ["group", "dark"];
   const parsedOptions: RuleOptions = options || { whitelist: [] };
+  const mergedWhitelist = new Set([
+    ...parsedOptions.whitelist,
+    ...internalWhitelist,
+  ]);
   // console.log(parsedOptions);
   for (const node of literals) {
     const { originalClassNamesValue } = dissectAtomicNode(
@@ -62,12 +68,19 @@ const detectCustomClassnames = (
     // Process the extracted classnames and report
     const { classNames } = getClassnamesFromValue(originalClassNamesValue);
     for (const className of classNames) {
-      // TODO extract base class without modifiers
-      // TODO make a set from the whitelist array
-      // TODO allow regular expressions
-      if (parsedOptions.whitelist.includes(className)) {
+      // Whitelist check: exact match
+      if (mergedWhitelist.has(className)) {
         continue;
       }
+      // Whitelist check: regex pattern match
+      if (
+        [...mergedWhitelist].some((pattern) =>
+          passRegexTest(pattern, className),
+        )
+      ) {
+        continue;
+      }
+      // Using Tailwind CSS API
       if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
         const patchedLoc = generateLocForClassname(
           node,

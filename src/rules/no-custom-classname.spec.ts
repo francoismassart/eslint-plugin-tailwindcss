@@ -50,9 +50,13 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `<h1 class="whitelisted flex">attributeVisitor with TextAttribute (single class gets skipped)</h1>`,
       `<h1 class="  relative ">extra spaces</h1>`,
       `<h1 class=" relative " className=' flex'>Single + double quotes</h1>`,
+      `<h1 class="group">group generates no classes</h1>`,
+      `<h1 class="dark">dark generates no classes</h1>`,
+      `<h1 class="flex md:block">modifiers</h1>`,
+      `<h1 class="js-custom">modifiers</h1>`,
     ].map((testedNgCode) => ({
       code: testedNgCode,
-      options: [{ whitelist: ["whitelisted"] }],
+      options: [{ whitelist: ["whitelisted", "js-[a-z0-9-]+"] }],
       languageOptions: withAngularParser,
     })),
   invalid: [
@@ -78,13 +82,25 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       ],
     },
     {
-      code: "<h1 className={`unknown-template-element relative`}>head</h1>",
+      code: "<h1 className={`unknown:flex relative`}>Invalid modifier</h1>",
       errors: [
         suggest(
-          "unknown-template-element",
-          "<h1 className={` relative`}>head</h1>",
+          "unknown:flex",
+          "<h1 className={` relative`}>Invalid modifier</h1>",
         ),
       ],
     },
+    // At this moment, no possibility to read the custom dark variant from the config
+    /*/
+    {
+      code: "<h1 className={`dark`}>Custom dark class in config (.dark-theme)</h1>",
+      errors: [
+        suggest(
+          "dark",
+          "<h1 className={``}>Custom dark class in config (.dark-theme)</h1>",
+        ),
+      ],
+    },
+    //*/
   ],
 });

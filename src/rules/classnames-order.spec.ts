@@ -140,6 +140,13 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
   invalid: [
     {
       /* prettier-ignore */
+      code:   `<h1 class="text-gray-700 shadow-md p-3 border-gray-300 ml-4 h-24 flex border-2">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
+      output: `<h1 class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
+      errors: errors,
+      languageOptions: withAngularParser,
+    },
+    {
+      /* prettier-ignore */
       code:   `<h1 class="relative unkown">attributeVisitor with TextAttribute</h1>`,
       output: `<h1 class="unkown relative">attributeVisitor with TextAttribute</h1>`,
       errors: errors,
