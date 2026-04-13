@@ -69,7 +69,9 @@ Simple tasks, like loading the CSS config, was impossible inside an ESLint plugi
 
 This version is far from finished, yet it is available and open for contributions.
 
-### Completed steps
+All the details are available in the [changelog](./CHANGELOG.md).
+
+### Latest completed steps
 
 - restore the automated tests running on the merge requests of the repo
 - implement and test the usage of `tailwind-api-utils`
