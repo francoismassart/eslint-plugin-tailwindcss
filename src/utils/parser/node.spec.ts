@@ -3,6 +3,7 @@ import { expect, test } from "vitest";
 
 import {
   getClassnamesFromValue,
+  getIndexOfNeedle,
   getJSXAttributeName,
   getTagNameFromTaggedTemplateExpression,
   getTemplateElementAffixes,
@@ -39,7 +40,7 @@ test("getClassnamesFromValue", () => {
 
 test("getTemplateElementAffixes", () => {
   expect(
-    getTemplateElementAffixes("`relative grid`", "relative grid")
+    getTemplateElementAffixes("`relative grid`", "relative grid"),
   ).toStrictEqual(["`", "`"]);
   expect(getTemplateElementAffixes("`absolute ${", "absolute ")).toStrictEqual([
     "`",
@@ -56,11 +57,11 @@ test("getTagNameFromTaggedTemplateExpression", () => {
       TSESTree.AST_NODE_TYPES.TaggedTemplateExpression
   ) {
     expect(
-      getTagNameFromTaggedTemplateExpression(attribute.value.expression)
+      getTagNameFromTaggedTemplateExpression(attribute.value.expression),
     ).toStrictEqual("tw");
   } else {
     throw new Error(
-      "Invalid attribute value for `getTagNameFromTaggedTemplateExpression`"
+      "Invalid attribute value for `getTagNameFromTaggedTemplateExpression`",
     );
   }
 });
@@ -92,4 +93,34 @@ test("getVAttributeName", () => {
     // @ts-expect-error Argument of type 'string | VAttribute' is not assignable to parameter of type 'VAttribute'.
     expect(getVAttributeName(input)).toBe(expected);
   });
+});
+test("getVAttributeName", () => {
+  [
+    // VIdentifier
+    [`<h1 class="m-0 flex">jsx</h1>`, "class"],
+    // VDirectiveKey
+    [`<h1 v-bind:attr="{'block': true}">jsx</h1>`, "attr"],
+    // VDirectiveKey
+    [`<h1 :short="{'block': true}">jsx</h1>`, "short"],
+  ].map(([templateCode, expected]) => {
+    const input = _vAttribute(`<template>${templateCode}</template>`);
+    // @ts-expect-error Argument of type 'string | VAttribute' is not assignable to parameter of type 'VAttribute'.
+    expect(getVAttributeName(input)).toBe(expected);
+  });
+});
+
+test("getIndexOfNeedle", () => {
+  expect(getIndexOfNeedle("flex-col md:flex", "flex")).toBe(-1);
+  expect(getIndexOfNeedle("flex-col flex", "flex")).toBe(9);
+  expect(getIndexOfNeedle("flex-col flex border", "flex")).toBe(9);
+  expect(
+    getIndexOfNeedle(
+      `
+      flex-col
+      flex
+      border
+      `,
+      "flex",
+    ),
+  ).toBe(22);
 });

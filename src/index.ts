@@ -1,39 +1,73 @@
-import * as parserBase from "@typescript-eslint/parser";
-import { TSESLint } from "@typescript-eslint/utils";
-import { Linter } from "@typescript-eslint/utils/ts-eslint";
+import type { FlatConfig, Linter } from "@typescript-eslint/utils/ts-eslint";
 
-import { rules } from "./rules";
+import packageJson from "../package.json" with { type: "json" };
+import {
+  classnamesOrder,
+  RULE_NAME as CLASSNAMES_ORDER,
+} from "./rules/classnames-order";
+import {
+  noCustomClassname,
+  RULE_NAME as NO_CUSTOM_CLASSNAME,
+} from "./rules/no-custom-classname";
 
-export const parser: TSESLint.FlatConfig.Parser = {
-  meta: parserBase.meta,
-  parseForESLint: parserBase.parseForESLint,
+const createConfig = <R extends Linter.RulesRecord>(rules: R) => {
+  const result = {} as {
+    [K in keyof R as `tailwindcss/${Extract<K, string>}`]: R[K];
+  };
+  for (const ruleName of Object.keys(rules)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (result as any)[`tailwindcss/${ruleName}`] = rules[ruleName];
+  }
+  return result;
 };
 
-const { name, version } =
-  // `import`ing here would bypass the TSConfig's `"rootDir": "src"`
-  // Also an import statement will make TSC copy the package.json to the dist folder
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("../package.json") as {
-    name: string;
-    version: string;
-  };
-
-/**
- * TODO: Add configs (recommended, etc.)
- * @see https://github.com/typescript-eslint/examples/blob/main/packages/eslint-plugin-example-typed-linting/src/index.ts
- * @see eslint-plugin-vitest/src/index.ts
- */
-
-// Plugin not fully initialized yet.
-// See https://eslint.org/docs/latest/extend/plugins#configs-in-plugins
 const plugin = {
-  // `configs`, assigned later
-  configs: {},
-  rules,
   meta: {
-    name,
-    version,
+    name: packageJson.name,
+    version: packageJson.version,
   },
-} satisfies Linter.Plugin;
+  configs: {
+    get recommended() {
+      return sharedConfigs.recommended;
+    },
+  },
+  rules: {
+    [CLASSNAMES_ORDER]: classnamesOrder,
+    [NO_CUSTOM_CLASSNAME]: noCustomClassname,
+  },
+} satisfies FlatConfig.Plugin;
+
+const recommended = {
+  [CLASSNAMES_ORDER]: "warn",
+  [NO_CUSTOM_CLASSNAME]: "warn",
+} as const;
+
+const configBase: FlatConfig.Config = {
+  name: "tailwindcss/base",
+  plugins: {
+    tailwindcss: plugin,
+  },
+  settings: {
+    tailwindcss: {},
+  },
+  files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  languageOptions: {
+    parserOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      ecmaFeatures: {
+        jsx: true,
+      },
+    },
+  },
+};
+
+const sharedConfigs: FlatConfig.SharedConfigs = {
+  recommended: {
+    ...configBase,
+    name: "tailwindcss/recommended",
+    rules: createConfig(recommended),
+  },
+};
 
 export default plugin;

@@ -1,22 +1,20 @@
 {
   "compilerOptions": {
-    "declaration": false,
-    "declarationMap": false,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "outDir": "lib/",
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "strictNullChecks": true,
     "strict": true,
     "sourceMap": false,
-    "target": "es2015",
-    "rootDir": "src/",
-    "outDir": "lib/"
+    "target": "ESNext"
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/utils/tailwindcss-api/worker/load-theme.mjs",
+    "src/utils/tailwindcss-api/worker/is-valid-class-name.mjs",
+    "src/utils/tailwindcss-api/worker/get-sorted-class-names.mjs"
+  ],
+  "exclude": ["src/**/*.spec.ts", "src/_sandbox/*"]
 }

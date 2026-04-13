@@ -1,45 +1,21 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-import * as AngularParser from "@angular-eslint/template-parser";
 import * as Parser from "@typescript-eslint/parser";
+import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
+
 import {
-  RuleTester,
-  TestCaseError,
-  TestLanguageOptions,
-} from "@typescript-eslint/rule-tester";
-// @ts-ignore
-import * as VueParser from "vue-eslint-parser";
+  generalSettings,
+  prefixedSettings,
+  withAngularParser,
+  withTypographySettings,
+  withVueParser,
+} from "../utils/parser/test-helpers";
+import {
+  classnamesOrder,
+  type MessageIds,
+  RULE_NAME,
+} from "./classnames-order";
 
-import { PluginSettings } from "../utils/parse-plugin-settings";
-import { classnamesOrder, RULE_NAME } from "./classnames-order";
-
-const error: TestCaseError<"fix:sort"> = { messageId: "fix:sort" };
+const error: TestCaseError<MessageIds> = { messageId: "fix:sort" };
 const errors = [error];
-
-const withAngularParser: TestLanguageOptions = {
-  parser: AngularParser,
-};
-const withVueParser: TestLanguageOptions = {
-  parser: VueParser,
-};
-
-const generalSettings: PluginSettings = {
-  cssConfigPath:
-    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
-    `${import.meta.dirname}/../../tests/stubs/css/normal.css`,
-};
-
-const prefixedSettings: PluginSettings = {
-  cssConfigPath:
-    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
-    `${import.meta.dirname}/../../tests/stubs/css/tiny-prefixed.css`,
-};
-
-const withTypographySettings: PluginSettings = {
-  cssConfigPath:
-    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
-    `${import.meta.dirname}/../../tests/stubs/css/with-typography.css`,
-};
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -132,7 +108,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
     })),
     // Vue SFC + Disabled attribute
     ...[
-      `<template><div class="flex unkown relative">No attribute (skipped)</div></template>`,
+      `<template><div class="flex unknown relative">No attribute (skipped because attributes are empty in settings)</div></template>`,
       `<template><div :class="tw('unknown relative')">No attribute but via CallExpression</div></template>`,
     ].map((testedVueCode) => ({
       code: testedVueCode,
@@ -162,6 +138,13 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
     })),
   ],
   invalid: [
+    {
+      /* prettier-ignore */
+      code:   `<h1 class="text-gray-700 shadow-md p-3 border-gray-300 ml-4 h-24 flex border-2">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
+      output: `<h1 class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
+      errors: errors,
+      languageOptions: withAngularParser,
+    },
     {
       /* prettier-ignore */
       code:   `<h1 class="relative unkown">attributeVisitor with TextAttribute</h1>`,

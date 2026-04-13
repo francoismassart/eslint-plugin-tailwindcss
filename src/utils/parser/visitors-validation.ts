@@ -12,7 +12,7 @@ import { getJSXAttributeName, getVAttributeName } from "./node";
  */
 export const isValidJSXAttribute = (
   node: TSESTree.JSXAttribute,
-  settings: PluginSettings
+  settings: PluginSettings,
 ): boolean => {
   const attributes = (settings && settings.attributes) || [];
   // Ignored JSXAttribute
@@ -40,7 +40,7 @@ export const isValidJSXAttribute = (
  */
 export const isValidTextAttribute = (
   node: TextAttribute,
-  settings: PluginSettings
+  settings: PluginSettings,
 ): boolean => {
   const attributes = (settings && settings.attributes) || [];
   // Ignored TextAttribute
@@ -58,7 +58,7 @@ export const isValidTextAttribute = (
  */
 export const isValidVAttribute = (
   node: VueAST.VAttribute,
-  settings: PluginSettings
+  settings: PluginSettings,
 ): boolean => {
   const attributes = (settings && settings.attributes) || [];
   // Ignored VAttribute
@@ -80,7 +80,7 @@ export const isValidVAttribute = (
  */
 export const isValidCallExpression = (
   node: TSESTree.CallExpression,
-  settings: PluginSettings
+  settings: PluginSettings,
 ): boolean => {
   if (!settings.functions || settings.functions.length === 0) {
     return false;
@@ -123,7 +123,7 @@ export const isLiteralAttributeValue = (node: SupportedAttribute) => {
  * Validates a `Expression` contained within a `JSXAttribute` for `eslint-plugin-tailwindcss`
  * @returns `false` if the `Expression` can be skipped. */
 export const isValidExpressionAttributeValue = (
-  node: TSESTree.JSXAttribute
+  node: TSESTree.JSXAttribute,
 ) => {
   // No value
   if (!node.value) return false;

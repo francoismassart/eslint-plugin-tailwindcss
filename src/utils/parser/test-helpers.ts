@@ -1,15 +1,43 @@
 import * as AngularParser from "@angular-eslint/template-parser";
 import * as Parser from "@typescript-eslint/parser";
+import { TestLanguageOptions } from "@typescript-eslint/rule-tester";
 import { TSESTree } from "@typescript-eslint/utils";
 import * as VueParser from "vue-eslint-parser";
 import { VStartTag } from "vue-eslint-parser/ast/index";
 
 import { GenericElement, TextAttribute } from "../../types";
+import { PluginSettings } from "../parse-plugin-settings";
 
 // This file exposes utils only used during the tests
 
-const withJSX = {
+export const withJSX = {
   ecmaFeatures: { jsx: true },
+};
+
+export const withAngularParser: TestLanguageOptions = {
+  parser: AngularParser,
+};
+
+export const withVueParser: TestLanguageOptions = {
+  parser: VueParser,
+};
+
+export const generalSettings: PluginSettings = {
+  cssConfigPath:
+    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
+    `${import.meta.dirname}/../../../tests/stubs/css/normal.css`,
+};
+
+export const prefixedSettings: PluginSettings = {
+  cssConfigPath:
+    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
+    `${import.meta.dirname}/../../../tests/stubs/css/tiny-prefixed.css`,
+};
+
+export const withTypographySettings: PluginSettings = {
+  cssConfigPath:
+    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
+    `${import.meta.dirname}/../../../tests/stubs/css/with-typography.css`,
 };
 
 const getFirstHTMLOpeningElement = (code: string) => {

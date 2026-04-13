@@ -23,41 +23,6 @@ I worked on this repo using `pnpm` but it should work with other package manager
 
 `pnpm test`
 
-or
-
-`pnpm test:jest`
-
-#### `jest` or `vitest`
-
-Tests were setup to work with `jest` and `vitest` both comes with pros and cons…
-
-I would recommend Vitest but I also added Jest in case you want it.
-
-| Jest                     | Vitest                                         |
-| :----------------------- | :--------------------------------------------- |
-| Based on `commonjs`      | Based on `ESM`                                 |
-| ✅ Mocking               | ✅ Mocking                                     |
-| ✅ Snapshots             | ✅ Snapshots                                   |
-| ✅ Parallel testing      | ✅ Parallel testing                            |
-| ✅ Fast                  | ✅ Often faster                                |
-| -                        | ✅ Support benches                             |
-| ❌ Require `ts-jest` lib | ❌ Requires `setupFile` and `vitest.config.ts` |
-
-NB: In order to use, the [`RuleTester`](https://typescript-eslint.io/packages/rule-tester) from `@typescript-eslint/rule-tester`, we must:
-
-- Have a `tsconfig.json` with:
-  ```
-  {
-    "compilerOptions": {
-      "module": "nodenext",
-      "moduleResolution": "nodenext"
-    }
-  }
-  ```
-  More info can be found on [`v6`: Cannot find module `@typescript-eslint/*` or its corresponding type declarations](https://github.com/typescript-eslint/typescript-eslint/issues/7284).
-  > You can use `bundler`, `node16`, or `nodenext` for `moduleResolution`.
-- Use `eslint` with `v8`, [`typescript-eslint` does not support `v9` yet](https://github.com/typescript-eslint/typescript-eslint/issues/8211)
-
 ### Docs
 
 `pnpm docs:init` will create new files for each rule if necessary.

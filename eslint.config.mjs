@@ -1,4 +1,8 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import pluginJs from "@eslint/js";
+import eslintPlugin from "eslint-plugin-eslint-plugin";
 import importPlugin from "eslint-plugin-import";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
@@ -9,9 +13,23 @@ import tseslint from "typescript-eslint";
 export default [
   { files: ["**/*.{js,mjs,cjs,ts}"] },
   { ignores: ["lib/**"] },
-  { languageOptions: { globals: globals.browser } },
+  {
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: {
+        tsconfigRootDir: path.dirname(fileURLToPath(import.meta.url)),
+      },
+    },
+  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
+  eslintPlugin.configs.recommended,
+  {
+    rules: {
+      // Meta schema `default` is read by the `eslint-doc-generator`
+      "eslint-plugin/no-meta-schema-default": "off",
+    },
+  },
   {
     plugins: {
       import: importPlugin,

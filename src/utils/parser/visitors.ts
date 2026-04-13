@@ -27,7 +27,7 @@ const getParserServices = (context: Readonly<GenericRuleContext>) => {
 export const defineVisitors = (
   context: Readonly<GenericRuleContext>,
   templateBodyVisitor: RuleListener,
-  scriptVisitor: RuleListener
+  scriptVisitor: RuleListener,
 ) => {
   const parserServices = getParserServices(context);
   if (
@@ -43,6 +43,6 @@ export const defineVisitors = (
   // @ts-expect-error Using "vue-eslint-parser" requires this setup
   return parserServices.defineTemplateBodyVisitor(
     templateBodyVisitor,
-    scriptVisitor
+    scriptVisitor,
   );
 };
