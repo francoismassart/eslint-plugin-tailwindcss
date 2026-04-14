@@ -26,7 +26,7 @@ runAsWorker(
         `Failed to load the Tailwind CSS theme using: "${cssConfigPath}"`,
       );
     }
-    const sorted = await utils.isValidClassName(className);
-    return sorted;
+    const isValid = await utils.isValidClassName(className);
+    return isValid;
   },
 );
