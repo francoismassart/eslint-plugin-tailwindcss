@@ -23,3 +23,8 @@ export const isValidClassNameWorker: (
 ) => boolean = createSyncFn(
   require.resolve("./worker/is-valid-class-name.mjs"),
 );
+
+export const candidatesToCssWorker: (
+  cssConfigPath: string,
+  className: string,
+) => boolean = createSyncFn(require.resolve("./worker/candidates-to-css.mjs"));
