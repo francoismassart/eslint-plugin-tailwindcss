@@ -1,5 +1,7 @@
 @import "tailwindcss" prefix(tw);
 
+/* Note: At the moment, I don't think you can use a different `separator` */
+
 /* Minimalist theme used for testing */
 @theme {
   --*: initial;
