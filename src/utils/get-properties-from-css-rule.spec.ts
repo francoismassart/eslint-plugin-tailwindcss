@@ -16,7 +16,7 @@ test(`List properties from CSS rule`, () => {
     },
     {
       // Media query
-      rule: `@media (prefers-color-scheme: dark) { .dark\:bg-gray-700:where(.system,.system *) { background-color: var(--color-gray-700); } }`,
+      rule: `@media (prefers-color-scheme: dark) { .dark:bg-gray-700:where(.system,.system *) { background-color: var(--color-gray-700); } }`,
       props: new Set(["background-color"]),
     },
     {
