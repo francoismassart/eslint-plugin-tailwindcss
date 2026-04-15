@@ -20,7 +20,7 @@ test(`List properties from CSS rule`, () => {
       props: new Set(["background-color"]),
     },
     {
-      // Media query
+      // CSS variable + property
       rule: `.font-semibold { --tw-font-weight: var(--font-weight-semibold); font-weight: var(--font-weight-semibold); }`,
       props: new Set(["--tw-font-weight", "font-weight"]),
     },
