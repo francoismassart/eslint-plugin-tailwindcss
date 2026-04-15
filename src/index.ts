@@ -6,6 +6,10 @@ import {
   RULE_NAME as CLASSNAMES_ORDER,
 } from "./rules/classnames-order";
 import {
+  noContradictingClassname,
+  RULE_NAME as NO_CONTRADICTING_CLASSNAME,
+} from "./rules/no-contradicting-classname";
+import {
   noCustomClassname,
   RULE_NAME as NO_CUSTOM_CLASSNAME,
 } from "./rules/no-custom-classname";
@@ -34,12 +38,14 @@ const plugin = {
   rules: {
     [CLASSNAMES_ORDER]: classnamesOrder,
     [NO_CUSTOM_CLASSNAME]: noCustomClassname,
+    [NO_CONTRADICTING_CLASSNAME]: noContradictingClassname,
   },
 } satisfies FlatConfig.Plugin;
 
 const recommended = {
   [CLASSNAMES_ORDER]: "warn",
   [NO_CUSTOM_CLASSNAME]: "warn",
+  [NO_CONTRADICTING_CLASSNAME]: "error",
 } as const;
 
 const configBase: FlatConfig.Config = {

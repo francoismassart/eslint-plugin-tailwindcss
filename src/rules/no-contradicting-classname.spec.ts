@@ -1,0 +1,94 @@
+import * as Parser from "@typescript-eslint/parser";
+import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
+
+import {
+  generalSettings,
+  withAngularParser,
+} from "../utils/parser/test-helpers";
+import {
+  type MessageIds,
+  noContradictingClassname,
+  RULE_NAME,
+} from "./no-contradicting-classname";
+
+const suggest = (
+  classname: string,
+  output: string,
+  removeClassnames: Array<string>,
+): TestCaseError<MessageIds> => {
+  return {
+    messageId: "issue:contradiction",
+    suggestions: [
+      {
+        messageId: "fix:contradiction:keep",
+        data: {
+          keepClassname: classname,
+          removeClassnames: removeClassnames.map((cn) => `"${cn}"`).join(", "),
+        },
+        output: output,
+      },
+    ],
+  };
+};
+
+const ruleTester = new RuleTester({
+  languageOptions: {
+    parser: Parser,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+      },
+    },
+  },
+  settings: {
+    tailwindcss: {
+      ...generalSettings,
+    },
+  },
+});
+
+ruleTester.run(RULE_NAME, noContradictingClassname, {
+  valid: [
+    `<h1 class="absolute">single</h1>`,
+    `<h1 class="absolute block">ok</h1>`,
+  ].map((testedNgCode) => ({
+    code: testedNgCode,
+    languageOptions: withAngularParser,
+  })),
+  invalid: [
+    {
+      code: `<h1 class="w-10 w-20">≠ widths</h1>`,
+      errors: [
+        suggest("w-10", `<h1 class="w-10 ">≠ widths</h1>`, ["w-20"]),
+        suggest("w-20", `<h1 class=" w-20">≠ widths</h1>`, ["w-10"]),
+      ],
+      languageOptions: withAngularParser,
+    },
+    {
+      code: `<h1 class="block w-10 absolute w-20 flex">2 conflicts</h1>`,
+      errors: [
+        suggest(
+          "block",
+          `<h1 class="block w-10 absolute w-20 ">2 conflicts</h1>`,
+          ["flex"],
+        ),
+        suggest(
+          "flex",
+          `<h1 class=" w-10 absolute w-20 flex">2 conflicts</h1>`,
+          ["block"],
+        ),
+        suggest(
+          "w-10",
+          `<h1 class="block w-10 absolute  flex">2 conflicts</h1>`,
+          ["w-20"],
+        ),
+        suggest(
+          "w-20",
+          `<h1 class="block  absolute w-20 flex">2 conflicts</h1>`,
+          ["w-10"],
+        ),
+      ],
+      languageOptions: withAngularParser,
+    },
+  ],
+});
