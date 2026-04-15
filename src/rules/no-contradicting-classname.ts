@@ -175,7 +175,7 @@ export const noContradictingClassname = createRule<Options, MessageIds>({
   name: RULE_NAME,
   meta: {
     docs: {
-      description: "Avoids contradicting Tailwind CSS classnames",
+      description: "Avoid contradicting Tailwind CSS classnames.",
     },
     hasSuggestions: true,
     messages: {

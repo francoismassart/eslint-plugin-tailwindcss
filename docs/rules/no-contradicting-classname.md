@@ -1,4 +1,4 @@
-# Avoids contradicting Tailwind CSS classnames
+# Avoid contradicting Tailwind CSS classnames
 
 💼 This rule is enabled in the ✅ `recommended` config.
 

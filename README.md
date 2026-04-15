@@ -15,7 +15,7 @@
 | Name                                                                   | Description                                                                         | 💼  | ⚠️  | 🔧  | 💡  |
 | :--------------------------------------------------------------------- | :---------------------------------------------------------------------------------- | :-- | :-- | :-- | :-- |
 | [classnames-order](docs/rules/classnames-order.md)                     | Enforces a consistent order for the Tailwind CSS classnames, based on the compiler. |     | ✅  | 🔧  |     |
-| [no-contradicting-classname](docs/rules/no-contradicting-classname.md) | Avoids contradicting Tailwind CSS classnames                                        | ✅  |     |     | 💡  |
+| [no-contradicting-classname](docs/rules/no-contradicting-classname.md) | Avoid contradicting Tailwind CSS classnames.                                        | ✅  |     |     | 💡  |
 | [no-custom-classname](docs/rules/no-custom-classname.md)               | Detects classnames which do not belong to Tailwind CSS.                             |     | ✅  |     | 💡  |
 
 <!-- end auto-generated rules list -->
