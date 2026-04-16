@@ -47,6 +47,37 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
+const isWhitelisted = (className: string, whitelist: Set<string>): boolean => {
+  if (whitelist.has(className)) return true;
+  return [...whitelist].some((pattern) => passRegexTest(pattern, className));
+};
+
+const removeClassname = (
+  invalidClassName: string,
+  classNames: Array<string>,
+  whitespaces: Array<string>,
+  headSpace: boolean,
+  tailSpace: boolean,
+) => {
+  // Generates the "cleaned" attribute value
+  let newClassNamesValue = "";
+  let classNamesCount = 0;
+  for (let index = 0; index < classNames.length; index++) {
+    const w = whitespaces[index] ?? "";
+    const cls = classNames[index];
+    // Ignore the unknown classname and keep the rest, including whitespaces
+    if (invalidClassName !== cls) {
+      newClassNamesValue += headSpace ? `${w}${cls}` : `${cls}${w}`;
+      classNamesCount++;
+    }
+    if (headSpace && tailSpace && index === classNames.length - 1) {
+      newClassNamesValue += whitespaces.at(-1) ?? "";
+    }
+  }
+  if (classNamesCount <= 1) newClassNamesValue = newClassNamesValue.trim();
+  return newClassNamesValue;
+};
+
 const detectCustomClassnames = (
   context: RuleContext,
   settings: PluginSettings,
@@ -60,84 +91,57 @@ const detectCustomClassnames = (
     ...internalWhitelist,
   ]);
   // console.log(parsedOptions);
+  const genericContext = context as unknown as GenericRuleContext;
   for (const node of literals) {
-    const { originalClassNamesValue } = dissectAtomicNode(
-      node,
-      context as unknown as GenericRuleContext,
-    );
+    const { originalClassNamesValue } = dissectAtomicNode(node, genericContext);
     // Process the extracted classnames and report
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
-    for (const className of classNames) {
-      // Whitelist check: exact match
-      if (mergedWhitelist.has(className)) {
-        continue;
-      }
-      // Whitelist check: regex pattern match
-      if (
-        [...mergedWhitelist].some((pattern) =>
-          passRegexTest(pattern, className),
-        )
-      ) {
-        continue;
-      }
-      // Using Tailwind CSS API
-      if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
-        // Generates the "cleaned" attribute value
-        let newClassNamesValue = "";
-        let classNamesCount = 0;
-        for (let index = 0; index < classNames.length; index++) {
-          const w = whitespaces[index] ?? "";
-          const cls = classNames[index];
-          // Ignore the unknown classname and keep the rest, including whitespaces
-          if (className !== cls) {
-            newClassNamesValue += headSpace ? `${w}${cls}` : `${cls}${w}`;
-            classNamesCount++;
-          }
-          if (headSpace && tailSpace && index === classNames.length - 1) {
-            newClassNamesValue += whitespaces.at(-1) ?? "";
-          }
-        }
-        const patchedLoc = generateLocForClassname(
-          node,
-          className,
-          originalClassNamesValue,
-          context as unknown as GenericRuleContext,
-        );
-        const range = getRange(node, className, originalClassNamesValue);
-        context.report({
-          loc: patchedLoc,
-          messageId: "issue:unknown-classname",
-          data: {
-            classname: className,
-          },
-          suggest:
-            range[0] && range[1]
-              ? [
-                  {
-                    messageId: "fix:unknown-classname:remove",
-                    data: {
-                      classname: className,
-                    },
-                    fix: (fixer) => {
-                      const fullRange = getRange(
-                        node,
-                        originalClassNamesValue,
-                        originalClassNamesValue,
-                      );
-                      if (classNamesCount <= 1) {
-                        newClassNamesValue = newClassNamesValue.trim();
-                      }
-                      return fixer.replaceTextRange(
-                        fullRange,
-                        newClassNamesValue,
-                      );
-                    },
+    for (const cls of classNames) {
+      if (isWhitelisted(cls, mergedWhitelist)) continue;
+      if (isValidClassNameWorker(settings.cssConfigPath, cls)) continue;
+
+      // Generates the "cleaned" attribute value
+      const patchedValue = removeClassname(
+        cls,
+        classNames,
+        whitespaces,
+        headSpace,
+        tailSpace,
+      );
+      const patchedLoc = generateLocForClassname(
+        node,
+        cls,
+        originalClassNamesValue,
+        genericContext,
+      );
+      const range = getRange(node, cls, originalClassNamesValue);
+      context.report({
+        loc: patchedLoc,
+        messageId: "issue:unknown-classname",
+        data: {
+          classname: cls,
+        },
+        suggest:
+          range[0] && range[1]
+            ? [
+                {
+                  messageId: "fix:unknown-classname:remove",
+                  data: {
+                    classname: cls,
                   },
-                ]
-              : [],
-        });
-      }
+                  fix: (fixer) => {
+                    const fullRange = getRange(
+                      node,
+                      originalClassNamesValue,
+                      originalClassNamesValue,
+                    );
+                    return fixer.replaceTextRange(fullRange, patchedValue);
+                  },
+                },
+              ]
+            : [],
+      });
     }
   }
 };
