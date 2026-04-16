@@ -66,7 +66,8 @@ const detectCustomClassnames = (
       context as unknown as GenericRuleContext,
     );
     // Process the extracted classnames and report
-    const { classNames } = getClassnamesFromValue(originalClassNamesValue);
+    const { classNames, whitespaces, headSpace, tailSpace } =
+      getClassnamesFromValue(originalClassNamesValue);
     for (const className of classNames) {
       // Whitelist check: exact match
       if (mergedWhitelist.has(className)) {
@@ -82,6 +83,21 @@ const detectCustomClassnames = (
       }
       // Using Tailwind CSS API
       if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
+        // Generates the "cleaned" attribute value
+        let newClassNamesValue = "";
+        let classNamesCount = 0;
+        for (let index = 0; index < classNames.length; index++) {
+          const w = whitespaces[index] ?? "";
+          const cls = classNames[index];
+          // Ignore the unknown classname and keep the rest, including whitespaces
+          if (className !== cls) {
+            newClassNamesValue += headSpace ? `${w}${cls}` : `${cls}${w}`;
+            classNamesCount++;
+          }
+          if (headSpace && tailSpace && index === classNames.length - 1) {
+            newClassNamesValue += whitespaces.at(-1) ?? "";
+          }
+        }
         const patchedLoc = generateLocForClassname(
           node,
           className,
@@ -103,8 +119,20 @@ const detectCustomClassnames = (
                     data: {
                       classname: className,
                     },
-                    // TODO enhance the fix to remove also the extra space (head or tail) if any
-                    fix: (fixer) => fixer.replaceTextRange(range, ""),
+                    fix: (fixer) => {
+                      const fullRange = getRange(
+                        node,
+                        originalClassNamesValue,
+                        originalClassNamesValue,
+                      );
+                      if (classNamesCount <= 1) {
+                        newClassNamesValue = newClassNamesValue.trim();
+                      }
+                      return fixer.replaceTextRange(
+                        fullRange,
+                        newClassNamesValue,
+                      );
+                    },
                   },
                 ]
               : [],
