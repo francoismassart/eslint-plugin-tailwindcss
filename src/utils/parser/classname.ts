@@ -1,3 +1,5 @@
+import { segment } from "../segment";
+
 // TODO retrieve the separator from Tailwind CSS config
 const separator = ":";
 
@@ -6,18 +8,16 @@ const separator = ":";
  * getBaseClassname(`hover:bg-red-500`) // returns `bg-red-500`;
  */
 export const getBaseClassname = (classname: string) =>
-  // TODO see segment.ts about the gotchas about arbitrary values and ":" usage in (), etc.
-  classname.split(separator).pop() || classname;
+  segment(classname, separator).pop() || classname;
 
 /**
  * @example
  * getModifiersPrefix(`hover:bg-red-500`) // returns `hover:`;
  */
 export const getModifiersPrefix = (classname: string) => {
-  // TODO see segment.ts about the gotchas about arbitrary values and ":" usage in (), etc.
-  const lastIndex = classname.lastIndexOf(separator);
-  if (lastIndex === -1) return "";
-  return classname.slice(0, Math.max(0, lastIndex + 1));
+  const parts = segment(classname, separator);
+  if (parts.length === 1) return "";
+  return parts.slice(0, -1).join(separator) + separator;
 };
 
 /**
