@@ -124,6 +124,11 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
         ),
       ],
     },
+    {
+      code: `<h1 class="relative unknown">tail</h1>`,
+      errors: [suggest("unknown", `<h1 class="relative">tail</h1>`)],
+    },
+
     // At this moment, no possibility to read the custom dark variant from the config
     /*/
     {

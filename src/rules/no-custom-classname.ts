@@ -93,7 +93,8 @@ const detectCustomClassnames = (
   // console.log(parsedOptions);
   const genericContext = context as unknown as GenericRuleContext;
   for (const node of literals) {
-    const { originalClassNamesValue } = dissectAtomicNode(node, genericContext);
+    const { originalClassNamesValue, start, end, prefix, suffix } =
+      dissectAtomicNode(node, genericContext);
     // Process the extracted classnames and report
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
@@ -102,7 +103,7 @@ const detectCustomClassnames = (
       if (isValidClassNameWorker(settings.cssConfigPath, cls)) continue;
 
       // Generates the "cleaned" attribute value
-      const patchedValue = removeClassname(
+      let patchedValue = removeClassname(
         cls,
         classNames,
         whitespaces,
@@ -116,6 +117,11 @@ const detectCustomClassnames = (
         genericContext,
       );
       const range = getRange(node, cls, originalClassNamesValue);
+      patchedValue = prefix + patchedValue + suffix;
+
+      if (originalClassNamesValue === patchedValue) {
+        continue;
+      }
       context.report({
         loc: patchedLoc,
         messageId: "issue:unknown-classname",
@@ -131,12 +137,7 @@ const detectCustomClassnames = (
                     classname: cls,
                   },
                   fix: (fixer) => {
-                    const fullRange = getRange(
-                      node,
-                      originalClassNamesValue,
-                      originalClassNamesValue,
-                    );
-                    return fixer.replaceTextRange(fullRange, patchedValue);
+                    return fixer.replaceTextRange([start, end], patchedValue);
                   },
                 },
               ]
