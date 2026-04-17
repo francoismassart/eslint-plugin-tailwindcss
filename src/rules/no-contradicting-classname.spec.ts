@@ -59,8 +59,16 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
     {
       code: `<h1 class="w-10 w-20">≠ widths</h1>`,
       errors: [
-        suggest("w-10", `<h1 class="w-10 ">≠ widths</h1>`, ["w-20"]),
-        suggest("w-20", `<h1 class=" w-20">≠ widths</h1>`, ["w-10"]),
+        suggest("w-10", `<h1 class="w-10">≠ widths</h1>`, ["w-20"]),
+        suggest("w-20", `<h1 class="w-20">≠ widths</h1>`, ["w-10"]),
+      ],
+      languageOptions: withAngularParser,
+    },
+    {
+      code: `<h1 class="block flex">display</h1>`,
+      errors: [
+        suggest("block", `<h1 class="block">display</h1>`, ["flex"]),
+        suggest("flex", `<h1 class="flex">display</h1>`, ["block"]),
       ],
       languageOptions: withAngularParser,
     },
@@ -73,19 +81,19 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
           ["flex"],
         ),
         suggest(
-          "flex",
-          `<h1 class=" w-10 absolute w-20 flex">2 conflicts</h1>`,
-          ["block"],
-        ),
-        suggest(
           "w-10",
-          `<h1 class="block w-10 absolute  flex">2 conflicts</h1>`,
+          `<h1 class="block w-10 absolute flex">2 conflicts</h1>`,
           ["w-20"],
         ),
         suggest(
           "w-20",
-          `<h1 class="block  absolute w-20 flex">2 conflicts</h1>`,
+          `<h1 class="block absolute w-20 flex">2 conflicts</h1>`,
           ["w-10"],
+        ),
+        suggest(
+          "flex",
+          `<h1 class="w-10 absolute w-20 flex">2 conflicts</h1>`,
+          ["block"],
         ),
       ],
       languageOptions: withAngularParser,

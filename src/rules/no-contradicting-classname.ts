@@ -4,7 +4,6 @@
  * @author François Massart
  */
 
-import { TSESTree } from "@typescript-eslint/utils";
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
@@ -18,6 +17,7 @@ import {
 import { groupByModifiersPrefix } from "../utils/parser/groups";
 import {
   dissectAtomicNode,
+  generateLocForClassname,
   getClassnamesFromValue,
   getRange,
 } from "../utils/parser/node";
@@ -47,6 +47,68 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
+const getCompiledGroup = (
+  modifiers: string,
+  baseClasses: Array<string>,
+  settings: PluginSettings,
+) => {
+  const groupMembers = new Map<string, Set<string>>();
+  for (const baseClass of baseClasses) {
+    const fullClassName = `${modifiers}${baseClass}`;
+    console.log("  class:", fullClassName);
+    const cssRules = candidatesToCssWorker(
+      settings.cssConfigPath,
+      fullClassName,
+    );
+    const cssRule = cssRules[0];
+    if (!cssRule) continue;
+    const cssProperties = getPropertiesFromCssRule(cssRule);
+    console.log("  " + fullClassName, cssProperties);
+    groupMembers.set(fullClassName, cssProperties);
+  }
+  return groupMembers;
+};
+
+const getCommonProperties = (groupMembers: Map<string, Set<string>>) => {
+  const commonProperties = new Map<Set<string>, Array<string>>();
+  for (const [className, properties] of groupMembers.entries()) {
+    // find if the key (Set) already exists in commonProps
+    const existingKey = mapGetKeyFromSetValues(commonProperties, properties);
+    const listOfClassNames: Array<string> = existingKey
+      ? commonProperties.get(existingKey)!
+      : [];
+    listOfClassNames.push(className);
+    commonProperties.set(existingKey ?? properties, listOfClassNames);
+  }
+  return commonProperties;
+};
+
+const removeContradictions = (
+  targets: Array<string>,
+  classNames: Array<string>,
+  whitespaces: Array<string>,
+  headSpace: boolean,
+  tailSpace: boolean,
+) => {
+  // Generates the "cleaned" attribute value
+  let newClassNamesValue = "";
+  let classNamesCount = 0;
+  for (let index = 0; index < classNames.length; index++) {
+    const w = whitespaces[index] ?? "";
+    const cls = classNames[index];
+    // Ignore the contradicting classnames and keep the rest, including whitespaces
+    if (!targets.includes(cls)) {
+      newClassNamesValue += headSpace ? `${w}${cls}` : `${cls}${w}`;
+      classNamesCount++;
+    }
+    if (headSpace && tailSpace && index === classNames.length - 1) {
+      newClassNamesValue += whitespaces.at(-1) ?? "";
+    }
+  }
+  if (classNamesCount <= 1) newClassNamesValue = newClassNamesValue.trim();
+  return newClassNamesValue;
+};
+
 const getContradictions = (
   context: RuleContext,
   settings: PluginSettings,
@@ -54,9 +116,10 @@ const getContradictions = (
   literals: Array<AtomicNode>,
 ) => {
   // console.log(options);
+  const genericContext = context as unknown as GenericRuleContext;
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
-      dissectAtomicNode(node, context as unknown as GenericRuleContext);
+      dissectAtomicNode(node, genericContext);
     // Process the extracted classnames and report
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
@@ -70,41 +133,17 @@ const getContradictions = (
     const conflictingsClassNames: Array<Array<string>> = [];
 
     // Generate all rules and save the affected CSS properties for each rule
-    for (const [modifiers, baseClassNames] of groups.entries()) {
+    for (const [modifiers, baseCls] of groups.entries()) {
       console.log("group:", `"${modifiers}"`);
 
       // Within each group (e.g. "hover:")
-      const groupMembers = new Map<string, Set<string>>();
-      for (const baseClass of baseClassNames) {
-        const fullClassName = `${modifiers}${baseClass}`;
-        console.log("  class:", fullClassName);
-        const cssRules = candidatesToCssWorker(
-          settings.cssConfigPath,
-          fullClassName,
-        );
-        const cssRule = cssRules[0];
-        if (!cssRule) continue;
-        const cssProperties = getPropertiesFromCssRule(cssRule);
-        console.log("  " + fullClassName, cssProperties);
-        groupMembers.set(fullClassName, cssProperties);
-      }
+      const groupMembers = getCompiledGroup(modifiers, baseCls, settings);
 
       // Find conflicts within the group
-      const commonProperties = new Map<Set<string>, Array<string>>();
-      for (const [className, properties] of groupMembers.entries()) {
-        // find if the key (Set) already exists in commonProps
-        const existingKey = mapGetKeyFromSetValues(
-          commonProperties,
-          properties,
-        );
-        const listOfClassNames: Array<string> = existingKey
-          ? commonProperties.get(existingKey)!
-          : [];
-        listOfClassNames.push(className);
-        commonProperties.set(existingKey ?? properties, listOfClassNames);
-      }
-      // Filter out the entries in commonProps that have more than 1 className (these are the conflicting classNames)
+      const commonProperties = getCommonProperties(groupMembers);
       console.log(commonProperties);
+
+      // Filter out the entries in commonProps that have more than 1 className (these are the conflicting classNames)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [properties, classNames] of commonProperties.entries()) {
         if (classNames.length > 1) {
@@ -113,7 +152,7 @@ const getContradictions = (
       }
     }
 
-    if (conflictingsClassNames.length === 0) return;
+    if (conflictingsClassNames.length === 0) continue;
 
     console.log("conflicting classnames:", conflictingsClassNames);
 
@@ -125,16 +164,27 @@ const getContradictions = (
         const otherClassnamesFormatted = otherClassnames
           .map((cn) => `"${cn}"`)
           .join(", ");
+        let patchedValue = removeContradictions(
+          otherClassnames,
+          classNames,
+          whitespaces,
+          headSpace,
+          tailSpace,
+        );
+        patchedValue = prefix + patchedValue + suffix;
+        const patchedLoc = generateLocForClassname(
+          node,
+          targetClassname,
+          originalClassNamesValue,
+          genericContext,
+        );
         const targetRange = getRange(
           node,
           targetClassname,
           originalClassNamesValue,
         );
-        const otherRanges = otherClassnames.map((cn) =>
-          getRange(node, cn, originalClassNamesValue),
-        );
         context.report({
-          node: node as TSESTree.Node,
+          loc: patchedLoc,
           messageId: "issue:contradiction",
           data: {
             classname: targetClassname,
@@ -149,19 +199,8 @@ const getContradictions = (
                       keepClassname: targetClassname,
                       removeClassnames: otherClassnamesFormatted,
                     },
-                    // TODO enhance the fix to remove also the extra space (head or tail) if any
-                    fix: (fixer) => {
-                      const fixers = [];
-                      for (
-                        let index = otherRanges.length - 1;
-                        index >= 0;
-                        index--
-                      ) {
-                        const range = otherRanges[index];
-                        fixers.push(fixer.replaceTextRange(range, ""));
-                      }
-                      return fixers;
-                    },
+                    fix: (fixer) =>
+                      fixer.replaceTextRange([start, end], patchedValue),
                   },
                 ]
               : [],
@@ -179,8 +218,8 @@ export const noContradictingClassname = createRule<Options, MessageIds>({
     },
     hasSuggestions: true,
     messages: {
-      "issue:contradiction": `Classname "{{classname}}" is contradicting with: {{otherClassnames}}`,
-      "fix:contradiction:keep": `Keep "{{keepClassname}}", remove {{removeClassnames}}`,
+      "issue:contradiction": `The class name "{{classname}}" conflicts with {{otherClassnames}}.`,
+      "fix:contradiction:keep": `Keep "{{keepClassname}}" (remove {{removeClassnames}}).`,
     },
     // fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`
