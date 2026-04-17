@@ -136,9 +136,8 @@ const detectCustomClassnames = (
                   data: {
                     classname: cls,
                   },
-                  fix: (fixer) => {
-                    return fixer.replaceTextRange([start, end], patchedValue);
-                  },
+                  fix: (fixer) =>
+                    fixer.replaceTextRange([start, end], patchedValue),
                 },
               ]
             : [],
