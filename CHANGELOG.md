@@ -1,5 +1,9 @@
 # eslint-plugin-tailwindcss changelog
 
+## `4.0.0-alpha.2`
+
+- feat(rule): [`no-contradicting-classname`](./docs/rules/no-contradicting-classname.md)
+
 ## `4.0.0-alpha.1`
 
 - feat(typings): native support without using `definitly typed` project using `unbuild`

@@ -1,5 +1,9 @@
 # eslint-plugin-tailwindcss roadmap
 
+## April 2026
+
+- `no-contradicting-classname`
+
 ## September 2025
 
 - full rewrite of the code base in TypeScript
