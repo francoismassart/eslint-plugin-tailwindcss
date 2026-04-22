@@ -62,34 +62,75 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
   invalid: [
     {
       code: `<h1 class="unknown relative">head</h1>`,
-      errors: [suggest("unknown", `<h1 class=" relative">head</h1>`)],
+      errors: [suggest("unknown", `<h1 class="relative">head</h1>`)],
       languageOptions: withAngularParser,
     },
     {
       code: `<h1 class="relative unknown flex">body</h1>`,
-      errors: [suggest("unknown", `<h1 class="relative  flex">body</h1>`)],
+      errors: [suggest("unknown", `<h1 class="relative flex">body</h1>`)],
       languageOptions: withAngularParser,
     },
     {
       code: `<h1 class="relative unknown">tail</h1>`,
-      errors: [suggest("unknown", `<h1 class="relative ">tail</h1>`)],
+      errors: [suggest("unknown", `<h1 class="relative">tail</h1>`)],
       languageOptions: withAngularParser,
     },
     {
       code: `<h1 className={"unknownreact relative"}>head</h1>`,
-      errors: [
-        suggest("unknownreact", `<h1 className={" relative"}>head</h1>`),
-      ],
+      errors: [suggest("unknownreact", `<h1 className={"relative"}>head</h1>`)],
     },
     {
       code: "<h1 className={`unknown:flex relative`}>Invalid modifier</h1>",
       errors: [
         suggest(
           "unknown:flex",
-          "<h1 className={` relative`}>Invalid modifier</h1>",
+          "<h1 className={`relative`}>Invalid modifier</h1>",
         ),
       ],
     },
+    {
+      code: `ctl(\`unknownreact relative\`)`,
+      errors: [suggest("unknownreact", `ctl(\`relative\`)`)],
+    },
+    {
+      code: `
+      ctl(\`
+        unknownreact
+        relative
+      \`)`,
+      errors: [
+        suggest(
+          "unknownreact",
+          `
+      ctl(\`
+        relative
+      \`)`,
+        ),
+      ],
+    },
+    {
+      code: `
+      ctl(\`
+        absolute
+        unknown-react
+        relative
+      \`)`,
+      errors: [
+        suggest(
+          "unknown-react",
+          `
+      ctl(\`
+        absolute
+        relative
+      \`)`,
+        ),
+      ],
+    },
+    {
+      code: `<h1 class="relative unknown">tail</h1>`,
+      errors: [suggest("unknown", `<h1 class="relative">tail</h1>`)],
+    },
+
     // At this moment, no possibility to read the custom dark variant from the config
     /*/
     {

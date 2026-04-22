@@ -46,10 +46,9 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "bench": "vitest bench",
     "build": "unbuild --config unbuild.config.ts  && rsync src/utils/tailwindcss-api/worker/*.mjs lib/worker",
-    "xdocs:init": "pnpm build && eslint-doc-generator --init-rule-docs",
     "docs:init": "eslint-doc-generator --init-rule-docs",
-    "xdocs:update": "pnpm build && eslint-doc-generator",
     "docs:update": "eslint-doc-generator",
     "test": "vitest",
     "tsc": "tsc --noEmit"

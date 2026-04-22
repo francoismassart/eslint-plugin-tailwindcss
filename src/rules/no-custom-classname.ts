@@ -47,6 +47,38 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
+const isWhitelisted = (className: string, whitelist: Set<string>): boolean => {
+  if (whitelist.has(className)) return true;
+  return [...whitelist].some((pattern) => passRegexTest(pattern, className));
+};
+
+const removeClassname = (
+  invalidClassName: string,
+  classNames: Array<string>,
+  whitespaces: Array<string>,
+  headSpace: boolean,
+  tailSpace: boolean,
+) => {
+  // Make a copy of whitespaces because we don't want to mutate the original array
+  // (Remember that ESLint runs several times and we don't want to mess up the whitespaces for the next runs)
+  const spaces = [...whitespaces];
+
+  const head = headSpace ? spaces.shift() : "";
+  const tail = tailSpace ? spaces.pop() : "";
+
+  const validatedClasses: Array<string> = [];
+  for (const [index, className] of classNames.entries()) {
+    if (className !== invalidClassName) {
+      const spacer =
+        validatedClasses.length === 0 ? "" : (spaces[index - 1] ?? " ");
+      validatedClasses.push(spacer + className);
+    }
+  }
+
+  if (validatedClasses.length === 0) return "";
+  return head + validatedClasses.join("") + tail;
+};
+
 const detectCustomClassnames = (
   context: RuleContext,
   settings: PluginSettings,
@@ -60,56 +92,57 @@ const detectCustomClassnames = (
     ...internalWhitelist,
   ]);
   // console.log(parsedOptions);
+  const genericContext = context as unknown as GenericRuleContext;
   for (const node of literals) {
-    const { originalClassNamesValue } = dissectAtomicNode(
-      node,
-      context as unknown as GenericRuleContext,
-    );
+    const { originalClassNamesValue, start, end, prefix, suffix } =
+      dissectAtomicNode(node, genericContext);
     // Process the extracted classnames and report
-    const { classNames } = getClassnamesFromValue(originalClassNamesValue);
-    for (const className of classNames) {
-      // Whitelist check: exact match
-      if (mergedWhitelist.has(className)) {
+    const { classNames, whitespaces, headSpace, tailSpace } =
+      getClassnamesFromValue(originalClassNamesValue);
+    for (const cls of classNames) {
+      if (isWhitelisted(cls, mergedWhitelist)) continue;
+      if (isValidClassNameWorker(settings.cssConfigPath, cls)) continue;
+
+      // Generates the "cleaned" attribute value
+      let patchedValue = removeClassname(
+        cls,
+        classNames,
+        whitespaces,
+        headSpace,
+        tailSpace,
+      );
+      const patchedLoc = generateLocForClassname(
+        node,
+        cls,
+        originalClassNamesValue,
+        genericContext,
+      );
+      const range = getRange(node, cls, originalClassNamesValue);
+      patchedValue = prefix + patchedValue + suffix;
+
+      if (originalClassNamesValue === patchedValue) {
         continue;
       }
-      // Whitelist check: regex pattern match
-      if (
-        [...mergedWhitelist].some((pattern) =>
-          passRegexTest(pattern, className),
-        )
-      ) {
-        continue;
-      }
-      // Using Tailwind CSS API
-      if (!isValidClassNameWorker(settings.cssConfigPath, className)) {
-        const patchedLoc = generateLocForClassname(
-          node,
-          className,
-          originalClassNamesValue,
-          context as unknown as GenericRuleContext,
-        );
-        const range = getRange(node, className, originalClassNamesValue);
-        context.report({
-          loc: patchedLoc,
-          messageId: "issue:unknown-classname",
-          data: {
-            classname: className,
-          },
-          suggest:
-            range[0] && range[1]
-              ? [
-                  {
-                    messageId: "fix:unknown-classname:remove",
-                    data: {
-                      classname: className,
-                    },
-                    // TODO enhance the fix to remove also the extra space (head or tail) if any
-                    fix: (fixer) => fixer.replaceTextRange(range, ""),
+      context.report({
+        loc: patchedLoc,
+        messageId: "issue:unknown-classname",
+        data: {
+          classname: cls,
+        },
+        suggest:
+          range[0] && range[1]
+            ? [
+                {
+                  messageId: "fix:unknown-classname:remove",
+                  data: {
+                    classname: cls,
                   },
-                ]
-              : [],
-        });
-      }
+                  fix: (fixer) =>
+                    fixer.replaceTextRange([start, end], patchedValue),
+                },
+              ]
+            : [],
+      });
     }
   }
 };

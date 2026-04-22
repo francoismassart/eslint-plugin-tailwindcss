@@ -30,10 +30,36 @@ test("getClassnamesFromValue", () => {
     headSpace: true,
     tailSpace: true,
   });
-  expect(getClassnamesFromValue(`flex  grow   `)).toStrictEqual({
+  expect(getClassnamesFromValue(`flex grow  `)).toStrictEqual({
     classNames: ["flex", "grow"],
-    whitespaces: ["  ", "   "],
+    whitespaces: [" ", "  "],
     headSpace: false,
+    tailSpace: true,
+  });
+  expect(
+    getClassnamesFromValue(`
+block
+ flex
+  inline
+   `),
+  ).toStrictEqual({
+    classNames: ["block", "flex", "inline"],
+    //              ↓0,    ↓1,     ↓2,      ↓3
+    whitespaces: ["\n", "\n ", "\n  ", "\n   "],
+    headSpace: true,
+    tailSpace: true,
+  });
+  expect(
+    getClassnamesFromValue(`
+      block
+      flex
+      inline
+    `),
+  ).toStrictEqual({
+    classNames: ["block", "flex", "inline"],
+    //             ↓0,         ↓1,         ↓2,         ↓3
+    whitespaces: ["\n      ", "\n      ", "\n      ", "\n    "],
+    headSpace: true,
     tailSpace: true,
   });
 });
@@ -80,20 +106,6 @@ test("getJSXAttributeName", () => {
   });
 });
 
-test("getVAttributeName", () => {
-  [
-    // VIdentifier
-    [`<h1 class="m-0 flex">jsx</h1>`, "class"],
-    // VDirectiveKey
-    [`<h1 v-bind:attr="{'block': true}">jsx</h1>`, "attr"],
-    // VDirectiveKey
-    [`<h1 :short="{'block': true}">jsx</h1>`, "short"],
-  ].map(([templateCode, expected]) => {
-    const input = _vAttribute(`<template>${templateCode}</template>`);
-    // @ts-expect-error Argument of type 'string | VAttribute' is not assignable to parameter of type 'VAttribute'.
-    expect(getVAttributeName(input)).toBe(expected);
-  });
-});
 test("getVAttributeName", () => {
   [
     // VIdentifier
