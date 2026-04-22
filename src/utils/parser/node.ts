@@ -349,14 +349,12 @@ export const getRange = (
       break;
     }
     case "TemplateElement": {
-      console.log(node);
+      // console.log(node);
       offset = node.range[0] + 1;
       break;
     }
     default: {
-      console.info("");
-      console.info("Unknown node type:", node.type);
-      console.info("");
+      // console.info(`\nUnknown node type: ${node.type}\n`);
       return [0, 0];
       break;
     }
