@@ -30,10 +30,36 @@ test("getClassnamesFromValue", () => {
     headSpace: true,
     tailSpace: true,
   });
-  expect(getClassnamesFromValue(`flex  grow   `)).toStrictEqual({
+  expect(getClassnamesFromValue(`flex grow  `)).toStrictEqual({
     classNames: ["flex", "grow"],
-    whitespaces: ["  ", "   "],
+    whitespaces: [" ", "  "],
     headSpace: false,
+    tailSpace: true,
+  });
+  expect(
+    getClassnamesFromValue(`
+block
+ flex
+  inline
+   `),
+  ).toStrictEqual({
+    classNames: ["block", "flex", "inline"],
+    //              ↓0,    ↓1,     ↓2,      ↓3
+    whitespaces: ["\n", "\n ", "\n  ", "\n   "],
+    headSpace: true,
+    tailSpace: true,
+  });
+  expect(
+    getClassnamesFromValue(`
+      block
+      flex
+      inline
+    `),
+  ).toStrictEqual({
+    classNames: ["block", "flex", "inline"],
+    //             ↓0,         ↓1,         ↓2,         ↓3
+    whitespaces: ["\n      ", "\n      ", "\n      ", "\n    "],
+    headSpace: true,
     tailSpace: true,
   });
 });
