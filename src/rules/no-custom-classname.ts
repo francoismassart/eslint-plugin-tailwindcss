@@ -7,6 +7,7 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
 import urlCreator from "../url-creator";
+import { joiner } from "../utils/joiner";
 import {
   parsePluginSettings,
   PluginSettings,
@@ -52,33 +53,6 @@ const isWhitelisted = (className: string, whitelist: Set<string>): boolean => {
   return [...whitelist].some((pattern) => passRegexTest(pattern, className));
 };
 
-const removeClassname = (
-  invalidClassName: string,
-  classNames: Array<string>,
-  whitespaces: Array<string>,
-  headSpace: boolean,
-  tailSpace: boolean,
-) => {
-  // Make a copy of whitespaces because we don't want to mutate the original array
-  // (Remember that ESLint runs several times and we don't want to mess up the whitespaces for the next runs)
-  const spaces = [...whitespaces];
-
-  const head = headSpace ? spaces.shift() : "";
-  const tail = tailSpace ? spaces.pop() : "";
-
-  const validatedClasses: Array<string> = [];
-  for (const [index, className] of classNames.entries()) {
-    if (className !== invalidClassName) {
-      const spacer =
-        validatedClasses.length === 0 ? "" : (spaces[index - 1] ?? " ");
-      validatedClasses.push(spacer + className);
-    }
-  }
-
-  if (validatedClasses.length === 0) return "";
-  return head + validatedClasses.join("") + tail;
-};
-
 const detectCustomClassnames = (
   context: RuleContext,
   settings: PluginSettings,
@@ -99,25 +73,25 @@ const detectCustomClassnames = (
     // Process the extracted classnames and report
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
-    for (const cls of classNames) {
-      if (isWhitelisted(cls, mergedWhitelist)) continue;
-      if (isValidClassNameWorker(settings.cssConfigPath, cls)) continue;
+    for (const customClass of classNames) {
+      if (isWhitelisted(customClass, mergedWhitelist)) continue;
+      if (isValidClassNameWorker(settings.cssConfigPath, customClass)) continue;
 
       // Generates the "cleaned" attribute value
-      let patchedValue = removeClassname(
-        cls,
+      let patchedValue = joiner({
         classNames,
         whitespaces,
         headSpace,
         tailSpace,
-      );
+        validator: (candidate) => candidate !== customClass,
+      });
       const patchedLoc = generateLocForClassname(
         node,
-        cls,
+        customClass,
         originalClassNamesValue,
         genericContext,
       );
-      const range = getRange(node, cls, originalClassNamesValue);
+      const range = getRange(node, customClass, originalClassNamesValue);
       patchedValue = prefix + patchedValue + suffix;
 
       if (originalClassNamesValue === patchedValue) {
@@ -127,7 +101,7 @@ const detectCustomClassnames = (
         loc: patchedLoc,
         messageId: "issue:unknown-classname",
         data: {
-          classname: cls,
+          classname: customClass,
         },
         suggest:
           range[0] && range[1]
@@ -135,7 +109,7 @@ const detectCustomClassnames = (
                 {
                   messageId: "fix:unknown-classname:remove",
                   data: {
-                    classname: cls,
+                    classname: customClass,
                   },
                   fix: (fixer) =>
                     fixer.replaceTextRange([start, end], patchedValue),

@@ -9,6 +9,7 @@ import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-
 
 import urlCreator from "../url-creator";
 import { getPropertiesFromCssRule } from "../utils/get-properties-from-css-rule";
+import { joiner } from "../utils/joiner";
 import { mapGetKeyFromSetValues } from "../utils/map";
 import {
   parsePluginSettings,
@@ -83,32 +84,6 @@ const getCommonProperties = (groupMembers: Map<string, Set<string>>) => {
   return commonProperties;
 };
 
-const removeContradictions = (
-  targets: Array<string>,
-  classNames: Array<string>,
-  whitespaces: Array<string>,
-  headSpace: boolean,
-  tailSpace: boolean,
-) => {
-  // Make a copy of whitespaces because we don't want to mutate the original array
-  // (Remember that ESLint runs several times and we don't want to mess up the whitespaces for the next runs)
-  const spaces = [...whitespaces];
-
-  const head = headSpace ? spaces.shift() : "";
-  const tail = tailSpace ? spaces.pop() : "";
-
-  const validatedClasses: Array<string> = [];
-  for (const [index, className] of classNames.entries()) {
-    if (!targets.includes(className)) {
-      const spacer =
-        validatedClasses.length === 0 ? "" : (spaces[index - 1] ?? " ");
-      validatedClasses.push(spacer + className);
-    }
-  }
-  if (validatedClasses.length === 0) return "";
-  return head + validatedClasses.join("") + tail;
-};
-
 const getContradictions = (
   context: RuleContext,
   settings: PluginSettings,
@@ -164,13 +139,13 @@ const getContradictions = (
         const otherClassnamesFormatted = otherClassnames
           .map((cn) => `'${cn}'`)
           .join(", ");
-        let patchedValue = removeContradictions(
-          otherClassnames,
+        let patchedValue = joiner({
           classNames,
           whitespaces,
           headSpace,
           tailSpace,
-        );
+          validator: (cls) => !otherClassnames.includes(cls),
+        });
         patchedValue = prefix + patchedValue + suffix;
         const patchedLoc = generateLocForClassname(
           node,
@@ -221,7 +196,6 @@ export const noContradictingClassname = createRule<Options, MessageIds>({
       "issue:contradiction": `'{{classname}}' conflicts with {{otherClassnames}}.`,
       "fix:contradiction:keep": `Keep '{{keepClassname}}' (remove {{removeClassnames}}).`,
     },
-    // fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`
     schema: [
       {
