@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 
 import {
   getBaseClassname,
@@ -33,5 +33,14 @@ test("getModifiersPrefix", () => {
 test("passRegexTest", () => {
   expect(passRegexTest(`js-[a-z0-9-]+`, `js-custom`)).toBe(true);
   expect(passRegexTest(`js-[a-z0-9-]+`, `custom`)).toBe(false);
-  expect(passRegexTest(`(js-[a-z0-9-]+`, `invalid-reg-ex`)).toBe(false);
+  // Invalid regex made on purpose to test the function's robustness against it
+  const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+  const invalidPattern = `(js-[a-z0-9-]+`;
+  const invalidRegExResult = passRegexTest(invalidPattern, `invalid-reg-ex`);
+  expect(invalidRegExResult).toBe(false);
+  expect(spy).toHaveBeenCalledWith(
+    expect.stringContaining(`Invalid regex pattern: ${invalidPattern}`),
+    expect.any(SyntaxError),
+  );
+  spy.mockRestore();
 });
