@@ -12,9 +12,9 @@ import {
 } from "./no-contradicting-classname";
 
 const suggest = (
-  classname: string,
+  keptClassname: string,
   output: string,
-  removeClassnames: Array<string>,
+  removedClassnames: Array<string>,
 ): TestCaseError<MessageIds> => {
   return {
     messageId: "issue:contradiction",
@@ -22,8 +22,8 @@ const suggest = (
       {
         messageId: "fix:contradiction:keep",
         data: {
-          keepClassname: classname,
-          removeClassnames: removeClassnames.map((cn) => `"${cn}"`).join(", "),
+          keepClassname: keptClassname,
+          removeClassnames: removedClassnames.map((cn) => `'${cn}'`).join(", "),
         },
         output: output,
       },
@@ -73,11 +73,37 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
       languageOptions: withAngularParser,
     },
     {
+      code: `<h1 class="block flex md:inline md:w-full md:w-0">display</h1>`,
+      errors: [
+        suggest(
+          "block",
+          `<h1 class="block md:inline md:w-full md:w-0">display</h1>`,
+          ["flex"],
+        ),
+        suggest(
+          "flex",
+          `<h1 class="flex md:inline md:w-full md:w-0">display</h1>`,
+          ["block"],
+        ),
+        suggest(
+          "md:w-full",
+          `<h1 class="block flex md:inline md:w-full">display</h1>`,
+          ["md:w-0"],
+        ),
+        suggest(
+          "md:w-0",
+          `<h1 class="block flex md:inline md:w-0">display</h1>`,
+          ["md:w-full"],
+        ),
+      ],
+      languageOptions: withAngularParser,
+    },
+    {
       code: `<h1 class="block w-10 absolute w-20 flex">2 conflicts</h1>`,
       errors: [
         suggest(
           "block",
-          `<h1 class="block w-10 absolute w-20 ">2 conflicts</h1>`,
+          `<h1 class="block w-10 absolute w-20">2 conflicts</h1>`,
           ["flex"],
         ),
         suggest(
