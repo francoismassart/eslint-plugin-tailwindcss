@@ -102,7 +102,9 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
         suggest(
           "unknownreact",
           `
-      ctl(\`relative\`)`,
+      ctl(\`
+        relative
+      \`)`,
         ),
       ],
     },
@@ -110,12 +112,12 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       code: `
       ctl(\`
         absolute
-        unknownreact
+        unknown-react
         relative
       \`)`,
       errors: [
         suggest(
-          "unknownreact",
+          "unknown-react",
           `
       ctl(\`
         absolute

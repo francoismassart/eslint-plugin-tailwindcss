@@ -101,7 +101,7 @@ const removeContradictions = (
   for (const [index, className] of classNames.entries()) {
     if (!targets.includes(className)) {
       const spacer =
-        validatedClasses.length === 0 ? "" : (spaces[index] ?? " ");
+        validatedClasses.length === 0 ? "" : (spaces[index - 1] ?? " ");
       validatedClasses.push(spacer + className);
     }
   }

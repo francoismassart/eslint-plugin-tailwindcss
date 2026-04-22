@@ -59,23 +59,24 @@ const removeClassname = (
   headSpace: boolean,
   tailSpace: boolean,
 ) => {
-  // Generates the "cleaned" attribute value
-  let newClassNamesValue = "";
-  let classNamesCount = 0;
-  for (let index = 0; index < classNames.length; index++) {
-    const w = whitespaces[index] ?? "";
-    const cls = classNames[index];
-    // Ignore the unknown classname and keep the rest, including whitespaces
-    if (invalidClassName !== cls) {
-      newClassNamesValue += headSpace ? `${w}${cls}` : `${cls}${w}`;
-      classNamesCount++;
-    }
-    if (headSpace && tailSpace && index === classNames.length - 1) {
-      newClassNamesValue += whitespaces.at(-1) ?? "";
+  // Make a copy of whitespaces because we don't want to mutate the original array
+  // (Remember that ESLint runs several times and we don't want to mess up the whitespaces for the next runs)
+  const spaces = [...whitespaces];
+
+  const head = headSpace ? spaces.shift() : "";
+  const tail = tailSpace ? spaces.pop() : "";
+
+  const validatedClasses: Array<string> = [];
+  for (const [index, className] of classNames.entries()) {
+    if (className !== invalidClassName) {
+      const spacer =
+        validatedClasses.length === 0 ? "" : (spaces[index - 1] ?? " ");
+      validatedClasses.push(spacer + className);
     }
   }
-  if (classNamesCount <= 1) newClassNamesValue = newClassNamesValue.trim();
-  return newClassNamesValue;
+
+  if (validatedClasses.length === 0) return "";
+  return head + validatedClasses.join("") + tail;
 };
 
 const detectCustomClassnames = (
