@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  /* On réinitialise l'échelle d'espacement globale pour le padding */
+  --padding-*: initial;
+
+  /* On définit les seules valeurs autorisées */
+  --padding-small: 0.5rem; /* génère p-small */
+  --padding-medium: 1rem; /* génère p-medium */
+  --padding-large: 2rem; /* génère p-large */
+}
