@@ -13,6 +13,8 @@ export type PluginSettings = {
   cssConfigPath: string;
   // functions are use for both callees and template literals
   functions?: Array<string>; // No support for `Set<string>`
+  // keys to ignore in object expressions
+  ignoredKeys?: Array<string>; // No support for `Set<string>`
 };
 
 /**
@@ -44,6 +46,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     // Template Literals or custom function
     "tw",
   ],
+  // keys to ignore in object expressions (used by `cva`, `tv`, etc.)
+  ignoredKeys: ["defaultVariants", "compoundVariants"],
 };
 
 // TODO tailwindPreserveWhitespace => New rule
@@ -72,6 +76,14 @@ export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
     items: { type: "string", minLength: 0 },
     uniqueItems: true,
     default: DEFAULT_SETTINGS.functions,
+  },
+  ignoredKeys: {
+    description:
+      "List of keys to ignore in object expressions (used by `cva`, `tv`, etc.)",
+    type: "array",
+    items: { type: "string", minLength: 0 },
+    uniqueItems: true,
+    default: DEFAULT_SETTINGS.ignoredKeys,
   },
 };
 
