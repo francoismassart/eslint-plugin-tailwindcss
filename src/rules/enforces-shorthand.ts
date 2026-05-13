@@ -146,8 +146,14 @@ const detectGapShorthand = (classNames: Array<string>) => {
 const detectPaddingShorthand = (classNames: Array<string>) => {
   const pattern = /^(?<prefix>-?(?:p|px|py|pt|pb|pl|pr))-(?<value>.+)$/;
   const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("px", [["pl", "pr"]]);
-  strategies.set("py", [["pt", "pb"]]);
+  strategies.set("px", [
+    ["pl", "pr"],
+    ["ps", "pe"],
+  ]);
+  strategies.set("py", [
+    ["pt", "pb"],
+    ["pbs", "pbe"],
+  ]);
   strategies.set("p", [["px", "py"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
@@ -155,8 +161,14 @@ const detectPaddingShorthand = (classNames: Array<string>) => {
 const detectMarginShorthand = (classNames: Array<string>) => {
   const pattern = /^(?<prefix>-?(?:m|mx|my|mt|mb|ml|mr))-(?<value>.+)$/;
   const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("mx", [["ml", "mr"]]);
-  strategies.set("my", [["mt", "mb"]]);
+  strategies.set("mx", [
+    ["ml", "mr"],
+    ["ms", "me"],
+  ]);
+  strategies.set("my", [
+    ["mt", "mb"],
+    ["mbs", "mbe"],
+  ]);
   strategies.set("m", [["mx", "my"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
@@ -178,7 +190,6 @@ const detectTruncateShorthand = (classNames: Array<string>) => {
   return detectShorthand({ classNames, pattern, strategies });
 };
 
-// rounded s e t r b l ss se ee es tl tr br bl https://tailwindcss.com/docs/border-radius
 const detectRoundedShorthand = (classNames: Array<string>) => {
   const pattern =
     /^(?<prefix>(rounded(-(s|e|t|r|b|l|ss|se|ee|es|tl|tr|br|bl))?))-(?<value>.+)$/;
@@ -198,6 +209,22 @@ const detectRoundedShorthand = (classNames: Array<string>) => {
     ["rounded-l", "rounded-r"],
     ["rounded-s", "rounded-e"],
   ]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
+const detectBorderShorthand = (classNames: Array<string>) => {
+  const pattern =
+    /^(?<prefix>(border-(x|y|s|e|bs|be|t|r|b|l)))(-(?<value>.+))?$/;
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("border-y", [
+    ["border-t", "border-b"],
+    ["border-bs", "border-be"],
+  ]);
+  strategies.set("border-x", [
+    ["border-l", "border-r"],
+    ["border-s", "border-e"],
+  ]);
+  strategies.set("border", [["border-x", "border-y"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
@@ -233,7 +260,7 @@ const replaceByShorthands = (
       // TODO ? https://tailwindcss.com/docs/font-size vs https://tailwindcss.com/docs/line-height combo
       const truncateClasses = detectTruncateShorthand(baseCls);
       const roundedClasses = detectRoundedShorthand(baseCls);
-      // border x y s e bs be t r b l https://tailwindcss.com/docs/border-width
+      const borderClasses = detectBorderShorthand(baseCls);
       // border color x y s e bs be t r b l
       // border-spacing-x y
       // scale x y z => scale scale-3d
@@ -252,6 +279,7 @@ const replaceByShorthands = (
         ...sizeClasses.entries(),
         ...truncateClasses.entries(),
         ...roundedClasses.entries(),
+        ...borderClasses.entries(),
       ]);
 
       for (const [shorthand, obsoleteClasses] of allShorthands.entries()) {

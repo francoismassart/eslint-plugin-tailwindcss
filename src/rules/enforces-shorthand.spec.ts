@@ -139,5 +139,20 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       ],
       output: [`ctl("rounded-b-2xl")`],
     },
+    {
+      code: `ctl("border-t-1 border-b-1")`,
+      errors: [generateError(["border-t-1", "border-b-1"], "border-y-1")],
+      output: [`ctl("border-y-1")`],
+    },
+    {
+      code: `ctl("border-t border-b")`,
+      errors: [generateError(["border-t", "border-b"], "border-y")],
+      output: [`ctl("border-y")`],
+    },
+    {
+      code: `ctl("border-t border-b border-x")`,
+      errors: [generateError(["border-t", "border-b"], "border-y")],
+      output: [`ctl("border-x border-y")`, `ctl("border")`],
+    },
   ],
 });
