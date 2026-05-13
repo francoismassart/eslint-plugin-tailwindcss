@@ -51,7 +51,7 @@ const detectShorthand = ({
 }: {
   classNames: Array<string>;
   pattern: RegExp;
-  strategies: Map<string, Array<string>>;
+  strategies: Map<string, Array<Array<string>>>;
 }) => {
   const shorthands = new Map<string, Array<string>>();
   const candidates = new Map<string, Array<string>>();
@@ -83,18 +83,25 @@ const detectShorthand = ({
     // Handle potential negative values
     const negativeCandidates = prefixes.filter((p) => p.startsWith("-"));
     const positiveCandidates = prefixes.filter((p) => !p.startsWith("-"));
-    for (const [index, candidatePrefixes] of [
+    for (const [index, prefixes] of [
       negativeCandidates,
       positiveCandidates,
     ].entries()) {
       const n = index === 0 ? "-" : "";
-      for (const [shorthand, parts] of strategies.entries()) {
-        if (parts.every((part) => candidatePrefixes.includes(`${n}${part}`))) {
-          const valueSuffix = value ? `-${value}` : "";
-          shorthands.set(
-            `${n}${shorthand}${valueSuffix}`,
-            parts.map((part) => `${n}${part}${valueSuffix}`),
-          );
+      for (const [shorthand, combos] of strategies.entries()) {
+        // Some shorthands can have multiple combinations,
+        // for instance `rounded-t` can replace both
+        // `rounded-tl` + `rounded-tr`
+        // and
+        // `rounded-ss` + `rounded-se`
+        for (const combo of combos) {
+          if (combo.every((part) => prefixes.includes(`${n}${part}`))) {
+            const valueSuffix = value ? `-${value}` : "";
+            shorthands.set(
+              `${n}${shorthand}${valueSuffix}`,
+              combo.map((part) => `${n}${part}${valueSuffix}`),
+            );
+          }
         }
       }
     }
@@ -107,68 +114,66 @@ const detectShorthand = ({
 const detectOverflowShorthand = (classNames: Array<string>) => {
   const pattern =
     /^(?<prefix>overflow-(x|y))-(?<value>auto|hidden|clip|visible|scroll)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("overflow", ["overflow-x", "overflow-y"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("overflow", [["overflow-x", "overflow-y"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
 const detectOverscrollShorthand = (classNames: Array<string>) => {
   const pattern = /^(?<prefix>overscroll-(x|y))-(?<value>auto|contain|none)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("overscroll", ["overscroll-x", "overscroll-y"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("overscroll", [["overscroll-x", "overscroll-y"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
-const detectTopRightBottomLeftShorthand = (classNames: Array<string>) => {
+const detectInsetShorthand = (classNames: Array<string>) => {
   const pattern =
     /^(?<prefix>-?(inset(-(x|y))?|top|right|bottom|left))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("inset-x", ["right", "left"]);
-  strategies.set("inset-y", ["top", "bottom"]);
-  strategies.set("inset", ["inset-x", "inset-y"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("inset-x", [["right", "left"]]);
+  strategies.set("inset-y", [["top", "bottom"]]);
+  strategies.set("inset", [["inset-x", "inset-y"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
 const detectGapShorthand = (classNames: Array<string>) => {
   const pattern = /^(?<prefix>(gap(-(x|y))?))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("gap", ["gap-x", "gap-y"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("gap", [["gap-x", "gap-y"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
 const detectPaddingShorthand = (classNames: Array<string>) => {
   const pattern = /^(?<prefix>-?(?:p|px|py|pt|pb|pl|pr))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("px", ["pl", "pr"]);
-  strategies.set("py", ["pt", "pb"]);
-  strategies.set("p", ["px", "py"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("px", [["pl", "pr"]]);
+  strategies.set("py", [["pt", "pb"]]);
+  strategies.set("p", [["px", "py"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
 const detectMarginShorthand = (classNames: Array<string>) => {
   const pattern = /^(?<prefix>-?(?:m|mx|my|mt|mb|ml|mr))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("mx", ["ml", "mr"]);
-  strategies.set("my", ["mt", "mb"]);
-  strategies.set("m", ["mx", "my"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("mx", [["ml", "mr"]]);
+  strategies.set("my", [["mt", "mb"]]);
+  strategies.set("m", [["mx", "my"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
 const detectSizeShorthand = (classNames: Array<string>) => {
   const pattern = /^(?<prefix>-?(?:w|h))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("size", ["w", "h"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("size", [["w", "h"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
 const detectTruncateShorthand = (classNames: Array<string>) => {
   const pattern =
     /^(?<prefix>(?:overflow-hidden|text-ellipsis|whitespace-nowrap))$/;
-  const strategies = new Map<string, Array<string>>();
+  const strategies = new Map<string, Array<Array<string>>>();
   strategies.set("truncate", [
-    "overflow-hidden",
-    "text-ellipsis",
-    "whitespace-nowrap",
+    ["overflow-hidden", "text-ellipsis", "whitespace-nowrap"],
   ]);
   return detectShorthand({ classNames, pattern, strategies });
 };
@@ -177,16 +182,22 @@ const detectTruncateShorthand = (classNames: Array<string>) => {
 const detectRoundedShorthand = (classNames: Array<string>) => {
   const pattern =
     /^(?<prefix>(rounded(-(s|e|t|r|b|l|ss|se|ee|es|tl|tr|br|bl))?))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<string>>();
-  strategies.set("rounded-t", ["rounded-tl", "rounded-tr"]);
-  strategies.set("rounded-t", ["rounded-ss", "rounded-se"]);
-  strategies.set("rounded-r", ["rounded-tr", "rounded-br"]);
-  strategies.set("rounded-b", ["rounded-bl", "rounded-br"]);
-  strategies.set("rounded-b", ["rounded-ee", "rounded-es"]);
-  strategies.set("rounded-l", ["rounded-tl", "rounded-bl"]);
-  strategies.set("rounded", ["rounded-t", "rounded-b"]);
-  strategies.set("rounded", ["rounded-l", "rounded-r"]);
-  strategies.set("rounded", ["rounded-s", "rounded-e"]);
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("rounded-t", [
+    ["rounded-tl", "rounded-tr"],
+    ["rounded-ss", "rounded-se"],
+  ]);
+  strategies.set("rounded-r", [["rounded-tr", "rounded-br"]]);
+  strategies.set("rounded-b", [
+    ["rounded-bl", "rounded-br"],
+    ["rounded-ee", "rounded-es"],
+  ]);
+  strategies.set("rounded-l", [["rounded-tl", "rounded-bl"]]);
+  strategies.set("rounded", [
+    ["rounded-t", "rounded-b"],
+    ["rounded-l", "rounded-r"],
+    ["rounded-s", "rounded-e"],
+  ]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
@@ -214,8 +225,7 @@ const replaceByShorthands = (
 
       const overflowClasses = detectOverflowShorthand(baseCls);
       const overscrollClasses = detectOverscrollShorthand(baseCls);
-      const topRightBottomLeftClasses =
-        detectTopRightBottomLeftShorthand(baseCls);
+      const insetClasses = detectInsetShorthand(baseCls);
       const gapClasses = detectGapShorthand(baseCls);
       const paddingClasses = detectPaddingShorthand(baseCls);
       const marginClasses = detectMarginShorthand(baseCls);
@@ -235,7 +245,7 @@ const replaceByShorthands = (
       const allShorthands = new Map<string, Array<string>>([
         ...overflowClasses.entries(),
         ...overscrollClasses.entries(),
-        ...topRightBottomLeftClasses.entries(),
+        ...insetClasses.entries(),
         ...gapClasses.entries(),
         ...paddingClasses.entries(),
         ...marginClasses.entries(),
