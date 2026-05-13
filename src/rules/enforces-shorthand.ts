@@ -159,7 +159,7 @@ const detectPaddingShorthand = (classNames: Array<string>) => {
 };
 
 const detectMarginShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?(?:m|mx|my|mt|mb|ml|mr))-(?<value>.+)$/;
+  const pattern = /^(?<prefix>-?m(x|y|t|b|l|r))-(?<value>.+)$/;
   const strategies = new Map<string, Array<Array<string>>>();
   strategies.set("mx", [
     ["ml", "mr"],
@@ -212,6 +212,7 @@ const detectRoundedShorthand = (classNames: Array<string>) => {
   return detectShorthand({ classNames, pattern, strategies });
 };
 
+// Works for border width + border color
 const detectBorderShorthand = (classNames: Array<string>) => {
   const pattern =
     /^(?<prefix>(border-(x|y|s|e|bs|be|t|r|b|l)))(-(?<value>.+))?$/;
@@ -225,6 +226,65 @@ const detectBorderShorthand = (classNames: Array<string>) => {
     ["border-s", "border-e"],
   ]);
   strategies.set("border", [["border-x", "border-y"]]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
+const detectBorderSpacingShorthand = (classNames: Array<string>) => {
+  const pattern = /^(?<prefix>(border-spacing-(x|y)))-(?<value>.+)$/;
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("border-spacing", [["border-spacing-x", "border-spacing-y"]]);
+  strategies.set("border", [["border-x", "border-y"]]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
+const detectScaleShorthand = (classNames: Array<string>) => {
+  const pattern = /^(?<prefix>-?scale-(x|y))-(?<value>.+)$/;
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("scale", [["scale-x", "scale-y"]]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
+const detectSkewShorthand = (classNames: Array<string>) => {
+  const pattern = /^(?<prefix>-?skew-(x|y))-(?<value>.+)$/;
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("skew", [["skew-x", "skew-y"]]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
+const detectTranslateShorthand = (classNames: Array<string>) => {
+  const pattern = /^(?<prefix>-?translate-(x|y))-(?<value>.+)$/;
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("translate", [["translate-x", "translate-y"]]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
+const detectScrollMarginShorthand = (classNames: Array<string>) => {
+  const pattern = /^(?<prefix>-?scroll-m(x|y|s|e|bs|be|t|r|b|l))-(?<value>.+)$/;
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("scroll-mx", [
+    ["scroll-ml", "scroll-mr"],
+    ["scroll-ms", "scroll-me"],
+  ]);
+  strategies.set("scroll-my", [
+    ["scroll-mt", "scroll-mb"],
+    ["scroll-mbs", "scroll-mbe"],
+  ]);
+  strategies.set("scroll-m", [["scroll-mx", "scroll-my"]]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
+const detectScrollPaddingShorthand = (classNames: Array<string>) => {
+  const pattern = /^(?<prefix>-?scroll-p(x|y|s|e|bs|be|t|r|b|l))-(?<value>.+)$/;
+  const strategies = new Map<string, Array<Array<string>>>();
+  strategies.set("scroll-px", [
+    ["scroll-pl", "scroll-pr"],
+    ["scroll-ps", "scroll-pe"],
+  ]);
+  strategies.set("scroll-py", [
+    ["scroll-pt", "scroll-pb"],
+    ["scroll-pbs", "scroll-pbe"],
+  ]);
+  strategies.set("scroll-p", [["scroll-px", "scroll-py"]]);
   return detectShorthand({ classNames, pattern, strategies });
 };
 
@@ -261,13 +321,12 @@ const replaceByShorthands = (
       const truncateClasses = detectTruncateShorthand(baseCls);
       const roundedClasses = detectRoundedShorthand(baseCls);
       const borderClasses = detectBorderShorthand(baseCls);
-      // border color x y s e bs be t r b l
-      // border-spacing-x y
-      // scale x y z => scale scale-3d
-      // skew x y
-      // translate x y z => translate translate-3d
-      // scroll-m trbl x y...
-      // scroll-p...
+      const borderSpacingClasses = detectBorderSpacingShorthand(baseCls);
+      const scaleClasses = detectScaleShorthand(baseCls);
+      const skewClasses = detectSkewShorthand(baseCls);
+      const translateClasses = detectTranslateShorthand(baseCls);
+      const scrollMarginClasses = detectScrollMarginShorthand(baseCls);
+      const scrollPaddingClasses = detectScrollPaddingShorthand(baseCls);
 
       const allShorthands = new Map<string, Array<string>>([
         ...overflowClasses.entries(),
@@ -280,6 +339,12 @@ const replaceByShorthands = (
         ...truncateClasses.entries(),
         ...roundedClasses.entries(),
         ...borderClasses.entries(),
+        ...borderSpacingClasses.entries(),
+        ...scaleClasses.entries(),
+        ...skewClasses.entries(),
+        ...translateClasses.entries(),
+        ...scrollMarginClasses.entries(),
+        ...scrollPaddingClasses.entries(),
       ]);
 
       for (const [shorthand, obsoleteClasses] of allShorthands.entries()) {

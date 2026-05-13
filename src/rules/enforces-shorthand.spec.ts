@@ -94,6 +94,16 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       output: [`ctl("-inset-10")`],
     },
     {
+      code: `ctl("-my-10 -mx-10")`,
+      errors: [generateError(["-mx-10", "-my-10"], "-m-10")],
+      output: [`ctl("-m-10")`],
+    },
+    {
+      code: `ctl("dark:-my-10 dark:-mx-10")`,
+      errors: [generateError(["dark:-mx-10", "dark:-my-10"], "dark:-m-10")],
+      output: [`ctl("dark:-m-10")`],
+    },
+    {
       code: `ctl("gap-x-10 gap-y-10")`,
       errors: [generateError(["gap-x-10", "gap-y-10"], "gap-10")],
       output: [`ctl("gap-10")`],
@@ -153,6 +163,33 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       code: `ctl("border-t border-b border-x")`,
       errors: [generateError(["border-t", "border-b"], "border-y")],
       output: [`ctl("border-x border-y")`, `ctl("border")`],
+    },
+    {
+      code: `ctl("border-spacing-x-20 border-spacing-y-20")`,
+      errors: [
+        generateError(
+          ["border-spacing-x-20", "border-spacing-y-20"],
+          "border-spacing-20",
+        ),
+      ],
+      output: [`ctl("border-spacing-20")`],
+    },
+    {
+      code: `ctl("scale-x-150 scale-y-150")`,
+      errors: [generateError(["scale-x-150", "scale-y-150"], "scale-150")],
+      output: [`ctl("scale-150")`],
+    },
+    {
+      code: `ctl("skew-x-150 dark:-skew-x-100 dark:skew-y-100 skew-y-150")`,
+      errors: [generateError(["skew-x-150", "skew-y-150"], "skew-150")],
+      output: [`ctl("dark:-skew-x-100 dark:skew-y-100 skew-150")`],
+    },
+    {
+      code: `ctl("-translate-y-10 -translate-x-10")`,
+      errors: [
+        generateError(["-translate-x-10", "-translate-y-10"], "-translate-10"),
+      ],
+      output: [`ctl("-translate-10")`],
     },
   ],
 });
