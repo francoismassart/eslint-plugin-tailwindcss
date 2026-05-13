@@ -125,5 +125,19 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       ],
       output: [`ctl("debug truncate")`],
     },
+    {
+      code: `ctl("rounded-bl-2xl rounded-br-2xl")`,
+      errors: [
+        generateError(["rounded-bl-2xl", "rounded-br-2xl"], "rounded-b-2xl"),
+      ],
+      output: [`ctl("rounded-b-2xl")`],
+    },
+    {
+      code: `ctl("rounded-ee-2xl rounded-es-2xl")`,
+      errors: [
+        generateError(["rounded-ee-2xl", "rounded-es-2xl"], "rounded-b-2xl"),
+      ],
+      output: [`ctl("rounded-b-2xl")`],
+    },
   ],
 });

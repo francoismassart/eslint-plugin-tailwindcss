@@ -173,6 +173,23 @@ const detectTruncateShorthand = (classNames: Array<string>) => {
   return detectShorthand({ classNames, pattern, strategies });
 };
 
+// rounded s e t r b l ss se ee es tl tr br bl https://tailwindcss.com/docs/border-radius
+const detectRoundedShorthand = (classNames: Array<string>) => {
+  const pattern =
+    /^(?<prefix>(rounded(-(s|e|t|r|b|l|ss|se|ee|es|tl|tr|br|bl))?))-(?<value>.+)$/;
+  const strategies = new Map<string, Array<string>>();
+  strategies.set("rounded-t", ["rounded-tl", "rounded-tr"]);
+  strategies.set("rounded-t", ["rounded-ss", "rounded-se"]);
+  strategies.set("rounded-r", ["rounded-tr", "rounded-br"]);
+  strategies.set("rounded-b", ["rounded-bl", "rounded-br"]);
+  strategies.set("rounded-b", ["rounded-ee", "rounded-es"]);
+  strategies.set("rounded-l", ["rounded-tl", "rounded-bl"]);
+  strategies.set("rounded", ["rounded-t", "rounded-b"]);
+  strategies.set("rounded", ["rounded-l", "rounded-r"]);
+  strategies.set("rounded", ["rounded-s", "rounded-e"]);
+  return detectShorthand({ classNames, pattern, strategies });
+};
+
 const replaceByShorthands = (
   context: RuleContext,
   settings: PluginSettings,
@@ -203,9 +220,9 @@ const replaceByShorthands = (
       const paddingClasses = detectPaddingShorthand(baseCls);
       const marginClasses = detectMarginShorthand(baseCls);
       const sizeClasses = detectSizeShorthand(baseCls);
-      // TODO https://tailwindcss.com/docs/font-size vs https://tailwindcss.com/docs/line-height combo
+      // TODO ? https://tailwindcss.com/docs/font-size vs https://tailwindcss.com/docs/line-height combo
       const truncateClasses = detectTruncateShorthand(baseCls);
-      // rounded s e t p b l ss se ee es tl tr br bl https://tailwindcss.com/docs/border-radius
+      const roundedClasses = detectRoundedShorthand(baseCls);
       // border x y s e bs be t r b l https://tailwindcss.com/docs/border-width
       // border color x y s e bs be t r b l
       // border-spacing-x y
@@ -224,6 +241,7 @@ const replaceByShorthands = (
         ...marginClasses.entries(),
         ...sizeClasses.entries(),
         ...truncateClasses.entries(),
+        ...roundedClasses.entries(),
       ]);
 
       for (const [shorthand, obsoleteClasses] of allShorthands.entries()) {
