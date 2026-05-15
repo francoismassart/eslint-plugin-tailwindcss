@@ -21,16 +21,27 @@ export type AtomicNode =
   | VueAST.VAttribute
   | VueAST.VLiteral;
 
+/**
+ * Recursively extracts literal nodes from the given AST node.
+ * @param settings Plugin settings
+ * @param context Rule context
+ * @param node Current AST node
+ * @param rootNode Root AST node
+ * @param depth Current recursion depth
+ * @param targetKeys Keys to target for extraction, if specified, it'll only extract from properties with these keys
+ * @returns Array of atomic nodes
+ */
 const getLiteralsFromNode = <TRuleContext>(
   settings: PluginSettings,
   context: TRuleContext,
   node: TSESTree.Node | VueAST.VAttribute,
   rootNode: TSESTree.Node | VueAST.VAttribute,
   depth: number = 0,
+  targetKeys: Array<string> = [],
 ): Array<AtomicNode> => {
-  //   const indent = "  ".repeat(depth);
-  //   console.log(indent, "getLiteralsFromNode", node.type);
-  //   console.log(indent, "-------------------");
+  // const indent = "  ".repeat(depth);
+  // console.log(indent, "getLiteralsFromNode", node.type, targetKeys);
+  // console.log(indent, "-------------------");
 
   const literals: Array<AtomicNode> = [];
 
@@ -45,6 +56,7 @@ const getLiteralsFromNode = <TRuleContext>(
             element,
             rootNode,
             depth + 1,
+            targetKeys,
           ),
         );
       }
@@ -151,19 +163,33 @@ const getLiteralsFromNode = <TRuleContext>(
         rootNode.key &&
         // @ts-expect-error This comparison appears to be unintentional because the types '"VIdentifier"' and '"VDirectiveKey"' have no overlap.ts(2367)
         rootNode.key.type === "VDirectiveKey";
+      const ignoredKeys = settings.ignoredKeys || [];
       for (const property of node.properties) {
         if (property.type === TSESTree.AST_NODE_TYPES.SpreadElement) {
           continue;
         }
-        const propertyValue =
+        if (
+          targetKeys.length > 0 &&
+          property.key.type === "Identifier" &&
+          !targetKeys.includes(property.key.name)
+        ) {
+          // If targetKeys is specified, only process properties with keys in targetKeys
+          continue;
+        }
+        const isIgnoredParent =
+          property.key.type === "Identifier" &&
+          ignoredKeys.includes(property.key.name);
+        const nodeValue =
           isUsedByClassNamesPlugin || isVue ? property.key : property.value;
+        // Walk for literals
         literals.push(
           ...getLiteralsFromNode(
             settings,
             context,
-            propertyValue,
+            nodeValue,
             rootNode,
             depth + 1,
+            isIgnoredParent ? ["class"] : targetKeys,
           ),
         );
       }

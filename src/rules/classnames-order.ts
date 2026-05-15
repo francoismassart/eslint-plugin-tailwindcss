@@ -8,6 +8,7 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
 import urlCreator from "../url-creator";
+import { joiner } from "../utils/joiner";
 import {
   parsePluginSettings,
   PluginSettings,
@@ -42,30 +43,6 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const joinSortedClassnames = (
-  classNames: Array<string>,
-  whitespaces: Array<string>,
-  headSpace: boolean,
-  tailSpace: boolean,
-) => {
-  // Make a copy of whitespaces because we don't want to mutate the original array
-  // (Remember that ESLint runs several times and we don't want to mess up the whitespaces for the next runs)
-  const spaces = [...whitespaces];
-
-  const head = headSpace ? spaces.shift() : "";
-  const tail = tailSpace ? spaces.pop() : "";
-
-  const validatedClasses: Array<string> = [];
-  for (const [index, className] of classNames.entries()) {
-    const spacer =
-      validatedClasses.length === 0 ? "" : (spaces[index - 1] ?? " ");
-    validatedClasses.push(spacer + className);
-  }
-
-  if (validatedClasses.length === 0) return "";
-  return head + validatedClasses.join("") + tail;
-};
-
 const sortClassnames = (
   context: RuleContext,
   settings: PluginSettings,
@@ -87,12 +64,12 @@ const sortClassnames = (
     );
 
     // Generates the validated/sorted attribute value
-    let validatedClassNamesValue = joinSortedClassnames(
-      orderedClassNames,
+    let validatedClassNamesValue = joiner({
+      classNames: orderedClassNames,
       whitespaces,
       headSpace,
       tailSpace,
-    );
+    });
 
     if (originalClassNamesValue !== validatedClassNamesValue) {
       validatedClassNamesValue = prefix + validatedClassNamesValue + suffix;

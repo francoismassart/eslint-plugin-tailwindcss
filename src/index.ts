@@ -6,6 +6,10 @@ import {
   RULE_NAME as CLASSNAMES_ORDER,
 } from "./rules/classnames-order";
 import {
+  enforcesShorthand,
+  RULE_NAME as ENFORCES_SHORTHAND,
+} from "./rules/enforces-shorthand";
+import {
   noContradictingClassname,
   RULE_NAME as NO_CONTRADICTING_CLASSNAME,
 } from "./rules/no-contradicting-classname";
@@ -37,6 +41,7 @@ const plugin = {
   },
   rules: {
     [CLASSNAMES_ORDER]: classnamesOrder,
+    [ENFORCES_SHORTHAND]: enforcesShorthand,
     [NO_CUSTOM_CLASSNAME]: noCustomClassname,
     [NO_CONTRADICTING_CLASSNAME]: noContradictingClassname,
   },
@@ -44,6 +49,7 @@ const plugin = {
 
 const recommended = {
   [CLASSNAMES_ORDER]: "warn",
+  [ENFORCES_SHORTHAND]: "warn",
   [NO_CUSTOM_CLASSNAME]: "warn",
   [NO_CONTRADICTING_CLASSNAME]: "error",
 } as const;
