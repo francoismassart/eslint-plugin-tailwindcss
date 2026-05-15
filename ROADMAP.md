@@ -1,16 +1,14 @@
 # eslint-plugin-tailwindcss roadmap
 
-// Infos:
-//
-https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/enforces-shorthand.md
+- [enforces-negative-arbitrary-values](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/enforces-negative-arbitrary-values.md)
+- [no-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-arbitrary-value.md)
+- [no-unnecessary-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-unnecessary-arbitrary-value.md)
+- support for ESLint v10
+- performances improvements
 
-https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/enforces-negative-arbitrary-values.md
+## May 2026
 
-https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-arbitrary-value.md
-
-À confirmer si c'est possible:
-
-https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-unnecessary-arbitrary-value.md
+- `enforces-shorthand`
 
 ## April 2026
 
