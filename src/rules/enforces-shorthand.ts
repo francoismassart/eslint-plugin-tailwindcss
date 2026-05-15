@@ -44,248 +44,220 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const detectShorthand = ({
-  classNames,
-  pattern,
-  strategies,
-}: {
-  classNames: Array<string>;
+type ShorthandRule = {
   pattern: RegExp;
-  strategies: Map<string, Array<Array<string>>>;
-}) => {
+  strategies: Record<string, Array<Array<string>>>;
+};
+
+export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
+  padding: {
+    // p, px, py, pt, pb, pl, pr, ps, pe, pbs, pbe
+    pattern: /^(?<negative>)(?<prefix>p[xytbrlse]?|p(bs|be))-(?<value>.+)$/,
+    strategies: {
+      px: [
+        ["pl", "pr"],
+        ["ps", "pe"],
+      ],
+      py: [
+        ["pt", "pb"],
+        ["pbs", "pbe"],
+      ],
+      p: [["px", "py"]],
+    },
+  },
+  margin: {
+    // m, mx, my, mt, mb, ml, mr, ms, me, mbs, mbe
+    pattern: /^(?<negative>-?)(?<prefix>m[xytbrlse]?|m(bs|be))-(?<value>.+)$/,
+    strategies: {
+      mx: [
+        ["ml", "mr"],
+        ["ms", "me"],
+      ],
+      my: [
+        ["mt", "mb"],
+        ["mbs", "mbe"],
+      ],
+      m: [["mx", "my"]],
+    },
+  },
+  inset: {
+    // top, right, bottom, left, inset, inset-x, inset-y
+    pattern:
+      /^(?<negative>-?)(?<prefix>inset(-[xy])?|top|right|bottom|left)-(?<value>.+)$/,
+    strategies: {
+      "inset-x": [["right", "left"]],
+      "inset-y": [["top", "bottom"]],
+      inset: [["inset-x", "inset-y"]],
+    },
+  },
+  gap: {
+    pattern: /^(?<negative>)(?<prefix>gap(-[xy])?)-(?<value>.+)$/,
+    strategies: {
+      gap: [["gap-x", "gap-y"]],
+    },
+  },
+  size: {
+    pattern: /^(?<negative>)(?<prefix>w|h)-(?<value>.+)$/,
+    strategies: {
+      size: [["w", "h"]],
+    },
+  },
+  border: {
+    // border-width, border-color
+    pattern:
+      /^(?<negative>)(?<prefix>border-[xytbrlse]|border-(bs|be))(-(?<value>.+))?$/,
+    strategies: {
+      "border-y": [
+        ["border-t", "border-b"],
+        ["border-bs", "border-be"],
+      ],
+      "border-x": [
+        ["border-l", "border-r"],
+        ["border-s", "border-e"],
+      ],
+      border: [["border-x", "border-y"]],
+    },
+  },
+  borderSpacing: {
+    pattern: /^(?<negative>)(?<prefix>border-spacing-[xy])-(?<value>.+)$/,
+    strategies: {
+      "border-spacing": [["border-spacing-x", "border-spacing-y"]],
+    },
+  },
+  rounded: {
+    pattern:
+      /^(?<negative>-?)(?<prefix>rounded(?:-(?:ss|se|ee|es|tl|tr|br|bl|[stbrl]))?)-(?<value>[^-]+)$/,
+    strategies: {
+      "rounded-t": [
+        ["rounded-tl", "rounded-tr"],
+        ["rounded-ss", "rounded-se"],
+      ],
+      "rounded-r": [["rounded-tr", "rounded-br"]],
+      "rounded-b": [
+        ["rounded-bl", "rounded-br"],
+        ["rounded-ee", "rounded-es"],
+      ],
+      "rounded-l": [["rounded-tl", "rounded-bl"]],
+      rounded: [
+        ["rounded-t", "rounded-b"],
+        ["rounded-l", "rounded-r"],
+        ["rounded-s", "rounded-e"],
+      ],
+    },
+  },
+  overflow: {
+    pattern:
+      /^(?<negative>)(?<prefix>overflow-[xy])-(?<value>auto|hidden|clip|visible|scroll)$/,
+    strategies: {
+      overflow: [["overflow-x", "overflow-y"]],
+    },
+  },
+  overscroll: {
+    pattern:
+      /^(?<negative>)(?<prefix>overscroll-[xy])-(?<value>auto|contain|none)$/,
+    strategies: {
+      overscroll: [["overscroll-x", "overscroll-y"]],
+    },
+  },
+  scale: {
+    pattern: /^(?<negative>-?)(?<prefix>scale-[xy])-(?<value>.+)$/,
+    strategies: {
+      scale: [["scale-x", "scale-y"]],
+    },
+  },
+  skew: {
+    pattern: /^(?<negative>-?)(?<prefix>skew-[xy])-(?<value>.+)$/,
+    strategies: {
+      skew: [["skew-x", "skew-y"]],
+    },
+  },
+  translate: {
+    pattern: /^(?<negative>-?)(?<prefix>translate-[xy])-(?<value>.+)$/,
+    strategies: {
+      translate: [["translate-x", "translate-y"]],
+    },
+  },
+  scrollMargin: {
+    pattern:
+      /^(?<negative>-?)(?<prefix>scroll-m[xytbrlse]?|scroll-m(bs|be))-(?<value>.+)$/,
+    strategies: {
+      "scroll-mx": [
+        ["scroll-ml", "scroll-mr"],
+        ["scroll-ms", "scroll-me"],
+      ],
+      "scroll-my": [
+        ["scroll-mt", "scroll-mb"],
+        ["scroll-mbs", "scroll-mbe"],
+      ],
+      "scroll-m": [["scroll-mx", "scroll-my"]],
+    },
+  },
+  scrollPadding: {
+    pattern:
+      /^(?<negative>)(?<prefix>scroll-p[xytbrlse]?|scroll-p(bs|be))-(?<value>.+)$/,
+    strategies: {
+      "scroll-px": [
+        ["scroll-pl", "scroll-pr"],
+        ["scroll-ps", "scroll-pe"],
+      ],
+      "scroll-py": [
+        ["scroll-pt", "scroll-pb"],
+        ["scroll-pbs", "scroll-pbe"],
+      ],
+      "scroll-p": [["scroll-px", "scroll-py"]],
+    },
+  },
+  truncate: {
+    pattern:
+      /^(?<negative>)(?<prefix>overflow-hidden|text-ellipsis|whitespace-nowrap)(?<value>)$/,
+    strategies: {
+      truncate: [["overflow-hidden", "text-ellipsis", "whitespace-nowrap"]],
+    },
+  },
+};
+
+const detectShorthands = (
+  classNames: Array<string>,
+  strategy: ShorthandRule,
+) => {
   const shorthands = new Map<string, Array<string>>();
-  const candidates = new Map<string, Array<string>>();
+  // We group by "sign + value" (e.g., "-100" and "100" are two distinct groups)
+  const candidates = new Map<
+    string,
+    { negative: string; value: string; prefixes: Set<string> }
+  >();
 
-  // Filter related classes
-  const targets = classNames.filter((cls) => pattern.test(cls));
+  for (const cls of classNames) {
+    const match = cls.match(strategy.pattern);
+    if (!match?.groups) continue;
 
-  // Escape hatch
-  if (targets.length <= 1) return shorthands;
+    const { negative = "", prefix, value = "" } = match.groups;
+    const groupKey = `${negative}${value}`; // e.g. "-100"
 
-  // Grouped by value
-  for (const cls of targets) {
-    const match = cls.match(pattern);
-    if (match && match.groups) {
-      const { prefix, value } = match.groups;
-      if (!prefix) continue;
-      // `value` group can be omitted for some shorthands
-      // like for `truncate` (which replaces `overflow-hidden` + `text-ellipsis` + `whitespace-nowrap`)
-      const valueKey = value || "";
-      if (!candidates.has(valueKey)) candidates.set(valueKey, []);
-      candidates.get(valueKey)?.push(prefix);
+    if (!candidates.has(groupKey)) {
+      candidates.set(groupKey, { negative, value, prefixes: new Set() });
     }
+    candidates.get(groupKey)?.prefixes.add(prefix);
   }
 
-  // Check each value group for potential shorthands
-  for (const [value, prefixes] of candidates.entries()) {
-    // Escape hatch
-    if (prefixes.length <= 1) continue;
-    // Handle potential negative values
-    const negativeCandidates = prefixes.filter((p) => p.startsWith("-"));
-    const positiveCandidates = prefixes.filter((p) => !p.startsWith("-"));
-    for (const [index, prefixes] of [
-      negativeCandidates,
-      positiveCandidates,
-    ].entries()) {
-      const n = index === 0 ? "-" : "";
-      for (const [shorthand, combos] of strategies.entries()) {
-        // Some shorthands can have multiple combinations,
-        // for instance `rounded-t` can replace both
-        // `rounded-tl` + `rounded-tr`
-        // and
-        // `rounded-ss` + `rounded-se`
-        for (const combo of combos) {
-          if (combo.every((part) => prefixes.includes(`${n}${part}`))) {
-            const valueSuffix = value ? `-${value}` : "";
-            shorthands.set(
-              `${n}${shorthand}${valueSuffix}`,
-              combo.map((part) => `${n}${part}${valueSuffix}`),
-            );
-          }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  for (const [_, data] of candidates) {
+    const { negative, value, prefixes } = data;
+    for (const [shorthand, combos] of Object.entries(strategy.strategies)) {
+      for (const combo of combos) {
+        if (combo.every((p) => prefixes.has(p))) {
+          const resourceKey = value
+            ? `${negative}${shorthand}-${value}`
+            : `${negative}${shorthand}`;
+          const result = combo.map((p) =>
+            value ? `${negative}${p}-${value}` : `${negative}${p}`,
+          );
+          shorthands.set(resourceKey, result);
         }
       }
     }
   }
-
-  // shorthands → Map(1) { '-my-10' => [ '-mt-10', '-mb-10' ] }
   return shorthands;
-};
-
-const detectOverflowShorthand = (classNames: Array<string>) => {
-  const pattern =
-    /^(?<prefix>overflow-(x|y))-(?<value>auto|hidden|clip|visible|scroll)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("overflow", [["overflow-x", "overflow-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectOverscrollShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>overscroll-(x|y))-(?<value>auto|contain|none)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("overscroll", [["overscroll-x", "overscroll-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectInsetShorthand = (classNames: Array<string>) => {
-  const pattern =
-    /^(?<prefix>-?(inset(-(x|y))?|top|right|bottom|left))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("inset-x", [["right", "left"]]);
-  strategies.set("inset-y", [["top", "bottom"]]);
-  strategies.set("inset", [["inset-x", "inset-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectGapShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>(gap(-(x|y))?))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("gap", [["gap-x", "gap-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectPaddingShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?(?:p|px|py|pt|pb|pl|pr))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("px", [
-    ["pl", "pr"],
-    ["ps", "pe"],
-  ]);
-  strategies.set("py", [
-    ["pt", "pb"],
-    ["pbs", "pbe"],
-  ]);
-  strategies.set("p", [["px", "py"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectMarginShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?m(x|y|t|b|l|r))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("mx", [
-    ["ml", "mr"],
-    ["ms", "me"],
-  ]);
-  strategies.set("my", [
-    ["mt", "mb"],
-    ["mbs", "mbe"],
-  ]);
-  strategies.set("m", [["mx", "my"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectSizeShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?(?:w|h))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("size", [["w", "h"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectTruncateShorthand = (classNames: Array<string>) => {
-  const pattern =
-    /^(?<prefix>(?:overflow-hidden|text-ellipsis|whitespace-nowrap))$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("truncate", [
-    ["overflow-hidden", "text-ellipsis", "whitespace-nowrap"],
-  ]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectRoundedShorthand = (classNames: Array<string>) => {
-  const pattern =
-    /^(?<prefix>(rounded(-(s|e|t|r|b|l|ss|se|ee|es|tl|tr|br|bl))?))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("rounded-t", [
-    ["rounded-tl", "rounded-tr"],
-    ["rounded-ss", "rounded-se"],
-  ]);
-  strategies.set("rounded-r", [["rounded-tr", "rounded-br"]]);
-  strategies.set("rounded-b", [
-    ["rounded-bl", "rounded-br"],
-    ["rounded-ee", "rounded-es"],
-  ]);
-  strategies.set("rounded-l", [["rounded-tl", "rounded-bl"]]);
-  strategies.set("rounded", [
-    ["rounded-t", "rounded-b"],
-    ["rounded-l", "rounded-r"],
-    ["rounded-s", "rounded-e"],
-  ]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-// Works for border width + border color
-const detectBorderShorthand = (classNames: Array<string>) => {
-  const pattern =
-    /^(?<prefix>(border-(x|y|s|e|bs|be|t|r|b|l)))(-(?<value>.+))?$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("border-y", [
-    ["border-t", "border-b"],
-    ["border-bs", "border-be"],
-  ]);
-  strategies.set("border-x", [
-    ["border-l", "border-r"],
-    ["border-s", "border-e"],
-  ]);
-  strategies.set("border", [["border-x", "border-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectBorderSpacingShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>(border-spacing-(x|y)))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("border-spacing", [["border-spacing-x", "border-spacing-y"]]);
-  strategies.set("border", [["border-x", "border-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectScaleShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?scale-(x|y))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("scale", [["scale-x", "scale-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectSkewShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?skew-(x|y))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("skew", [["skew-x", "skew-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectTranslateShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?translate-(x|y))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("translate", [["translate-x", "translate-y"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectScrollMarginShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?scroll-m(x|y|s|e|bs|be|t|r|b|l))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("scroll-mx", [
-    ["scroll-ml", "scroll-mr"],
-    ["scroll-ms", "scroll-me"],
-  ]);
-  strategies.set("scroll-my", [
-    ["scroll-mt", "scroll-mb"],
-    ["scroll-mbs", "scroll-mbe"],
-  ]);
-  strategies.set("scroll-m", [["scroll-mx", "scroll-my"]]);
-  return detectShorthand({ classNames, pattern, strategies });
-};
-
-const detectScrollPaddingShorthand = (classNames: Array<string>) => {
-  const pattern = /^(?<prefix>-?scroll-p(x|y|s|e|bs|be|t|r|b|l))-(?<value>.+)$/;
-  const strategies = new Map<string, Array<Array<string>>>();
-  strategies.set("scroll-px", [
-    ["scroll-pl", "scroll-pr"],
-    ["scroll-ps", "scroll-pe"],
-  ]);
-  strategies.set("scroll-py", [
-    ["scroll-pt", "scroll-pb"],
-    ["scroll-pbs", "scroll-pbe"],
-  ]);
-  strategies.set("scroll-p", [["scroll-px", "scroll-py"]]);
-  return detectShorthand({ classNames, pattern, strategies });
 };
 
 const replaceByShorthands = (
@@ -294,95 +266,50 @@ const replaceByShorthands = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  // console.log(options);
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, context as unknown as GenericRuleContext);
-    // Process the extracted classnames and report
+
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
-    // Skip empty/Single className
     if (classNames.length <= 1) continue;
 
-    // Group by modifier
     const groups = groupByModifiersPrefix(classNames);
+    let currentClassNames = [...classNames];
 
     for (const [modifiers, baseCls] of groups.entries()) {
       if (baseCls.length <= 1) continue;
 
-      const overflowClasses = detectOverflowShorthand(baseCls);
-      const overscrollClasses = detectOverscrollShorthand(baseCls);
-      const insetClasses = detectInsetShorthand(baseCls);
-      const gapClasses = detectGapShorthand(baseCls);
-      const paddingClasses = detectPaddingShorthand(baseCls);
-      const marginClasses = detectMarginShorthand(baseCls);
-      const sizeClasses = detectSizeShorthand(baseCls);
-      // TODO ? https://tailwindcss.com/docs/font-size vs https://tailwindcss.com/docs/line-height combo
-      const truncateClasses = detectTruncateShorthand(baseCls);
-      const roundedClasses = detectRoundedShorthand(baseCls);
-      const borderClasses = detectBorderShorthand(baseCls);
-      const borderSpacingClasses = detectBorderSpacingShorthand(baseCls);
-      const scaleClasses = detectScaleShorthand(baseCls);
-      const skewClasses = detectSkewShorthand(baseCls);
-      const translateClasses = detectTranslateShorthand(baseCls);
-      const scrollMarginClasses = detectScrollMarginShorthand(baseCls);
-      const scrollPaddingClasses = detectScrollPaddingShorthand(baseCls);
+      for (const strategy of Object.values(SHORTHAND_RULES)) {
+        const found = detectShorthands(baseCls, strategy);
 
-      const allShorthands = new Map<string, Array<string>>([
-        ...overflowClasses.entries(),
-        ...overscrollClasses.entries(),
-        ...insetClasses.entries(),
-        ...gapClasses.entries(),
-        ...paddingClasses.entries(),
-        ...marginClasses.entries(),
-        ...sizeClasses.entries(),
-        ...truncateClasses.entries(),
-        ...roundedClasses.entries(),
-        ...borderClasses.entries(),
-        ...borderSpacingClasses.entries(),
-        ...scaleClasses.entries(),
-        ...skewClasses.entries(),
-        ...translateClasses.entries(),
-        ...scrollMarginClasses.entries(),
-        ...scrollPaddingClasses.entries(),
-      ]);
+        for (const [shorthand, obsolete] of found) {
+          const fullObsolete = new Set(obsolete.map((c) => `${modifiers}${c}`));
+          const newShorthand = `${modifiers}${shorthand}`;
 
-      for (const [shorthand, obsoleteClasses] of allShorthands.entries()) {
-        const fullObsoleteClasses = new Set(
-          obsoleteClasses.map((cls) => `${modifiers}${cls}`),
-        );
+          currentClassNames = currentClassNames
+            .filter((cls) => !fullObsolete.has(cls))
+            // eslint-disable-next-line unicorn/prefer-spread
+            .concat(newShorthand);
 
-        const parsedClassNames = classNames.filter(
-          (cls) => !fullObsoleteClasses.has(cls),
-        );
-        parsedClassNames.push(modifiers + shorthand);
-
-        // Generates the validated/sorted attribute value
-        let validatedClassNamesValue = joiner({
-          classNames: parsedClassNames,
-          whitespaces,
-          headSpace,
-          tailSpace,
-        });
-
-        if (originalClassNamesValue !== validatedClassNamesValue) {
-          // console.log("originalClassNamesValue:", [originalClassNamesValue]);
-          // console.log("validatedClassNamesValue:", [validatedClassNamesValue]);
-          validatedClassNamesValue = prefix + validatedClassNamesValue + suffix;
           context.report({
             node: node as TSESTree.Node,
             messageId: "fix:use-shorthand",
             data: {
-              classnames: obsoleteClasses
-                .map((cls) => `'${modifiers + cls}'`)
-                .join(", "),
-              shorthand: `${modifiers}${shorthand}`,
+              classnames: [...fullObsolete].map((c) => `'${c}'`).join(", "),
+              shorthand: newShorthand,
             },
-            fix: function (fixer) {
-              return fixer.replaceTextRange(
-                [start, end],
-                validatedClassNamesValue,
-              );
+            fix: (fixer) => {
+              const validatedValue =
+                prefix +
+                joiner({
+                  classNames: currentClassNames,
+                  whitespaces,
+                  headSpace,
+                  tailSpace,
+                }) +
+                suffix;
+              return fixer.replaceTextRange([start, end], validatedValue);
             },
           });
         }
