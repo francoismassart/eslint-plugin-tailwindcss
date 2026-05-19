@@ -14,6 +14,10 @@ import {
   RULE_NAME as ENFORCES_SHORTHAND,
 } from "./rules/enforces-shorthand";
 import {
+  noArbitraryValue,
+  RULE_NAME as NO_ARBITRARY_VALUE,
+} from "./rules/no-arbitrary-value";
+import {
   noContradictingClassname,
   RULE_NAME as NO_CONTRADICTING_CLASSNAME,
 } from "./rules/no-contradicting-classname";
@@ -47,6 +51,7 @@ const plugin = {
     [CLASSNAMES_ORDER]: classnamesOrder,
     [ENFORCES_NEGATIVE_ARBITRARY_VALUES]: enforcesNegativeArbitraryValues,
     [ENFORCES_SHORTHAND]: enforcesShorthand,
+    [NO_ARBITRARY_VALUE]: noArbitraryValue,
     [NO_CUSTOM_CLASSNAME]: noCustomClassname,
     [NO_CONTRADICTING_CLASSNAME]: noContradictingClassname,
   },
@@ -56,6 +61,7 @@ const recommended = {
   [CLASSNAMES_ORDER]: "warn",
   [ENFORCES_NEGATIVE_ARBITRARY_VALUES]: "warn",
   [ENFORCES_SHORTHAND]: "warn",
+  [NO_ARBITRARY_VALUE]: "off",
   [NO_CUSTOM_CLASSNAME]: "warn",
   [NO_CONTRADICTING_CLASSNAME]: "error",
 } as const;
