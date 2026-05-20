@@ -129,7 +129,7 @@ export const noCustomClassname = createRule<Options, MessageIds>({
     },
     hasSuggestions: true,
     messages: {
-      "issue:unknown-classname": `Classname '{{classname}}' is not a Tailwind CSS class!`,
+      "issue:unknown-classname": `Classname '{{classname}}' is not a Tailwind CSS class`,
       "fix:unknown-classname:remove":
         "Remove unknown classname '{{classname}}'",
     },

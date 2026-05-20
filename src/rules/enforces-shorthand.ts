@@ -327,7 +327,7 @@ export const enforcesShorthand = createRule<Options, MessageIds>({
     },
     hasSuggestions: false,
     messages: {
-      "fix:use-shorthand": `Classnames {{classnames}} could be replaced by the '{{shorthand}}' shorthand!`,
+      "fix:use-shorthand": `Classnames {{classnames}} could be replaced by the '{{shorthand}}' shorthand`,
     },
     fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`

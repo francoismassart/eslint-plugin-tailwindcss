@@ -193,8 +193,8 @@ export const noContradictingClassname = createRule<Options, MessageIds>({
     },
     hasSuggestions: true,
     messages: {
-      "issue:contradiction": `'{{classname}}' conflicts with {{otherClassnames}}.`,
-      "fix:contradiction:keep": `Keep '{{keepClassname}}' (remove {{removeClassnames}}).`,
+      "issue:contradiction": `'{{classname}}' conflicts with {{otherClassnames}}`,
+      "fix:contradiction:keep": `Keep '{{keepClassname}}' (remove {{removeClassnames}})`,
     },
     // Schema is also parsed by `eslint-doc-generator`
     schema: [
