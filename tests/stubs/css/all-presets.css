@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@theme {
+  --*: initial;
+  --spacing: 1px;
+  --spacing-twice: 2px; /* border-spacing-twice */
+
+  /*
+   * Layout
+   */
+  --aspect-retro: 4 / 3; /* aspect-retro */
+  --columns-side-menu: 16rem; /* columns-side-menu */
+  --container-micro: 14rem; /* columns-micro min-w-micro w-micro @max-micro: @min-micro: min-inline-micro basis-micro max-w-micro inline-micro */
+  --inset-pi: 3.14px; /* inset-pi top-pi ... */
+  --z-index-dropdown: 1000; /* z-dropdown */
+  /*
+   * Flexbox & Grid
+   */
+  --order-revolution: 1789; /* order-revolution */
+  --grid-template-columns-cards: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* grid-cols-cards */
+  --grid-column-main: 2 / span 4; /* col-main */
+  --grid-column-end-last-of-us: -1; /* col-end-last-of-us */
+  --grid-template-rows-screen-3: repeat(3, 100vh); /* grid-rows-screen-3 */
+  --grid-row-start-top: 1; /* row-start-top */
+  --grid-row-end-bottomus: -1; /* row-end-bottomus */
+  --grid-auto-columns-thirteen: 13rem; /* auto-cols-thirteen */
+  --grid-auto-rows-thumb: 250px; /* auto-rows-thumb */
+  --gap-chunky: 2.5rem; /* gap-chunky */
+  /* --gap-x & --gap-y are not supported */
+  /*
+   * Spacing
+   */
+  --padding-safe: 3rem; /* p-safe px-safe ... */
+  --margin-huge: 8rem; /* m-huge mx-huge ... */
+  /*
+   * Sizing
+   */
+  --width-custom-width: 100px; /* w-custom-width */
+  --min-width-xs: 20rem; /* min-w-xs */
+  --max-width-half: 50%; /* max-w-half */
+  --height-effeil: 320px; /* h-effeil */
+  --min-height-ride: 135px; /* min-h-ride */
+  --max-height-ride: 220px; /* max-h-ride */
+  /*
+   * Typography
+   */
+  --font-display: "Playfair Display", Georgia, serif; /* font-display */
+  --text-tiny: 0.625rem; /* text-tiny */
+  /* https://tailwindcss.com/docs/font-size#customizing-your-theme */
+  --text-tiny--line-height: 1.5rem; /* text-tiny-line-height */
+  --text-tiny--letter-spacing: 0.125rem; /* text-tiny-letter-spacing */
+  --text-tiny--font-weight: 500; /* text-tiny-font-weight */
+  --font-weight-extrablack: 1000; /* font-extrablack */
+  --font-stretch-ultra-condensed: 50%; /* font-stretch-ultra-condensed */
+  --tracking-caps: 0.15em; /* tracking-caps */
+  --line-clamp-long: 6; /* line-clamp-long */
+  --leading-article: 1.75rem; /* leading-article */
+  --list-style-type-emoji: "👉 "; /* list-emoji */
+  --color-hexa: #123456; /* text-hexa */
+  --text-decoration-color-link-hover: #0056b3; /* decoration-link-hover */
+  --text-decoration-thickness-thick: 4px; /* decoration-thick */
+  --text-underline-offset-deep: 6px; /* underline-offset-deep */
+  /*
+   * Backgrounds
+   */
+  --background-color-page-dark: #0f172a; /* bg-page-dark */
+  --background-image-glow: radial-gradient(
+    circle,
+    #f472b6 0%,
+    #3b82f6 100%
+  ); /* bg-glow */
+  --background-image-grid-pattern: url("/images/grid.svg"); /* bg-grid-pattern */
+  --background-image-placeholder: url("https://picsum.photos/1920/1080"); /* bg-placeholder */
+  /*
+   * Borders
+   */
+  --radius-5xl: 30rem; /* rounded-5xl */
+  --border-width-heavy: 12px; /* border-heavy */
+  --divide-width-thin: 1px; /* divide-x-thin divide-y-thin */
+  --border-color-input-muted: #cbd5e1; /* border-input-muted */
+  --divide-color-faded: #f3f4f6; /* divide-faded */
+  --outline-width-focus-ring: 0.25rem; /* outline-focus-ring */
+  --outline-color-accessible-blue: #0056b3; /* outline-accessible-blue */
+  --outline-offset-inset: -4px; /* outline-offset-inset */
+  /*
+   * Effects
+   */
+  --shadow-3xl: 0 35px 35px rgba(0, 0, 0, 0.25); /* shadow-3xl */
+  --inset-shadow-md: inset 0 2px 3px rgba(0, 0, 0, 0.25); /* inset-shadow-md */
+  --shadow-color-field: #0f0; /* shadow-color-field */
+  --text-shadow-xl: 0 35px 35px rgb(0, 0, 0 / 0.25); /* text-shadow-xl */
+  --text-shadow-color-matrix: lightgreen; /* text-shadow-color-matrix */
+  --opacity-ghost: 0.8; /* opacity-ghost */
+  /*
+   * Filters
+   */
+  --blur-2xs: 2px; /* blur-2xs */
+  --brightness-intense: 1.75; /* brightness-intense */
+  --contrast-enhanced: 1.25; /* contrast-enhanced */
+  --drop-shadow-3xl: 0 35px 35px rgba(0, 0, 0, 0.25); /* drop-shadow-3xl */
+  --grayscale-subtle: 20%; /* grayscale-subtle */
+  --hue-rotate-half: 180deg; /* hue-rotate-half */
+  --invert-partial: 30%; /* invert-partial */
+  --saturate-pop: 125%; /* saturate-pop */
+  --sepia-warm: 40%; /* sepia-warm */
+  --backdrop-blur-2xs: 2px; /* backdrop-blur-2xs */
+  --backdrop-brightness-intense: 1.75; /* backdrop-brightness-intense */
+  --backdrop-contrast-enhanced: 1.25; /* backdrop-contrast-enhanced */
+  --backdrop-grayscale-subtle: 20%; /* backdrop-grayscale-subtle */
+  --backdrop-hue-rotate-half: 180deg; /* backdrop-hue-rotate-half */
+  --backdrop-invert-partial: 30%; /* backdrop-invert-partial */
+  --backdrop-opacity-third: 0.333; /* backdrop-opacity-third */
+  --backdrop-saturate-pop: 125%; /* backdrop-saturate-pop */
+  --backdrop-sepia-warm: 40%; /* backdrop-sepia-warm */
+  /*
+   * Tables
+   */
+  --border-spacing-wide: 24px 8px; /* border-spacing-wide */
+  /*
+   * Transitions & Animation
+   */
+  --transition-property-kart: transform, box-shadow; /* transition-kart */
+  --transition-duration-epic: 2s; /* duration-epic */
+  --ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035); /* ease-in-expo */
+  --transition-delay-staggered: 500ms; /* delay-staggered */
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+  /* animate-wiggle */
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+  /*
+   * Transforms
+   */
+  --perspective-remote: 1800px; /* perspective-remote */
+  --perspective-origin-dramatic: 90% 90%; /* perspective-origin-dramatic */
+  --rotate-half: 0.5turn; /* rotate-half */
+  /* rotate-x-... rotate-y-... rotate-z-... are not supported */
+  --scale-giant: 1.5; /* scale-giant */
+  /* scale-x-... scale-y-... scale-z-... are not supported */
+  --skew-subtle: 3deg; /* skew-subtle */
+  --transform-origin-card-hinge: 0% 10%; /* origin-card-hinge */
+  --translate-popup: -4px; /* translate-popup */
+  /* translate-x-... translate-y-... translate-z-... are not supported */
+  /*
+   * Interactivity
+   */
+  --caret-color-coke-red: #f40000; /* caret-coke-red */
+  --cursor-vulkan: url("/vulkan.png"), auto; /* cursor-vulkan */
+  --scroll-margin-cozy: 5vw; /* scroll-m-cozy scroll-mx-cozy scroll-mt-cozy ... */
+  /* --scroll-margin-x-... --scroll-margin-y-... are not supported */
+  --scroll-padding-xs: 5px; /* scroll-p-xs */
+  /* --scroll-padding-x-... --scroll-padding-y-... are not supported */
+  /*
+   * SVG
+   */
+  --fill-ikea-blue: #0051ba; /* fill-ikea-blue */
+  --stroke-ikea-yellow: #ffda1a /* stroke-ikea-yellow */;
+  --stroke-width-hairline: 0.5; /* stroke-hairline */
+  /*
+   * Accessibility
+   */
+}
