@@ -4,11 +4,13 @@
   --*: initial;
   --spacing: 1px;
   --spacing-twice: 2px; /* border-spacing-twice */
+  --color-same: gray;
+  --color-overridden: lime;
 
   /*
    * Layout
    */
-  --aspect-retro: 4 / 3; /* aspect-retro */
+  --aspect-retro: 4/3; /* aspect-retro */
   --columns-side-menu: 16rem; /* columns-side-menu */
   --container-micro: 14rem; /* columns-micro min-w-micro w-micro @max-micro: @min-micro: min-inline-micro basis-micro max-w-micro inline-micro */
   --inset-pi: 3.14px; /* inset-pi top-pi ... */
@@ -81,6 +83,10 @@
   --border-width-heavy: 12px; /* border-heavy */
   --divide-width-thin: 1px; /* divide-x-thin divide-y-thin */
   --border-color-input-muted: #cbd5e1; /* border-input-muted */
+  --border-color-same: gray;
+  --border-color-overridden: orange;
+  --divide-color-same: gray;
+  --divide-color-overridden: red;
   --divide-color-faded: #f3f4f6; /* divide-faded */
   --outline-width-focus-ring: 0.25rem; /* outline-focus-ring */
   --outline-color-accessible-blue: #0056b3; /* outline-accessible-blue */
@@ -124,7 +130,7 @@
    */
   --transition-property-kart: transform, box-shadow; /* transition-kart */
   --transition-duration-epic: 2s; /* duration-epic */
-  --ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035); /* ease-in-expo */
+  --ease-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035); /* ease-in-expo */
   --transition-delay-staggered: 500ms; /* delay-staggered */
   --animate-wiggle: wiggle 1s ease-in-out infinite;
   /* animate-wiggle */

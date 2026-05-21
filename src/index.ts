@@ -25,6 +25,10 @@ import {
   noCustomClassname,
   RULE_NAME as NO_CUSTOM_CLASSNAME,
 } from "./rules/no-custom-classname";
+import {
+  noUnnecessaryArbitraryValue,
+  RULE_NAME as NO_UNNECESSARY_ARBITRARY_VALUE,
+} from "./rules/no-unnecessary-arbitrary-value";
 
 const createConfig = <R extends Linter.RulesRecord>(rules: R) => {
   const result = {} as {
@@ -54,6 +58,7 @@ const plugin = {
     [NO_ARBITRARY_VALUE]: noArbitraryValue,
     [NO_CUSTOM_CLASSNAME]: noCustomClassname,
     [NO_CONTRADICTING_CLASSNAME]: noContradictingClassname,
+    [NO_UNNECESSARY_ARBITRARY_VALUE]: noUnnecessaryArbitraryValue,
   },
 } satisfies FlatConfig.Plugin;
 
@@ -64,6 +69,7 @@ const recommended = {
   [NO_ARBITRARY_VALUE]: "off",
   [NO_CUSTOM_CLASSNAME]: "warn",
   [NO_CONTRADICTING_CLASSNAME]: "error",
+  [NO_UNNECESSARY_ARBITRARY_VALUE]: "warn",
 } as const;
 
 const configBase: FlatConfig.Config = {

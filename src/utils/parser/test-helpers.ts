@@ -40,6 +40,12 @@ export const withTypographySettings: PluginSettings = {
     `${import.meta.dirname}/../../../tests/stubs/css/with-typography.css`,
 };
 
+export const withAllPresetsSettings: PluginSettings = {
+  cssConfigPath:
+    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
+    `${import.meta.dirname}/../../../tests/stubs/css/all-presets.css`,
+};
+
 const getFirstHTMLOpeningElement = (code: string) => {
   const program = AngularParser.parse(code, { filePath: "node.spec.ts" });
   const node = program.templateNodes.at(0);
