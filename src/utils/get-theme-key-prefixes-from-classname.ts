@@ -1,21 +1,14 @@
 import { getBaseClassname } from "./parser/classname";
 import { Theme } from "./tailwindcss-api/types";
 
-// Notes `divide-x-abc` retrieves presets from:
-// - colors (e.g. `--color-ccc: #ccc;`)
-// - borderColor (e.g. `--border-color-bbb: red;`)
-// - divideColor (e.g. `--divide-color-ddd: green;`)
-// so `divide-x-[...]` should check the 3 prefixes
-// the order matters from the most generic prefix to the most specific
+/**
+ * Retrieves the possible theme key prefixes for a given classname.
+ * @param classname The classname to retrieve prefixes for.
+ * @returns A set of theme key prefixes.
+ * @description Several prefixes can be returned for a single classname, as some classnames can match multiple theme keys. For example, `divide-x-abc` can match `--color-`, `--border-color-` and `--divide-color-`. Also the order of the prefixes matters, as the most specific prefix should be returned last, so it can override the more generic ones.
+ */
 
-// classname: aspect-[4/3]
-// or
-// classname: aspect-
-// `aspect-[...]` => `--aspect-`
-export const getThemeKeyPrefixesFromClassname = (
-  theme: Theme,
-  classname: string,
-) => {
+export const getThemeKeyPrefixesFromClassname = (classname: string) => {
   const baseClass = getBaseClassname(classname);
   switch (true) {
     /*
@@ -339,4 +332,26 @@ export const getThemeKeyPrefixesFromClassname = (
       return new Set();
     }
   }
+};
+
+/**
+ * Retrieves the theme key prefixes for a given classname.
+ * @param theme The theme object.
+ * @param classname The classname to retrieve prefixes for.
+ * @returns A set of theme key prefixes.
+ */
+export const getThemePresetsFromPrefixes = (
+  theme: Theme,
+  prefixes: Set<string>,
+) => {
+  const presets = new Map<string, string>();
+  for (const prefix of prefixes) {
+    for (const [key, preset] of theme.values) {
+      if (key.startsWith(prefix)) {
+        // TODO deal with values with spaces, etc.
+        presets.set(key, `${preset.value}`);
+      }
+    }
+  }
+  return presets;
 };

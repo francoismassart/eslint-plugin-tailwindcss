@@ -2,7 +2,10 @@ import { expect, test } from "vitest";
 
 import { withAllPresetsSettings } from "../utils/parser/test-helpers";
 import { loadThemeWorker } from "../utils/tailwindcss-api";
-import { getThemeKeyPrefixesFromClassname } from "./get-theme-key-prefixes-from-classname";
+import {
+  getThemeKeyPrefixesFromClassname,
+  getThemePresetsFromPrefixes,
+} from "./get-theme-key-prefixes-from-classname";
 
 const theme = loadThemeWorker(withAllPresetsSettings.cssConfigPath);
 
@@ -499,8 +502,123 @@ test(`Get the theme key prefixes from classname`, () => {
      * Accessibility
      */
   ].map(({ classname, prefixes }) => {
-    expect(getThemeKeyPrefixesFromClassname(theme, classname)).toEqual(
-      prefixes,
-    );
+    expect(getThemeKeyPrefixesFromClassname(classname)).toEqual(prefixes);
+  });
+});
+
+test(`Get the preset keys/values from prefixes`, () => {
+  [
+    /*
+     * Layout
+     */
+    {
+      prefixes: new Set(["--aspect-"]),
+      presets: new Map([
+        // N.B. ordered alphabetically
+        ["--aspect-retro", "4/3"],
+        ["--aspect-square", "1 / 1"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--columns-"]),
+      presets: new Map([["--columns-side-menu", "16rem"]]),
+    },
+    {
+      prefixes: new Set(["--inset-"]),
+      presets: new Map([
+        ["--inset-pi", "3.14px"],
+        ["--inset-shadow-md", "inset 0 2px 3px rgba(0, 0, 0, 0.25)"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--z-index-"]),
+      presets: new Map([["--z-index-dropdown", "1000"]]),
+    },
+    {
+      prefixes: new Set(["--grid-template-columns-"]),
+      presets: new Map([
+        [
+          "--grid-template-columns-cards",
+          `repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  )`,
+        ],
+      ]),
+    },
+    {
+      prefixes: new Set(["--grid-column-"]),
+      presets: new Map([
+        ["--grid-column-main", "2 / span 4"],
+        ["--grid-column-end-last-of-us", "-1"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--font-"]),
+      presets: new Map([
+        ["--font-display", '"Playfair Display", Georgia, serif'],
+        ["--font-stretch-ultra-condensed", "50%"],
+        ["--font-weight-extrablack", "1000"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--text-"]),
+      presets: new Map([
+        ["--text-decoration-color-link-hover", "#0056b3"],
+        ["--text-decoration-thickness-thick", "4px"],
+        ["--text-shadow-color-matrix", "lightgreen"],
+        ["--text-shadow-xl", "0 35px 35px rgb(0, 0, 0 / 0.25)"],
+        ["--text-tiny", "0.625rem"],
+        ["--text-tiny--font-weight", "500"],
+        ["--text-tiny--letter-spacing", "0.125rem"],
+        ["--text-tiny--line-height", "1.5rem"],
+        ["--text-underline-offset-deep", "6px"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--background-"]),
+      presets: new Map([
+        ["--background-color-page-dark", "#0f172a"],
+        [
+          "--background-image-glow",
+          `radial-gradient(
+    circle,
+    #f472b6 0%,
+    #3b82f6 100%
+  )`,
+        ],
+        ["--background-image-grid-pattern", 'url("/images/grid.svg")'],
+        [
+          "--background-image-placeholder",
+          'url("https://picsum.photos/1920/1080")',
+        ],
+      ]),
+    },
+    {
+      prefixes: new Set(["--shadow-"]),
+      presets: new Map([
+        ["--shadow-3xl", "0 35px 35px rgba(0, 0, 0, 0.25)"],
+        ["--shadow-color-field", "#0f0"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--animate-"]),
+      presets: new Map([
+        ["--animate-wiggle", "wiggle 1s ease-in-out infinite"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--stroke-"]),
+      presets: new Map([
+        ["--stroke-ikea-yellow", "#ffda1a"],
+        ["--stroke-width-hairline", "0.5"],
+      ]),
+    },
+    {
+      prefixes: new Set(["--stroke-width-"]),
+      presets: new Map([["--stroke-width-hairline", "0.5"]]),
+    },
+  ].map(({ prefixes, presets }) => {
+    expect(getThemePresetsFromPrefixes(theme, prefixes)).toEqual(presets);
   });
 });
