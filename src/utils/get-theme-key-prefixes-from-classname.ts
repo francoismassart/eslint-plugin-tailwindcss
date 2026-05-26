@@ -1,5 +1,5 @@
 import { getBaseClassname } from "./parser/classname";
-import { Theme } from "./tailwindcss-api/types";
+import { type Theme } from "./tailwindcss-api/types";
 
 /**
  * Retrieves the possible theme key prefixes for a given classname.
@@ -8,7 +8,9 @@ import { Theme } from "./tailwindcss-api/types";
  * @description Several prefixes can be returned for a single classname, as some classnames can match multiple theme keys. For example, `divide-x-abc` can match `--color-`, `--border-color-` and `--divide-color-`. Also the order of the prefixes matters, as the most specific prefix should be returned last, so it can override the more generic ones.
  */
 
-export const getThemeKeyPrefixesFromClassname = (classname: string) => {
+export const getThemeKeyPrefixesFromClassname = (
+  classname: string,
+): Set<string> => {
   const baseClass = getBaseClassname(classname);
   switch (true) {
     /*

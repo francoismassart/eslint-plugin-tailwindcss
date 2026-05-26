@@ -11,6 +11,7 @@
    * Layout
    */
   --aspect-square: 1 / 1; /* aspect-square */
+  --aspect-one-to-one: 1/1; /* aspect-one-to-one */
   --aspect-retro: 4/3; /* aspect-retro */
   --columns-side-menu: 16rem; /* columns-side-menu */
   --container-micro: 14rem; /* columns-micro min-w-micro w-micro @max-micro: @min-micro: min-inline-micro basis-micro max-w-micro inline-micro */

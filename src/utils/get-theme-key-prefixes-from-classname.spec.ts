@@ -515,6 +515,7 @@ test(`Get the preset keys/values from prefixes`, () => {
       prefixes: new Set(["--aspect-"]),
       presets: new Map([
         // N.B. ordered alphabetically
+        ["--aspect-one-to-one", "1/1"],
         ["--aspect-retro", "4/3"],
         ["--aspect-square", "1 / 1"],
       ]),
