@@ -20,6 +20,7 @@
 | [no-arbitrary-value](docs/rules/no-arbitrary-value.md)                                 | Forbid using arbitrary values in classnames.                                        |     |     |     |     |
 | [no-contradicting-classname](docs/rules/no-contradicting-classname.md)                 | Avoid contradicting Tailwind CSS classnames.                                        | ✅  |     |     | 💡  |
 | [no-custom-classname](docs/rules/no-custom-classname.md)                               | Detects classnames which do not belong to Tailwind CSS.                             |     | ✅  |     | 💡  |
+| [no-unnecessary-arbitrary-value](docs/rules/no-unnecessary-arbitrary-value.md)         | Avoid unjustified arbitrary classnames.                                             |     | ✅  | 🔧  | 💡  |
 
 <!-- end auto-generated rules list -->
 
