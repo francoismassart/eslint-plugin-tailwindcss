@@ -24,6 +24,16 @@ Examples of **correct** code for this rule:
 </div>
 ```
 
+### Why avoid custom classnames?
+
+- ⚠️ This is **could be a typo**
+- 😎 No more "**Naming Fatigue**"
+- ❤️ All in on **Tailwind CSS**
+- 💥 Eliminate **file switching**
+- 📐 No "Magic Numbers", just **Design Tokens**
+- 🕊️ No CSS **specificity wars**
+- 🪦 No more **dead code**
+
 ## Options
 
 <!-- begin auto-generated rule options list -->

@@ -26,6 +26,14 @@ Examples of **correct** code for this rule:
 ></div>
 ```
 
+### Why the classnames order matters?
+
+- 🤓 Improved **readability**
+- 🛠️ **Easier maintenance** & debugging
+- 🤝 **Predictable class merging**
+- 🙏 **Smoother collaboration**
+- 😅 **Less merge conflicts**
+
 ## Options
 
 <!-- begin auto-generated rule options list -->

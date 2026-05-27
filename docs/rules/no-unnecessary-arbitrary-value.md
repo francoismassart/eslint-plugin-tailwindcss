@@ -22,6 +22,13 @@ Examples of **correct** code for this rule:
 <video class="aspect-video">player</video>
 ```
 
+### Why avoid unnecessary arbitrary classnames?
+
+- 👯 Eliminate **redundant classes**
+- 🔍 Preserve **searchability and refactoring**
+- 🌈 Respect your **Design System**
+- ⚖️ **Less generated CSS**
+
 ## Options
 
 <!-- begin auto-generated rule options list -->
