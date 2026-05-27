@@ -1,13 +1,17 @@
 # eslint-plugin-tailwindcss roadmap
 
-- [enforces-negative-arbitrary-values](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/enforces-negative-arbitrary-values.md)
-- [no-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-arbitrary-value.md)
-- [no-unnecessary-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-unnecessary-arbitrary-value.md)
+- enhancements:
+  - `classnames-order` use several errors to only highlight the classnames instead of the entire block
+  - `enforces-negative-arbitrary-values` use several errors to only highlight the classnames instead of the entire block
+- docs: explain why each rule is enhancing the code
 - support for ESLint v10
 - performances improvements
 
 ## May 2026
 
+- [no-unnecessary-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-unnecessary-arbitrary-value.md)
+- [no-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-arbitrary-value.md)
+- [enforces-negative-arbitrary-values](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/enforces-negative-arbitrary-values.md)
 - `enforces-shorthand`
 
 ## April 2026
