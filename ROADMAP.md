@@ -1,28 +1,28 @@
 # eslint-plugin-tailwindcss roadmap
 
-- enhancements:
-  - `classnames-order` use several errors to only highlight the classnames instead of the entire block
-  - `enforces-negative-arbitrary-values` use several errors to only highlight the classnames instead of the entire block
 - docs: explain why each rule is enhancing the code
 - support for ESLint v10
 - performances improvements
 
 ## May 2026
 
-- [no-unnecessary-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-unnecessary-arbitrary-value.md)
-- [no-arbitrary-value](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/no-arbitrary-value.md)
-- [enforces-negative-arbitrary-values](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/HEAD/docs/rules/enforces-negative-arbitrary-values.md)
-- `enforces-shorthand`
+- enhancements:
+  - [`classnames-order`](./docs/rules/classnames-order.md) use several errors to only highlight the classnames instead of the entire block
+  - [`enforces-shorthand`](./docs/rules/enforces-shorthand.md) use several errors to only highlight the classnames instead of the entire block
+- [`no-unnecessary-arbitrary-value`](./docs/rules/no-unnecessary-arbitrary-value.md)
+- [`no-arbitrary-value`](./docs/rules/no-arbitrary-value.md)
+- [`enforces-negative-arbitrary-values`](./docs/rules/enforces-negative-arbitrary-values.md)
+- [`enforces-shorthand`](./docs/rules/enforces-shorthand.md)
 
 ## April 2026
 
-- `no-contradicting-classname`
+- [`no-contradicting-classname`](./docs/rules/no-contradicting-classname.md)
 
 ## September 2025
 
 - full rewrite of the code base in TypeScript
 - starting with a few rules, demonstrating the possibilities:
-  - `classnames-order` with autofix
-  - `no-custom-classname` with options, lint messages on specific substrings and suggestions
+  - [`classnames-order`](./docs/rules/classnames-order.md) with autofix
+  - [`no-custom-classname`](./docs/rules/no-custom-classname.md) with options, lint messages on specific substrings and suggestions
 - including a recommended flat config
 - include a playground/ demonstrating the usages and the possible configurations

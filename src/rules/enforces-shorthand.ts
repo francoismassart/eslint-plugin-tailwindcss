@@ -17,6 +17,7 @@ import {
 import { groupByModifiersPrefix } from "../utils/parser/groups";
 import {
   dissectAtomicNode,
+  generateLocForClassname,
   getClassnamesFromValue,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
@@ -292,26 +293,35 @@ const replaceByShorthands = (
             // eslint-disable-next-line unicorn/prefer-spread
             .concat(newShorthand);
 
-          context.report({
-            node: node as TSESTree.Node,
-            messageId: "fix:use-shorthand",
-            data: {
-              classnames: [...fullObsolete].map((c) => `'${c}'`).join(", "),
-              shorthand: newShorthand,
-            },
-            fix: (fixer) => {
-              const validatedValue =
-                prefix +
-                joiner({
-                  classNames: currentClassNames,
-                  whitespaces,
-                  headSpace,
-                  tailSpace,
-                }) +
-                suffix;
-              return fixer.replaceTextRange([start, end], validatedValue);
-            },
-          });
+          for (const targetClassName of fullObsolete) {
+            const patchedLoc = generateLocForClassname(
+              node,
+              targetClassName,
+              originalClassNamesValue,
+              context as unknown as GenericRuleContext,
+            );
+            context.report({
+              node: node as TSESTree.Node,
+              loc: patchedLoc,
+              messageId: "fix:use-shorthand",
+              data: {
+                classnames: [...fullObsolete].map((c) => `'${c}'`).join(", "),
+                shorthand: newShorthand,
+              },
+              fix: (fixer) => {
+                const validatedValue =
+                  prefix +
+                  joiner({
+                    classNames: currentClassNames,
+                    whitespaces,
+                    headSpace,
+                    tailSpace,
+                  }) +
+                  suffix;
+                return fixer.replaceTextRange([start, end], validatedValue);
+              },
+            });
+          }
         }
       }
     }

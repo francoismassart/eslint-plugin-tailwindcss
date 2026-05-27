@@ -28,6 +28,11 @@ Examples of **correct** code for this rule:
 </section>
 ```
 
+### Why using shorthands?
+
+- ⚖️ **Reduce the amount of classnames**
+- 🤓 Significantly **better readability**
+
 ## Options
 
 <!-- begin auto-generated rule options list -->

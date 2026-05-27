@@ -24,6 +24,12 @@ Examples of **correct** code for this rule:
 </div>
 ```
 
+### Why avoid contradicting classnames?
+
+- ⚠️ This is **clearly a mistake**
+- 🪰 **Avoid bugs** & layout conflicts
+- 🕸️ **Reduce code clutter**
+
 ## Options
 
 <!-- begin auto-generated rule options list -->

@@ -6,7 +6,8 @@
 
 This rule will shout at you if you use any arbitrary value in your classnames.
 
-Only enable this rule if you want to stricly stick with your TailwindCSS config's presets.
+Only enable this rule if you want to stricly stick with your Tailwind
+ CSS config's presets.
 
 It will not complain if you are using classnames like `border-<number>`.
 
@@ -33,6 +34,16 @@ with a config such as:
   --width-custom-preset: 20rem;
 }
 ```
+
+### Why avoid arbitrary values?
+
+- 📐 Enforced **design consistency**
+- 🌈 Respect your **Design System**
+- 🧹 **Cleaner**, more readable markup
+
+### When to use arbitrary values?
+
+- 🧬 For **truly unique**, one-off instances
 
 ## Options
 

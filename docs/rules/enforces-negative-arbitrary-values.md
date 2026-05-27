@@ -34,6 +34,14 @@ The second invalid classname `-z-[1]`:
 - feels odd
 - its `z-[-1]` version is nicer
 
+### Benefits
+
+- 🤓 Improved **readability**
+- 🫠 **Avoid double negation**
+- 🎯 **Self-contained value**
+- ✅ **Standardized formatting**
+- ⚖️ **Less generated CSS**
+
 ## Options
 
 <!-- begin auto-generated rule options list -->
