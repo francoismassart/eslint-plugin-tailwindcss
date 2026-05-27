@@ -5,6 +5,7 @@ type JoinerOptions = {
   tailSpace: boolean;
   validator?: (candidate: string) => boolean;
 };
+
 /**
  * Helper function to join classnames with whitespaces, and preserve head/tail spaces if needed.
  */

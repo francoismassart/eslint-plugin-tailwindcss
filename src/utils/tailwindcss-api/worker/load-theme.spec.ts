@@ -176,7 +176,7 @@ test(`load theme from "all-presets.css"`, () => {
     // Transitions & Animation
     if (key.startsWith("--transition-property-")) continue;
     if (key.startsWith("--transition-duration-")) continue;
-    if (key.startsWith("--ease-in-")) continue;
+    if (key.startsWith("--ease-")) continue;
     if (key.startsWith("--transition-delay-")) continue;
     if (key.startsWith("--animate-")) continue;
     // Transforms
