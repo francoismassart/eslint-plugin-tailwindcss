@@ -1,6 +1,8 @@
 import * as Parser from "@typescript-eslint/parser";
 import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
+import { Linter } from "eslint";
 
+import { PluginSettings } from "../utils/parse-plugin-settings";
 import {
   generalSettings,
   prefixedSettings,
@@ -14,8 +16,56 @@ import {
   RULE_NAME,
 } from "./classnames-order";
 
+const linter = new Linter({ configType: "flat" });
+
 const error: TestCaseError<MessageIds> = { messageId: "fix:sort" };
 const errors = [error];
+
+const getExpectedErrors = (
+  code: string,
+  settings?: PluginSettings,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  languageOptions?: any,
+): Array<TestCaseError<MessageIds>> => {
+  const messages = linter.verify(code, [
+    {
+      plugins: {
+        custom: {
+          rules: {
+            // @ts-expect-error Not critical
+            [RULE_NAME]: classnamesOrder,
+          },
+        },
+      },
+      languageOptions: languageOptions || {
+        parser: Parser,
+        parserOptions: {
+          ecmaFeatures: {
+            jsx: true,
+          },
+        },
+      },
+      settings: settings || {
+        tailwindcss: {
+          ...generalSettings,
+        },
+      },
+      rules: {
+        [`custom/${RULE_NAME}`]: "error",
+      },
+    },
+  ]);
+
+  if (messages.length === 0) {
+    return [error];
+  }
+
+  return messages.map((message) => ({
+    messageId: "fix:sort",
+    line: message.line,
+    column: message.column,
+  }));
+};
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -137,61 +187,62 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
     })),
   ],
-  invalid: [
-    {
-      /* prettier-ignore */
-      code:   `<h1 class="text-gray-700 shadow-md p-3 border-gray-300 ml-4 h-24 flex border-2">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
-      output: `<h1 class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
-      errors: errors,
-      languageOptions: withAngularParser,
-    },
-    {
-      /* prettier-ignore */
-      code:   `<h1 class="relative unkown">attributeVisitor with TextAttribute</h1>`,
-      output: `<h1 class="unkown relative">attributeVisitor with TextAttribute</h1>`,
-      errors: errors,
-      languageOptions: withAngularParser,
-    },
-    {
-      /* prettier-ignore */
-      code:   `<h1 yolo="relative unkown">Custom attribute</h1>`,
-      output: `<h1 yolo="unkown relative">Custom attribute</h1>`,
-      settings: { tailwindcss: { ...generalSettings, attributes: ["yolo"] } },
-      errors: errors,
-      languageOptions: withAngularParser,
-    },
-    // JSX
-    ...[
-      [
-        `<h1 className="relative unkown">attributeVisitor with JSXAttribute</h1>`,
-        `<h1 className="unkown relative">attributeVisitor with JSXAttribute</h1>`,
-      ],
-      [
-        "<h1 className={`relative unknown`}>TemplateElement#1</h1>",
-        "<h1 className={`unknown relative`}>TemplateElement#1</h1>",
-      ],
-      [
-        "<h1 className={`${true && `relative unknown`}`}>TemplateElement#2</h1>",
-        "<h1 className={`${true && `unknown relative`}`}>TemplateElement#2</h1>",
-      ],
-      [
-        "ctl(`p-10 w-full ${some} unknown`)",
-        "ctl(`w-full p-10 ${some} unknown`)",
-      ],
-      [
-        "ctl(`p-10 w-full ${live && 'bg-white dark:bg-black'}`)",
-        "ctl(`w-full p-10 ${live && 'bg-white dark:bg-black'}`)",
-      ],
-      [
-        `<h1 class="flex sm:line-clamp-3 unknown line-clamp-2">native line-clamp support</h1>`,
-        `<h1 class="unknown line-clamp-2 flex sm:line-clamp-3">native line-clamp support</h1>`,
-      ],
-      [
-        `<h1 class="w-12 lg:w-6 w-12">keep duplicates</h1>`,
-        `<h1 class="w-12 w-12 lg:w-6">keep duplicates</h1>`,
-      ],
-      [
-        `
+  invalid: (
+    [
+      {
+        /* prettier-ignore */
+        code:   `<h1 class="text-gray-700 shadow-md p-3 border-gray-300 ml-4 h-24 flex border-2">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
+        output: `<h1 class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
+        errors: errors,
+        languageOptions: withAngularParser,
+      },
+      {
+        /* prettier-ignore */
+        code:   `<h1 class="relative unkown">attributeVisitor with TextAttribute</h1>`,
+        output: `<h1 class="unkown relative">attributeVisitor with TextAttribute</h1>`,
+        errors: errors,
+        languageOptions: withAngularParser,
+      },
+      {
+        /* prettier-ignore */
+        code:   `<h1 yolo="relative unkown">Custom attribute</h1>`,
+        output: `<h1 yolo="unkown relative">Custom attribute</h1>`,
+        settings: { tailwindcss: { ...generalSettings, attributes: ["yolo"] } },
+        errors: errors,
+        languageOptions: withAngularParser,
+      },
+      // JSX
+      ...[
+        [
+          `<h1 className="relative unkown">attributeVisitor with JSXAttribute</h1>`,
+          `<h1 className="unkown relative">attributeVisitor with JSXAttribute</h1>`,
+        ],
+        [
+          "<h1 className={`relative unknown`}>TemplateElement#1</h1>",
+          "<h1 className={`unknown relative`}>TemplateElement#1</h1>",
+        ],
+        [
+          "<h1 className={`${true && `relative unknown`}`}>TemplateElement#2</h1>",
+          "<h1 className={`${true && `unknown relative`}`}>TemplateElement#2</h1>",
+        ],
+        [
+          "ctl(`p-10 w-full ${some} unknown`)",
+          "ctl(`w-full p-10 ${some} unknown`)",
+        ],
+        [
+          "ctl(`p-10 w-full ${live && 'bg-white dark:bg-black'}`)",
+          "ctl(`w-full p-10 ${live && 'bg-white dark:bg-black'}`)",
+        ],
+        [
+          `<h1 class="flex sm:line-clamp-3 unknown line-clamp-2">native line-clamp support</h1>`,
+          `<h1 class="unknown line-clamp-2 flex sm:line-clamp-3">native line-clamp support</h1>`,
+        ],
+        [
+          `<h1 class="w-12 lg:w-6 w-12">keep duplicates</h1>`,
+          `<h1 class="w-12 w-12 lg:w-6">keep duplicates</h1>`,
+        ],
+        [
+          `
       ctl(\`
         invalid
         sm:w-6
@@ -205,7 +256,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         lg:w-4
         lg:w-4
       \`);`,
-        `
+          `
       ctl(\`
         invalid
         invalid
@@ -219,99 +270,100 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         lg:w-4
         lg:w-4
       \`);`,
-      ],
-      [
-        `cva({ primary: ["bottom-0 w-full h-[70px] flex flex-col"], })`,
-        `cva({ primary: ["bottom-0 flex h-[70px] w-full flex-col"], })`,
-      ],
-      [
-        `ctl(\`\${enabled && "relative unknown"}\`)`,
-        `ctl(\`\${enabled && "unknown relative"}\`)`,
-      ],
-      [
-        `ctl(\`px-2 unknown flex absolute\`)`,
-        `ctl(\`unknown absolute flex px-2\`)`,
-      ],
-      [
-        `
+        ],
+        [
+          `cva({ primary: ["bottom-0 w-full h-[70px] flex flex-col"], })`,
+          `cva({ primary: ["bottom-0 flex h-[70px] w-full flex-col"], })`,
+        ],
+        [
+          `ctl(\`\${enabled && "relative unknown"}\`)`,
+          `ctl(\`\${enabled && "unknown relative"}\`)`,
+        ],
+        [
+          `ctl(\`px-2 unknown flex absolute\`)`,
+          `ctl(\`unknown absolute flex px-2\`)`,
+        ],
+        [
+          `
         classnames({
           invalid,
           flex: myFlag,
           'relative unknown': resize
           })`,
-        `
+          `
         classnames({
           invalid,
           flex: myFlag,
           'unknown relative': resize
           })`,
-      ],
-      [
-        "ctl(`${some} container animate-spin first:flex ${bool ? 'flex-col flex' : ''}`)",
-        "ctl(`${some} container animate-spin first:flex ${bool ? 'flex flex-col' : ''}`)",
-      ],
-      [
-        "ctl(`p-3 border-gray-300 m-4 h-24 lg:p-4 flex border-2 lg:m-4`)",
-        "ctl(`m-4 flex h-24 border-2 border-gray-300 p-3 lg:m-4 lg:p-4`)",
-      ],
-      [
-        "<Button class={'w-full h-full'}>Single quotes</Button>",
-        "<Button class={'h-full w-full'}>Single quotes</Button>",
-      ],
-      [
-        `<h1 class="block group/edit:stroke-0">support named group/peer syntax</h1>`,
-        `<h1 class="group/edit:stroke-0 block">support named group/peer syntax</h1>`,
-      ],
-      [
+        ],
+        [
+          "ctl(`${some} container animate-spin first:flex ${bool ? 'flex-col flex' : ''}`)",
+          "ctl(`${some} container animate-spin first:flex ${bool ? 'flex flex-col' : ''}`)",
+        ],
+        [
+          "ctl(`p-3 border-gray-300 m-4 h-24 lg:p-4 flex border-2 lg:m-4`)",
+          "ctl(`m-4 flex h-24 border-2 border-gray-300 p-3 lg:m-4 lg:p-4`)",
+        ],
+        [
+          "<Button class={'w-full h-full'}>Single quotes</Button>",
+          "<Button class={'h-full w-full'}>Single quotes</Button>",
+        ],
+        [
+          `<h1 class="block group/edit:stroke-0">support named group/peer syntax</h1>`,
+          `<h1 class="group/edit:stroke-0 block">support named group/peer syntax</h1>`,
+        ],
+        [
+          /* prettier-ignore */
+          "tw`flex unknown relative`",
+          /* prettier-ignore */
+          "tw`unknown relative flex`",
+        ],
+      ].map(([input, result]) => ({
+        code: input,
+        output: result,
+        errors: errors,
+      })),
+      {
         /* prettier-ignore */
-        "tw`flex unknown relative`",
+        code:   "<h1 class={`top-0 ${1 && `flex nope`}`}>TemplateElement#3</h1>",
+        output:
+          "<h1 class={`top-0 ${1 && `nope flex`}`}>TemplateElement#3</h1>",
+        errors: errors,
+      },
+      {
         /* prettier-ignore */
-        "tw`unknown relative flex`",
-      ],
-    ].map(([input, result]) => ({
-      code: input,
-      output: result,
-      errors: errors,
-    })),
-    {
-      /* prettier-ignore */
-      code:   "<h1 class={`top-0 ${1 && `flex nope`}`}>TemplateElement#3</h1>",
-      output: "<h1 class={`top-0 ${1 && `nope flex`}`}>TemplateElement#3</h1>",
-      errors: errors,
-    },
-    {
-      /* prettier-ignore */
-      code:   "ctl(`p-0 top-0 ${0 && `left-0 right-0`} ${1 && `flex nope`}`)",
-      output: "ctl(`top-0 p-0 ${0 && `right-0 left-0`} ${1 && `nope flex`}`)",
-      errors: [error, error, error],
-    },
-    {
-      /* prettier-ignore */
-      code:   `<h1 className={'tw:flex unknown tw:relative'}>Error with custom prefix</h1>`,
-      output: `<h1 className={'unknown tw:relative tw:flex'}>Error with custom prefix</h1>`,
-      settings: { tailwindcss: { ...prefixedSettings } },
-      errors: errors,
-    },
-    // Vue SFC + Disabled attribute
-    ...[
-      [
-        `<template><h1 class="relative unkown">??</h1></template>`,
-        `<template><h1 class="unkown relative">??</h1></template>`,
-      ],
-      [
-        `<template><h1 :class="['relative unknown']">??</h1></template>`,
-        `<template><h1 :class="['unknown relative']">??</h1></template>`,
-      ],
-      [
-        `<template><h1 class="grid grid-cols-1 sm:grid-cols-2 sm:px-8 sm:py-12 sm:gap-x-8 md:py-16">:)</h1></template>`,
-        `<template><h1 class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:px-8 sm:py-12 md:py-16">:)</h1></template>`,
-      ],
-      [
-        `<template><div :class="ctl(\`p-10 w-full \${some}\`)" /></template>`,
-        `<template><div :class="ctl(\`w-full p-10 \${some}\`)" /></template>`,
-      ],
-      [
-        `
+        code:   "ctl(`p-0 top-0 ${0 && `left-0 right-0`} ${1 && `flex nope`}`)",
+        output: "ctl(`top-0 p-0 ${0 && `right-0 left-0`} ${1 && `nope flex`}`)",
+        errors: [error, error, error],
+      },
+      {
+        /* prettier-ignore */
+        code:   `<h1 className={'tw:flex unknown tw:relative'}>Error with custom prefix</h1>`,
+        output: `<h1 className={'unknown tw:relative tw:flex'}>Error with custom prefix</h1>`,
+        settings: { tailwindcss: { ...prefixedSettings } },
+        errors: errors,
+      },
+      // Vue SFC + Disabled attribute
+      ...[
+        [
+          `<template><h1 class="relative unkown">??</h1></template>`,
+          `<template><h1 class="unkown relative">??</h1></template>`,
+        ],
+        [
+          `<template><h1 :class="['relative unknown']">??</h1></template>`,
+          `<template><h1 :class="['unknown relative']">??</h1></template>`,
+        ],
+        [
+          `<template><h1 class="grid grid-cols-1 sm:grid-cols-2 sm:px-8 sm:py-12 sm:gap-x-8 md:py-16">:)</h1></template>`,
+          `<template><h1 class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:px-8 sm:py-12 md:py-16">:)</h1></template>`,
+        ],
+        [
+          `<template><div :class="ctl(\`p-10 w-full \${some}\`)" /></template>`,
+          `<template><div :class="ctl(\`w-full p-10 \${some}\`)" /></template>`,
+        ],
+        [
+          `
       <template>
         <div v-bind="data" :class="[
           'py-1.5 font-semibold transition',
@@ -322,7 +374,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
           }
         ]" />
       </template>`,
-        `
+          `
       <template>
         <div v-bind="data" :class="[
           'py-1.5 font-semibold transition',
@@ -333,22 +385,22 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
           }
         ]" />
       </template>`,
-      ],
-    ].map(([input, result]) => ({
-      code: input,
-      output: result,
-      languageOptions: withVueParser,
-      errors: errors,
-    })),
-    {
-      /* prettier-ignore */
-      code:   `<div class="md:prose-2xl prose-xl prose sm:prose-sm"></div>`,
-      output: `<div class="prose prose-xl sm:prose-sm md:prose-2xl"></div>`,
-      settings: { tailwindcss: { ...withTypographySettings } },
-      errors: errors,
-    },
-    {
-      code: `
+        ],
+      ].map(([input, result]) => ({
+        code: input,
+        output: result,
+        languageOptions: withVueParser,
+        errors: errors,
+      })),
+      {
+        /* prettier-ignore */
+        code:   `<div class="md:prose-2xl prose-xl prose sm:prose-sm"></div>`,
+        output: `<div class="prose prose-xl sm:prose-sm md:prose-2xl"></div>`,
+        settings: { tailwindcss: { ...withTypographySettings } },
+        errors: errors,
+      },
+      {
+        code: `
       const buttonClasses = ctl(\`
         \${fullWidth ? "w-12" : "w-6"}
         flex
@@ -358,7 +410,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         sm:py-6
         \${hasError && "bg-red"}
       \`);`,
-      output: `
+        output: `
       const buttonClasses = ctl(\`
         \${fullWidth ? "w-12" : "w-6"}
         container
@@ -368,10 +420,10 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         lg:py-4
         \${hasError && "bg-red"}
       \`);`,
-      errors: [error, error],
-    },
-    {
-      code: `
+        errors: [error, error],
+      },
+      {
+        code: `
       ctl(\`
         px-2
         flex
@@ -392,7 +444,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         }
       \`)
       `,
-      output: `
+        output: `
       ctl(\`
         flex
         px-2
@@ -413,10 +465,10 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         }
       \`)
       `,
-      errors: [error, error],
-    },
-    {
-      code: `
+        errors: [error, error],
+      },
+      {
+        code: `
       <div
         className={clsx(
           "w-full h-10 rounded",
@@ -426,7 +478,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         )}
       />
       `,
-      output: `
+        output: `
       <div
         className={clsx(
           "h-10 w-full rounded",
@@ -436,17 +488,17 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         )}
       />
       `,
-      errors: [error, error],
-    },
-    {
-      /* prettier-ignore */
-      code:   `myTag\`flex unknown relative\``,
-      output: `myTag\`unknown relative flex\``,
-      settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
-      errors: errors,
-    },
-    {
-      code: `
+        errors: [error, error],
+      },
+      {
+        /* prettier-ignore */
+        code:   `myTag\`flex unknown relative\``,
+        output: `myTag\`unknown relative flex\``,
+        settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
+        errors: errors,
+      },
+      {
+        code: `
       const myTag = {
         subTag: (strings) => {
           return \`$\{strings}\`;
@@ -454,7 +506,7 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       };
       const classes = myTag.subTag\`flex unknown relative\`;
       `,
-      output: `
+        output: `
       const myTag = {
         subTag: (strings) => {
           return \`$\{strings}\`;
@@ -462,34 +514,43 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       };
       const classes = myTag.subTag\`unknown relative flex\`;
       `,
-      settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
-      errors: errors,
-    },
-    {
-      code: `
+        settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
+        errors: errors,
+      },
+      {
+        code: `
       import tw from 'twin.macro';
       const Input = tw.input\`flex unknown relative\`;
       const PurpleInput = tw(Input)\`flex unknown relative\`;
       `,
-      output: `
+        output: `
       import tw from 'twin.macro';
       const Input = tw.input\`unknown relative flex\`;
       const PurpleInput = tw(Input)\`unknown relative flex\`;
       `,
-      errors: [error, error],
-    },
-    {
-      code: `
+        errors: [error, error],
+      },
+      {
+        code: `
       classnames([
         'invalid lg:w-4 sm:w-6',
         ['w-12 flex'],
       ])`,
-      output: `
+        output: `
       classnames([
         'invalid sm:w-6 lg:w-4',
         ['flex w-12'],
       ])`,
-      errors: [error, error],
-    },
-  ],
+        errors: [error, error],
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ] as Array<any>
+  ).map((testCase) => ({
+    ...testCase,
+    errors: getExpectedErrors(
+      testCase.code,
+      testCase.settings,
+      testCase.languageOptions,
+    ),
+  })),
 });

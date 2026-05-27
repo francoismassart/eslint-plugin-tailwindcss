@@ -15,6 +15,7 @@ import {
 } from "../utils/parse-plugin-settings";
 import {
   dissectAtomicNode,
+  generateLocForClassname,
   getClassnamesFromValue,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
@@ -73,13 +74,26 @@ const sortClassnames = (
 
     if (originalClassNamesValue !== validatedClassNamesValue) {
       validatedClassNamesValue = prefix + validatedClassNamesValue + suffix;
-      context.report({
-        node: node as TSESTree.Node,
-        messageId: "fix:sort",
-        fix: function (fixer) {
-          return fixer.replaceTextRange([start, end], validatedClassNamesValue);
-        },
-      });
+      for (const [index, className] of classNames.entries()) {
+        if (className === orderedClassNames[index]) continue;
+        const patchedLoc = generateLocForClassname(
+          node,
+          className,
+          originalClassNamesValue,
+          context as unknown as GenericRuleContext,
+        );
+        context.report({
+          node: node as TSESTree.Node,
+          loc: patchedLoc,
+          messageId: "fix:sort",
+          fix: function (fixer) {
+            return fixer.replaceTextRange(
+              [start, end],
+              validatedClassNamesValue,
+            );
+          },
+        });
+      }
     }
   }
 };
