@@ -231,7 +231,7 @@ const getLiteralsFromNode = <TRuleContext>(
       break;
     }
   }
-  return literals;
+  return literals.filter((literal) => literal.value !== null);
 };
 
 /**

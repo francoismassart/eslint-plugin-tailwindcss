@@ -44,9 +44,9 @@ const ruleTester = new RuleTester({
 });
 
 ruleTester.run(RULE_NAME, noCustomClassname, {
-  valid:
-    // Angular / Native HTML + static text
-    [
+  valid: [
+    ...[
+      // Angular / Native HTML + static text
       `<h1 class="whitelisted flex">attributeVisitor with TextAttribute (single class gets skipped)</h1>`,
       `<h1 class="  relative ">extra spaces</h1>`,
       `<h1 class=" relative " className=' flex'>Single + double quotes</h1>`,
@@ -60,6 +60,13 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       options: [{ whitelist: ["whitelisted", "js-[a-z0-9-]+"] }],
       languageOptions: withAngularParser,
     })),
+    ...[
+      // React
+      `<h1 className={\`max-w-full \${isDone ? 'opacity-80 grayscale' : null}\`}>null</h1>`,
+    ].map((jsx) => ({
+      code: jsx,
+    })),
+  ],
   invalid: [
     {
       code: `<h1 class="unknown relative">head</h1>`,
@@ -131,7 +138,6 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       code: `<h1 class="relative unknown">tail</h1>`,
       errors: [suggest("unknown", `<h1 class="relative">tail</h1>`)],
     },
-
     // At this moment, no possibility to read the custom dark variant from the config
     /*/
     {
