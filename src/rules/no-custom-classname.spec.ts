@@ -51,6 +51,7 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `<h1 class="  relative ">extra spaces</h1>`,
       `<h1 class=" relative " className=' flex'>Single + double quotes</h1>`,
       `<h1 class="group">group generates no classes</h1>`,
+      `<h1 class="group/name">group/name</h1>`,
       `<h1 class="dark">dark generates no classes</h1>`,
       `<h1 class="flex md:block">modifiers</h1>`,
       `<h1 class="js-custom">modifiers</h1>`,

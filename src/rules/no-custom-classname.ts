@@ -59,7 +59,12 @@ const detectCustomClassnames = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  const internalWhitelist = ["group", "dark"];
+  const internalWhitelist = [
+    "group",
+    // Support for `group/*`
+    String.raw`group\/.*`,
+    "dark",
+  ];
   const parsedOptions: RuleOptions = options || { whitelist: [] };
   const mergedWhitelist = new Set([
     ...parsedOptions.whitelist,
