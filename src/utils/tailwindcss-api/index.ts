@@ -30,3 +30,6 @@ export const candidatesToCssWorker: (
 ) => Array<string | null> = createSyncFn(
   require.resolve("./worker/candidates-to-css.mjs"),
 );
+
+export const flattenNestingWorker: (cssRule: string) => Array<string> =
+  createSyncFn(require.resolve("./worker/flatten-nesting.mjs"));

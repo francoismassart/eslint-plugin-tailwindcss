@@ -28,7 +28,10 @@ import {
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
-import { candidatesToCssWorker } from "../utils/tailwindcss-api";
+import {
+  candidatesToCssWorker,
+  flattenNestingWorker,
+} from "../utils/tailwindcss-api";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -56,15 +59,23 @@ const getCompiledGroup = (
   const groupMembers = new Map<string, Set<string>>();
   for (const baseClass of baseClasses) {
     const fullClassName = `${modifiers}${baseClass}`;
-    // console.log("  class:", fullClassName);
+
     const cssRules = candidatesToCssWorker(
       settings.cssConfigPath,
       fullClassName,
     );
     const cssRule = cssRules[0];
+
     if (!cssRule) continue;
+
+    const flattenedSelectors = flattenNestingWorker(cssRule);
+    const hasValidSelector = flattenedSelectors.some(
+      (selector) => !selector.includes("::"),
+    );
+    // Ignore rules that only have pseudo selectors (e.g. `::before`, `::after`)
+    if (!hasValidSelector) continue;
+
     const cssProperties = getPropertiesFromCssRule(cssRule);
-    // console.log("  " + fullClassName, cssProperties);
     groupMembers.set(fullClassName, cssProperties);
   }
   return groupMembers;
@@ -73,7 +84,7 @@ const getCompiledGroup = (
 const getCommonProperties = (groupMembers: Map<string, Set<string>>) => {
   const commonProperties = new Map<Set<string>, Array<string>>();
   for (const [className, properties] of groupMembers.entries()) {
-    // find if the key (Set) already exists in commonProps
+    // Find if the key (Set) already exists in commonProps
     const existingKey = mapGetKeyFromSetValues(commonProperties, properties);
     const listOfClassNames: Array<string> = existingKey
       ? commonProperties.get(existingKey)!

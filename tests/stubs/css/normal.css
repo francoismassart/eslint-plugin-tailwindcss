@@ -4,3 +4,10 @@
 @theme {
   --color-primary: #123456;
 }
+
+@utility no-marker {
+  &::marker,
+  &::-webkit-details-marker {
+    @apply hidden;
+  }
+}

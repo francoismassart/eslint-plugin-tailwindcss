@@ -49,6 +49,7 @@ const ruleTester = new RuleTester({
 
 ruleTester.run(RULE_NAME, noContradictingClassname, {
   valid: [
+    `<h1 class="flex no-marker">no-marker uses diplay property but only via ::pseudo selectors</h1>`,
     `<h1 class="absolute">single</h1>`,
     `<h1 class="absolute block">ok</h1>`,
   ].map((testedNgCode) => ({

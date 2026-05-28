@@ -14,6 +14,9 @@ importers:
       postcss:
         specifier: ^8.4.4
         version: 8.5.6
+      postcss-nested:
+        specifier: ^7.0.2
+        version: 7.0.2(postcss@8.5.6)
       synckit:
         specifier: ^0.11.11
         version: 0.11.11
