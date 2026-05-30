@@ -28,6 +28,11 @@
   "peerDependencies": {
     "tailwindcss": "^3.4.0 || ^4.0.0"
   },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+	},
   "dependencies": {
     "fast-glob": "^3.2.5",
     "postcss": "^8.4.4",
