@@ -28,6 +28,7 @@ Examples of **correct** code for this rule:
   "config": <string>|<object>,
   "skipClassAttribute": <boolean>,
   "tags": Array<string>,
+  "whitelist": Array<string>,
 }]
 ...
 ```
@@ -71,6 +72,14 @@ Optional, if you are using tagged templates, you should provide the tags in this
 ### `classRegex` (default: `"^class(Name)?$"`)
 
 Optional, can be used to support custom attributes
+
+### `whitelist` (default: `[]`)
+
+The `whitelist` is empty by default but you can add custom regular expressions to this array to avoid getting warnings or errors while using arbitrary values for certain tailwind classes.
+
+For example, if we want to whitelist 'text-' classes for pixel values only and all 'h-" classes the `whitelist` options should be set to:
+
+- `['text-\\[\\d*px]', 'h-\\[[^\\]]*]']`
 
 ## Further Reading
 

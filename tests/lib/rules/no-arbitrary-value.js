@@ -163,7 +163,20 @@ ruleTester.run("no-arbitrary-value", rule, {
       code: `<div className={'min-h-[75dvh]'}>Dynamic viewport units</div>`,
       errors: generateErrors(["min-h-[75dvh]"]),
     },
-    ...(['myTag', 'myTag.subTag', 'myTag(SomeComponent)'].map(tag => ({
+    {
+      code: `
+        <nav
+          className={classnames("text-[12px] text-[#ffffff] h-[50px] w-[100px] bg-[red] bg-[#ffff00] m-[5px] min-h-[30px] py-[8px] border-[2px]")}
+        />`,
+      errors: generateErrors("p-[3px]"),
+      options: [
+        {
+          whitelist: ["text-\\[\\d*px]", "bg-\\[[a-zA-Z]+]", "h-\\[[^\\]]*]"],
+        },
+      ],
+      errors: generateErrors("text-[#ffffff] w-[100px] bg-[#ffff00] m-[5px] min-h-[30px] py-[8px] border-[2px]"),
+    },
+    ...["myTag", "myTag.subTag", "myTag(SomeComponent)"].map((tag) => ({
       code: `${tag}\`w-[100px]\``,
       errors: generateErrors("w-[100px]"),
       options: [
@@ -171,6 +184,6 @@ ruleTester.run("no-arbitrary-value", rule, {
           tags: ["myTag"],
         },
       ],
-    }))),
+    })),
   ],
 });
