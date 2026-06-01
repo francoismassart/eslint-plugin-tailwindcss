@@ -20,7 +20,7 @@ import {
   dissectAtomicNode,
   generateLocForClassname,
   getClassnamesFromValue,
-  getRange,
+  getRangeFromAtomicNode,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
 import {
@@ -164,11 +164,7 @@ const getContradictions = (
           originalClassNamesValue,
           genericContext,
         );
-        const targetRange = getRange(
-          node,
-          targetClassname,
-          originalClassNamesValue,
-        );
+        const targetRange = getRangeFromAtomicNode(node);
         context.report({
           loc: patchedLoc,
           messageId: "issue:contradiction",

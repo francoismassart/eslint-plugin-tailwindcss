@@ -17,7 +17,7 @@ import {
   dissectAtomicNode,
   generateLocForClassname,
   getClassnamesFromValue,
-  getRange,
+  getRangeFromAtomicNode,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
 import {
@@ -96,7 +96,7 @@ const detectCustomClassnames = (
         originalClassNamesValue,
         genericContext,
       );
-      const range = getRange(node, customClass, originalClassNamesValue);
+      const range = getRangeFromAtomicNode(node);
       patchedValue = prefix + patchedValue + suffix;
 
       if (originalClassNamesValue === patchedValue) {

@@ -268,98 +268,70 @@ export const getIndexOfNeedle = (haystack: string, needle: string): number => {
   return -1;
 };
 
+export const getRangeFromAtomicNode = (node: AtomicNode): [number, number] => {
+  if (node.type === "TextAttribute") {
+    return [node.valueSpan.fullStart.offset, node.valueSpan.end.offset];
+  }
+  return node.range;
+};
+
+const getLocFromAtomicNode = (
+  node: AtomicNode,
+): TSESTree.SourceLocation | VueAST.LocationRange => {
+  if (node.type === "TextAttribute") {
+    return {
+      start: {
+        column: node.valueSpan.start.column,
+        line: node.valueSpan.start.line,
+      },
+      end: {
+        column: node.valueSpan.end.column,
+        line: node.valueSpan.end.line,
+      },
+    };
+  }
+  return node.loc;
+};
+
 export const generateLocForClassname = (
   node: AtomicNode,
   needle: string,
-  originalClassNamesValue: string,
+  originalValue: string,
   context: GenericRuleContext,
 ) => {
-  const isTemplateElement =
-    node.type === TSESTree.AST_NODE_TYPES.TemplateElement;
-  // @ts-expect-error unkown loc property
-  const nodeLoc: TSESTree.SourceLocation = node.loc;
-  const nodeLocStart: TSESTree.Position = nodeLoc.start;
+  const sourceCode = context.sourceCode;
+  const fullText = sourceCode.text;
 
-  const index = getIndexOfNeedle(originalClassNamesValue, needle);
-  if (index === -1) {
-    return nodeLoc;
+  // 1. Global range (supported by all node types)
+  const [nodeStart, nodeEnd] = getRangeFromAtomicNode(node);
+  const nodeRawText = fullText.slice(nodeStart, nodeEnd);
+
+  // 2. Find the offset of the needle in the node's raw text (usefull to skip ", ' or `)
+  const valueOffsetInNode = nodeRawText.indexOf(originalValue);
+  if (valueOffsetInNode === -1) {
+    // Safety fallback
+    return getLocFromAtomicNode(node);
   }
-  const needleLocStart = context.sourceCode.getLocFromIndex(index);
-  const needleLocEnd = context.sourceCode.getLocFromIndex(
-    index + needle.length,
-  );
-  // TemplateElement needs special handling
-  if (isTemplateElement) {
-    const sliceEnd = Math.max(0, index);
-    const prefix = originalClassNamesValue.slice(0, sliceEnd);
-    const newLines = (prefix.match(/\n/g) || []).length;
-    needleLocStart.line = newLines;
-    needleLocEnd.line = newLines;
-    const lastNewlineIndex = prefix.lastIndexOf("\n");
-    const charsSinceLastNewline =
-      lastNewlineIndex === -1
-        ? needleLocStart.column
-        : prefix.length - lastNewlineIndex - 1;
-    needleLocStart.column = charsSinceLastNewline;
-    needleLocEnd.column = needleLocStart.column + needle.length;
+  // Absolute offset of the needle in the full text
+  const absoluteValueStart = nodeStart + valueOffsetInNode;
+
+  // 3. Find the position of the 'needle' (the target class) in the 'originalValue'
+  const needleRelativeIndex = originalValue.indexOf(needle);
+  if (needleRelativeIndex === -1) {
+    // Safety fallback
+    return getLocFromAtomicNode(node);
   }
-  // Lines
-  const lineOffset =
-    node.type === TSESTree.AST_NODE_TYPES.TemplateElement ? 0 : 1;
-  const patchedLineStart = nodeLocStart.line + needleLocStart.line - lineOffset; // -1 because locStart.line is 1-based
-  const patchedLineEnd = patchedLineStart;
-  // Columns
-  let patchedColumnStart = needleLocStart.column;
-  if (
-    (isTemplateElement && needleLocStart.line === 0) ||
-    (!isTemplateElement && needleLocStart.line === 1)
-  ) {
-    patchedColumnStart = nodeLocStart.column + needleLocStart.column + 1; // Jump the starting quote
-  }
-  const patchedColumnEnd = patchedColumnStart + needle.length;
-  const patchedLoc = {
-    start: {
-      column: patchedColumnStart,
-      line: patchedLineStart,
-    },
-    end: {
-      column: patchedColumnEnd,
-      line: patchedLineEnd,
-    },
+
+  // Absolute offset of the needle in the file
+  const absoluteNeedleStart = absoluteValueStart + needleRelativeIndex;
+  const absoluteNeedleEnd = absoluteNeedleStart + needle.length;
+
+  // 4. Use the real ESLint SourceCode to convert the indexes to Line/Column
+  const startPos = sourceCode.getLocFromIndex(absoluteNeedleStart);
+  const endPos = sourceCode.getLocFromIndex(absoluteNeedleEnd);
+
+  return {
+    start: startPos,
+    end: endPos,
   };
-  return patchedLoc;
-};
-
-export const getRange = (
-  node: AtomicNode,
-  needle: string,
-  originalClassNamesValue: string,
-): [number, number] => {
-  // @ts-expect-error unknown loc property
-  const nodeLoc = node.loc;
-  let offset = nodeLoc.start.column;
-  switch (node.type) {
-    case "TextAttribute": {
-      // @ts-expect-error col is unknown
-      offset = node.valueSpan.start.col;
-      break;
-    }
-    case "Literal": {
-      offset = nodeLoc.start.column + 1; // Jump the starting quote
-      break;
-    }
-    case "TemplateElement": {
-      // console.log(node);
-      offset = node.range[0] + 1;
-      break;
-    }
-    default: {
-      // console.info(`\nUnknown node type: ${node.type}\n`);
-      return [0, 0];
-      break;
-    }
-  }
-  const index = getIndexOfNeedle(originalClassNamesValue, needle);
-  if (index === -1) return [0, 0];
-  return [offset + index, offset + index + needle.length];
 };
