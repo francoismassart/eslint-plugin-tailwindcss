@@ -341,6 +341,11 @@ export const getThemeKeyPrefixesFromClassname = (
  * @param theme The theme object.
  * @param classname The classname to retrieve prefixes for.
  * @returns A set of theme key prefixes.
+ * @example `--aspect-` would return
+ * `--aspect-auto`,
+ * `--aspect-square`,
+ * `--aspect-video`,
+ * etc.
  */
 export const getThemePresetsFromPrefixes = (
   theme: Theme,

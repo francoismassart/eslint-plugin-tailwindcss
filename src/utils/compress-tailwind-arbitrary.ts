@@ -1,3 +1,10 @@
+/**
+ * Compresses a Tailwind CSS arbitrary value by removing unnecessary underscores and formatting it correctly.
+ * @param value The arbitrary value to compress.
+ * @returns The compressed arbitrary value.
+ * @example
+ * compressTailwindArbitrary("16_/_9") // returns "[16/9]"
+ */
 export const compressTailwindArbitrary = (value: string) => {
   if (!value) return "";
 
