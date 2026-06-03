@@ -15,6 +15,10 @@ export type PluginSettings = {
   functions?: Array<string>; // No support for `Set<string>`
   // keys to ignore in object expressions
   ignoredKeys?: Array<string>; // No support for `Set<string>`
+  // Max size of the Set or Map objects used for caching
+  cacheMaxSize?: number;
+  // Max age of the cache in milliseconds
+  cacheMaxAge?: number;
 };
 
 /**
@@ -48,6 +52,10 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   ],
   // keys to ignore in object expressions (used by `cva`, `tv`, etc.)
   ignoredKeys: ["defaultVariants", "compoundVariants"],
+  // Max size of the Set or Map objects used for caching
+  cacheMaxSize: 250_000,
+  // Max age of the cache in milliseconds
+  cacheMaxAge: 10 * 60 * 1000, // 10 minutes
 };
 
 // TODO tailwindPreserveWhitespace => New rule
@@ -84,6 +92,18 @@ export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
     items: { type: "string", minLength: 0 },
     uniqueItems: true,
     default: DEFAULT_SETTINGS.ignoredKeys,
+  },
+  cacheMaxSize: {
+    description: "Max size of the Set or Map objects used for caching",
+    type: "number",
+    minimum: 10_000,
+    default: DEFAULT_SETTINGS.cacheMaxSize,
+  },
+  cacheMaxAge: {
+    description: "Max age of the cache in milliseconds",
+    type: "number",
+    minimum: 30_000,
+    default: DEFAULT_SETTINGS.cacheMaxAge,
   },
 };
 
