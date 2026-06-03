@@ -17,7 +17,6 @@ import {
   dissectAtomicNode,
   generateLocForClassname,
   getClassnamesFromValue,
-  getRangeFromAtomicNode,
 } from "../utils/parser/node";
 import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
 import {
@@ -48,9 +47,29 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const isWhitelisted = (className: string, whitelist: Set<string>): boolean => {
-  if (whitelist.has(className)) return true;
-  return [...whitelist].some((pattern) => passRegexTest(pattern, className));
+interface PreparedWhitelist {
+  exactMatches: Set<string>;
+  regexPatterns: Array<string>;
+}
+
+const prepareWhitelist = (
+  whitelistOptions: Array<string> = [],
+): PreparedWhitelist => {
+  // Backslash, a dot, an asterisk, etc., we treat it as a regex
+  const regexMagicSymbols = /[\\[\]{}()*+?^$|]/;
+
+  const exactMatches = new Set(["group", "dark"]);
+  const regexPatterns: Array<string> = [String.raw`group\/.*`];
+
+  for (const item of whitelistOptions) {
+    if (regexMagicSymbols.test(item)) {
+      regexPatterns.push(item);
+    } else {
+      exactMatches.add(item);
+    }
+  }
+
+  return { exactMatches, regexPatterns };
 };
 
 const detectCustomClassnames = (
@@ -59,68 +78,68 @@ const detectCustomClassnames = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  const internalWhitelist = [
-    "group",
-    // Support for `group/*`
-    String.raw`group\/.*`,
-    "dark",
-  ];
   const parsedOptions: RuleOptions = options || { whitelist: [] };
-  const mergedWhitelist = new Set([
-    ...parsedOptions.whitelist,
-    ...internalWhitelist,
-  ]);
-  // console.log(parsedOptions);
+
+  // Setup whitelist filters
+  const { exactMatches, regexPatterns } = prepareWhitelist(
+    parsedOptions.whitelist,
+  );
   const genericContext = context as unknown as GenericRuleContext;
+
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
-    // Process the extracted classnames and report
+
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
+
+    // 1. Gather invalid classes in the node
+    const invalidClassesInNode: Array<string> = [];
+
     for (const customClass of classNames) {
-      if (isWhitelisted(customClass, mergedWhitelist)) continue;
+      if (exactMatches.has(customClass)) continue;
+      if (regexPatterns.some((pattern) => passRegexTest(pattern, customClass)))
+        continue;
       if (isValidClassNameWorker(settings.cssConfigPath, customClass)) continue;
 
-      // Generates the "cleaned" attribute value
+      invalidClassesInNode.push(customClass);
+    }
+
+    // All classes are valid, skip to the next node
+    if (invalidClassesInNode.length === 0) continue;
+
+    // 2. Emit reports with a surgical fix (one class targeted)
+    for (const invalidClass of invalidClassesInNode) {
+      const patchedLoc = generateLocForClassname(
+        node,
+        invalidClass,
+        originalClassNamesValue,
+        genericContext,
+      );
+
+      // Generate the fix exclusive to THIS iteration of the class
       let patchedValue = joiner({
         classNames,
         whitespaces,
         headSpace,
         tailSpace,
-        validator: (candidate) => candidate !== customClass,
+        // Only remove the current class, other invalid ones remain
+        validator: (candidate) => candidate !== invalidClass,
       });
-      const patchedLoc = generateLocForClassname(
-        node,
-        customClass,
-        originalClassNamesValue,
-        genericContext,
-      );
-      const range = getRangeFromAtomicNode(node);
+
       patchedValue = prefix + patchedValue + suffix;
 
-      if (originalClassNamesValue === patchedValue) {
-        continue;
-      }
       context.report({
         loc: patchedLoc,
         messageId: "issue:unknown-classname",
-        data: {
-          classname: customClass,
-        },
-        suggest:
-          range[0] && range[1]
-            ? [
-                {
-                  messageId: "fix:unknown-classname:remove",
-                  data: {
-                    classname: customClass,
-                  },
-                  fix: (fixer) =>
-                    fixer.replaceTextRange([start, end], patchedValue),
-                },
-              ]
-            : [],
+        data: { classname: invalidClass },
+        suggest: [
+          {
+            messageId: "fix:unknown-classname:remove",
+            data: { classname: invalidClass },
+            fix: (fixer) => fixer.replaceTextRange([start, end], patchedValue),
+          },
+        ],
       });
     }
   }
