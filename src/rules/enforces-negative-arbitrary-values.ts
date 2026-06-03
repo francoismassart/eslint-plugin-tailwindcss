@@ -63,8 +63,8 @@ const propertiesPattern = [
   "(?:skew|translate|rotate)(?:-[xyz])?",
 ].join("|");
 
-const negativeArbitraryRegEx = new RegExp(
-  `^-(?<property>${propertiesPattern})-\\[(?<arbitraryValue>.*)\\]$`,
+const NEGATIVE_ARBITRARY_REGEX = new RegExp(
+  `^-(?<property>${propertiesPattern})-\\[(?<arbitraryValue>[^\\]]+)\\]$`,
 );
 
 const negativeArbitraryClassnames = (
@@ -82,10 +82,12 @@ const negativeArbitraryClassnames = (
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
 
-    for (let index = 0; index < classNames.length; index++) {
+    const classNamesCount = classNames.length;
+
+    for (let index = 0; index < classNamesCount; index++) {
       const targetClassName = classNames[index];
       const baseClass = getBaseClassname(targetClassName);
-      const match = baseClass.match(negativeArbitraryRegEx);
+      const match = baseClass.match(NEGATIVE_ARBITRARY_REGEX);
 
       if (!match?.groups) continue;
 
@@ -106,17 +108,19 @@ const negativeArbitraryClassnames = (
         genericContext,
       );
 
-      // Local copy creation is necessary to avoid side effects if multiple errors persist
-      const localClassNames = [...classNames];
-      localClassNames[index] = patchedClass;
+      // Temporary mutation instead of cloning [...classNames] at each iteration for memory optimization
+      classNames[index] = patchedClass;
 
       let patchedValue = joiner({
-        classNames: localClassNames,
+        classNames,
         whitespaces,
         headSpace,
         tailSpace,
         validator: (candidate) => candidate !== targetClassName,
       });
+
+      // Restore the original array immediately for the next iteration
+      classNames[index] = targetClassName;
 
       patchedValue = prefix + patchedValue + suffix;
 
