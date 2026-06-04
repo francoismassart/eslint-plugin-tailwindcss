@@ -50,6 +50,12 @@ type ShorthandRule = {
   strategies: Record<string, Array<Array<string>>>;
 };
 
+type ParsedCandidate = {
+  negative: string;
+  value: string;
+  prefixes: Set<string>;
+};
+
 export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
   padding: {
     // p, px, py, pt, pb, pl, pr, ps, pe, pbs, pbe
@@ -217,53 +223,80 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
   },
 };
 
+// Perfs: avoid recreating strategy keys
+const STRATEGY_ENTRIES = Object.entries(SHORTHAND_RULES);
+
 const detectShorthands = (
   classNames: Array<string>,
-  strategy: ShorthandRule,
+  shorthandRule: ShorthandRule,
 ): Map<string, Array<string>> => {
   const shorthands = new Map<string, Array<string>>();
-  // We group by "sign + value" (e.g., "-100" and "100" are two distinct groups)
-  const candidates = new Map<
-    string,
-    { negative: string; value: string; prefixes: Set<string> }
-  >();
+  const candidates = new Map<string, ParsedCandidate>();
 
+  // Step 1: Indexing in O(N)
   for (let index = 0, total = classNames.length; index < total; index++) {
-    const cls = classNames[index];
-    const match = cls.match(strategy.pattern);
+    // e.g. `-mx-foo`
+    const currentClass = classNames[index];
+
+    const match = currentClass.match(shorthandRule.pattern);
     if (!match?.groups) continue;
 
+    // e.g. `negative`: `-`, `prefix`: `mx`, `value`: `foo`
     const { negative = "", prefix, value = "" } = match.groups;
-    const groupKey = `${negative}${value}`; // e.g. "-100"
 
-    let data = candidates.get(groupKey);
-    if (!data) {
-      data = { negative, value, prefixes: new Set() };
-      candidates.set(groupKey, data);
+    // e.g. `groupKey`: `-foo`
+    const groupKey = `${negative}${value}`;
+    let groupData = candidates.get(groupKey);
+    if (!groupData) {
+      groupData = { negative, value, prefixes: new Set() };
+      candidates.set(groupKey, groupData);
     }
-    data.prefixes.add(prefix);
+    // e.g. `mx` is added to prefixes for the group value `-foo`
+    groupData.prefixes.add(prefix);
   }
 
-  for (const data of candidates.values()) {
-    const { negative, value, prefixes } = data;
+  // Step 2: Check combinations only on valid candidates
+  // `candidates` keys be like `-foo` with prefixes like `Set { "mx", "my" }`)
+  for (const currentCandidate of candidates.values()) {
+    const { negative, value, prefixes } = currentCandidate;
+    const suffixValue = value ? `-${value}` : "";
 
-    for (const [shorthand, combos] of Object.entries(strategy.strategies)) {
-      for (let index = 0, total = combos.length; index < total; index++) {
+    // e.g. [`mx`, `my`, `m`] for the `margin` strategy
+    const strategyKeys = Object.keys(shorthandRule.strategies);
+    const totalStrategies = strategyKeys.length;
+    for (let index = 0; index < totalStrategies; index++) {
+      // e.g. `mx`
+      const key = strategyKeys[index];
+      // e.g. `mx` => [["ml", "mr"], ["ms", "me"]]
+      const combos = shorthandRule.strategies[key];
+
+      const totalCombos = combos.length;
+      for (let index = 0; index < totalCombos; index++) {
+        // e.g. `["ml", "mr"]`
         const combo = combos[index];
+        const totalComboParts = combo.length;
+        let matchEntireCombo = true;
 
-        let matchAll = true;
-        for (const element of combo) {
-          if (!prefixes.has(element)) {
-            matchAll = false;
+        // Must have all the parts of the combo to be a valid shorthand candidate
+        for (let index = 0; index < totalComboParts; index++) {
+          if (!prefixes.has(combo[index])) {
+            matchEntireCombo = false;
             break;
           }
         }
 
-        if (matchAll) {
-          const suffix = value ? `-${value}` : "";
-          const resourceKey = `${negative}${shorthand}${suffix}`;
-          const result = combo.map((p) => `${negative}${p}${suffix}`);
-          shorthands.set(resourceKey, result);
+        if (matchEntireCombo) {
+          // e.g. `-mx-foo` for the combo `["ml", "mr"]` with the key `mx`
+          const shorthandClass = `${negative}${key}${suffixValue}`;
+          // Using `Array.from({length}, callback)` would be less performant
+          const longhandClasses: Array<string> = Array.from({
+            length: totalComboParts,
+          });
+          for (let index = 0; index < totalComboParts; index++) {
+            longhandClasses[index] = `${negative}${combo[index]}${suffixValue}`;
+          }
+          // e.g. `-mx-foo` => `["-ml-foo", "-mr-foo"]`
+          shorthands.set(shorthandClass, longhandClasses);
         }
       }
     }
@@ -278,14 +311,15 @@ const replaceByShorthands = (
   literals: Array<AtomicNode>,
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
+  const totalLiterals = literals.length;
 
-  for (let n = 0, nLength = literals.length; n < nLength; n++) {
-    const node = literals[n];
+  for (let index = 0; index < totalLiterals; index++) {
+    const node = literals[index];
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
 
-    const { classNames, whitespaces, headSpace, tailSpace } =
-      getClassnamesFromValue(originalClassNamesValue);
+    const classNamesObject = getClassnamesFromValue(originalClassNamesValue);
+    let { classNames } = classNamesObject;
     if (classNames.length <= 1) continue;
 
     const groups = groupByModifiersPrefix(classNames);
@@ -293,21 +327,28 @@ const replaceByShorthands = (
     for (const [modifiers, baseCls] of groups.entries()) {
       if (baseCls.length <= 1) continue;
 
-      const strategies = Object.values(SHORTHAND_RULES);
-      for (let s = 0, sLength = strategies.length; s < sLength; s++) {
-        const found = detectShorthands(baseCls, strategies[s]);
+      const total = STRATEGY_ENTRIES.length;
+      // padding, margin...
+      for (let index = 0; index < total; index++) {
+        // e.g. Map(1) { 'mx' => [ 'ml', 'mr' ] }
+        const foundReplacement = detectShorthands(
+          baseCls,
+          STRATEGY_ENTRIES[index][1],
+        );
 
-        for (const [shorthand, obsolete] of found) {
-          const fullObsolete = new Set(obsolete.map((c) => `${modifiers}${c}`));
-          const newShorthand = `${modifiers}${shorthand}`;
-          const joinedObsolete = [...fullObsolete]
-            .map((c) => `'${c}'`)
-            .join(", ");
-
-          const cleanBaseClassNames = classNames.filter(
-            (cls) => !fullObsolete.has(cls),
+        for (const [shorthand, longhands] of foundReplacement) {
+          // Prepend the modifiers to the longhands
+          const fullObsolete = new Set(
+            longhands.map((c) => `${modifiers}${c}`),
           );
-          cleanBaseClassNames.push(newShorthand);
+          // Prepend the modifiers to the shorthand
+          const newShorthand = `${modifiers}${shorthand}`;
+          const joinedObsolete = [...fullObsolete];
+
+          // Filter out the longhand classnames from the original classnames
+          classNames = classNames.filter((cls) => !fullObsolete.has(cls));
+          // ... and add the new shorthand
+          classNames.push(newShorthand);
 
           for (const targetClassName of fullObsolete) {
             const patchedLoc = generateLocForClassname(
@@ -322,17 +363,21 @@ const replaceByShorthands = (
               loc: patchedLoc,
               messageId: "fix:use-shorthand",
               data: {
-                classnames: joinedObsolete,
+                targetLonghand: targetClassName,
+                otherLonghands: joinedObsolete
+                  .filter((cls) => cls !== targetClassName)
+                  .map((cls) => `'${cls}'`)
+                  .join(", "),
                 shorthand: newShorthand,
               },
               fix: (fixer) => {
                 const validatedValue =
                   prefix +
                   joiner({
-                    classNames: cleanBaseClassNames,
-                    whitespaces,
-                    headSpace,
-                    tailSpace,
+                    classNames,
+                    whitespaces: classNamesObject.whitespaces,
+                    headSpace: classNamesObject.headSpace,
+                    tailSpace: classNamesObject.tailSpace,
                   }) +
                   suffix;
                 return fixer.replaceTextRange([start, end], validatedValue);
@@ -355,7 +400,7 @@ export const enforcesShorthand = createRule<Options, MessageIds>({
     hasSuggestions: false,
     messages: {
       "fix:use-shorthand":
-        "Classnames {{classnames}} could be replaced by the '{{shorthand}}' shorthand",
+        "'{{targetLonghand}}' can be merged with {{otherLonghands}} into '{{shorthand}}'",
     },
     fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`

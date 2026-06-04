@@ -8,21 +8,31 @@ import {
 import { enforcesShorthand, MessageIds, RULE_NAME } from "./enforces-shorthand";
 
 const generateError = (
-  obsoleteClassnames: Array<string>,
+  targetLonghand: string,
+  otherLonghands: Array<string>,
   shorthand: string,
 ): TestCaseError<MessageIds> => {
+  const formattedOtherLonghands = otherLonghands
+    .map((cls) => `'${cls}'`)
+    .join(", ");
   return {
     messageId: "fix:use-shorthand",
     data: {
-      classnames: obsoleteClassnames.map((cls) => `'${cls}'`).join(", "),
+      targetLonghand,
+      otherLonghands: formattedOtherLonghands,
       shorthand: shorthand,
     },
   };
 };
 
 const mapErrors = (many: Array<string>, single: string) =>
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  many.map((value) => generateError(many, single));
+  many.map((value) =>
+    generateError(
+      value,
+      many.filter((v) => v !== value),
+      single,
+    ),
+  );
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -74,16 +84,12 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
     {
       code: `ctl("top-0 right-0 bottom-0 left-0")`,
       errors: [
-        generateError(["top-0", "bottom-0"], "inset-y-0"),
-        generateError(["right-0", "left-0"], "inset-x-0"),
-        generateError(["top-0", "bottom-0"], "inset-y-0"),
-        generateError(["right-0", "left-0"], "inset-x-0"),
+        generateError("top-0", ["bottom-0"], "inset-y-0"),
+        generateError("right-0", ["left-0"], "inset-x-0"),
+        generateError("bottom-0", ["top-0"], "inset-y-0"),
+        generateError("left-0", ["right-0"], "inset-x-0"),
       ],
-      output: [
-        'ctl("right-0 left-0 inset-y-0")',
-        'ctl("inset-y-0 inset-x-0")',
-        'ctl("inset-0")',
-      ],
+      output: ['ctl("inset-x-0 inset-y-0")', 'ctl("inset-0")'],
     },
     {
       code: `ctl("inset-y-0 right-0 left-0")`,
@@ -92,17 +98,17 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
     },
     {
       code: `ctl("-inset-y-10 -inset-x-10")`,
-      errors: mapErrors(["-inset-x-10", "-inset-y-10"], "-inset-10"),
+      errors: mapErrors(["-inset-y-10", "-inset-x-10"], "-inset-10"),
       output: [`ctl("-inset-10")`],
     },
     {
       code: `ctl("-my-10 -mx-10")`,
-      errors: mapErrors(["-mx-10", "-my-10"], "-m-10"),
+      errors: mapErrors(["-my-10", "-mx-10"], "-m-10"),
       output: [`ctl("-m-10")`],
     },
     {
       code: `ctl("dark:-my-10 dark:-mx-10")`,
-      errors: mapErrors(["dark:-mx-10", "dark:-my-10"], "dark:-m-10"),
+      errors: mapErrors(["dark:-my-10", "dark:-mx-10"], "dark:-m-10"),
       output: [`ctl("dark:-m-10")`],
     },
     {
@@ -181,7 +187,7 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
     {
       code: `ctl("-translate-y-10 -translate-x-10")`,
       errors: mapErrors(
-        ["-translate-x-10", "-translate-y-10"],
+        ["-translate-y-10", "-translate-x-10"],
         "-translate-10",
       ),
       output: [`ctl("-translate-10")`],
