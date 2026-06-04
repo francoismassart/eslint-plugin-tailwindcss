@@ -79,7 +79,11 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
         generateError(["top-0", "bottom-0"], "inset-y-0"),
         generateError(["right-0", "left-0"], "inset-x-0"),
       ],
-      output: [`ctl("inset-x-0 inset-y-0")`, `ctl("inset-0")`],
+      output: [
+        'ctl("right-0 left-0 inset-y-0")',
+        'ctl("inset-y-0 inset-x-0")',
+        'ctl("inset-0")',
+      ],
     },
     {
       code: `ctl("inset-y-0 right-0 left-0")`,

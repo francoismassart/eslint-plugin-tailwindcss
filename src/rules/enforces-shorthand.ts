@@ -220,7 +220,7 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
 const detectShorthands = (
   classNames: Array<string>,
   strategy: ShorthandRule,
-) => {
+): Map<string, Array<string>> => {
   const shorthands = new Map<string, Array<string>>();
   // We group by "sign + value" (e.g., "-100" and "100" are two distinct groups)
   const candidates = new Map<
@@ -228,31 +228,41 @@ const detectShorthands = (
     { negative: string; value: string; prefixes: Set<string> }
   >();
 
-  for (const cls of classNames) {
+  for (let index = 0, total = classNames.length; index < total; index++) {
+    const cls = classNames[index];
     const match = cls.match(strategy.pattern);
     if (!match?.groups) continue;
 
     const { negative = "", prefix, value = "" } = match.groups;
     const groupKey = `${negative}${value}`; // e.g. "-100"
 
-    if (!candidates.has(groupKey)) {
-      candidates.set(groupKey, { negative, value, prefixes: new Set() });
+    let data = candidates.get(groupKey);
+    if (!data) {
+      data = { negative, value, prefixes: new Set() };
+      candidates.set(groupKey, data);
     }
-    candidates.get(groupKey)?.prefixes.add(prefix);
+    data.prefixes.add(prefix);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  for (const [_, data] of candidates) {
+  for (const data of candidates.values()) {
     const { negative, value, prefixes } = data;
+
     for (const [shorthand, combos] of Object.entries(strategy.strategies)) {
-      for (const combo of combos) {
-        if (combo.every((p) => prefixes.has(p))) {
-          const resourceKey = value
-            ? `${negative}${shorthand}-${value}`
-            : `${negative}${shorthand}`;
-          const result = combo.map((p) =>
-            value ? `${negative}${p}-${value}` : `${negative}${p}`,
-          );
+      for (let index = 0, total = combos.length; index < total; index++) {
+        const combo = combos[index];
+
+        let matchAll = true;
+        for (const element of combo) {
+          if (!prefixes.has(element)) {
+            matchAll = false;
+            break;
+          }
+        }
+
+        if (matchAll) {
+          const suffix = value ? `-${value}` : "";
+          const resourceKey = `${negative}${shorthand}${suffix}`;
+          const result = combo.map((p) => `${negative}${p}${suffix}`);
           shorthands.set(resourceKey, result);
         }
       }
@@ -267,52 +277,59 @@ const replaceByShorthands = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  for (const node of literals) {
+  const genericContext = context as unknown as GenericRuleContext;
+
+  for (let n = 0, nLength = literals.length; n < nLength; n++) {
+    const node = literals[n];
     const { originalClassNamesValue, start, end, prefix, suffix } =
-      dissectAtomicNode(node, context as unknown as GenericRuleContext);
+      dissectAtomicNode(node, genericContext);
 
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
     if (classNames.length <= 1) continue;
 
     const groups = groupByModifiersPrefix(classNames);
-    let currentClassNames = [...classNames];
 
     for (const [modifiers, baseCls] of groups.entries()) {
       if (baseCls.length <= 1) continue;
 
-      for (const strategy of Object.values(SHORTHAND_RULES)) {
-        const found = detectShorthands(baseCls, strategy);
+      const strategies = Object.values(SHORTHAND_RULES);
+      for (let s = 0, sLength = strategies.length; s < sLength; s++) {
+        const found = detectShorthands(baseCls, strategies[s]);
 
         for (const [shorthand, obsolete] of found) {
           const fullObsolete = new Set(obsolete.map((c) => `${modifiers}${c}`));
           const newShorthand = `${modifiers}${shorthand}`;
+          const joinedObsolete = [...fullObsolete]
+            .map((c) => `'${c}'`)
+            .join(", ");
 
-          currentClassNames = currentClassNames
-            .filter((cls) => !fullObsolete.has(cls))
-            // eslint-disable-next-line unicorn/prefer-spread
-            .concat(newShorthand);
+          const cleanBaseClassNames = classNames.filter(
+            (cls) => !fullObsolete.has(cls),
+          );
+          cleanBaseClassNames.push(newShorthand);
 
           for (const targetClassName of fullObsolete) {
             const patchedLoc = generateLocForClassname(
               node,
               targetClassName,
               originalClassNamesValue,
-              context as unknown as GenericRuleContext,
+              genericContext,
             );
+
             context.report({
               node: node as TSESTree.Node,
               loc: patchedLoc,
               messageId: "fix:use-shorthand",
               data: {
-                classnames: [...fullObsolete].map((c) => `'${c}'`).join(", "),
+                classnames: joinedObsolete,
                 shorthand: newShorthand,
               },
               fix: (fixer) => {
                 const validatedValue =
                   prefix +
                   joiner({
-                    classNames: currentClassNames,
+                    classNames: cleanBaseClassNames,
                     whitespaces,
                     headSpace,
                     tailSpace,
@@ -337,7 +354,8 @@ export const enforcesShorthand = createRule<Options, MessageIds>({
     },
     hasSuggestions: false,
     messages: {
-      "fix:use-shorthand": `Classnames {{classnames}} could be replaced by the '{{shorthand}}' shorthand`,
+      "fix:use-shorthand":
+        "Classnames {{classnames}} could be replaced by the '{{shorthand}}' shorthand",
     },
     fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`
