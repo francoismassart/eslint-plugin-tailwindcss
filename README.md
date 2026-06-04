@@ -42,7 +42,16 @@ You should specify settings that will be shared across all the plugin rules. ([M
       cssConfigPath: dirname(fileURLToPath(import.meta.url)) + "/styles/tailwind.css",
       // Functions/tagFunctions that will be parsed by the plugin.
       // Optional, default values: ["classnames", "clsx", "ctl", "cva", "tv", "tw"]
-      functions: ["twClasses"]
+      functions: ["twClasses"],
+      // Keys to be ignored in object expressions
+      // Optional, default values: ["defaultVariants", "compoundVariants"]
+      ignoredKeys: ["defaultVariants", "compoundVariants", "foo"],
+      // Max size of the Set or Map objects used for caching
+      // Optional, default value: 250000
+      cacheMaxSize: 150_000,
+      // Max lifetime of the cache set in ms
+      // Optional, default value: 10 * 60 * 1000 (10 minutes)
+      cacheMaxAge: 60 * 1000,
     },
   }
 }

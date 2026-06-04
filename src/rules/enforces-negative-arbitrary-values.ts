@@ -47,25 +47,25 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 export const createRule = RuleCreator(urlCreator);
 
 const propertiesPattern = [
-  // inset, inset-x, inset-y, scale, scale-x, scale-y
-  "((inset|scale)(?:-(?:x|y))?)",
-  // simple properties
-  "(m|top|right|bottom|left|z|order|tracking|indent|(backdrop-)?hue-rotate)|(space-(x|y))",
-  // scroll-m, scroll-mx, scroll-my, scroll-mt, scroll-mb, scroll-ml, scroll-mr, scroll-ms, scroll-me, scroll-mbs, scroll-mbe
-  "(scroll-m(?:x|y|s|e|bs|be|t|r|b|l|))",
-  // skew, skew-x, skew-y, translate, translate-x, translate-y, rotate, rotate-x, rotate-y, rotate-z
-  "((skew|translate|rotate)(?:-(?:x|y|z))?)",
+  "(?:inset|scale)(?:-[xy])?",
+  "m",
+  "top",
+  "right",
+  "bottom",
+  "left",
+  "z",
+  "order",
+  "tracking",
+  "indent",
+  "(?:backdrop-)?hue-rotate",
+  "space-[xy]",
+  "scroll-m(?:[xyse]|bs|be|t|r|b|l)?",
+  "(?:skew|translate|rotate)(?:-[xyz])?",
 ].join("|");
-// Matches classnames that start with '-' and contain arbitrary values (e.g., -m-[10px])
-const regexPattern = [
-  "^",
-  "(?<negative>-)",
-  "(?<property>(" + propertiesPattern + "))",
-  String.raw`-\[(?<arbitraryValue>.*)\]`,
-  "$",
-].join("");
 
-const negativeArbitraryRegEx = new RegExp(regexPattern);
+const NEGATIVE_ARBITRARY_REGEX = new RegExp(
+  `^-(?<property>${propertiesPattern})-\\[(?<arbitraryValue>[^\\]]+)\\]$`,
+);
 
 const negativeArbitraryClassnames = (
   context: RuleContext,
@@ -73,20 +73,33 @@ const negativeArbitraryClassnames = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  // console.log(options);
   const genericContext = context as unknown as GenericRuleContext;
+
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
-    // Process the extracted classnames and report
+
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
-    for (const [index, targetClassName] of classNames.entries()) {
+
+    const classNamesCount = classNames.length;
+
+    for (let index = 0; index < classNamesCount; index++) {
+      const targetClassName = classNames[index];
       const baseClass = getBaseClassname(targetClassName);
-      const modifiers = getModifiersPrefix(targetClassName);
-      const match = baseClass.match(negativeArbitraryRegEx);
+      const match = baseClass.match(NEGATIVE_ARBITRARY_REGEX);
 
       if (!match?.groups) continue;
+
+      const { property = "", arbitraryValue = "" } = match.groups;
+      const modifiers = getModifiersPrefix(targetClassName);
+
+      // Invert the arbitrary value (-10px -> 10px or 10px -> -10px)
+      const arbitraryValuePatched = arbitraryValue.startsWith("-")
+        ? arbitraryValue.slice(1)
+        : "-" + arbitraryValue;
+
+      const patchedClass = `${modifiers}${property}-[${arbitraryValuePatched}]`;
 
       const patchedLoc = generateLocForClassname(
         node,
@@ -95,16 +108,9 @@ const negativeArbitraryClassnames = (
         genericContext,
       );
 
-      const { property = "", arbitraryValue = "" } = match.groups;
-      const arbitraryValuePatched = arbitraryValue.startsWith("-")
-        ? arbitraryValue.slice(1)
-        : "-" + arbitraryValue;
-      const patchedClass = `${modifiers}${property}-[${arbitraryValuePatched}]`;
-
-      // Patch the problematic classname
+      // Temporary mutation instead of cloning [...classNames] at each iteration for memory optimization
       classNames[index] = patchedClass;
 
-      // Generates the "cleaned" attribute value
       let patchedValue = joiner({
         classNames,
         whitespaces,
@@ -112,6 +118,10 @@ const negativeArbitraryClassnames = (
         tailSpace,
         validator: (candidate) => candidate !== targetClassName,
       });
+
+      // Restore the original array immediately for the next iteration
+      classNames[index] = targetClassName;
+
       patchedValue = prefix + patchedValue + suffix;
 
       context.report({
@@ -136,7 +146,8 @@ export const enforcesNegativeArbitraryValues = createRule<Options, MessageIds>({
     },
     hasSuggestions: false,
     messages: {
-      "fix:irregular-negative": `Replace '{{oldClassName}}' by '{{newClassName}}'`,
+      "fix:irregular-negative":
+        "Replace '{{oldClassName}}' by '{{newClassName}}'",
     },
     fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`
@@ -161,9 +172,10 @@ export const enforcesNegativeArbitraryValues = createRule<Options, MessageIds>({
   create: (context, options) => {
     // Merged settings
     const settings = parsePluginSettings(context.settings);
+    const genericContext = context as unknown as Readonly<GenericRuleContext>;
 
     return defineVisitors(
-      context as unknown as Readonly<GenericRuleContext>,
+      genericContext,
       // Template visitor is only used within Vue SFC files (inside <template> section).
       createTemplateVisitors(
         context,

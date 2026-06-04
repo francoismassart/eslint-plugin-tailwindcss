@@ -43,7 +43,7 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 export const createRule = RuleCreator(urlCreator);
 
 // Matches classnames that contain arbitrary values (e.g., m-[5px])
-const regexPattern = /^[-a-z]+-\[.*\]$/;
+const REGEX_PATTERN = /^[-a-z]+-\[.*\]$/;
 
 const arbitraryClassnames = (
   context: RuleContext,
@@ -51,17 +51,38 @@ const arbitraryClassnames = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  // console.log(options);
   const genericContext = context as unknown as GenericRuleContext;
-  for (const node of literals) {
-    const { originalClassNamesValue } = dissectAtomicNode(node, genericContext);
-    // Process the extracted classnames and report
-    const { classNames } = getClassnamesFromValue(originalClassNamesValue);
-    for (const targetClassName of classNames) {
-      const baseClass = getBaseClassname(targetClassName);
-      const match = regexPattern.test(baseClass);
 
-      if (!match) continue;
+  // Session cache to avoid re-testing identical classes within the same node/file
+  const checkedClasses = new Set<string>();
+
+  const totalLiterals = literals.length;
+  for (let index = 0; index < totalLiterals; index++) {
+    const node = literals[index];
+    const { originalClassNamesValue } = dissectAtomicNode(node, genericContext);
+
+    // Early escape if the value is falsy or doesn't contain any brackets (no arbitrary value possible)
+    if (!originalClassNamesValue || !originalClassNamesValue.includes("["))
+      continue;
+
+    const { classNames } = getClassnamesFromValue(originalClassNamesValue);
+    const classNamesLength = classNames.length;
+
+    for (let index = 0; index < classNamesLength; index++) {
+      const targetClassName = classNames[index];
+
+      // Individual early escape for classnames that don't contain brackets
+      if (!targetClassName.includes("[")) continue;
+
+      // Local cache
+      if (checkedClasses.has(targetClassName)) continue;
+      checkedClasses.add(targetClassName);
+
+      const baseClass = getBaseClassname(targetClassName);
+
+      if (!REGEX_PATTERN.test(baseClass)) {
+        continue;
+      }
 
       const patchedLoc = generateLocForClassname(
         node,

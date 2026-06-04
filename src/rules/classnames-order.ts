@@ -8,6 +8,7 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
 import urlCreator from "../url-creator";
+import { getCacheSettings, resetCache } from "../utils/cache";
 import { joiner } from "../utils/joiner";
 import {
   parsePluginSettings,
@@ -24,7 +25,10 @@ import {
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
-import { getSortedClassNamesWorker } from "../utils/tailwindcss-api/index";
+import {
+  clearWorkerCaches,
+  getSortedClassNamesWorker,
+} from "../utils/tailwindcss-api/index";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -44,27 +48,61 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
+/**
+ * Save the correct classnames order in a cache.
+ * We only keep a string of classnames (with whitespaces)
+ * @example "absolute flex"
+ */
+const correctClassOrderCache = new Set<string>();
+let cacheCreationTime = Date.now();
+
 const sortClassnames = (
   context: RuleContext,
   settings: PluginSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  // console.log(options);
+  // Cache settings
+  const { cacheMaxSize, cacheMaxAge } = getCacheSettings(settings);
+  // Clear the cache if it exceeds the maximum size or is too old
+  const lastResetCorrect = resetCache(
+    correctClassOrderCache,
+    { cacheMaxSize, cacheMaxAge },
+    cacheCreationTime,
+  );
+  if (lastResetCorrect !== -1) {
+    correctClassOrderCache.clear();
+    cacheCreationTime = Date.now();
+    clearWorkerCaches();
+  }
+  // Main logic to check and report classnames order
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, context as unknown as GenericRuleContext);
+
     // Process the extracted classnames and report
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
+
     // Skip empty/Single className
     if (classNames.length <= 1) continue;
+
+    const cacheKey = classNames.join(" ");
+
+    if (correctClassOrderCache.has(cacheKey)) continue;
+
     const orderedClassNames = getSortedClassNamesWorker(
       settings.cssConfigPath,
       classNames,
     );
 
-    // Generates the validated/sorted attribute value
+    const orderedClassNamesKey = orderedClassNames.join(" ");
+    if (cacheKey === orderedClassNamesKey) {
+      correctClassOrderCache.add(cacheKey);
+      continue; // Correct order -> next node now
+    }
+
+    // At this point, we are sure the order is invalid.
     let validatedClassNamesValue = joiner({
       classNames: orderedClassNames,
       whitespaces,
@@ -72,28 +110,34 @@ const sortClassnames = (
       tailSpace,
     });
 
-    if (originalClassNamesValue !== validatedClassNamesValue) {
-      validatedClassNamesValue = prefix + validatedClassNamesValue + suffix;
-      for (const [index, className] of classNames.entries()) {
-        if (className === orderedClassNames[index]) continue;
-        const patchedLoc = generateLocForClassname(
-          node,
-          className,
-          originalClassNamesValue,
-          context as unknown as GenericRuleContext,
-        );
-        context.report({
-          node: node as TSESTree.Node,
-          loc: patchedLoc,
-          messageId: "fix:sort",
-          fix: function (fixer) {
-            return fixer.replaceTextRange(
-              [start, end],
-              validatedClassNamesValue,
-            );
-          },
-        });
-      }
+    validatedClassNamesValue = prefix + validatedClassNamesValue + suffix;
+
+    let fixApplied = false;
+    // Report each classname that is not in the correct order
+    for (const [index, className] of classNames.entries()) {
+      if (className === orderedClassNames[index]) continue;
+
+      const patchedLoc = generateLocForClassname(
+        node,
+        className,
+        originalClassNamesValue,
+        context as unknown as GenericRuleContext,
+      );
+
+      context.report({
+        node: node as TSESTree.Node,
+        loc: patchedLoc,
+        messageId: "fix:sort",
+        fix: fixApplied
+          ? undefined
+          : function (fixer) {
+              fixApplied = true;
+              return fixer.replaceTextRange(
+                [start, end],
+                validatedClassNamesValue,
+              );
+            },
+      });
     }
   }
 };

@@ -56,7 +56,7 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const arbitraryRegEx = /^(?<classPrefix>.*?)-\[(?<arbitraryValue>.*)\]$/;
+const arbitraryRegEx = /^(?<classPrefix>.*?)-\[(?<arbitraryValue>.*)\]$/u;
 
 const checkArbitraryClassnames = (
   context: RuleContext,
@@ -64,48 +64,59 @@ const checkArbitraryClassnames = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  // console.log(options);
-  // console.log(settings);
   const genericContext = context as unknown as GenericRuleContext;
+
+  const theme = loadThemeWorker(settings.cssConfigPath);
+
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
-    // Process the extracted classnames and report
+
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
+
     for (const [index, targetClassName] of classNames.entries()) {
+      // Early escape hatch
+      if (!targetClassName.includes("[")) continue;
+
       const baseClass = getBaseClassname(targetClassName);
       const negativePrefix = baseClass.startsWith("-") ? "-" : "";
       const absBaseClass = negativePrefix ? baseClass.slice(1) : baseClass;
-      const modifiers = getModifiersPrefix(targetClassName);
-      const match = absBaseClass.match(arbitraryRegEx);
 
+      const match = absBaseClass.match(arbitraryRegEx);
       if (!match?.groups) continue;
 
-      // if arbitrary value matches a preset value, report it as an error
-      const theme = loadThemeWorker(settings.cssConfigPath);
-      // Get the config prefix based on the classname (e.g. `aspect-[...]` => `--aspect-`)
+      const modifiers = getModifiersPrefix(targetClassName);
+
+      // Get the config prefix based on the classname
       const prefixes = getThemeKeyPrefixesFromClassname(absBaseClass);
-      // Retrieves all the keys for the config prefix (e.g. `--aspect-` => `--aspect-auto`, `--aspect-square`, `--aspect-video`, etc.)
+      if (prefixes.size === 0) continue;
+
+      // Retrieves all the keys for the config prefix
       const presets = getThemePresetsFromPrefixes(theme, prefixes);
-      // new Map([["--stroke-width-hairline", "0.5"]])
+      // Early exit if no presets exist for this prefix
+      if (presets.size === 0) continue;
+
       const { classPrefix = "", arbitraryValue = "" } = match.groups;
-      const compressed = compressTailwindArbitrary(arbitraryValue);
-      // Filter the list of keys to keep only the ones that match the arbitrary value pattern (e.g. `aspect-video` matches the arbitrary value "16/9")
+      const compressedArbitraryValue =
+        compressTailwindArbitrary(arbitraryValue);
       const matchingPresets: Array<string> = [];
+
       for (const prefix of prefixes) {
-        for (const [key, value] of presets.entries()) {
-          if (!key.startsWith(prefix)) continue;
-          const presetName = key.slice(prefix.length);
-          const converted = toTailwindArbitrary(value);
-          if (converted === compressed) {
+        for (const [presetKey, presetValue] of presets.entries()) {
+          // Does not match
+          if (!presetKey.startsWith(prefix)) continue;
+
+          const compressedPresetValue = toTailwindArbitrary(presetValue);
+          if (compressedPresetValue === compressedArbitraryValue) {
+            const presetName = presetKey.slice(prefix.length);
             matchingPresets.push(
               `${modifiers}${negativePrefix}${classPrefix}-${presetName}`,
             );
           }
         }
       }
-      // If several keys are found we use suggestions instead of a fix, otherwise we can directly fix the classname
+
       if (matchingPresets.length === 0) continue;
 
       // The location of the problematic classname

@@ -51,14 +51,25 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
+const cssPropertiesCache = new Map<string, Set<string> | undefined>();
+
 const getCompiledGroup = (
   modifiers: string,
   baseClasses: Array<string>,
   settings: PluginSettings,
 ) => {
   const groupMembers = new Map<string, Set<string>>();
+
   for (const baseClass of baseClasses) {
     const fullClassName = `${modifiers}${baseClass}`;
+
+    if (cssPropertiesCache.has(fullClassName)) {
+      const cachedProperties = cssPropertiesCache.get(fullClassName);
+      if (cachedProperties) {
+        groupMembers.set(fullClassName, cachedProperties);
+      }
+      continue;
+    }
 
     const cssRules = candidatesToCssWorker(
       settings.cssConfigPath,
@@ -66,16 +77,24 @@ const getCompiledGroup = (
     );
     const cssRule = cssRules[0];
 
-    if (!cssRule) continue;
+    if (!cssRule) {
+      cssPropertiesCache.set(fullClassName, undefined);
+      continue;
+    }
 
     const flattenedSelectors = flattenNestingWorker(cssRule);
     const hasValidSelector = flattenedSelectors.some(
+      // Ignore rules that only have pseudo selectors (e.g. `::before`, `::after`)
       (selector) => !selector.includes("::"),
     );
-    // Ignore rules that only have pseudo selectors (e.g. `::before`, `::after`)
-    if (!hasValidSelector) continue;
+
+    if (!hasValidSelector) {
+      cssPropertiesCache.set(fullClassName, undefined);
+      continue;
+    }
 
     const cssProperties = getPropertiesFromCssRule(cssRule);
+    cssPropertiesCache.set(fullClassName, cssProperties);
     groupMembers.set(fullClassName, cssProperties);
   }
   return groupMembers;
@@ -101,37 +120,36 @@ const getContradictions = (
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  // console.log(options);
   const genericContext = context as unknown as GenericRuleContext;
+
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
-    // Process the extracted classnames and report
+
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
+
     // Skip empty/Single className
     if (classNames.length <= 1) continue;
 
     // Group by modifier
     const groups = groupByModifiersPrefix(classNames);
-    // console.log(groups.size, "group(s) found");
-
     const conflictingsClassNames: Array<Array<string>> = [];
 
     // Generate all rules and save the affected CSS properties for each rule
     for (const [modifiers, baseCls] of groups.entries()) {
-      // console.log("group:", `"${modifiers}"`);
+      // Single rule = no contradiction possible
+      if (baseCls.length <= 1) continue;
 
-      // Within each group (e.g. "hover:")
       const groupMembers = getCompiledGroup(modifiers, baseCls, settings);
 
-      // Find conflicts within the group
+      // If the resolved group doesn't have at least 2 valid members, no conflict is possible
+      if (groupMembers.size <= 1) continue;
+
       const commonProperties = getCommonProperties(groupMembers);
-      // console.log(commonProperties);
 
       // Filter out the entries in commonProps that have more than 1 className (these are the conflicting classNames)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [properties, classNames] of commonProperties.entries()) {
+      for (const [, classNames] of commonProperties.entries()) {
         if (classNames.length > 1) {
           conflictingsClassNames.push(classNames);
         }
@@ -140,16 +158,24 @@ const getContradictions = (
 
     if (conflictingsClassNames.length === 0) continue;
 
-    // console.log("conflicting classnames:", conflictingsClassNames);
+    const targetRange = getRangeFromAtomicNode(node);
+    const isRangeValid = !!(targetRange[0] && targetRange[1]);
 
     // Report
     for (const conflict of conflictingsClassNames) {
-      for (let index_ = 0; index_ < conflict.length; index_++) {
-        const targetClassname = conflict[index_];
-        const otherClassnames = conflict.filter((_, index) => index !== index_);
+      const totalConflicts = conflict.length;
+
+      for (let index = 0; index < totalConflicts; index++) {
+        const targetClassname = conflict[index];
+
+        const otherClassnames = conflict.filter(
+          (_, index_) => index_ !== index,
+        );
+
         const otherClassnamesFormatted = otherClassnames
           .map((cn) => `'${cn}'`)
           .join(", ");
+
         let patchedValue = joiner({
           classNames,
           whitespaces,
@@ -158,13 +184,14 @@ const getContradictions = (
           validator: (cls) => !otherClassnames.includes(cls),
         });
         patchedValue = prefix + patchedValue + suffix;
+
         const patchedLoc = generateLocForClassname(
           node,
           targetClassname,
           originalClassNamesValue,
           genericContext,
         );
-        const targetRange = getRangeFromAtomicNode(node);
+
         context.report({
           loc: patchedLoc,
           messageId: "issue:contradiction",
@@ -172,20 +199,19 @@ const getContradictions = (
             classname: targetClassname,
             otherClassnames: otherClassnamesFormatted,
           },
-          suggest:
-            targetRange[0] && targetRange[1]
-              ? [
-                  {
-                    messageId: "fix:contradiction:keep",
-                    data: {
-                      keepClassname: targetClassname,
-                      removeClassnames: otherClassnamesFormatted,
-                    },
-                    fix: (fixer) =>
-                      fixer.replaceTextRange([start, end], patchedValue),
+          suggest: isRangeValid
+            ? [
+                {
+                  messageId: "fix:contradiction:keep",
+                  data: {
+                    keepClassname: targetClassname,
+                    removeClassnames: otherClassnamesFormatted,
                   },
-                ]
-              : [],
+                  fix: (fixer) =>
+                    fixer.replaceTextRange([start, end], patchedValue),
+                },
+              ]
+            : [],
         });
       }
     }
