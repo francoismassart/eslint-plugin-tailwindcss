@@ -52,6 +52,7 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
     `<h1 class="flex no-marker">no-marker uses diplay property but only via ::pseudo selectors</h1>`,
     `<h1 class="absolute">single</h1>`,
     `<h1 class="absolute block">ok</h1>`,
+    `<p class="break-words break-all">Some long text content</p>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
     languageOptions: withAngularParser,
