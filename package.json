@@ -19,8 +19,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run test:base && npm run test:integration",
-    "test:base": "NODE_ENV=test mocha \"tests/lib/**/*.js\"",
-    "test:integration": "NODE_ENV=test mocha \"tests/integrations/*.js\" --timeout 60000"
+    "test:base": "cross-env NODE_ENV=test mocha \"tests/lib/**/*.js\"",
+    "test:integration": "cross-env NODE_ENV=test mocha \"tests/integrations/*.js\" --timeout 60000"
   },
   "files": [
     "lib"
@@ -42,6 +42,7 @@
     "@tailwindcss/typography": "^0.5.8",
     "@typescript-eslint/parser": "^5.50.0",
     "autoprefixer": "^10.4.0",
+    "cross-env": "^10.1.0",
     "daisyui": "^2.6.4",
     "eslint": "^8.57.0",
     "mocha": "^10.2.0",
