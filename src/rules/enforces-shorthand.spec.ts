@@ -192,5 +192,10 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       ),
       output: [`ctl("-translate-10")`],
     },
+    {
+      code: `ctl("scroll-pl-3 scroll-pr-3")`,
+      errors: mapErrors(["scroll-pl-3", "scroll-pr-3"], "scroll-px-3"),
+      output: [`ctl("scroll-px-3")`],
+    },
   ],
 });
