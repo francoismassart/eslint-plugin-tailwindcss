@@ -53,6 +53,7 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
     `<h1 class="absolute">single</h1>`,
     `<h1 class="absolute block">ok</h1>`,
     `<p class="break-words break-all">Some long text content</p>`,
+    // `<p class="transition-colors transition-transform">Issue 364</p>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
     languageOptions: withAngularParser,

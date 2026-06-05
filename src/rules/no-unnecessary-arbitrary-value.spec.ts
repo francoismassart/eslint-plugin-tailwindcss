@@ -84,6 +84,14 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
         replacementClass: ["aspect-square", "aspect-one-to-one"],
         output: [`ctl('aspect-square')`, `ctl('aspect-one-to-one')`],
       },
+      /*/
+      {
+        code: `<div class="mt-[1px] mr-[0.25rem] mb-1">Issue #366</div>`,
+        invalidClass: "mt-[1px]",
+        replacementClass: ["mt-1"],
+        output: [`<div class="mt-1 mr-[0.25rem] mb-1">Issue #366</div>`],
+      },
+      //*/
     ].map(({ code, invalidClass, replacementClass, output }) => ({
       code: code,
       settings: { tailwindcss: withAllPresetsSettings },
