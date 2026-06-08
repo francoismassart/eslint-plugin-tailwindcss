@@ -26,6 +26,7 @@ import {
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
+import { isValidClassNameWorker } from "../utils/tailwindcss-api";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -227,6 +228,7 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
 const STRATEGY_ENTRIES = Object.entries(SHORTHAND_RULES);
 
 const detectShorthands = (
+  settings: PluginSettings,
   classNames: Array<string>,
   shorthandRule: ShorthandRule,
 ): Map<string, Array<string>> => {
@@ -288,6 +290,11 @@ const detectShorthands = (
         if (matchEntireCombo) {
           // e.g. `-mx-foo` for the combo `["ml", "mr"]` with the key `mx`
           const shorthandClass = `${negative}${key}${suffixValue}`;
+
+          // Final check e.g. for `size-screen` which does not exist
+          if (!isValidClassNameWorker(settings.cssConfigPath, shorthandClass))
+            continue;
+
           // Using `Array.from({length}, callback)` would be less performant
           const longhandClasses: Array<string> = Array.from({
             length: totalComboParts,
@@ -332,6 +339,7 @@ const replaceByShorthands = (
       for (let index = 0; index < total; index++) {
         // e.g. Map(1) { 'mx' => [ 'ml', 'mr' ] }
         const foundReplacement = detectShorthands(
+          settings,
           baseCls,
           STRATEGY_ENTRIES[index][1],
         );

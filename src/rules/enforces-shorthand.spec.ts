@@ -55,6 +55,7 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
     // Angular / Native HTML + static text
     `<h1 class="-mt- h-100 md:h-full">valid</h1>`,
     `<h1 class="w-full md:h-full">modifiers</h1>`,
+    `<h1 class="w-screen h-screen">There is no size-screen</h1>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
     languageOptions: withAngularParser,
