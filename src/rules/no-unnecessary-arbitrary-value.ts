@@ -66,7 +66,7 @@ const checkArbitraryClassnames = (
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
 
-  const theme = loadThemeWorker(settings.cssConfigPath);
+  const theme = loadThemeWorker(settings.cssConfigPath, context.filename);
 
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =

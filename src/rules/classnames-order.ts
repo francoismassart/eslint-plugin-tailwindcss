@@ -93,6 +93,7 @@ const sortClassnames = (
 
     const orderedClassNames = getSortedClassNamesWorker(
       settings.cssConfigPath,
+      context.filename,
       classNames,
     );
 

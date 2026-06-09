@@ -229,6 +229,7 @@ const STRATEGY_ENTRIES = Object.entries(SHORTHAND_RULES);
 
 const detectShorthands = (
   settings: PluginSettings,
+  context: GenericRuleContext,
   classNames: Array<string>,
   shorthandRule: ShorthandRule,
 ): Map<string, Array<string>> => {
@@ -292,7 +293,13 @@ const detectShorthands = (
           const shorthandClass = `${negative}${key}${suffixValue}`;
 
           // Final check e.g. for `size-screen` which does not exist
-          if (!isValidClassNameWorker(settings.cssConfigPath, shorthandClass))
+          if (
+            !isValidClassNameWorker(
+              settings.cssConfigPath,
+              context.filename,
+              shorthandClass,
+            )
+          )
             continue;
 
           // Using `Array.from({length}, callback)` would be less performant
@@ -340,6 +347,7 @@ const replaceByShorthands = (
         // e.g. Map(1) { 'mx' => [ 'ml', 'mr' ] }
         const foundReplacement = detectShorthands(
           settings,
+          genericContext,
           baseCls,
           STRATEGY_ENTRIES[index][1],
         );

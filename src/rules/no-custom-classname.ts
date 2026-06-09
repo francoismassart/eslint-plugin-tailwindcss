@@ -100,7 +100,14 @@ const detectCustomClassnames = (
       if (exactMatches.has(customClass)) continue;
       if (regexPatterns.some((pattern) => passRegexTest(pattern, customClass)))
         continue;
-      if (isValidClassNameWorker(settings.cssConfigPath, customClass)) continue;
+      if (
+        isValidClassNameWorker(
+          settings.cssConfigPath,
+          context.filename,
+          customClass,
+        )
+      )
+        continue;
 
       invalidClassesInNode.push(customClass);
     }

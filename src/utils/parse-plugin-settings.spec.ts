@@ -9,7 +9,7 @@ test(`parsePluginSettings`, () => {
         attributes: [],
         cacheMaxAge: 1,
         cacheMaxSize: 2,
-        cssConfigPath: "default-path/app.css",
+        cssConfigPath: "/src/styles.css",
         functions: ["customFunction"],
       },
     }),
@@ -17,7 +17,7 @@ test(`parsePluginSettings`, () => {
     attributes: [],
     cacheMaxAge: 1,
     cacheMaxSize: 2,
-    cssConfigPath: "default-path/app.css",
+    cssConfigPath: "/src/styles.css",
     functions: ["customFunction"],
     ignoredKeys: ["defaultVariants", "compoundVariants"],
   });

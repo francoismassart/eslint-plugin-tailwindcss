@@ -4,7 +4,7 @@ import { loadThemeWorker } from "..";
 
 test(`load theme from "tiny-prefixed.css"`, () => {
   const path = require.resolve("../../../../tests/stubs/css/tiny-prefixed.css");
-  const theme = loadThemeWorker(path);
+  const theme = loadThemeWorker(path, "");
   expect(theme.prefix).toBe("tw");
   expect(theme.keyframes.size).toBe(
     ["spin", "ping", "pulse", "bounce"].length * 2,
@@ -14,7 +14,7 @@ test(`load theme from "tiny-prefixed.css"`, () => {
 
 test(`load theme from "normal.css"`, () => {
   const path = require.resolve("../../../../tests/stubs/css/normal.css");
-  const theme = loadThemeWorker(path);
+  const theme = loadThemeWorker(path, "");
   // We can read CSS vars
   expect(theme.values.get("--color-primary")?.value).toBe("#123456");
   // But no way to determine predefined widths
@@ -53,7 +53,7 @@ test(`load theme from "normal.css"`, () => {
 
 test(`load theme from "padding.css"`, () => {
   const path = require.resolve("../../../../tests/stubs/css/padding.css");
-  const theme = loadThemeWorker(path);
+  const theme = loadThemeWorker(path, "");
   // But no way to determine predefined widths
   // the Tailwind CSS v4 engine will build from discovered classnames usage
   let counter = 0;
@@ -90,7 +90,7 @@ test(`load theme from "padding.css"`, () => {
 
 test(`load theme from "all-presets.css"`, () => {
   const path = require.resolve("../../../../tests/stubs/css/all-presets.css");
-  const theme = loadThemeWorker(path);
+  const theme = loadThemeWorker(path, "");
   let counter = 0;
   for (const [key, value] of theme.values) {
     if (key.startsWith("--spacing")) continue;
@@ -206,7 +206,7 @@ test(`load theme from "all-presets.css"`, () => {
 /*/
 test(`load theme from "custom-dark.css"`, () => {
   const path = require.resolve("../../../../tests/stubs/css/custom-dark.css");
-  const theme = loadThemeWorker(path);
+  const theme = loadThemeWorker(path, "");
   console.log(theme);
 });
 //*/

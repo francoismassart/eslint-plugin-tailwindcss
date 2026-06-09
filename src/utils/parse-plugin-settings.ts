@@ -35,7 +35,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     // Tailwind CSS directive
     "@apply",
   ],
-  cssConfigPath: "default-path/app.css",
+  cssConfigPath: "src/style.css",
   functions: [
     // @see https://www.npmjs.com/package/classnames
     "classnames",

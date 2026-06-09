@@ -11,7 +11,7 @@ test(`Sort classnames based on "normal.css"`, () => {
     "unknown",
     "text-red-100",
   ];
-  const sorted = getSortedClassNamesWorker(path, unorderdClassNames);
+  const sorted = getSortedClassNamesWorker(path, "", unorderdClassNames);
   // Unknown classnames should be first
   expect(sorted[0]).toBe("unknown");
   // The rest should be sorted as well
@@ -32,7 +32,7 @@ test(`Sort "tw:" prefixed classnames based on "tiny-prefixed.css"`, () => {
     "tw:hover:text-tiny",
     "tw:top-0",
   ];
-  const sorted = getSortedClassNamesWorker(path, unorderdClassNames);
+  const sorted = getSortedClassNamesWorker(path, "", unorderdClassNames);
   // Unknown classnames should be first
   expect(sorted[0]).toBe("tw:unknown");
   // The rest should be sorted as well
