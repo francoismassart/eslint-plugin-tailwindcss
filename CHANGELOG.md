@@ -1,28 +1,21 @@
-# eslint-plugin-tailwindcss changelog
+# Changelog
 
-## `4.0.0-alpha.2`
+## `4.0.0`
 
-- feat(rule): [`no-contradicting-classname`](./docs/rules/no-contradicting-classname.md)
+### Made for Tailwind CSS v4
 
-## `4.0.0-alpha.1`
+Version 4 of the `eslint-plugin-tailwindcss` is:
 
-- feat(typings): native support without using `definitly typed` project using `unbuild`
-- feat(rule): [`classnames-order`](./docs/rules/classnames-order.md)
-- feat(rule): [`no-custom-classname`](./docs/rules/no-custom-classname.md)
-- feat(config): add `recommended` flat config
-- fix(rule): underline specific classname instead of the entire node for `no-custom-classname`
-- feat(suggestion): primitive suggestion for rule `no-custom-classname`
-
-## `4.0.0-alpha.0`
-
-### About Tailwind CSS 4 support
-
-While the [development of `eslint-plugin-tailwindcss` for Tailwind CSS v4 is ongoing](https://github.com/francoismassart/eslint-plugin-tailwindcss/tree/alpha/v4), you can use the latest version published on the **beta channel** to get partial support of Tailwind CSS v4.
-
-`npm i eslint-plugin-tailwindcss@beta -D`
-
-> NB: As we will focus the effort on the full rewrite of the plugin, this version is available "as is" and you may get errors or false positives like for the rule `no-contradicting-classname `. You can [learn more about these issues on GitHub](https://github.com/hyoban/eslint-plugin-tailwindcss/pull/3).
-
-You can always disable specific rules if necessary.
+- re-written from scratch
+- using TypeScript
+- Based as much as possible on internal assets of Tailwind CSS:
+  - via the [`prettier-plugin-tailwindcss` plugin](https://www.npmjs.com/package/prettier-plugin-tailwindcss)
+  - via [`tailwind-api-utils`](https://github.com/hyoban/tailwind-api-utils)
+- only compatible with:
+  - Tailwind CSS v4.x.x
+  - ESLint flat config format
+  - Node >= 20.19.0
 
 This version has been made possible thanks to the work of [hyoban](https://github.com/hyoban) and his project [`tailwind-api-utils`](https://github.com/hyoban/tailwind-api-utils).
+
+The pre-release versions were tested on our Nx monorepo which uses Next.js, react and offcourse Tailwind CSS 4.

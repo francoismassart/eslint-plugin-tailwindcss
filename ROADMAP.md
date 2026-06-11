@@ -1,8 +1,15 @@
 # eslint-plugin-tailwindcss roadmap
 
+# Next steps
+
+- Support for Vue SFC
+
+# June 2026
+
 - docs: explain why each rule is enhancing the code
 - support for ESLint v10
 - performances improvements
+- docs: set up a public repository demonstrating how to set up the linter
 
 ## May 2026
 
