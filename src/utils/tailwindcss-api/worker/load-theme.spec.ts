@@ -9,7 +9,7 @@ test(`load theme from "tiny-prefixed.css"`, () => {
   expect(theme.keyframes.size).toBe(
     ["spin", "ping", "pulse", "bounce"].length * 2,
   );
-  expect(theme.values.size).toBe(3);
+  expect(theme.values.size).toBe(4);
 });
 
 test(`load theme from "normal.css"`, () => {

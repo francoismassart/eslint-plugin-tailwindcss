@@ -49,6 +49,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     "tv",
     // Template Literals or custom function
     "tw",
+    // @see https://www.npmjs.com/package/tailwind-merge
+    "twMerge",
+    // @see https://www.npmjs.com/package/tailwind-join
+    // N.B. This package is deprecated
+    "twJoin",
   ],
   // keys to ignore in object expressions (used by `cva`, `tv`, etc.)
   ignoredKeys: ["defaultVariants", "compoundVariants"],

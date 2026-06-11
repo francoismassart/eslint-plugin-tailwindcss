@@ -17,6 +17,7 @@ test(`Validate "tw:" prefixed classnames based on "tiny-prefixed.css"`, () => {
   // Known classnames should be valid
   expect(isValidClassNameWorker(path, "", "tw:flex")).toBe(true);
   expect(isValidClassNameWorker(path, "", "tw:border-tiny")).toBe(true);
+  expect(isValidClassNameWorker(path, "", "tw:@lg:hidden")).toBe(true);
   // Unprefixed classnames should be invalid
   expect(isValidClassNameWorker(path, "", "flex")).toBe(false);
 });

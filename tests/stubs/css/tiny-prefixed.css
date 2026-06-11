@@ -8,4 +8,5 @@
   --color-tiny: #123456;
   --spacing: 1px;
   --font-body: Inter, sans-serif;
+  --container-lg: 1024px;
 }
