@@ -3,6 +3,8 @@
 # Next steps
 
 - Support for Vue SFC
+- Test daisy UI
+- `enforce-single-space` a rule which merge multiple spaces into a single space between the classnames. It should keep the spaces in front of the 1st classname per line too.
 
 # June 2026
 
