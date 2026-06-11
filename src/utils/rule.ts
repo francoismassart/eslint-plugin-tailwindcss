@@ -149,7 +149,6 @@ const getLiteralsFromNode = <TRuleContext>(
       break;
     }
     case TSESTree.AST_NODE_TYPES.ObjectExpression: {
-      // TODO use depth instead ?
       if (rootNode === undefined) {
         return [];
       }

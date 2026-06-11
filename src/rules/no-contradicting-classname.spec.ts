@@ -53,6 +53,7 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
     `<h1 class="absolute">single</h1>`,
     `<h1 class="absolute block">ok</h1>`,
     `<p class="break-words break-all">Some long text content</p>`,
+    `<p class="font-sans font-[500]">Issue 209</p>`,
     // `<p class="transition-colors transition-transform">Issue 364</p>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
@@ -72,6 +73,18 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
       errors: [
         suggest("block", `<h1 class="block">display</h1>`, ["flex"]),
         suggest("flex", `<h1 class="flex">display</h1>`, ["block"]),
+      ],
+      languageOptions: withAngularParser,
+    },
+    {
+      code: `<p class="font-[500] font-[400]">Issue 209</p>`,
+      errors: [
+        suggest("font-[500]", `<p class="font-[500]">Issue 209</p>`, [
+          "font-[400]",
+        ]),
+        suggest("font-[400]", `<p class="font-[400]">Issue 209</p>`, [
+          "font-[500]",
+        ]),
       ],
       languageOptions: withAngularParser,
     },
