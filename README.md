@@ -9,12 +9,11 @@
 
 # `eslint-plugin-tailwindcss`
 
->
-
 - Best practices & consistency since 2021
 - [Made for Tailwind CSS v4](./CHANGELOG.md#made-for-tailwind-css-v4)
 - [7 rules available](#rules) and more on the way
 - What's new ? [Changelog](./CHANGELOG.md) | [Release notes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases) | [Roadmap](./ROADMAP.md)
+- [Upgrade guide](./UPGRADE.md) from `v3` to `v4`
 
 ## This project needs your help
 
@@ -129,7 +128,7 @@ Here is a fully detailled example of shared settings:
       // REQUIRED, default value may not help
       cssConfigPath: "./styles/tailwind.css",
       // Functions/tagFunctions that will be parsed by the plugin.
-      // Optional, default values: ["classnames", "clsx", "ctl", "cva", "tv", "tw"]
+      // Optional, default values: ["classnames", "classNames", "clsx", "ctl", "cva", "tv", "tw", "twMerge", "twJoin"]
       functions: ["twClasses"],
       // Keys to be ignored in object expressions
       // Optional, default values: ["defaultVariants", "compoundVariants"]

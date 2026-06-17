@@ -34,6 +34,12 @@ export const prefixedSettings: PluginSettings = {
     `${import.meta.dirname}/../../../tests/stubs/css/tiny-prefixed.css`,
 };
 
+export const xsBreakpointSettings: PluginSettings = {
+  cssConfigPath:
+    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
+    `${import.meta.dirname}/../../../tests/stubs/css/xs-breakpoint.css`,
+};
+
 export const withTypographySettings: PluginSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)

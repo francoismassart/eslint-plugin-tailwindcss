@@ -79,10 +79,25 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
         output: [`ctl('aspect-retro')`],
       },
       {
+        code: `ctl(\`w-[\${width}] aspect-[4/3]\`)`,
+        invalidClass: "aspect-[4/3]",
+        replacementClass: ["aspect-retro"],
+        output: [`ctl(\`w-[\${width}] aspect-retro\`)`],
+      },
+      {
         code: `ctl('aspect-[1/1]')`,
         invalidClass: "aspect-[1/1]",
         replacementClass: ["aspect-square", "aspect-one-to-one"],
         output: [`ctl('aspect-square')`, `ctl('aspect-one-to-one')`],
+      },
+      {
+        code: `ctl('aspect-[1/1] w-[\${width}]')`,
+        invalidClass: "aspect-[1/1]",
+        replacementClass: ["aspect-square", "aspect-one-to-one"],
+        output: [
+          `ctl('aspect-square w-[\${width}]')`,
+          `ctl('aspect-one-to-one w-[\${width}]')`,
+        ],
       },
       /*/
       {

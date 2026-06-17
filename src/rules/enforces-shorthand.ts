@@ -329,11 +329,22 @@ const replaceByShorthands = (
 
   for (let index = 0; index < totalLiterals; index++) {
     const node = literals[index];
-    const { originalClassNamesValue, start, end, prefix, suffix } =
-      dissectAtomicNode(node, genericContext);
+    const {
+      originalClassNamesValue,
+      start,
+      end,
+      prefix,
+      suffix,
+      ignoreFirst,
+      ignoreLast,
+    } = dissectAtomicNode(node, genericContext);
 
     const classNamesObject = getClassnamesFromValue(originalClassNamesValue);
     let { classNames } = classNamesObject;
+
+    const firstClass = ignoreFirst ? classNames.shift() : undefined;
+    const lastClass = ignoreLast ? classNames.pop() : undefined;
+
     if (classNames.length <= 1) continue;
 
     const groups = groupByModifiersPrefix(classNames);
@@ -387,10 +398,19 @@ const replaceByShorthands = (
                 shorthand: newShorthand,
               },
               fix: (fixer) => {
+                // Shallow copy to avoid side effect due to reference
+                // Modifying `orderedClassNames` directly would cause issues
+                const patchedClassNames = [...classNames];
+                if (firstClass) {
+                  patchedClassNames.unshift(firstClass);
+                }
+                if (lastClass) {
+                  patchedClassNames.push(lastClass);
+                }
                 const validatedValue =
                   prefix +
                   joiner({
-                    classNames,
+                    classNames: patchedClassNames,
                     whitespaces: classNamesObject.whitespaces,
                     headSpace: classNamesObject.headSpace,
                     tailSpace: classNamesObject.tailSpace,

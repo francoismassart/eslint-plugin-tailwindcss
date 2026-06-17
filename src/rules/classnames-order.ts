@@ -77,12 +77,22 @@ const sortClassnames = (
   }
   // Main logic to check and report classnames order
   for (const node of literals) {
-    const { originalClassNamesValue, start, end, prefix, suffix } =
-      dissectAtomicNode(node, context as unknown as GenericRuleContext);
+    const {
+      originalClassNamesValue,
+      start,
+      end,
+      prefix,
+      suffix,
+      ignoreFirst,
+      ignoreLast,
+    } = dissectAtomicNode(node, context as unknown as GenericRuleContext);
 
     // Process the extracted classnames and report
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
+
+    const firstClass = ignoreFirst ? classNames.shift() : undefined;
+    const lastClass = ignoreLast ? classNames.pop() : undefined;
 
     // Skip empty/Single className
     if (classNames.length <= 1) continue;
@@ -103,9 +113,19 @@ const sortClassnames = (
       continue; // Correct order -> next node now
     }
 
+    // Shallow copy to avoid side effect due to reference
+    // Modifying `orderedClassNames` directly would cause issues
+    const patchedOrderedClassNames = [...orderedClassNames];
+    if (firstClass) {
+      patchedOrderedClassNames.unshift(firstClass);
+    }
+    if (lastClass) {
+      patchedOrderedClassNames.push(lastClass);
+    }
+
     // At this point, we are sure the order is invalid.
     let validatedClassNamesValue = joiner({
-      classNames: orderedClassNames,
+      classNames: patchedOrderedClassNames,
       whitespaces,
       headSpace,
       tailSpace,

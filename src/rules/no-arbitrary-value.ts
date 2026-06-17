@@ -145,5 +145,3 @@ export const noArbitraryValue = createRule<Options, MessageIds>({
     );
   },
 });
-
-// TODO: option or new rule to disallow number values like `border-1` in favor of `border-preset1`

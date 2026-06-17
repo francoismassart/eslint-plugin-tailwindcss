@@ -222,16 +222,3 @@ export const noUnnecessaryArbitraryValue = createRule<Options, MessageIds>({
     );
   },
 });
-
-// TODO new rule to check
-// --text-tiny: 0.625rem; /* text-tiny */
-// /* https://tailwindcss.com/docs/font-size#customizing-your-theme */
-// --text-tiny--line-height: 1.5rem; /* text-tiny-line-height */
-// --text-tiny--letter-spacing: 0.125rem; /* text-tiny-letter-spacing */
-// --text-tiny--font-weight: 500; /* text-tiny-font-weight */
-// for unnecessary line-height, letter-spacing and font-weight classnames
-
-// TODO detect `z-[0]` and suggest `z-0` even if not explicitly defined in the theme
-// it should also apply to the other `prop-<number>`
-
-// TODO enhance the rule in order to work with the spacing based values instead of an exact match in the config

@@ -35,4 +35,4 @@ Examples of **correct** code for this rule:
 
 <!-- end auto-generated rule options list -->
 
-This rule also uses the general [settings](../../README.md#settings).
+There are no specific options for this rule, yet it uses the general [settings](../../README.md#settings).

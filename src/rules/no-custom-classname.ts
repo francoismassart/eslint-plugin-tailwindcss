@@ -3,6 +3,7 @@
  * @author François Massart
  */
 
+import { TSESTree } from "@typescript-eslint/utils";
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
@@ -87,16 +88,26 @@ const detectCustomClassnames = (
   const genericContext = context as unknown as GenericRuleContext;
 
   for (const node of literals) {
-    const { originalClassNamesValue, start, end, prefix, suffix } =
-      dissectAtomicNode(node, genericContext);
+    const {
+      originalClassNamesValue,
+      start,
+      end,
+      prefix,
+      suffix,
+      ignoreFirst,
+      ignoreLast,
+    } = dissectAtomicNode(node, genericContext);
 
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
 
     // 1. Gather invalid classes in the node
-    const invalidClassesInNode: Array<string> = [];
+    const invalidClassesInNode: Array<{ classname: string; type: string }> = [];
 
-    for (const customClass of classNames) {
+    for (let index = 0; index < classNames.length; index++) {
+      const customClass = classNames[index];
+      if (index === 0 && ignoreFirst) continue;
+      if (index === classNames.length - 1 && ignoreLast) continue;
       if (exactMatches.has(customClass)) continue;
       if (regexPatterns.some((pattern) => passRegexTest(pattern, customClass)))
         continue;
@@ -109,7 +120,7 @@ const detectCustomClassnames = (
       )
         continue;
 
-      invalidClassesInNode.push(customClass);
+      invalidClassesInNode.push({ classname: customClass, type: node.type });
     }
 
     // All classes are valid, skip to the next node
@@ -117,36 +128,42 @@ const detectCustomClassnames = (
 
     // 2. Emit reports with a surgical fix (one class targeted)
     for (const invalidClass of invalidClassesInNode) {
+      const fixable = invalidClass.type !== TSESTree.AST_NODE_TYPES.Identifier;
       const patchedLoc = generateLocForClassname(
         node,
-        invalidClass,
+        invalidClass.classname,
         originalClassNamesValue,
         genericContext,
       );
 
       // Generate the fix exclusive to THIS iteration of the class
-      let patchedValue = joiner({
-        classNames,
-        whitespaces,
-        headSpace,
-        tailSpace,
-        // Only remove the current class, other invalid ones remain
-        validator: (candidate) => candidate !== invalidClass,
-      });
+      let patchedValue: string;
+      if (fixable) {
+        patchedValue = joiner({
+          classNames,
+          whitespaces,
+          headSpace,
+          tailSpace,
+          // Only remove the current class, other invalid ones remain
+          validator: (candidate) => candidate !== invalidClass.classname,
+        });
 
-      patchedValue = prefix + patchedValue + suffix;
-
+        patchedValue = prefix + patchedValue + suffix;
+      }
       context.report({
         loc: patchedLoc,
         messageId: "issue:unknown-classname",
-        data: { classname: invalidClass },
-        suggest: [
-          {
-            messageId: "fix:unknown-classname:remove",
-            data: { classname: invalidClass },
-            fix: (fixer) => fixer.replaceTextRange([start, end], patchedValue),
-          },
-        ],
+        data: { classname: invalidClass.classname },
+        suggest: fixable
+          ? [
+              {
+                messageId: "fix:unknown-classname:remove",
+                data: { classname: invalidClass.classname },
+                fix: (fixer) =>
+                  fixer.replaceTextRange([start, end], patchedValue),
+              },
+            ]
+          : [],
       });
     }
   }

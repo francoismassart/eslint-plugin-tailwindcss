@@ -56,6 +56,8 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
     `<h1 class="-mt- h-100 md:h-full">valid</h1>`,
     `<h1 class="w-full md:h-full">modifiers</h1>`,
     `<h1 class="w-screen h-screen">There is no size-screen</h1>`,
+    `<h1 class="rounded-b-xl rounded-tr-xl">Issue 327</h1>`,
+    `<h1 class="w-full w-full">Issue 349</h1>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
     languageOptions: withAngularParser,
@@ -197,6 +199,11 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       code: `ctl("scroll-pl-3 scroll-pr-3")`,
       errors: mapErrors(["scroll-pl-3", "scroll-pr-3"], "scroll-px-3"),
       output: [`ctl("scroll-px-3")`],
+    },
+    {
+      code: `ctl(\`scroll-pr-3 scroll-pl-3 w-[\${width}]\`)`,
+      errors: mapErrors(["scroll-pr-3", "scroll-pl-3"], "scroll-px-3"),
+      output: [`ctl(\`scroll-px-3 w-[\${width}]\`)`],
     },
   ],
 });

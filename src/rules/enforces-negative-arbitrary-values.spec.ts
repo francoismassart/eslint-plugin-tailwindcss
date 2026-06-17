@@ -106,6 +106,12 @@ const multipleErrorsTestCases: Array<MultipleErrorsTestCase> = [
         \`)`,
     ],
   },
+  {
+    code: `ctl(\`dark:-m-[-123px] w-[\${width}] -m-[6px]\`);`,
+    invalidClasses: ["dark:-m-[-123px]", "-m-[6px]"],
+    patchedClasses: ["dark:m-[123px]", "m-[-6px]"],
+    outputs: [`ctl(\`dark:m-[123px] w-[\${width}] m-[-6px]\`);`],
+  },
 ];
 
 ruleTester.run(RULE_NAME, enforcesNegativeArbitraryValues, {

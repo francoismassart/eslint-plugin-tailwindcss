@@ -39,6 +39,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   functions: [
     // @see https://www.npmjs.com/package/classnames
     "classnames",
+    "classNames",
     // @see https://www.npmjs.com/package/clsx
     "clsx",
     // @see https://www.npmjs.com/package/@netlify/classnames-template-literals
@@ -62,9 +63,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   // Max age of the cache in milliseconds
   cacheMaxAge: 10 * 60 * 1000, // 10 minutes
 };
-
-// TODO tailwindPreserveWhitespace => New rule
-// TODO tailwindPreserveDuplicates => New rule
 
 /**
  * The JSON schema for the shared settings to be reused in many of the rule's configuration.

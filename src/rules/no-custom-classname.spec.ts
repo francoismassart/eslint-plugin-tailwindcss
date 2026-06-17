@@ -14,17 +14,20 @@ import {
 
 const suggest = (
   classname: string,
-  output: string,
+  output: string | undefined = undefined,
 ): TestCaseError<MessageIds> => {
   return {
     messageId: "issue:unknown-classname",
-    suggestions: [
-      {
-        messageId: "fix:unknown-classname:remove",
-        data: { classname: classname },
-        output: output,
-      },
-    ],
+    suggestions:
+      output === undefined
+        ? []
+        : [
+            {
+              messageId: "fix:unknown-classname:remove",
+              data: { classname: classname },
+              output: output,
+            },
+          ],
   };
 };
 
@@ -78,6 +81,10 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `twJoin('h-full', selectedPickupPoint === pickupPoint && 'absolute')`,
       // Issue 291
       `ctl('first:absolute')`,
+      // Issue 352
+      `ctl('w-full max-w-48')`,
+      // Issue 277, we ignore the "dynamic" classnames in this rule
+      `<h1 className={\`rounded w-[\${width}] flex\`}>Issue 277</h1>`,
     ].map((jsx) => ({
       code: jsx,
     })),
@@ -169,15 +176,104 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       code: `<h1 class="relative unknown">tail</h1>`,
       errors: [suggest("unknown", `<h1 class="relative">tail</h1>`)],
     },
-    /*/
     {
-      code: `<h1 className={\`rounded w-[\${width}] flex\`}>Issue 277</h1>`,
-      errors: [suggest("unknown", `<h1 class="relative">Issue 277</h1>`)],
+      // Issue 264 Strings (variadic)
+      code: `clsx('flex', true && 'unknown', 'unknown-bis');`,
+      errors: [
+        suggest("unknown", `clsx('flex', true && '', 'unknown-bis');`),
+        suggest("unknown-bis", `clsx('flex', true && 'unknown', '');`),
+      ],
     },
-    //*/
-    // At this moment, no possibility to read the custom dark variant from the config
+    {
+      // Issue 264 Objects
+      code: `clsx({ foo:true, absolute:false, baz:isTrue() });`,
+      errors: [
+        // An identifier node is not fixable, we only report
+        suggest("foo"),
+        // An identifier node is not fixable, we only report
+        suggest("baz"),
+      ],
+    },
+    {
+      // Issue 264 Objects (variadic)
+      code: `clsx({ foo:true }, { bar:false }, null, { '--foobar':'hello' });`,
+      errors: [
+        // An identifier node is not fixable, we only report
+        suggest("foo"),
+        // An identifier node is not fixable, we only report
+        suggest("baz"),
+        // An identifier node is not fixable, we only report
+        suggest(
+          "--foobar",
+          `clsx({ foo:true }, { bar:false }, null, { '':'hello' });`,
+        ),
+      ],
+    },
+    {
+      // Issue 264 Arrays
+      code: `clsx(['foo', 0, false, 'bar']);`,
+      errors: [
+        suggest("foo", `clsx(['', 0, false, 'bar']);`),
+        suggest("bar", `clsx(['foo', 0, false, '']);`),
+      ],
+    },
+    {
+      // Issue 264 Arrays (variadic)
+      code: `clsx(['foo'], ['', 0, false, 'bar'], [['baz', [['hello'], 'there']]]);`,
+      errors: [
+        suggest(
+          "foo",
+          `clsx([''], ['', 0, false, 'bar'], [['baz', [['hello'], 'there']]]);`,
+        ),
+        suggest(
+          "bar",
+          `clsx(['foo'], ['', 0, false, ''], [['baz', [['hello'], 'there']]]);`,
+        ),
+        suggest(
+          "baz",
+          `clsx(['foo'], ['', 0, false, 'bar'], [['', [['hello'], 'there']]]);`,
+        ),
+        suggest(
+          "hello",
+          `clsx(['foo'], ['', 0, false, 'bar'], [['baz', [[''], 'there']]]);`,
+        ),
+        suggest(
+          "there",
+          `clsx(['foo'], ['', 0, false, 'bar'], [['baz', [['hello'], '']]]);`,
+        ),
+      ],
+    },
+    {
+      // Issue 264 Kitchen sink (with nesting)
+      code: `clsx('foo', [1 && 'bar', { baz:false, bat:null }, ['hello', ['world']]], 'cya');`,
+      errors: [
+        suggest(
+          "foo",
+          `clsx('', [1 && 'bar', { baz:false, bat:null }, ['hello', ['world']]], 'cya');`,
+        ),
+        suggest(
+          "bar",
+          `clsx('foo', [1 && '', { baz:false, bat:null }, ['hello', ['world']]], 'cya');`,
+        ),
+        suggest("baz"),
+        suggest("bat"),
+        suggest(
+          "hello",
+          `clsx('foo', [1 && 'bar', { baz:false, bat:null }, ['', ['world']]], 'cya');`,
+        ),
+        suggest(
+          "world",
+          `clsx('foo', [1 && 'bar', { baz:false, bat:null }, ['hello', ['']]], 'cya');`,
+        ),
+        suggest(
+          "cya",
+          `clsx('foo', [1 && 'bar', { baz:false, bat:null }, ['hello', ['world']]], '');`,
+        ),
+      ],
+    },
     /*/
     {
+      // At this moment, no possibility to read the custom dark variant from the config
       code: "<h1 className={`dark`}>Custom dark class in config (.dark-theme)</h1>",
       errors: [
         suggest(
