@@ -61,6 +61,7 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `<h1 class="js-custom">js-</h1>`,
       `<h1 class="i-heroicons:chevron-up-solid">Issue 284</h1>`,
       `<p><span class="text-[min(theme(fontSize.9xl),_var(--font-size))]/none">Issue 239</span><span class="text-7xl/10">Issue 239</span></p>`,
+      `<h1 class="text-[rgba(10%,20%,30,50%)]">TODO: only-valid-arbitrary-values</h1>`,
     ].map((testedNgCode) => ({
       code: testedNgCode,
       options: [
@@ -115,6 +116,12 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
     {
       code: `<h1 className={"unknownreact relative"}>head</h1>`,
       errors: [suggest("unknownreact", `<h1 className={"relative"}>head</h1>`)],
+    },
+    {
+      code: `<h1 className={"yolo:bg-red"}>validate-modifiers</h1>`,
+      errors: [
+        suggest("yolo:bg-red", `<h1 className={""}>validate-modifiers</h1>`),
+      ],
     },
     {
       code: `<h1 className={"last-child:mb-0"}>invalid modifier, Issue 305</h1>`,

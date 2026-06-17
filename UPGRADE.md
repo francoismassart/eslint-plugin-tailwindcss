@@ -25,6 +25,22 @@ You can read more about the available options of each rule in the docs. (e.g. [`
 
 The most important setting is the `cssConfigPath` which expects a path pointing to the main CSS file used by Tailwind CSS. If the provided path is absolute, it is used as is. If the path is relative the plugin will attempt to convert it into an absolute path.
 
+#### Modified settings
+
+- `callees` is renamed `functions`
+- `config`
+  - renamed `cssConfigPath`
+  - pointing to the main css file
+- `cssFiles` is not used in v4
+- `cssFilesRefreshRate` is not used in v4
+- `removeDuplicates` is not used in v4
+- `skipClassAttribute` is not used in v4
+- `whitelist` is set in [`no-custom-classname`'s options](./docs/rules/no-custom-classname.md#options)
+- `tags` is renamed `functions`
+- `classRegex`
+  - renamed `attributes`
+  - only accept regular strings
+
 ### Removed rule
 
 `migration-from-tailwind-2` rule has not been migrated to v4.

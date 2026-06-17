@@ -7,6 +7,10 @@
 - Test with external `*.module.css` files
 - `no-dynamic-classname` rule:
   - Don’t construct class names dynamically, Always use complete class names
+- `no-redundant-variant`: e.g. avoid mx-5 sm:mx-5, no need to redefine mx in sm: variant as it uses the same value (5)
+- `only-valid-arbitrary-values`:
+  - e.g. avoid `top-[42]`, only `0` value can be unitless.
+  - e.g. avoid `text-[rgba(10%,20%,30,50%)]`, can't mix `%` and `0-255`.
 - `no-style-attribute` rule:
   - detecting `style` attribute and raising a warn/error
   - reading the style properties and suggest classname alternatives
