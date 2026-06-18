@@ -22,7 +22,7 @@ importers:
         version: 0.11.11
       tailwind-api-utils:
         specifier: ^1.0.3
-        version: 1.0.3(tailwindcss@4.1.12)
+        version: 1.0.3(tailwindcss@4.3.1)
     devDependencies:
       '@angular-eslint/template-parser':
         specifier: ^20.1.1
@@ -32,7 +32,7 @@ importers:
         version: 9.34.0
       '@tailwindcss/typography':
         specifier: ^0.5.16
-        version: 0.5.16(tailwindcss@4.1.12)
+        version: 0.5.16(tailwindcss@4.3.1)
       '@types/eslint':
         specifier: ^8.56.10
         version: 8.56.12
@@ -42,6 +42,9 @@ importers:
       '@typescript-eslint/rule-tester':
         specifier: ^8.37.0
         version: 8.42.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
+      daisyui:
+        specifier: ^5.5.23
+        version: 5.5.23
       eslint:
         specifier: ^9.31.0
         version: 9.34.0(jiti@2.5.1)
@@ -67,8 +70,8 @@ importers:
         specifier: ^3.5.3
         version: 3.6.2
       tailwindcss:
-        specifier: ^4.0.0
-        version: 4.1.12
+        specifier: ^4.3.1
+        version: 4.3.1
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -996,6 +999,9 @@ packages:
   csso@5.0.5:
     resolution: {integrity: sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0, npm: '>=7.0.0'}
+
+  daisyui@5.5.23:
+    resolution: {integrity: sha512-xuheNUSL4T6ZVtWXoioqcNkjoyGX85QTDz4HTw2aBPfqk4fuMjax5HDo8qCmpV6M1YN8bGvfx5BpYCoDeRlt+A==}
 
   data-view-buffer@1.0.2:
     resolution: {integrity: sha512-EmKO5V3OLXh1rtK2wgXRansaK1/mtVdTUEiEI0W8RkvgT05kfxaH29PliLnpLP73yYO6142Q72QNa8Wx/A5CqQ==}
@@ -2326,8 +2332,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.3.0 || ^4.0.0 || ^4.0.0-beta
 
-  tailwindcss@4.1.12:
-    resolution: {integrity: sha512-DzFtxOi+7NsFf7DBtI3BJsynR+0Yp6etH+nRPTbpWnS2pZBaSksv/JGctNwSWzbFjp0vxSqknaUylseZqMDGrA==}
+  tailwindcss@4.3.1:
+    resolution: {integrity: sha512-hk+TB1m+K8CYNrP6rjQaq/Y+4Zylwpa87mLYBKCunwnnQ9p+fHb7kmSfGqyEJoxF/O6CDyABWVFEafNSYKll+Q==}
 
   tapable@2.2.3:
     resolution: {integrity: sha512-ZL6DDuAlRlLGghwcfmSn9sK3Hr6ArtyudlSAiCqQ6IfE+b+HHbydbYDIG15IfS5do+7XQQBdBiubF/cV2dnDzg==}
@@ -2906,13 +2912,13 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@tailwindcss/typography@0.5.16(tailwindcss@4.1.12)':
+  '@tailwindcss/typography@0.5.16(tailwindcss@4.3.1)':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 4.1.12
+      tailwindcss: 4.3.1
 
   '@types/eslint@8.56.12':
     dependencies:
@@ -3368,6 +3374,8 @@ snapshots:
   csso@5.0.5:
     dependencies:
       css-tree: 2.2.1
+
+  daisyui@5.5.23: {}
 
   data-view-buffer@1.0.2:
     dependencies:
@@ -4860,14 +4868,14 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.2.9
 
-  tailwind-api-utils@1.0.3(tailwindcss@4.1.12):
+  tailwind-api-utils@1.0.3(tailwindcss@4.3.1):
     dependencies:
       enhanced-resolve: 5.18.3
       jiti: 2.5.1
       local-pkg: 1.1.2
-      tailwindcss: 4.1.12
+      tailwindcss: 4.3.1
 
-  tailwindcss@4.1.12: {}
+  tailwindcss@4.3.1: {}
 
   tapable@2.2.3: {}
 

@@ -16,6 +16,27 @@ test(`Generate CSS rule from classname based on "normal.css"`, () => {
 }
 `,
   ]);
+  expect(candidatesToCssWorker(path, "", "@container")).toEqual([
+    `.\\@container {
+  container-type: inline-size;
+}
+`,
+  ]);
+  expect(candidatesToCssWorker(path, "", "@container-size/main")).toEqual([
+    `.\\@container-size\\/main {
+  container-type: size;
+  container-name: main;
+}
+`,
+  ]);
+  expect(candidatesToCssWorker(path, "", "@md/main:px-6")).toEqual([
+    `.\\@md\\/main\\:px-6 {
+  @container main (width >= 28rem) {
+    padding-inline: calc(var(--spacing) * 6);
+  }
+}
+`,
+  ]);
 });
 
 test(`Generate CSS rule from classname based on "tiny-prefixed.css"`, () => {

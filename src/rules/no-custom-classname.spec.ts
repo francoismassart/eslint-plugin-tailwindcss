@@ -2,6 +2,7 @@ import * as Parser from "@typescript-eslint/parser";
 import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 
 import {
+  daisySettings,
   generalSettings,
   prefixedSettings,
   withAngularParser,
@@ -86,6 +87,8 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `ctl('w-full max-w-48')`,
       // Issue 277, we ignore the "dynamic" classnames in this rule
       `<h1 className={\`rounded w-[\${width}] flex\`}>Issue 277</h1>`,
+      // Issue 406
+      `ctl('@container h-[50cqb] @container-size/name')`,
     ].map((jsx) => ({
       code: jsx,
     })),
@@ -95,6 +98,13 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
     ].map((jsx) => ({
       code: jsx,
       settings: { tailwindcss: { ...prefixedSettings } },
+    })),
+    ...[
+      // Issue 406
+      `ctl('modal')`,
+    ].map((jsx) => ({
+      code: jsx,
+      settings: { tailwindcss: { ...daisySettings } },
     })),
   ],
   invalid: [
