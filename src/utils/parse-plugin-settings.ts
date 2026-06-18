@@ -35,10 +35,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     // Tailwind CSS directive
     "@apply",
   ],
-  cssConfigPath: "default-path/app.css",
+  cssConfigPath: "src/style.css",
   functions: [
     // @see https://www.npmjs.com/package/classnames
     "classnames",
+    "classNames",
     // @see https://www.npmjs.com/package/clsx
     "clsx",
     // @see https://www.npmjs.com/package/@netlify/classnames-template-literals
@@ -49,6 +50,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     "tv",
     // Template Literals or custom function
     "tw",
+    // @see https://www.npmjs.com/package/tailwind-merge
+    "twMerge",
+    // @see https://www.npmjs.com/package/tailwind-join
+    // N.B. This package is deprecated
+    "twJoin",
   ],
   // keys to ignore in object expressions (used by `cva`, `tv`, etc.)
   ignoredKeys: ["defaultVariants", "compoundVariants"],
@@ -57,9 +63,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   // Max age of the cache in milliseconds
   cacheMaxAge: 10 * 60 * 1000, // 10 minutes
 };
-
-// TODO tailwindPreserveWhitespace => New rule
-// TODO tailwindPreserveDuplicates => New rule
 
 /**
  * The JSON schema for the shared settings to be reused in many of the rule's configuration.

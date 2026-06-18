@@ -7,7 +7,7 @@ import {
   getThemePresetsFromPrefixes,
 } from "./get-theme-key-prefixes-from-classname";
 
-const theme = loadThemeWorker(withAllPresetsSettings.cssConfigPath);
+const theme = loadThemeWorker(withAllPresetsSettings.cssConfigPath, "");
 
 test(`Get the theme key prefixes from classname`, () => {
   [

@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* https://play.tailwindcss.com/fkpV3Mz4Lm Issue 337 */
+@theme {
+  --breakpoint-xs: 300px;
+}

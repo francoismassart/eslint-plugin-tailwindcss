@@ -355,7 +355,6 @@ export const getThemePresetsFromPrefixes = (
   for (const prefix of prefixes) {
     for (const [key, preset] of theme.values) {
       if (key.startsWith(prefix)) {
-        // TODO deal with values with spaces, etc.
         presets.set(key, `${preset.value}`);
       }
     }

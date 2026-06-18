@@ -57,6 +57,17 @@ ruleTester.run(RULE_NAME, noArbitraryValue, {
         \`)`,
         invalidClasses: ["lg:pt-[3px]", "dark:-m-[-123px]", "-m-[6px]"],
       },
+      {
+        code: `
+        ctl(\`
+          lg:pt-[3px]
+          w-[\${width}]
+          dark:-m-[-123px]
+          h-[\${height}]
+          -m-[6px]
+        \`)`,
+        invalidClasses: ["lg:pt-[3px]", "dark:-m-[-123px]", "-m-[6px]"],
+      },
     ].map(({ code, invalidClasses }) => ({
       code: code,
       errors: invalidClasses.map((invalidClass) => generateError(invalidClass)),

@@ -26,6 +26,7 @@ import {
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
+import { isValidClassNameWorker } from "../utils/tailwindcss-api";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -227,6 +228,8 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
 const STRATEGY_ENTRIES = Object.entries(SHORTHAND_RULES);
 
 const detectShorthands = (
+  settings: PluginSettings,
+  context: GenericRuleContext,
   classNames: Array<string>,
   shorthandRule: ShorthandRule,
 ): Map<string, Array<string>> => {
@@ -288,6 +291,17 @@ const detectShorthands = (
         if (matchEntireCombo) {
           // e.g. `-mx-foo` for the combo `["ml", "mr"]` with the key `mx`
           const shorthandClass = `${negative}${key}${suffixValue}`;
+
+          // Final check e.g. for `size-screen` which does not exist
+          if (
+            !isValidClassNameWorker(
+              settings.cssConfigPath,
+              context.filename,
+              shorthandClass,
+            )
+          )
+            continue;
+
           // Using `Array.from({length}, callback)` would be less performant
           const longhandClasses: Array<string> = Array.from({
             length: totalComboParts,
@@ -315,11 +329,22 @@ const replaceByShorthands = (
 
   for (let index = 0; index < totalLiterals; index++) {
     const node = literals[index];
-    const { originalClassNamesValue, start, end, prefix, suffix } =
-      dissectAtomicNode(node, genericContext);
+    const {
+      originalClassNamesValue,
+      start,
+      end,
+      prefix,
+      suffix,
+      ignoreFirst,
+      ignoreLast,
+    } = dissectAtomicNode(node, genericContext);
 
     const classNamesObject = getClassnamesFromValue(originalClassNamesValue);
     let { classNames } = classNamesObject;
+
+    const firstClass = ignoreFirst ? classNames.shift() : undefined;
+    const lastClass = ignoreLast ? classNames.pop() : undefined;
+
     if (classNames.length <= 1) continue;
 
     const groups = groupByModifiersPrefix(classNames);
@@ -332,6 +357,8 @@ const replaceByShorthands = (
       for (let index = 0; index < total; index++) {
         // e.g. Map(1) { 'mx' => [ 'ml', 'mr' ] }
         const foundReplacement = detectShorthands(
+          settings,
+          genericContext,
           baseCls,
           STRATEGY_ENTRIES[index][1],
         );
@@ -371,10 +398,19 @@ const replaceByShorthands = (
                 shorthand: newShorthand,
               },
               fix: (fixer) => {
+                // Shallow copy to avoid side effect due to reference
+                // Modifying `orderedClassNames` directly would cause issues
+                const patchedClassNames = [...classNames];
+                if (firstClass) {
+                  patchedClassNames.unshift(firstClass);
+                }
+                if (lastClass) {
+                  patchedClassNames.push(lastClass);
+                }
                 const validatedValue =
                   prefix +
                   joiner({
-                    classNames,
+                    classNames: patchedClassNames,
                     whitespaces: classNamesObject.whitespaces,
                     headSpace: classNamesObject.headSpace,
                     tailSpace: classNamesObject.tailSpace,

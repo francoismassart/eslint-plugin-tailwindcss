@@ -1,7 +1,10 @@
 import * as Parser from "@typescript-eslint/parser";
 import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 
-import { generalSettings } from "../utils/parser/test-helpers";
+import {
+  generalSettings,
+  prefixedSettings,
+} from "../utils/parser/test-helpers";
 import {
   enforcesNegativeArbitraryValues,
   type MessageIds,
@@ -61,6 +64,15 @@ const singleErrorTestCases: Array<SingleErrorTestCase> = [
     output: `ctl('dark:m-[10px]')`,
   },
 ];
+const singleErrorWithPrefixTestCases: Array<SingleErrorTestCase> = [
+  {
+    // See issue 238
+    code: `ctl('tw:-m-[4px]')`,
+    invalidClass: "tw:-m-[4px]",
+    patchedClass: "tw:m-[-4px]",
+    output: `ctl('tw:m-[-4px]')`,
+  },
+];
 
 type MultipleErrorsTestCase = {
   code: string;
@@ -94,6 +106,12 @@ const multipleErrorsTestCases: Array<MultipleErrorsTestCase> = [
         \`)`,
     ],
   },
+  {
+    code: `ctl(\`dark:-m-[-123px] w-[\${width}] -m-[6px]\`);`,
+    invalidClasses: ["dark:-m-[-123px]", "-m-[6px]"],
+    patchedClasses: ["dark:m-[123px]", "m-[-6px]"],
+    outputs: [`ctl(\`dark:m-[123px] w-[\${width}] m-[-6px]\`);`],
+  },
 ];
 
 ruleTester.run(RULE_NAME, enforcesNegativeArbitraryValues, {
@@ -106,6 +124,14 @@ ruleTester.run(RULE_NAME, enforcesNegativeArbitraryValues, {
     ...singleErrorTestCases.map(
       ({ code, invalidClass, patchedClass, output }) => ({
         code: code,
+        errors: [generateError(invalidClass, patchedClass)],
+        output: output,
+      }),
+    ),
+    ...singleErrorWithPrefixTestCases.map(
+      ({ code, invalidClass, patchedClass, output }) => ({
+        code: code,
+        settings: { tailwindcss: { ...prefixedSettings } },
         errors: [generateError(invalidClass, patchedClass)],
         output: output,
       }),

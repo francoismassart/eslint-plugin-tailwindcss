@@ -1,6 +1,6 @@
 import { segment } from "../segment";
 
-// TODO retrieve the separator from Tailwind CSS config
+// TODO retrieve the separator from Tailwind CSS config when it is possible
 const separator = ":";
 
 /**

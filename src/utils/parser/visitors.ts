@@ -6,19 +6,12 @@ export type GenericRuleContext = RuleContext<"", []>;
  * @see https://eslint.org/blog/2023/09/preparing-custom-rules-eslint-v9/#from-context-to-sourcecode
  */
 const getParserServices = (context: Readonly<GenericRuleContext>) => {
-  // TODO Enable this check if we can
-  /*/
   if (!context.sourceCode) {
     throw new Error(
-      "Unsupported parser (`context.parserServices` is deprecated…)"
+      "Unsupported parser (`context.parserServices` is deprecated…)",
     );
   }
-  //*/
-  return context.sourceCode
-    ? // Modern ESLint parsers provide a `parserServices` property
-      context.sourceCode.parserServices
-    : // TODO This property is deprecated, make sure this is not used and remove it
-      context.parserServices;
+  return context.sourceCode.parserServices;
 };
 
 /**

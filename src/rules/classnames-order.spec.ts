@@ -9,6 +9,7 @@ import {
   withAngularParser,
   withTypographySettings,
   withVueParser,
+  xsBreakpointSettings,
 } from "../utils/parser/test-helpers";
 import {
   classnamesOrder,
@@ -186,6 +187,10 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       code: testedCode,
       settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
     })),
+    {
+      code: `<div class="xs:text-xl sm:text-2xl md:text-3xl">Issue 337</div>`,
+      settings: { tailwindcss: { ...xsBreakpointSettings } },
+    },
   ],
   invalid: (
     [
@@ -542,6 +547,55 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         ['flex w-12'],
       ])`,
         errors: [error, error],
+      },
+      {
+        code: `<h1 className={\`m-0 absolute w-[\${width}] blur-2xl flex\`}>Issue 277</h1>`,
+        output: `<h1 className={\`absolute m-0 w-[\${width}] flex blur-2xl\`}>Issue 277</h1>`,
+        errors: [error, error, error, error],
+      },
+      {
+        code: `ctl(\`m-0 absolute w-[\${width}] blur-2xl flex\`);`,
+        output: `ctl(\`absolute m-0 w-[\${width}] flex blur-2xl\`);`,
+        errors: [error, error, error, error],
+      },
+      {
+        code: `
+      ctl(\`
+        m-0
+        absolute
+        w-[\${width}]
+        rounded
+        blur-2xl
+        flex
+        h-[\${height}]
+      \`);`,
+        output: `
+      ctl(\`
+        absolute
+        m-0
+        w-[\${width}]
+        flex
+        rounded
+        blur-2xl
+        h-[\${height}]
+      \`);`,
+        errors: [error, error, error, error, error],
+      },
+      {
+        code: `
+      ctl(\`
+        m-0 absolute w-[\${width}] blur-2xl flex
+      \`);`,
+        output: `
+      ctl(\`
+        absolute m-0 w-[\${width}] flex blur-2xl
+      \`);`,
+        errors: [error, error, error, error],
+      },
+      {
+        code: `<h1 className={\`m-0 absolute w-[\${width}] m-0 absolute h-[\${height}] blur-2xl flex\`}>Issue 277</h1>`,
+        output: `<h1 className={\`absolute m-0 w-[\${width}] absolute m-0 h-[\${height}] flex blur-2xl\`}>Issue 277</h1>`,
+        errors: [error, error, error, error, error, error],
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as Array<any>

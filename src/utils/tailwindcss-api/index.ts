@@ -1,7 +1,10 @@
 import { createRequire } from "node:module";
+import path from "node:path";
 
 import { createSyncFn } from "synckit";
 
+import { findProjectRoot } from "../find-project-root";
+import { isAbsolutePath } from "../is-absolute-path";
 import { type Theme } from "./types";
 
 const require = createRequire(import.meta.url);
@@ -44,29 +47,47 @@ const validClassNameCache = new Map<string, boolean>();
 const candidatesToCssCache = new Map<string, Array<string | null>>();
 const flattenNestingCache = new Map<string, Array<string>>();
 
+const convertToAbsolutePath = (
+  cssConfigPath: string,
+  contextFilename: string,
+): string => {
+  // Convert to absolute path
+  let absolutePath = cssConfigPath;
+  if (!isAbsolutePath(cssConfigPath)) {
+    const projectRoot = findProjectRoot(contextFilename);
+    absolutePath = path.resolve(projectRoot ?? "", cssConfigPath);
+  }
+  return absolutePath;
+};
+
 // --- Exports with Caching Layer ---
 
-export const loadThemeWorker = (cssConfigPath: string): Theme => {
-  if (themeCache.has(cssConfigPath)) {
-    return themeCache.get(cssConfigPath)!;
+export const loadThemeWorker = (
+  cssConfigPath: string,
+  contextFilename: string,
+): Theme => {
+  const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
+  if (themeCache.has(absolutePath)) {
+    return themeCache.get(absolutePath)!;
   }
-  const result = loadThemeWorkerRaw(cssConfigPath);
-  themeCache.set(cssConfigPath, result);
+  const result = loadThemeWorkerRaw(absolutePath);
+  themeCache.set(absolutePath, result);
   return result;
 };
 
 export const getSortedClassNamesWorker = (
   cssConfigPath: string,
+  contextFilename: string,
   unorderedClassNames: Array<string>,
 ): Array<string> => {
-  // Create a unique key combining the config path and the classes to sort
-  const cacheKey = `[${cssConfigPath}]${unorderedClassNames.join(" ")}`;
+  const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
+  const cacheKey = `[${absolutePath}]${unorderedClassNames.join(" ")}`;
 
   if (sortedClassNamesCache.has(cacheKey)) {
     return sortedClassNamesCache.get(cacheKey)!;
   }
   const result = getSortedClassNamesWorkerRaw(
-    cssConfigPath,
+    absolutePath,
     unorderedClassNames,
   );
   sortedClassNamesCache.set(cacheKey, result);
@@ -75,28 +96,32 @@ export const getSortedClassNamesWorker = (
 
 export const isValidClassNameWorker = (
   cssConfigPath: string,
+  contextFilename: string,
   className: string,
 ): boolean => {
-  const cacheKey = `[${cssConfigPath}]${className}`;
+  const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
+  const cacheKey = `[${absolutePath}]${className}`;
 
   if (validClassNameCache.has(cacheKey)) {
     return validClassNameCache.get(cacheKey)!;
   }
-  const result = isValidClassNameWorkerRaw(cssConfigPath, className);
+  const result = isValidClassNameWorkerRaw(absolutePath, className);
   validClassNameCache.set(cacheKey, result);
   return result;
 };
 
 export const candidatesToCssWorker = (
   cssConfigPath: string,
+  contextFilename: string,
   className: string,
 ): Array<string | null> => {
-  const cacheKey = `[${cssConfigPath}]${className}`;
+  const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
+  const cacheKey = `[${absolutePath}]${className}`;
 
   if (candidatesToCssCache.has(cacheKey)) {
     return candidatesToCssCache.get(cacheKey)!;
   }
-  const result = candidatesToCssWorkerRaw(cssConfigPath, className);
+  const result = candidatesToCssWorkerRaw(absolutePath, className);
   candidatesToCssCache.set(cacheKey, result);
   return result;
 };

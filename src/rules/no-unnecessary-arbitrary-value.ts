@@ -66,7 +66,7 @@ const checkArbitraryClassnames = (
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
 
-  const theme = loadThemeWorker(settings.cssConfigPath);
+  const theme = loadThemeWorker(settings.cssConfigPath, context.filename);
 
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
@@ -222,11 +222,3 @@ export const noUnnecessaryArbitraryValue = createRule<Options, MessageIds>({
     );
   },
 });
-
-// TODO new rule to check
-// --text-tiny: 0.625rem; /* text-tiny */
-// /* https://tailwindcss.com/docs/font-size#customizing-your-theme */
-// --text-tiny--line-height: 1.5rem; /* text-tiny-line-height */
-// --text-tiny--letter-spacing: 0.125rem; /* text-tiny-letter-spacing */
-// --text-tiny--font-weight: 500; /* text-tiny-font-weight */
-// for unnecessary line-height, letter-spacing and font-weight classnames

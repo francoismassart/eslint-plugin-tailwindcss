@@ -130,6 +130,7 @@ export const noArbitraryValue = createRule<Options, MessageIds>({
    * - If some configuration is provided as the second argument, `defaultOptions` is ignored completely (not merged)
    * - In other words, the `defaultOptions` is only used when the rule is used WITHOUT any configuration
    */
+
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
@@ -144,5 +145,3 @@ export const noArbitraryValue = createRule<Options, MessageIds>({
     );
   },
 });
-
-// TODO: option or new rule to disallow number values like `border-1` in favor of `border-preset1`

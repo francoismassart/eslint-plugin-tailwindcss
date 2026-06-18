@@ -15,9 +15,10 @@ import {
 } from "./parser/visitors-validation";
 
 export type AtomicNode =
+  | TextAttribute
+  | TSESTree.Identifier
   | TSESTree.Literal
   | TSESTree.TemplateElement
-  | TextAttribute
   | VueAST.VAttribute
   | VueAST.VLiteral;
 
@@ -31,7 +32,7 @@ export type AtomicNode =
  * @param targetKeys Keys to target for extraction, if specified, it'll only extract from properties with these keys
  * @returns Array of atomic nodes
  */
-const getLiteralsFromNode = <TRuleContext>(
+export const getLiteralsFromNode = <TRuleContext>(
   settings: PluginSettings,
   context: TRuleContext,
   node: TSESTree.Node | VueAST.VAttribute,
@@ -63,12 +64,10 @@ const getLiteralsFromNode = <TRuleContext>(
       break;
     }
     case TSESTree.AST_NODE_TYPES.CallExpression: {
-      if (depth > 0) {
-        break;
-      }
-      if (!isValidCallExpression(node, settings)) {
-        break;
-      }
+      // Call expressions are only parsed by themselves, using the dedicated `CallExpression` visitor
+      if (depth > 0) break;
+      if (!isValidCallExpression(node, settings)) break;
+
       for (const argument of node.arguments) {
         literals.push(
           ...getLiteralsFromNode(
@@ -99,6 +98,26 @@ const getLiteralsFromNode = <TRuleContext>(
           depth + 1,
         ),
       );
+      break;
+    }
+    case TSESTree.AST_NODE_TYPES.ExpressionStatement: {
+      for (const element of node.expression ? [node.expression] : []) {
+        if (!element) continue;
+        literals.push(
+          ...getLiteralsFromNode(
+            settings,
+            context,
+            element,
+            rootNode,
+            depth + 1,
+            targetKeys,
+          ),
+        );
+      }
+      break;
+    }
+    case TSESTree.AST_NODE_TYPES.Identifier: {
+      literals.push(node);
       break;
     }
     case TSESTree.AST_NODE_TYPES.JSXAttribute: {
@@ -133,6 +152,8 @@ const getLiteralsFromNode = <TRuleContext>(
       break;
     }
     case TSESTree.AST_NODE_TYPES.Literal: {
+      if (typeof node.value !== "string") break;
+      if (node.value === "") break;
       literals.push(node);
       break;
     }
@@ -149,15 +170,19 @@ const getLiteralsFromNode = <TRuleContext>(
       break;
     }
     case TSESTree.AST_NODE_TYPES.ObjectExpression: {
-      // TODO use depth instead ?
       if (rootNode === undefined) {
         return [];
       }
+      const isUsedByClsxPlugin =
+        rootNode.type === "CallExpression" &&
+        rootNode.callee &&
+        rootNode.callee.type === "Identifier" &&
+        rootNode.callee.name === "clsx";
       const isUsedByClassNamesPlugin =
         rootNode.type === "CallExpression" &&
         rootNode.callee &&
         rootNode.callee.type === "Identifier" &&
-        rootNode.callee.name === "classnames";
+        rootNode.callee.name.toLowerCase() === "classnames";
       const isVue =
         rootNode.type === "VAttribute" &&
         rootNode.key &&
@@ -176,11 +201,14 @@ const getLiteralsFromNode = <TRuleContext>(
           // If targetKeys is specified, only process properties with keys in targetKeys
           continue;
         }
+        // TODO Enhance the logic to handle ignored keys
         const isIgnoredParent =
           property.key.type === "Identifier" &&
           ignoredKeys.includes(property.key.name);
         const nodeValue =
-          isUsedByClassNamesPlugin || isVue ? property.key : property.value;
+          isUsedByClsxPlugin || isUsedByClassNamesPlugin || isVue
+            ? property.key
+            : property.value;
         // Walk for literals
         literals.push(
           ...getLiteralsFromNode(
@@ -212,7 +240,15 @@ const getLiteralsFromNode = <TRuleContext>(
       break;
     }
     case TSESTree.AST_NODE_TYPES.TemplateLiteral: {
-      for (const expression of node.expressions) {
+      for (const [index, quasi] of node.quasis.entries()) {
+        // Quasi
+        literals.push(
+          ...getLiteralsFromNode(settings, context, quasi, rootNode, depth + 1),
+        );
+        const expression = node.expressions[index];
+        if (!expression) continue;
+        if (expression.type === TSESTree.AST_NODE_TYPES.Identifier) continue;
+        // Expression
         literals.push(
           ...getLiteralsFromNode(
             settings,
@@ -223,15 +259,16 @@ const getLiteralsFromNode = <TRuleContext>(
           ),
         );
       }
-      for (const quasi of node.quasis) {
-        literals.push(
-          ...getLiteralsFromNode(settings, context, quasi, rootNode, depth + 1),
-        );
-      }
+
       break;
     }
   }
-  return literals.filter((literal) => literal.value !== null);
+  return literals.filter((literal) => {
+    if ("value" in literal) {
+      return literal.value !== null;
+    }
+    return literal.name !== null;
+  });
 };
 
 /**

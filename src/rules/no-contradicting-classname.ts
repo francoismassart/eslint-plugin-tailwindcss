@@ -57,6 +57,7 @@ const getCompiledGroup = (
   modifiers: string,
   baseClasses: Array<string>,
   settings: PluginSettings,
+  context: GenericRuleContext,
 ) => {
   const groupMembers = new Map<string, Set<string>>();
 
@@ -73,6 +74,7 @@ const getCompiledGroup = (
 
     const cssRules = candidatesToCssWorker(
       settings.cssConfigPath,
+      context.filename,
       fullClassName,
     );
     const cssRule = cssRules[0];
@@ -141,7 +143,12 @@ const getContradictions = (
       // Single rule = no contradiction possible
       if (baseCls.length <= 1) continue;
 
-      const groupMembers = getCompiledGroup(modifiers, baseCls, settings);
+      const groupMembers = getCompiledGroup(
+        modifiers,
+        baseCls,
+        settings,
+        genericContext,
+      );
 
       // If the resolved group doesn't have at least 2 valid members, no conflict is possible
       if (groupMembers.size <= 1) continue;

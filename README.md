@@ -1,6 +1,35 @@
-# eslint-plugin-tailwindcss
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="images/logo-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="images/logo-light.png">
+    <img alt="eslint-plugin-tailwindcss" src="images/logo-dark.png">
+  </picture>
+</div>
+![npm latest version](https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge) ![license](https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge) ![downloads](https://img.shields.io/npm/dt/eslint-plugin-tailwindcss?style=for-the-badge)
 
-![eslint-plugin-tailwindcss logo](.github/logo.png)
+# `eslint-plugin-tailwindcss`
+
+- Best practices & consistency since 2021
+- [Made for Tailwind CSS v4](./CHANGELOG.md#made-for-tailwind-css-v4)
+- [7 rules available](#rules) and more on the way
+- What's new ? [Changelog](./CHANGELOG.md) | [Release notes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases) | [Roadmap](./ROADMAP.md)
+- [Upgrade guide](./UPGRADE.md) from `v3` to `v4`
+
+## This project needs your help
+
+<p align="center">
+  <a href="https://github.com/sponsors/francoismassart">
+      <img alt="Support eslint-plugin-tailwindcss" src="images/support.png">
+    </picture>
+  </a>
+</p>
+<p align="center">I spent countless days working on this plugin, and it is available to all for free.<br>If you benefits from my work and if you want to help me keep the project alive, consider becoming a sponsor.</p>
+
+| Premium sponsors                                                                                                                                     | Current sponsors                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| <a href="https://www.sent.dm/" target="_blank"><img alt="Sent.dm" width="100" src="https://avatars.githubusercontent.com/u/153308555?s=200&v=4"></a> | <a href="https://github.com/codecov" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/8226205?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@codecov"></a> <a href="https://github.com/getsentry" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/1396951?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@getsentry"></a> |
+
+<p align="center"><a href="https://github.com/sponsors/francoismassart">GitHub Sponsors</a> | <a href="https://thanks.dev/r/gh/francoismassart">thanks.dev Sponsors</a></p>
 
 ## Rules
 
@@ -24,9 +53,67 @@
 
 <!-- end auto-generated rules list -->
 
+## Getting started
+
+### 1. Install the plugin
+
+`npm i -D eslint-plugin-tailwindcss`
+
+- As it is a dev dependency, it will not affected your final bundle size 🪶
+- It can be installed with other package managers such as `pnpm`
+- We support ESLint v10
+
+> If you are still using Tailwind CSS v3 and/or older ESLint versions, you can use `eslint-plugin-tailwindcss@3.x.x`
+
+### 2. Edit your `eslint.config` file
+
+Here is a very basic example:
+
+```js
+// 1. import the plugin
+import eslintPluginTailwindcss from "eslint-plugin-tailwindcss";
+import { defineConfig } from "eslint/config";
+
+export default defineConfig([
+  {
+    // 2. Optional: extend an existing config preset
+    extends: [eslintPluginTailwindcss.configs.recommended],
+    settings: {
+      // 3. Define the tailwindcss settings with the MANDATORY cssConfigPath
+      tailwindcss: {
+        cssConfigPath: "./src/styles/tailwind.css",
+      },
+    },
+    // 4. Optional: customize the rules to your needs
+    rules: {
+      "tailwindcss/classnames-order": "warn",
+      "tailwindcss/no-arbitrary-value": "warn",
+      "tailwindcss/no-custom-classname": [
+        "warn",
+        { whitelist: ["custom\\-*"] },
+      ],
+      "tailwindcss/no-contradicting-classname": "warn",
+    },
+  },
+]);
+```
+
+> `cssConfigPath` can be an absolute or a relative path. If you provide a relative path, the plugin will attempt to convert it into an absolute path.
+
+### 3. Going further
+
+You can also:
+
+- run the linting process inside a pipeline of your hosted repository.
+  - I would recommend to run it on your merge requests
+  - Not on every single (pre)commit
+- autoformat on save in your favorite IDE
+
 ## Settings
 
-You should specify settings that will be shared across all the plugin rules. ([More about eslint shared settings](https://eslint.org/docs/latest/use/configure/configuration-files#configuring-shared-settings))
+Most of the rules solely use the shared settings (shared across all the plugin rules). [Learn about eslint shared settings](https://eslint.org/docs/latest/use/configure/configuration-files#configuring-shared-settings) from the official documentation.
+
+Here is a fully detailled example of shared settings:
 
 ```js
 // eslint.config.mjs
@@ -36,18 +123,18 @@ You should specify settings that will be shared across all the plugin rules. ([M
       // Attributes/props that could contain Tailwind CSS classes...
       // Optional, default values: ["class", "className", "ngClass", "@apply"]
       attributes: ["class"],
-      // The absolute path pointing to you main Tailwind CSS v4 config file.
+      // The (absolute or relative) path pointing to you main Tailwind CSS v4 config file.
       // It must be a `.css` file (v4), not a `.js` file (v3)
-      // REQUIRED, default value will not help
-      cssConfigPath: dirname(fileURLToPath(import.meta.url)) + "/styles/tailwind.css",
+      // REQUIRED, default value may not help
+      cssConfigPath: "./styles/tailwind.css",
       // Functions/tagFunctions that will be parsed by the plugin.
-      // Optional, default values: ["classnames", "clsx", "ctl", "cva", "tv", "tw"]
+      // Optional, default values: ["classnames", "classNames", "clsx", "ctl", "cva", "tv", "tw", "twMerge", "twJoin"]
       functions: ["twClasses"],
       // Keys to be ignored in object expressions
       // Optional, default values: ["defaultVariants", "compoundVariants"]
       ignoredKeys: ["defaultVariants", "compoundVariants", "foo"],
       // Max size of the Set or Map objects used for caching
-      // Optional, default value: 250000
+      // Optional, default value: 250_000
       cacheMaxSize: 150_000,
       // Max lifetime of the cache set in ms
       // Optional, default value: 10 * 60 * 1000 (10 minutes)
@@ -59,60 +146,8 @@ You should specify settings that will be shared across all the plugin rules. ([M
 
 The default settings are exported via the [`DEFAULT_SETTINGS`](src/utils/parse-plugin-settings.ts).
 
-## Made for Tailwind CSS v4
-
-Version 4 of the `eslint-plugin-tailwindcss` is:
-
-- re-written from scratch
-- using TypeScript
-- Based as much as possible on internal assets of Tailwind CSS:
-  - via the [`prettier-plugin-tailwindcss` plugin](https://www.npmjs.com/package/prettier-plugin-tailwindcss)
-  - via [`tailwind-api-utils`](https://github.com/hyoban/tailwind-api-utils)
-- only compatible with:
-  - Tailwind CSS v4.x.x
-  - ESLint flat config format
-
-## Status
-
-This branch was started back in 2024, and I was quickly stuck while trying to use the internal mechanics of the `tailwindcss` package.
-
-Simple tasks, like loading the CSS config, was impossible inside an ESLint plugin because ESLint plugins are synchronous by design while the tailwindcss package uses plenty of async functions.
-
-😇 Hopefully, [hyoban](https://github.com/hyoban) made [`tailwind-api-utils`](https://github.com/hyoban/tailwind-api-utils) and [demonstrated in a PR](https://github.com/hyoban/eslint-plugin-tailwindcss/pull/3) how I could use it via [`synckit`](https://www.npmjs.com/package/synckit) 👏.
-
-## Work in progress
-
-This version is far from finished, yet it is available and open for contributions.
-
-All the details are available in the [changelog](./CHANGELOG.md).
-
-### Latest completed steps
-
-- restore the automated tests running on the merge requests of the repo
-- implement and test the usage of `tailwind-api-utils`
-- read the settings from eslint (shared settings & rules settings)
-- create the config utility
-- implement the `classnames-order` rule and its tests
-- implement the `no-custom-classname` rule and its tests
-
-### Next steps
-
-- implement the `enforces-negative-arbitrary-values` rule and its tests
-- implement the `enforces-shorthand` rule and its tests
-- implement the `no-arbitrary-value` rule and its tests
-- implement the `no-contradicting-classname` rule and its tests
-- implement the `no-unnecessary-arbitrary-value` rule and its tests
-
 ## Contributing
 
 The project is open to all developers, you can [contribute the `eslint-plugin-tailwindcss`](CONTRIBUTING.md).
 
-## 🤝 Support `eslint-plugin-tailwindcss`
-
-| 🥰 How you can support us?                                                                                                                                                                                                            | 💪 They did it!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Premium Sponsors** <br /> Support us by becoming a sponsor. <br /> [Become a recurring sponsor](https://github.com/sponsors/francoismassart?frequency=recurring)                                                                    | <a href="https://www.sent.dm/" target="_blank"><img alt="Sent.dm" width="150" src="https://avatars.githubusercontent.com/u/153308555?s=200&v=4"></a>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Current Sponsors** <br /> Any amount is appreciated.                                                                                                                                                                                | <a href="https://github.com/codecov" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/8226205?s=150&amp;v=4" width="75" height="75" style="border-radius:100%;" alt="@codecov"></a> <a href="https://github.com/sourcegraph" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/3979584?s=150&amp;v=4" width="75" height="75" style="border-radius:100%;" alt="@sourcegraph"></a> <a href="https://github.com/getsentry" target="_blank"><img class="avatar" src="https://avatars.githubusercontent.com/u/1396951?s=150&amp;v=4" width="75" height="75" style="border-radius:100%;" alt="@getsentry"></a>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Past sponsors** <br /> Even if this is just a one-time thing. <br /> [Become a backer](https://github.com/sponsors/francoismassart?frequency=one-time)                                                                              | <a href="https://github.com/acewf" target="_blank"><img src="https://avatars.githubusercontent.com/u/4835572?s=150&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@acewf"></a> <a href="https://github.com/hyoban" target="_blank"><img src="https://avatars.githubusercontent.com/u/38493346?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@hyoban"></a> <a href="https://github.com/charkour" target="_blank"><img src="https://avatars.githubusercontent.com/u/33156025?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@charkour"></a> <a href="https://github.com/aniravi24" target="_blank"><img src="https://avatars.githubusercontent.com/u/5902976?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@aniravi24"></a> <a href="https://github.com/amotarao" target="_blank"><img src="https://avatars.githubusercontent.com/u/8909592?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@amotarao"></a> <a href="https://github.com/mongolyy" target="_blank"><img src="https://avatars.githubusercontent.com/u/10972787?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@mongolyy"></a> <a href="https://github.com/t3dotgg" target="_blank"><img src="https://avatars.githubusercontent.com/u/6751787?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@t3dotgg"></a> <a href="https://github.com/fongandrew" target="_blank"><img src="https://avatars.githubusercontent.com/u/179327?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@fongandrew"></a> <a href="https://github.com/nivalis-studio" target="_blank"><img src="https://avatars.githubusercontent.com/u/146306714?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@nivalis-studio"></a> <a href="https://github.com/jonz94" target="_blank"><img src="https://avatars.githubusercontent.com/u/16042676?s=100&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@jonz94"></a> <a href="https://github.com/dailydotdev/daily" target="_blank"><img alt="daily.dev" width="50" height="50" src="https://avatars.githubusercontent.com/u/41463883?s=100&amp;v=4"></a> <a href="https://github.com/kylemh" target="_blank"><img src="https://avatars.githubusercontent.com/u/9523719?s=150&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@kylemh"></a> <a href="https://github.com/theMosaad" target="_blank"><img src="https://avatars.githubusercontent.com/u/48773133?s=150&amp;v=4" width="50" height="50" style="border-radius:100%;" alt="@theMosaad"></a> |
-| **Contributors** <br /> This project can evolve thanks to all the people who contribute. <br /> You are welcome to [contribute](CONTRIBUTING.md) to this project by reporting issues, feature requests or even opening Pull Requests. | <a href="https://github.com/francoismassart/eslint-plugin-tailwindcss/graphs/contributors"><img src="https://contrib.rocks/image?repo=francoismassart/eslint-plugin-tailwindcss&width=300&columns=4" /></a>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| **Supporters** <br /> Talk about the plugin on your social networks                                                                                                                                                                   | [Share the word on Bluesky](https://bsky.app/search?q=eslint-plugin-tailwindcss) or [Reach my profile](https://bsky.app/profile/francoismassart.be)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+However, make sure to discuss the issue or the feature you wish to implement prior to getting to work unless you feel adventurous.

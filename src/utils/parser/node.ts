@@ -171,7 +171,9 @@ export const getVAttributeName = (node: VueAST.VAttribute): string => {
  *   start: 0, // index of the first backtick
  *   end: 15, // length of the template element
  *   prefix: "`", // used for rebuilding
- *   suffix: "${" // used for rebuilding
+ *   suffix: "${", // used for rebuilding
+ *   ignoreFirst: false
+ *   ignoreLast: false
  * }
  */
 export const dissectAtomicNode = (
@@ -183,8 +185,17 @@ export const dissectAtomicNode = (
   let end = 0;
   let prefix = "";
   let suffix = "";
+  let ignoreFirst = false;
+  let ignoreLast = false;
   switch (node.type) {
+    case TSESTree.AST_NODE_TYPES.Identifier: {
+      originalClassNamesValue = "" + node.name;
+      [start, end] = node.range;
+      break;
+    }
     case TSESTree.AST_NODE_TYPES.Literal: {
+      if (typeof node.value !== "string") break;
+      if (node.value === "") break;
       originalClassNamesValue = "" + node.value;
       [start, end] = node.range;
       start++;
@@ -193,9 +204,7 @@ export const dissectAtomicNode = (
     }
     case TSESTree.AST_NODE_TYPES.TemplateElement: {
       originalClassNamesValue = node.value.raw;
-      if (originalClassNamesValue === "") {
-        break;
-      }
+      if (originalClassNamesValue === "") break;
       [start, end] = node.range;
       // https://github.com/eslint/eslint/issues/13360
       // The problem is that range computation includes the backticks (`test`)
@@ -208,6 +217,18 @@ export const dissectAtomicNode = (
         rawCode,
         originalClassNamesValue,
       );
+      const isAfterExpression = isTemplateElementAfterExpression(node);
+      const startsWithWhitespace = /^\s/.test(originalClassNamesValue);
+      if (isAfterExpression && !startsWithWhitespace) {
+        // Ignore the first classname (end of a previous "dynamic" classname)
+        ignoreFirst = true;
+      }
+      const isBeforeExpression = isTemplateElementBeforeExpression(node);
+      const endsWithWhitespace = /\s$/.test(originalClassNamesValue);
+      if (isBeforeExpression && !endsWithWhitespace) {
+        // Ignore the last classname (start of the next "dynamic" classname)
+        ignoreLast = true;
+      }
       break;
     }
     case "TextAttribute": {
@@ -234,6 +255,8 @@ export const dissectAtomicNode = (
     end,
     prefix,
     suffix,
+    ignoreFirst,
+    ignoreLast,
   };
 };
 
@@ -334,4 +357,36 @@ export const generateLocForClassname = (
     start: startPos,
     end: endPos,
   };
+};
+
+const getTemplateElementIndexFromParent = (node: TSESTree.TemplateElement) => {
+  const nodeRange = node.range;
+  const parent = node.parent;
+  const index = parent.quasis.findIndex((quasi) => {
+    return quasi.range[0] === nodeRange[0] && quasi.range[1] === nodeRange[1];
+  });
+  return index;
+};
+
+export const isTemplateElementAfterExpression = (
+  node: TSESTree.TemplateElement,
+) => {
+  const index = getTemplateElementIndexFromParent(node);
+  if (index === -1) return false;
+  const parent = node.parent;
+  if (parent.type !== TSESTree.AST_NODE_TYPES.TemplateLiteral) return false;
+  if (index > 0) {
+    return parent.expressions.length >= index;
+  }
+  return false;
+};
+
+export const isTemplateElementBeforeExpression = (
+  node: TSESTree.TemplateElement,
+) => {
+  const index = getTemplateElementIndexFromParent(node);
+  if (index === -1) return false;
+  const parent = node.parent;
+  if (parent.type !== TSESTree.AST_NODE_TYPES.TemplateLiteral) return false;
+  return parent.expressions.length >= index + 1;
 };
