@@ -101,3 +101,5 @@ const sharedConfigs: FlatConfig.SharedConfigs = {
 };
 
 export default plugin;
+
+export { type PluginSettings } from "./utils/parse-plugin-settings";

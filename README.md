@@ -12,7 +12,7 @@
 - Best practices & consistency since 2021
 - [Made for Tailwind CSS v4](./CHANGELOG.md#made-for-tailwind-css-v4)
 - [7 rules available](#rules) and more on the way
-- What's new ? [Changelog](./CHANGELOG.md) | [Release notes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases) | [Roadmap](./ROADMAP.md)
+- What's new? [Changelog](./CHANGELOG.md) | [Release notes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases) | [Roadmap](./ROADMAP.md)
 - [Upgrade guide](./UPGRADE.md) from `v3` to `v4`
 
 ## This project needs your help
@@ -23,7 +23,7 @@
     </picture>
   </a>
 </p>
-<p align="center">I spent countless days working on this plugin, and it is available to all for free.<br>If you benefits from my work and if you want to help me keep the project alive, consider becoming a sponsor.</p>
+<p align="center">I spent countless days working on this plugin, and it is available to everyone for free.<br>If you benefit from my work and if you want to help me keep the project alive, consider becoming a sponsor.</p>
 
 | Premium sponsors                                                                                                                                     | Current sponsors                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -59,7 +59,7 @@
 
 `npm i -D eslint-plugin-tailwindcss`
 
-- As it is a dev dependency, it will not affected your final bundle size 🪶
+- As it is a dev dependency, it will not affect your final bundle size 🪶
 - It can be installed with other package managers such as `pnpm`
 - We support ESLint v10
 
@@ -100,20 +100,37 @@ export default defineConfig([
 
 > `cssConfigPath` can be an absolute or a relative path. If you provide a relative path, the plugin will attempt to convert it into an absolute path.
 
+#### Typesafe settings 🤓
+
+The plugin also exports the type `PluginSettings` which you can use to benefit from autocomplete and validation directly inside your `eslint.config` file.
+
+1. You may need to add `// @ts-check` to force type checking
+2. Add the magic JSDoc comment `/** @type {import('eslint-plugin-tailwindcss').PluginSettings} */`
+
+Here is a snippet, notice the object is surrounded by parentheses `({...})`:
+
+```js
+settings: {
+  tailwindcss:
+    /** @type {import('eslint-plugin-tailwindcss').PluginSettings} */
+    ({
+      cssConfigPath: './styles/tailwind.css',
+    }),
+},
+```
+
 ### 3. Going further
 
 You can also:
 
-- run the linting process inside a pipeline of your hosted repository.
-  - I would recommend to run it on your merge requests
-  - Not on every single (pre)commit
-- autoformat on save in your favorite IDE
+- Run the linting process inside a pipeline of your hosted repository. I recommend running it on your merge/pull requests, rather than on every single (pre-)commit.
+- Auto-format on save in your favorite IDE.
 
 ## Settings
 
 Most of the rules solely use the shared settings (shared across all the plugin rules). [Learn about eslint shared settings](https://eslint.org/docs/latest/use/configure/configuration-files#configuring-shared-settings) from the official documentation.
 
-Here is a fully detailled example of shared settings:
+Here is a fully detailed example of shared settings:
 
 ```js
 // eslint.config.mjs
@@ -125,7 +142,7 @@ Here is a fully detailled example of shared settings:
       attributes: ["class"],
       // The (absolute or relative) path pointing to you main Tailwind CSS v4 config file.
       // It must be a `.css` file (v4), not a `.js` file (v3)
-      // REQUIRED, default value may not help
+      // REQUIRED, as the default value may not work out-of-the-box
       cssConfigPath: "./styles/tailwind.css",
       // Functions/tagFunctions that will be parsed by the plugin.
       // Optional, default values: ["classnames", "classNames", "clsx", "ctl", "cva", "tv", "tw", "twMerge", "twJoin"]
@@ -151,6 +168,6 @@ The default settings are exported via the [`DEFAULT_SETTINGS`](src/utils/parse-p
 
 ## Contributing
 
-The project is open to all developers, you can [contribute the `eslint-plugin-tailwindcss`](CONTRIBUTING.md).
+The project is open to all developers, you can [contribute to `eslint-plugin-tailwindcss`](CONTRIBUTING.md).
 
 However, make sure to discuss the issue or the feature you wish to implement prior to getting to work unless you feel adventurous.
