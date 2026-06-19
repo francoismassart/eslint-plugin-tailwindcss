@@ -11,8 +11,8 @@ import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-
 import urlCreator from "../url-creator";
 import { joiner } from "../utils/joiner";
 import {
-  parsePluginSettings,
-  PluginSettings,
+  parsePluginTailwindcssSettings,
+  PluginTailwindcssSettings,
 } from "../utils/parse-plugin-settings";
 import { groupByModifiersPrefix } from "../utils/parser/groups";
 import {
@@ -228,7 +228,7 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
 const STRATEGY_ENTRIES = Object.entries(SHORTHAND_RULES);
 
 const detectShorthands = (
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   context: GenericRuleContext,
   classNames: Array<string>,
   shorthandRule: ShorthandRule,
@@ -320,7 +320,7 @@ const detectShorthands = (
 
 const replaceByShorthands = (
   context: RuleContext,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
@@ -460,7 +460,7 @@ export const enforcesShorthand = createRule<Options, MessageIds>({
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
-    const settings = parsePluginSettings(context.settings);
+    const settings = parsePluginTailwindcssSettings(context.settings);
 
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,

@@ -3,7 +3,7 @@ import { AST as VueAST } from "vue-eslint-parser";
 
 import { TextAttribute } from "../../types";
 import { SupportedAttribute } from "../../types";
-import { type PluginSettings } from "../parse-plugin-settings";
+import { type PluginTailwindcssSettings } from "../parse-plugin-settings";
 import { getJSXAttributeName, getVAttributeName } from "./node";
 
 /**
@@ -12,7 +12,7 @@ import { getJSXAttributeName, getVAttributeName } from "./node";
  */
 export const isValidJSXAttribute = (
   node: TSESTree.JSXAttribute,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
 ): boolean => {
   const attributes = (settings && settings.attributes) || [];
   // Ignored JSXAttribute
@@ -40,7 +40,7 @@ export const isValidJSXAttribute = (
  */
 export const isValidTextAttribute = (
   node: TextAttribute,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
 ): boolean => {
   const attributes = (settings && settings.attributes) || [];
   // Ignored TextAttribute
@@ -58,7 +58,7 @@ export const isValidTextAttribute = (
  */
 export const isValidVAttribute = (
   node: VueAST.VAttribute,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
 ): boolean => {
   const attributes = (settings && settings.attributes) || [];
   // Ignored VAttribute
@@ -80,7 +80,7 @@ export const isValidVAttribute = (
  */
 export const isValidCallExpression = (
   node: TSESTree.CallExpression,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
 ): boolean => {
   if (!settings.functions || settings.functions.length === 0) {
     return false;

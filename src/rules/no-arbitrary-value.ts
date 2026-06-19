@@ -8,8 +8,8 @@ import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-
 
 import urlCreator from "../url-creator";
 import {
-  parsePluginSettings,
-  PluginSettings,
+  parsePluginTailwindcssSettings,
+  PluginTailwindcssSettings,
 } from "../utils/parse-plugin-settings";
 import { getBaseClassname } from "../utils/parser/classname";
 import {
@@ -47,7 +47,7 @@ const REGEX_PATTERN = /^[-a-z]+-\[.*\]$/;
 
 const arbitraryClassnames = (
   context: RuleContext,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
@@ -134,7 +134,7 @@ export const noArbitraryValue = createRule<Options, MessageIds>({
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
-    const settings = parsePluginSettings(context.settings);
+    const settings = parsePluginTailwindcssSettings(context.settings);
 
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,

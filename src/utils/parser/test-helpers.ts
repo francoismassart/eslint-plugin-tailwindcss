@@ -8,7 +8,7 @@ import * as VueParser from "vue-eslint-parser";
 import { VStartTag } from "vue-eslint-parser/ast/index";
 
 import { GenericElement, TextAttribute } from "../../types";
-import { PluginSettings } from "../parse-plugin-settings";
+import { PluginTailwindcssSettings } from "../parse-plugin-settings";
 
 // This file exposes utils only used during the tests
 
@@ -24,37 +24,37 @@ export const withVueParser: TestLanguageOptions = {
   parser: VueParser,
 };
 
-export const generalSettings: PluginSettings = {
+export const generalSettings: PluginTailwindcssSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
     `${import.meta.dirname}/../../../tests/stubs/css/normal.css`,
 };
 
-export const prefixedSettings: PluginSettings = {
+export const prefixedSettings: PluginTailwindcssSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
     `${import.meta.dirname}/../../../tests/stubs/css/tiny-prefixed.css`,
 };
 
-export const daisySettings: PluginSettings = {
+export const daisySettings: PluginTailwindcssSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
     `${import.meta.dirname}/../../../tests/stubs/css/daisy.css`,
 };
 
-export const xsBreakpointSettings: PluginSettings = {
+export const xsBreakpointSettings: PluginTailwindcssSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
     `${import.meta.dirname}/../../../tests/stubs/css/xs-breakpoint.css`,
 };
 
-export const withTypographySettings: PluginSettings = {
+export const withTypographySettings: PluginTailwindcssSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
     `${import.meta.dirname}/../../../tests/stubs/css/with-typography.css`,
 };
 
-export const withAllPresetsSettings: PluginSettings = {
+export const withAllPresetsSettings: PluginTailwindcssSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
     `${import.meta.dirname}/../../../tests/stubs/css/all-presets.css`,

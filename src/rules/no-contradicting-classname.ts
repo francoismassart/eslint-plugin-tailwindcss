@@ -12,8 +12,8 @@ import { getPropertiesFromCssRule } from "../utils/get-properties-from-css-rule"
 import { joiner } from "../utils/joiner";
 import { mapGetKeyFromSetValues } from "../utils/map";
 import {
-  parsePluginSettings,
-  PluginSettings,
+  parsePluginTailwindcssSettings,
+  PluginTailwindcssSettings,
 } from "../utils/parse-plugin-settings";
 import { groupByModifiersPrefix } from "../utils/parser/groups";
 import {
@@ -56,7 +56,7 @@ const cssPropertiesCache = new Map<string, Set<string> | undefined>();
 const getCompiledGroup = (
   modifiers: string,
   baseClasses: Array<string>,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   context: GenericRuleContext,
 ) => {
   const groupMembers = new Map<string, Set<string>>();
@@ -118,7 +118,7 @@ const getCommonProperties = (groupMembers: Map<string, Set<string>>) => {
 
 const getContradictions = (
   context: RuleContext,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
@@ -257,7 +257,7 @@ export const noContradictingClassname = createRule<Options, MessageIds>({
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
-    const settings = parsePluginSettings(context.settings);
+    const settings = parsePluginTailwindcssSettings(context.settings);
 
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,

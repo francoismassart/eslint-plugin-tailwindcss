@@ -1,10 +1,10 @@
 import { expect, test } from "vitest";
 
-import { parsePluginSettings } from "./parse-plugin-settings";
+import { parsePluginTailwindcssSettings } from "./parse-plugin-settings";
 
-test(`parsePluginSettings`, () => {
+test(`parsePluginTailwindcssSettings`, () => {
   expect(
-    parsePluginSettings({
+    parsePluginTailwindcssSettings({
       tailwindcss: {
         attributes: [],
         cacheMaxAge: 1,

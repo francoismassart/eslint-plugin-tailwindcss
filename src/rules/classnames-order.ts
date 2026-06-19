@@ -11,8 +11,8 @@ import urlCreator from "../url-creator";
 import { getCacheSettings, resetCache } from "../utils/cache";
 import { joiner } from "../utils/joiner";
 import {
-  parsePluginSettings,
-  PluginSettings,
+  parsePluginTailwindcssSettings,
+  PluginTailwindcssSettings,
 } from "../utils/parse-plugin-settings";
 import {
   dissectAtomicNode,
@@ -58,7 +58,7 @@ let cacheCreationTime = Date.now();
 
 const sortClassnames = (
   context: RuleContext,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
@@ -196,7 +196,7 @@ export const classnamesOrder = createRule<Options, MessageIds>({
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
-    const settings = parsePluginSettings(context.settings);
+    const settings = parsePluginTailwindcssSettings(context.settings);
 
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,

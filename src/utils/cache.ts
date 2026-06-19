@@ -1,11 +1,13 @@
-import { PluginSettings } from "../utils/parse-plugin-settings";
+import { PluginTailwindcssSettings } from "../utils/parse-plugin-settings";
 
 type CacheOptions = {
   cacheMaxSize: number;
   cacheMaxAge: number;
 };
 
-export const getCacheSettings = (settings: PluginSettings): CacheOptions => {
+export const getCacheSettings = (
+  settings: PluginTailwindcssSettings,
+): CacheOptions => {
   const cacheMaxSize = settings.cacheMaxSize || 0;
   const cacheMaxAge = settings.cacheMaxAge || 0;
   return { cacheMaxSize, cacheMaxAge };

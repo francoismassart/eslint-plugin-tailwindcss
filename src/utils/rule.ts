@@ -3,7 +3,7 @@ import { RuleListener } from "@typescript-eslint/utils/ts-eslint";
 import { AST as VueAST } from "vue-eslint-parser";
 
 import { TextAttribute } from "../types";
-import type { PluginSettings } from "./parse-plugin-settings";
+import type { PluginTailwindcssSettings } from "./parse-plugin-settings";
 import {
   getTagNameFromTaggedTemplateExpression,
   isWithinCallee,
@@ -36,7 +36,7 @@ export type AtomicNode =
  * @returns Array of atomic nodes
  */
 export const getLiteralsFromNode = <TRuleContext>(
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   context: TRuleContext,
   node: TSESTree.Node | VueAST.VAttribute,
   rootNode: TSESTree.Node | VueAST.VAttribute,
@@ -289,11 +289,11 @@ export const getLiteralsFromNode = <TRuleContext>(
  */
 export const createScriptVisitors = <TRuleContext, TOptions>(
   context: TRuleContext,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   options: TOptions,
   lintLiterals: (
     context: TRuleContext,
-    settings: PluginSettings,
+    settings: PluginTailwindcssSettings,
     options: TOptions,
     literals: Array<AtomicNode>,
   ) => void,
@@ -393,11 +393,11 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
  */
 export const createTemplateVisitors = <TRuleContext, TOptions>(
   context: TRuleContext,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   options: TOptions,
   lintLiterals: (
     context: TRuleContext,
-    settings: PluginSettings,
+    settings: PluginTailwindcssSettings,
     options: TOptions,
     literals: Array<AtomicNode>,
   ) => void,

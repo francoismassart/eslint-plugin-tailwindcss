@@ -15,8 +15,8 @@ import {
 import { joiner } from "../utils/joiner";
 import { joinListElements } from "../utils/list-formatter";
 import {
-  parsePluginSettings,
-  PluginSettings,
+  parsePluginTailwindcssSettings,
+  PluginTailwindcssSettings,
 } from "../utils/parse-plugin-settings";
 import {
   getBaseClassname,
@@ -60,7 +60,7 @@ const arbitraryRegEx = /^(?<classPrefix>.*?)-\[(?<arbitraryValue>.*)\]$/u;
 
 const checkArbitraryClassnames = (
   context: RuleContext,
-  settings: PluginSettings,
+  settings: PluginTailwindcssSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
@@ -201,7 +201,7 @@ export const noUnnecessaryArbitraryValue = createRule<Options, MessageIds>({
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
-    const settings = parsePluginSettings(context.settings);
+    const settings = parsePluginTailwindcssSettings(context.settings);
 
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,
