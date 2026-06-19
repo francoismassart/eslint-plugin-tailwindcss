@@ -2,6 +2,8 @@
 
 # Next steps
 
+- `parseKeyFunctions`
+- Expose the typings of the SharedSettings
 - Support for Vue SFC
 - Test with external library such as daisy UI
 - Test with external `*.module.css` files

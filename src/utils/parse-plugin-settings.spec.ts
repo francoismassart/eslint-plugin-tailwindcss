@@ -11,6 +11,7 @@ test(`parsePluginSettings`, () => {
         cacheMaxSize: 2,
         cssConfigPath: "/src/styles.css",
         functions: ["customFunction"],
+        parseKeyFunctions: ["customFunction"],
       },
     }),
   ).toEqual({
@@ -19,6 +20,7 @@ test(`parsePluginSettings`, () => {
     cacheMaxSize: 2,
     cssConfigPath: "/src/styles.css",
     functions: ["customFunction"],
+    parseKeyFunctions: ["customFunction"],
     ignoredKeys: ["defaultVariants", "compoundVariants"],
   });
 });

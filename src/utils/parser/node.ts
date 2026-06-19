@@ -390,3 +390,19 @@ export const isTemplateElementBeforeExpression = (
   if (parent.type !== TSESTree.AST_NODE_TYPES.TemplateLiteral) return false;
   return parent.expressions.length >= index + 1;
 };
+
+export const isWithinCallee = (
+  node: TSESTree.Node,
+  calleeNames: Array<string>,
+): boolean => {
+  if (calleeNames.length === 0 || !node.parent || !node.parent.type)
+    return false;
+  if (node.parent.type !== TSESTree.AST_NODE_TYPES.CallExpression) {
+    return isWithinCallee(node.parent, calleeNames);
+  }
+  const callExpression = node.parent;
+  return callExpression.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
+    calleeNames.includes(callExpression.callee.name)
+    ? true
+    : false;
+};

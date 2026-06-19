@@ -28,6 +28,7 @@ The most important setting is the `cssConfigPath` which expects a path pointing 
 #### Modified settings
 
 - `callees` is renamed `functions`
+- `parseKeyFunctions` list the functions in which we should validate the keys instead of the values
 - `config`
   - renamed `cssConfigPath`
   - pointing to the main css file

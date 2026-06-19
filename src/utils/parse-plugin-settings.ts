@@ -13,6 +13,8 @@ export type PluginSettings = {
   cssConfigPath: string;
   // functions are use for both callees and template literals
   functions?: Array<string>; // No support for `Set<string>`
+  // functions in which we check the keys instead of the values (used for `clsx`, etc.)
+  parseKeyFunctions?: Array<string>; // No support for `Set<string>`
   // keys to ignore in object expressions
   ignoredKeys?: Array<string>; // No support for `Set<string>`
   // Max size of the Set or Map objects used for caching
@@ -56,6 +58,13 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     // N.B. This package is deprecated
     "twJoin",
   ],
+  parseKeyFunctions: [
+    // @see https://www.npmjs.com/package/classnames
+    "classnames",
+    "classNames",
+    // @see https://www.npmjs.com/package/clsx
+    "clsx",
+  ],
   // keys to ignore in object expressions (used by `cva`, `tv`, etc.)
   ignoredKeys: ["defaultVariants", "compoundVariants"],
   // Max size of the Set or Map objects used for caching
@@ -87,6 +96,14 @@ export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
     items: { type: "string", minLength: 0 },
     uniqueItems: true,
     default: DEFAULT_SETTINGS.functions,
+  },
+  parseKeyFunctions: {
+    description:
+      "Within the list of functions, which should we check the keys instead of the values (used for `clsx`, etc.)",
+    type: "array",
+    items: { type: "string", minLength: 0 },
+    uniqueItems: true,
+    default: DEFAULT_SETTINGS.parseKeyFunctions,
   },
   ignoredKeys: {
     description:

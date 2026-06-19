@@ -3,22 +3,15 @@ import { TSESTree } from "@typescript-eslint/utils";
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_SETTINGS, type PluginSettings } from "./parse-plugin-settings";
+import {
+  astParserOptions,
+  astWithJSXOptions,
+  parseWithParents,
+} from "./parser/test-helpers";
 import { getLiteralsFromNode } from "./rule";
 
 const mockSettings: PluginSettings = { ...DEFAULT_SETTINGS };
 const mockContext = {};
-
-const astParserOptions = {
-  comment: false,
-  loc: false,
-  range: false,
-  tokens: false,
-};
-
-const astWithJSXOptions = {
-  ...astParserOptions,
-  jsx: true,
-};
 
 /**
  * @example `<h1 className={`rounded w-[${width}] flex`}>Issue 277</h1>`
@@ -114,11 +107,10 @@ describe("getLiteralsFromNode", () => {
       });
     });
     it("Multiple objects: `classNames({ 'foo': true }, { bar: true });`", () => {
-      const ast = parse(
+      const ast = parseWithParents(
         `classnames({ 'foo': true }, { bar: true });`,
-        astParserOptions,
       );
-      const node = getCallExpressionNode(ast);
+      const node = getCallExpressionNode(ast as unknown as TSESTree.Program);
 
       const result = getLiteralsFromNode(mockSettings, mockContext, node, node);
       expect(result.length).toBe(2);
@@ -132,11 +124,8 @@ describe("getLiteralsFromNode", () => {
       });
     });
     it("Multiple properties: `classNames({ foo: true, bar: true });`", () => {
-      const ast = parse(
-        `classNames({ foo: true, bar: true });`,
-        astParserOptions,
-      );
-      const node = getCallExpressionNode(ast);
+      const ast = parseWithParents(`classNames({ foo: true, bar: true });`);
+      const node = getCallExpressionNode(ast as unknown as TSESTree.Program);
 
       const result = getLiteralsFromNode(mockSettings, mockContext, node, node);
       expect(result.length).toBe(2);
@@ -150,11 +139,10 @@ describe("getLiteralsFromNode", () => {
       });
     });
     it("Kitchenshink: `classNames('foo', { bar: true, duck: false }, 'baz', { quux: true });`", () => {
-      const ast = parse(
+      const ast = parseWithParents(
         `classNames('foo', { bar: true, duck: false }, 'baz', { quux: true });`,
-        astParserOptions,
       );
-      const node = getCallExpressionNode(ast);
+      const node = getCallExpressionNode(ast as unknown as TSESTree.Program);
 
       const result = getLiteralsFromNode(mockSettings, mockContext, node, node);
       expect(result.length).toBe(5);
@@ -222,8 +210,8 @@ describe("getLiteralsFromNode", () => {
     });
     it("Objects: `clsx({ foo:true, bar:false, baz:isTrue() });`", () => {
       const code = `clsx({ foo:true, bar:false, baz:isTrue() });`;
-      const ast = parse(code, astParserOptions);
-      const node = getCallExpressionNode(ast);
+      const ast = parseWithParents(code);
+      const node = getCallExpressionNode(ast as unknown as TSESTree.Program);
       const result = getLiteralsFromNode(mockSettings, mockContext, node, node);
 
       expect(result.length).toBe(3);
@@ -233,8 +221,8 @@ describe("getLiteralsFromNode", () => {
     });
     it("Objects (variadic): `clsx({ foo:true }, { bar:false }, null, { '--foobar':'hello' });`", () => {
       const code = `clsx({ foo:true }, { bar:false }, null, { '--foobar':'hello' });`;
-      const ast = parse(code, astParserOptions);
-      const node = getCallExpressionNode(ast);
+      const ast = parseWithParents(code);
+      const node = getCallExpressionNode(ast as unknown as TSESTree.Program);
       const result = getLiteralsFromNode(mockSettings, mockContext, node, node);
 
       expect(result.length).toBe(3);
@@ -267,8 +255,8 @@ describe("getLiteralsFromNode", () => {
     });
     it("Kitchen sink (with nesting): `clsx('foo', [1 && 'bar', { baz:false, bat:null }, ['hello', ['world']]], 'cya');`", () => {
       const code = `clsx('foo', [1 && 'bar', { baz:false, bat:null }, ['hello', ['world']]], 'cya');`;
-      const ast = parse(code, astParserOptions);
-      const node = getCallExpressionNode(ast);
+      const ast = parseWithParents(code);
+      const node = getCallExpressionNode(ast as unknown as TSESTree.Program);
       const result = getLiteralsFromNode(mockSettings, mockContext, node, node);
 
       expect(result.length).toBe(7);

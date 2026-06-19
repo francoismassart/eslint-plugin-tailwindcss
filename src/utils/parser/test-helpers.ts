@@ -1,6 +1,8 @@
 import * as AngularParser from "@angular-eslint/template-parser";
+import { parse } from "@typescript-eslint/parser";
 import * as Parser from "@typescript-eslint/parser";
 import { TestLanguageOptions } from "@typescript-eslint/rule-tester";
+import { simpleTraverse } from "@typescript-eslint/typescript-estree";
 import { TSESTree } from "@typescript-eslint/utils";
 import * as VueParser from "vue-eslint-parser";
 import { VStartTag } from "vue-eslint-parser/ast/index";
@@ -145,4 +147,32 @@ export const _callExpression = (code: string) => {
     throw new Error("No CallExpression found");
   }
   return body.expression;
+};
+
+export const astParserOptions = {
+  comment: false,
+  loc: false,
+  range: false,
+  tokens: false,
+};
+
+export const astWithJSXOptions = {
+  ...astParserOptions,
+  jsx: true,
+};
+
+type NodeWithParent = TSESTree.Node;
+
+export const parseWithParents = (code: string): NodeWithParent => {
+  const ast = parse(code, astWithJSXOptions);
+
+  simpleTraverse(ast, {
+    enter(node, parent) {
+      if (parent) {
+        (node as NodeWithParent).parent = parent;
+      }
+    },
+  });
+
+  return ast;
 };

@@ -4,7 +4,10 @@ import { AST as VueAST } from "vue-eslint-parser";
 
 import { TextAttribute } from "../types";
 import type { PluginSettings } from "./parse-plugin-settings";
-import { getTagNameFromTaggedTemplateExpression } from "./parser/node";
+import {
+  getTagNameFromTaggedTemplateExpression,
+  isWithinCallee,
+} from "./parser/node";
 import {
   isLiteralAttributeValue,
   isValidCallExpression,
@@ -117,7 +120,11 @@ export const getLiteralsFromNode = <TRuleContext>(
       break;
     }
     case TSESTree.AST_NODE_TYPES.Identifier: {
-      literals.push(node);
+      const parseKeyFunctions = settings.parseKeyFunctions || [];
+      if (parseKeyFunctions.length === 0) break;
+      if (isWithinCallee(node, parseKeyFunctions)) {
+        literals.push(node);
+      }
       break;
     }
     case TSESTree.AST_NODE_TYPES.JSXAttribute: {

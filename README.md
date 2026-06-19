@@ -130,6 +130,9 @@ Here is a fully detailled example of shared settings:
       // Functions/tagFunctions that will be parsed by the plugin.
       // Optional, default values: ["classnames", "classNames", "clsx", "ctl", "cva", "tv", "tw", "twMerge", "twJoin"]
       functions: ["twClasses"],
+      // Within the list of functions, which should we check the keys instead of the values (used for `clsx`, etc.)
+      // Optional, default values: ["classnames", "classNames", "clsx"]
+      parseKeyFunctions: ["clsx"],
       // Keys to be ignored in object expressions
       // Optional, default values: ["defaultVariants", "compoundVariants"]
       ignoredKeys: ["defaultVariants", "compoundVariants", "foo"],

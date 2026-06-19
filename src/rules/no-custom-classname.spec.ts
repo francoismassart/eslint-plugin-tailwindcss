@@ -89,6 +89,18 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `<h1 className={\`rounded w-[\${width}] flex\`}>Issue 277</h1>`,
       // Issue 406
       `ctl('@container h-[50cqb] @container-size/name')`,
+      `<p className={className || undefined}>alpha7 Identifier bug</p>`,
+      `<p className={ctl(\`\${linkClasses} \${isCurrent ? currentPageClasses : clickableLinkClasses}\`)}>alpha7 Identifier bug</p>`,
+      // alpha7 Identifier bug
+      `ctl(\`
+        \${
+          activeColor
+            ? activeColor
+            : 'bg-black'
+        }
+        \${big ? 'h-full' : 'lg:h-full'}
+        text-center
+      \`)`,
     ].map((jsx) => ({
       code: jsx,
     })),
