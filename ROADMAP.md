@@ -2,7 +2,6 @@
 
 # Next steps
 
-- `parseKeyFunctions`
 - Expose the typings of the SharedSettings
 - Support for Vue SFC
 - Test with external library such as daisy UI
@@ -41,6 +40,7 @@
 
 # June 2026
 
+- `parseKeyFunctions` new setting indicating on which function we should use the keys instead of the values
 - docs: explain why each rule is enhancing the code
 - support for ESLint v10
 - performances improvements
