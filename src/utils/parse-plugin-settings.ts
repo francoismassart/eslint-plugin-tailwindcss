@@ -66,7 +66,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     "clsx",
   ],
   // keys to ignore in object expressions (used by `cva`, `tv`, etc.)
-  ignoredKeys: ["defaultVariants", "compoundVariants"],
+  ignoredKeys: ["defaultVariants", "compoundVariants", "compoundSlots"],
   // Max size of the Set or Map objects used for caching
   cacheMaxSize: 250_000,
   // Max age of the cache in milliseconds

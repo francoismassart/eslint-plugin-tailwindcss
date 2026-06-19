@@ -391,18 +391,24 @@ export const isTemplateElementBeforeExpression = (
   return parent.expressions.length >= index + 1;
 };
 
+/**
+ * Traverses the node and its parents until it finds a CallExpression that matches the specified callee names.
+ * @param node The starting node to check.
+ * @param calleeNames An array of callee names to match against.
+ * @returns true if a matching CallExpression is found, otherwise false.
+ */
 export const isWithinCallee = (
   node: TSESTree.Node,
-  calleeNames: Array<string>,
+  calleeNames: Array<string> = [],
 ): boolean => {
-  if (calleeNames.length === 0 || !node.parent || !node.parent.type)
-    return false;
-  if (node.parent.type !== TSESTree.AST_NODE_TYPES.CallExpression) {
-    return isWithinCallee(node.parent, calleeNames);
+  if (calleeNames.length === 0) return false;
+  if (
+    node.type === TSESTree.AST_NODE_TYPES.CallExpression &&
+    node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
+    calleeNames.includes(node.callee.name)
+  ) {
+    return true;
   }
-  const callExpression = node.parent;
-  return callExpression.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
-    calleeNames.includes(callExpression.callee.name)
-    ? true
-    : false;
+  if (!node.parent || !node.parent.type) return false;
+  return isWithinCallee(node.parent, calleeNames);
 };

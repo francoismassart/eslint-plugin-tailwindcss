@@ -151,8 +151,8 @@ Here is a fully detailed example of shared settings:
       // Optional, default values: ["classnames", "classNames", "clsx"]
       parseKeyFunctions: ["clsx"],
       // Keys to be ignored in object expressions
-      // Optional, default values: ["defaultVariants", "compoundVariants"]
-      ignoredKeys: ["defaultVariants", "compoundVariants", "foo"],
+      // Optional, default values: ["defaultVariants", "compoundVariants", "compoundSlots"]
+      ignoredKeys: ["defaultVariants", "compoundVariants", "compoundSlots", "specificKey"],
       // Max size of the Set or Map objects used for caching
       // Optional, default value: 250_000
       cacheMaxSize: 150_000,

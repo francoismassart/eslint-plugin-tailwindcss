@@ -101,6 +101,51 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
         \${big ? 'h-full' : 'lg:h-full'}
         text-center
       \`)`,
+      // Issue 422
+      `tv({
+        slots: {
+          base: 'flex',
+          item: 'data-[active="true"]:text-white',
+          prev: '',
+          next: ''
+        },
+        variants: {
+          size: {
+            xs: {},
+            sm: {},
+            md: {}
+          }
+        },
+        defaultVariants: {
+          size: 'md'
+        },
+        compoundSlots: [
+          // if you dont specify any variant, it will always be applied
+          {
+            slots: ['item', 'prev', 'next'],
+            class: [
+              'flex',
+              'text-black'
+            ] // --> these classes will be applied to all slots
+          },
+          // if you specify a variant, it will only be applied if the variant is active
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'xs',
+            class: 'w-7 h-7 text-xs' // --> these classes will be applied to all slots if size is xs
+          },
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'sm',
+            class: 'w-8 h-8 text-sm' // --> these classes will be applied to all slots if size is sm
+          },
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'md',
+            class: 'w-9 h-9 text-base' // --> these classes will be applied to all slots if size is md
+          }
+        ]
+      });`,
     ].map((jsx) => ({
       code: jsx,
     })),
@@ -297,6 +342,183 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
         suggest(
           "cya",
           `clsx('foo', [1 && 'bar', { baz:false, bat:null }, ['hello', ['world']]], '');`,
+        ),
+      ],
+    },
+    {
+      // Issue 422
+      code: `
+      tv({
+        slots: {
+          base: 'flex unknown-base',
+          item: 'data-[active="true"]:text-white',
+        },
+        variants: {
+          size: {
+            xs: 'absolute',
+            sm: 'unknown-sm',
+          }
+        },
+        defaultVariants: {
+          size: 'xs'
+        },
+        compoundSlots: [
+          // if you dont specify any variant, it will always be applied
+          {
+            slots: ['item', 'prev', 'next'],
+            class: [
+              'unknown-compound block',
+              'text-black'
+            ] // --> these classes will be applied to all slots
+          },
+          // if you specify a variant, it will only be applied if the variant is active
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'xs',
+            class: 'unknown-multiple' // --> these classes will be applied to all slots if size is xs
+          },
+        ]
+      });`,
+      errors: [
+        suggest(
+          "unknown-base",
+          `
+      tv({
+        slots: {
+          base: 'flex',
+          item: 'data-[active="true"]:text-white',
+        },
+        variants: {
+          size: {
+            xs: 'absolute',
+            sm: 'unknown-sm',
+          }
+        },
+        defaultVariants: {
+          size: 'xs'
+        },
+        compoundSlots: [
+          // if you dont specify any variant, it will always be applied
+          {
+            slots: ['item', 'prev', 'next'],
+            class: [
+              'unknown-compound block',
+              'text-black'
+            ] // --> these classes will be applied to all slots
+          },
+          // if you specify a variant, it will only be applied if the variant is active
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'xs',
+            class: 'unknown-multiple' // --> these classes will be applied to all slots if size is xs
+          },
+        ]
+      });`,
+        ),
+        suggest(
+          "unknown-sm",
+          `
+      tv({
+        slots: {
+          base: 'flex unknown-base',
+          item: 'data-[active="true"]:text-white',
+        },
+        variants: {
+          size: {
+            xs: 'absolute',
+            sm: '',
+          }
+        },
+        defaultVariants: {
+          size: 'xs'
+        },
+        compoundSlots: [
+          // if you dont specify any variant, it will always be applied
+          {
+            slots: ['item', 'prev', 'next'],
+            class: [
+              'unknown-compound block',
+              'text-black'
+            ] // --> these classes will be applied to all slots
+          },
+          // if you specify a variant, it will only be applied if the variant is active
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'xs',
+            class: 'unknown-multiple' // --> these classes will be applied to all slots if size is xs
+          },
+        ]
+      });`,
+        ),
+        suggest(
+          "unknown-compound",
+          `
+      tv({
+        slots: {
+          base: 'flex unknown-base',
+          item: 'data-[active="true"]:text-white',
+        },
+        variants: {
+          size: {
+            xs: 'absolute',
+            sm: 'unknown-sm',
+          }
+        },
+        defaultVariants: {
+          size: 'xs'
+        },
+        compoundSlots: [
+          // if you dont specify any variant, it will always be applied
+          {
+            slots: ['item', 'prev', 'next'],
+            class: [
+              'block',
+              'text-black'
+            ] // --> these classes will be applied to all slots
+          },
+          // if you specify a variant, it will only be applied if the variant is active
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'xs',
+            class: 'unknown-multiple' // --> these classes will be applied to all slots if size is xs
+          },
+        ]
+      });`,
+        ),
+        suggest(
+          "unknown-multiple",
+          `
+      tv({
+        slots: {
+          base: 'flex unknown-base',
+          item: 'data-[active="true"]:text-white',
+        },
+        variants: {
+          size: {
+            xs: 'absolute',
+            sm: 'unknown-sm',
+          }
+        },
+        defaultVariants: {
+          size: 'xs'
+        },
+        compoundSlots: [
+          // if you dont specify any variant, it will always be applied
+          {
+            slots: ['item', 'prev', 'next'],
+            class: [
+              'unknown-compound block',
+              'text-black'
+            ] // --> these classes will be applied to all slots
+          },
+          // if you specify a variant, it will only be applied if the variant is active
+          {
+            slots: ['item', 'prev', 'next'],
+            size: 'xs',
+            class: '' // --> these classes will be applied to all slots if size is xs
+          },
+        ]
+      });`,
         ),
       ],
     },

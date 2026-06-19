@@ -21,6 +21,6 @@ test(`parsePluginSettings`, () => {
     cssConfigPath: "/src/styles.css",
     functions: ["customFunction"],
     parseKeyFunctions: ["customFunction"],
-    ignoredKeys: ["defaultVariants", "compoundVariants"],
+    ignoredKeys: ["defaultVariants", "compoundVariants", "compoundSlots"],
   });
 });

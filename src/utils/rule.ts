@@ -44,7 +44,13 @@ export const getLiteralsFromNode = <TRuleContext>(
   targetKeys: Array<string> = [],
 ): Array<AtomicNode> => {
   // const indent = "  ".repeat(depth);
-  // console.log(indent, "getLiteralsFromNode", node.type, targetKeys);
+  // console.log(
+  //   indent,
+  //   "getLiteralsFromNode",
+  //   node.type,
+  //   targetKeys,
+  //   node.type === TSESTree.AST_NODE_TYPES.Literal ? node.value : "",
+  // );
   // console.log(indent, "-------------------");
 
   const literals: Array<AtomicNode> = [];
@@ -177,29 +183,22 @@ export const getLiteralsFromNode = <TRuleContext>(
       break;
     }
     case TSESTree.AST_NODE_TYPES.ObjectExpression: {
-      if (rootNode === undefined) {
-        return [];
-      }
-      const isUsedByClsxPlugin =
-        rootNode.type === "CallExpression" &&
-        rootNode.callee &&
-        rootNode.callee.type === "Identifier" &&
-        rootNode.callee.name === "clsx";
-      const isUsedByClassNamesPlugin =
-        rootNode.type === "CallExpression" &&
-        rootNode.callee &&
-        rootNode.callee.type === "Identifier" &&
-        rootNode.callee.name.toLowerCase() === "classnames";
+      if (rootNode === undefined) return [];
+
+      const useKeys = isWithinCallee(
+        rootNode as TSESTree.Node,
+        settings.parseKeyFunctions, // clsx, classnames, etc.
+      );
       const isVue =
         rootNode.type === "VAttribute" &&
         rootNode.key &&
         // @ts-expect-error This comparison appears to be unintentional because the types '"VIdentifier"' and '"VDirectiveKey"' have no overlap.ts(2367)
         rootNode.key.type === "VDirectiveKey";
+      // e.g. "defaultVariants", "compoundVariants", "compoundSlots"
       const ignoredKeys = settings.ignoredKeys || [];
+
       for (const property of node.properties) {
-        if (property.type === TSESTree.AST_NODE_TYPES.SpreadElement) {
-          continue;
-        }
+        if (property.type === TSESTree.AST_NODE_TYPES.SpreadElement) continue;
         if (
           targetKeys.length > 0 &&
           property.key.type === "Identifier" &&
@@ -212,10 +211,7 @@ export const getLiteralsFromNode = <TRuleContext>(
         const isIgnoredParent =
           property.key.type === "Identifier" &&
           ignoredKeys.includes(property.key.name);
-        const nodeValue =
-          isUsedByClsxPlugin || isUsedByClassNamesPlugin || isVue
-            ? property.key
-            : property.value;
+        const nodeValue = useKeys || isVue ? property.key : property.value;
         // Walk for literals
         literals.push(
           ...getLiteralsFromNode(
