@@ -5,7 +5,7 @@
     <img alt="eslint-plugin-tailwindcss" src="images/logo-dark.png">
   </picture>
 </div>
-![npm latest version](https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge) ![license](https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge) ![downloads](https://img.shields.io/npm/dt/eslint-plugin-tailwindcss?style=for-the-badge)
+<div style="display:flex;flex-direction:row;gap:10px;justify-content:center;"><img alt="npm latest version" src="https://img.shields.io/npm/v/eslint-plugin-tailwindcss?style=for-the-badge" /> <img alt="license" src="https://img.shields.io/npm/l/eslint-plugin-tailwindcss?style=for-the-badge" /> <img alt="downloads" src="https://img.shields.io/npm/dt/eslint-plugin-tailwindcss?style=for-the-badge" /></div>
 
 # `eslint-plugin-tailwindcss`
 
