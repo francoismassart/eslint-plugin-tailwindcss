@@ -10,8 +10,8 @@ import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-
 import urlCreator from "../url-creator";
 import { joiner } from "../utils/joiner";
 import {
-  parsePluginTailwindcssSettings,
-  PluginTailwindcssSettings,
+  parsePluginSettings,
+  PluginSettings,
 } from "../utils/parse-plugin-settings";
 import { passRegexTest } from "../utils/parser/classname";
 import {
@@ -75,7 +75,7 @@ const prepareWhitelist = (
 
 const detectCustomClassnames = (
   context: RuleContext,
-  settings: PluginTailwindcssSettings,
+  settings: PluginSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
@@ -210,7 +210,7 @@ export const noCustomClassname = createRule<Options, MessageIds>({
   defaultOptions: [{ whitelist: [] }],
   create: (context, options) => {
     // Merged settings
-    const settings = parsePluginTailwindcssSettings(context.settings);
+    const settings = parsePluginSettings(context.settings);
 
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,

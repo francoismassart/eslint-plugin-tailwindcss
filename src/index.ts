@@ -102,4 +102,4 @@ const sharedConfigs: FlatConfig.SharedConfigs = {
 
 export default plugin;
 
-export { type PluginTailwindcssSettings } from "./utils/parse-plugin-settings";
+export { type PluginSettings } from "./utils/parse-plugin-settings";

@@ -2,10 +2,7 @@ import { parse } from "@typescript-eslint/parser";
 import { TSESTree } from "@typescript-eslint/utils";
 import { describe, expect, it } from "vitest";
 
-import {
-  DEFAULT_SETTINGS,
-  type PluginTailwindcssSettings,
-} from "./parse-plugin-settings";
+import { DEFAULT_SETTINGS, type PluginSettings } from "./parse-plugin-settings";
 import {
   astParserOptions,
   astWithJSXOptions,
@@ -13,7 +10,7 @@ import {
 } from "./parser/test-helpers";
 import { getLiteralsFromNode } from "./rule";
 
-const mockSettings: PluginTailwindcssSettings = { ...DEFAULT_SETTINGS };
+const mockSettings: PluginSettings = { ...DEFAULT_SETTINGS };
 const mockContext = {};
 
 /**

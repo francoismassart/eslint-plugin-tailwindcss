@@ -9,8 +9,8 @@ import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-
 import urlCreator from "../url-creator";
 import { joiner } from "../utils/joiner";
 import {
-  parsePluginTailwindcssSettings,
-  PluginTailwindcssSettings,
+  parsePluginSettings,
+  PluginSettings,
 } from "../utils/parse-plugin-settings";
 import {
   getBaseClassname,
@@ -69,7 +69,7 @@ const NEGATIVE_ARBITRARY_REGEX = new RegExp(
 
 const negativeArbitraryClassnames = (
   context: RuleContext,
-  settings: PluginTailwindcssSettings,
+  settings: PluginSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
@@ -171,7 +171,7 @@ export const enforcesNegativeArbitraryValues = createRule<Options, MessageIds>({
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
-    const settings = parsePluginTailwindcssSettings(context.settings);
+    const settings = parsePluginSettings(context.settings);
     const genericContext = context as unknown as Readonly<GenericRuleContext>;
 
     return defineVisitors(

@@ -1,10 +1,7 @@
 import { TSESTree } from "@typescript-eslint/utils";
 import { expect, test } from "vitest";
 
-import {
-  parsePluginTailwindcssSettings,
-  PluginTailwindcssSettings,
-} from "../parse-plugin-settings";
+import { parsePluginSettings, PluginSettings } from "../parse-plugin-settings";
 import {
   _callExpression,
   _htmlAttribute,
@@ -20,22 +17,22 @@ import {
   isValidVAttribute,
 } from "./visitors-validation";
 
-const defaultSettings = parsePluginTailwindcssSettings({});
-const customAttributeSettings = parsePluginTailwindcssSettings({
+const defaultSettings = parsePluginSettings({});
+const customAttributeSettings = parsePluginSettings({
   tailwindcss: { attributes: ["custom"] },
 });
-const customFunctionSettings = parsePluginTailwindcssSettings({
+const customFunctionSettings = parsePluginSettings({
   tailwindcss: { functions: ["custom"] },
 });
-const noAttributeSettings = parsePluginTailwindcssSettings({
+const noAttributeSettings = parsePluginSettings({
   tailwindcss: { attributes: [] },
 });
-const noFunctionSettings = parsePluginTailwindcssSettings({
+const noFunctionSettings = parsePluginSettings({
   tailwindcss: { functions: [] },
 });
 
 test("isValidJSXAttribute", () => {
-  type TestConfig = [string, PluginTailwindcssSettings];
+  type TestConfig = [string, PluginSettings];
   // Valid expressions
   const valid: Array<TestConfig> = [
     // Defaults
@@ -52,7 +49,7 @@ test("isValidJSXAttribute", () => {
 });
 
 test("isValidTextAttribute", () => {
-  type TestConfig = [string, PluginTailwindcssSettings];
+  type TestConfig = [string, PluginSettings];
   // Valid expressions
   const valid: Array<TestConfig> = [
     // Defaults
@@ -83,7 +80,7 @@ test("isValidTextAttribute", () => {
 });
 
 test("isValidVAttribute", () => {
-  type TestConfig = [string, PluginTailwindcssSettings];
+  type TestConfig = [string, PluginSettings];
   // Valid expressions
   const valid: Array<TestConfig> = [
     // Defaults
@@ -116,7 +113,7 @@ test("isValidVAttribute", () => {
 });
 
 test("isValidCallExpression", () => {
-  type TestConfig = [TSESTree.CallExpression, PluginTailwindcssSettings];
+  type TestConfig = [TSESTree.CallExpression, PluginSettings];
   // Valid expressions
   const valid: Array<TestConfig> = [
     // Defaults

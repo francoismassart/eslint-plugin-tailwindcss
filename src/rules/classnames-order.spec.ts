@@ -2,7 +2,7 @@ import * as Parser from "@typescript-eslint/parser";
 import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 import { Linter } from "eslint";
 
-import { PluginTailwindcssSettings } from "../utils/parse-plugin-settings";
+import { PluginSettings } from "../utils/parse-plugin-settings";
 import {
   generalSettings,
   prefixedSettings,
@@ -24,7 +24,7 @@ const errors = [error];
 
 const getExpectedErrors = (
   code: string,
-  settings?: PluginTailwindcssSettings,
+  settings?: PluginSettings,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   languageOptions?: any,
 ): Array<TestCaseError<MessageIds>> => {

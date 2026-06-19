@@ -2,9 +2,7 @@
 
 # Next steps
 
-- Expose the typings of the SharedSettings
 - Support for Vue SFC
-- Test with external library such as daisy UI
 - Test with external `*.module.css` files
 - `no-dynamic-classname` rule:
   - Don’t construct class names dynamically, Always use complete class names
@@ -40,7 +38,9 @@
 
 # June 2026
 
+- Expose the typings of the SharedSettings
 - `parseKeyFunctions` new setting indicating on which function we should use the keys instead of the values
+- Test with external library such as daisy UI
 - docs: explain why each rule is enhancing the code
 - support for ESLint v10
 - performances improvements

@@ -6,7 +6,7 @@ import type { SharedConfigurationSettings } from "@typescript-eslint/utils/ts-es
 /**
  * Typing of the shared settings of the `eslint-plugin-tailwindcss`
  */
-export type PluginTailwindcssSettings = {
+export type PluginSettings = {
   // attributes which should be parsed
   attributes?: Array<string>; // No support for `Set<string>`
   // Must be an absolute path, not a relative path
@@ -26,7 +26,7 @@ export type PluginTailwindcssSettings = {
 /**
  * The default values for the shared settings.
  */
-export const DEFAULT_SETTINGS: PluginTailwindcssSettings = {
+export const DEFAULT_SETTINGS: PluginSettings = {
   attributes: [
     // Regular HTML + VDirectiveKey
     "class",
@@ -76,10 +76,7 @@ export const DEFAULT_SETTINGS: PluginTailwindcssSettings = {
 /**
  * The JSON schema for the shared settings to be reused in many of the rule's configuration.
  */
-export const sharedSettingsSchema: Record<
-  keyof PluginTailwindcssSettings,
-  JSONSchema4
-> = {
+export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
   attributes: {
     description: "List of attribute names to validate classnames",
     type: "array",
@@ -135,20 +132,20 @@ export const sharedSettingsSchema: Record<
  * @param settings The shared settings from the ESLint configuration.
  * @returns The merged plugin settings.
  * @example
- * const settings = parsePluginTailwindcssSettings({
+ * const settings = parsePluginSettings({
  *   tailwindcss: {
  *     cssConfigPath: "/path/to/tailwind.css",
  *   },
  * });
  */
-export function parsePluginTailwindcssSettings(
+export function parsePluginSettings(
   settings: SharedConfigurationSettings,
-): PluginTailwindcssSettings {
+): PluginSettings {
   const tailwindcssSettings = (
     typeof settings.tailwindcss !== "object" || settings.tailwindcss === null
       ? {}
       : settings.tailwindcss
-  ) as PluginTailwindcssSettings;
+  ) as PluginSettings;
   return {
     ...DEFAULT_SETTINGS,
     ...tailwindcssSettings,

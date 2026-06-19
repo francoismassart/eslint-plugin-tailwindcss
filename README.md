@@ -102,17 +102,17 @@ export default defineConfig([
 
 #### Typesafe settings 🤓
 
-The plugin also exports the type `PluginTailwindcssSettings` which you can use to benefit from autocomplete and validation directly inside your `eslint.config` file.
+The plugin also exports the type `PluginSettings` which you can use to benefit from autocomplete and validation directly inside your `eslint.config` file.
 
 1. You may need to add `// @ts-check` to force type checking
-2. Add the magic JSDoc comment `/** @type {import('eslint-plugin-tailwindcss').PluginTailwindcssSettings} */`
+2. Add the magic JSDoc comment `/** @type {import('eslint-plugin-tailwindcss').PluginSettings} */`
 
 Here is a snippet, notice the object is surrounded by parentheses `({...})`:
 
 ```js
 settings: {
   tailwindcss:
-    /** @type {import('eslint-plugin-tailwindcss').PluginTailwindcssSettings} */
+    /** @type {import('eslint-plugin-tailwindcss').PluginSettings} */
     ({
       cssConfigPath: './styles/tailwind.css',
     }),
