@@ -145,7 +145,7 @@ Here is a fully detailed example of shared settings:
       // REQUIRED, as the default value may not work out-of-the-box
       cssConfigPath: "./styles/tailwind.css",
       // Functions/tagFunctions that will be parsed by the plugin.
-      // Optional, default values: ["classnames", "classNames", "clsx", "ctl", "cva", "tv", "tw", "twMerge", "twJoin"]
+      // Optional, default values: ["classnames", "classNames", "clsx", "cn", "ctl", "cva", "tv", "tw", "twMerge", "twJoin"]
       functions: ["twClasses"],
       // Within the list of functions, which should we check the keys instead of the values (used for `clsx`, etc.)
       // Optional, default values: ["classnames", "classNames", "clsx"]

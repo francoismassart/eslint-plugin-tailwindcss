@@ -44,6 +44,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     "classNames",
     // @see https://www.npmjs.com/package/clsx
     "clsx",
+    // @see https://github.com/shadcn-ui/ui
+    "cn",
     // @see https://www.npmjs.com/package/@netlify/classnames-template-literals
     "ctl",
     // @see https://www.npmjs.com/package/class-variance-authority
