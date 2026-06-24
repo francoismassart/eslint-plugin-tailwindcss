@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwindcss",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "publishConfig": {
     "publish-branch": "v4"
   },
