@@ -60,6 +60,7 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `<h1 class="dark">dark generates no classes</h1>`,
       `<h1 class="flex md:block">modifiers</h1>`,
       `<h1 class="js-custom">js-</h1>`,
+      `<h1 class="peer peer/menu">peer generates no classes</h1>`,
       `<h1 class="i-heroicons:chevron-up-solid">Issue 284</h1>`,
       `<p><span class="text-[min(theme(fontSize.9xl),_var(--font-size))]/none">Issue 239</span><span class="text-7xl/10">Issue 239</span></p>`,
       `<h1 class="text-[rgba(10%,20%,30,50%)]">TODO: only-valid-arbitrary-values</h1>`,

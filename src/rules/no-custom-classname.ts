@@ -59,8 +59,8 @@ const prepareWhitelist = (
   // Backslash, a dot, an asterisk, etc., we treat it as a regex
   const regexMagicSymbols = /[\\[\]{}()*+?^$|]/;
 
-  const exactMatches = new Set(["group", "dark"]);
-  const regexPatterns: Array<string> = [String.raw`group\/.*`];
+  const exactMatches = new Set(["dark", "group", "peer"]);
+  const regexPatterns: Array<string> = [String.raw`(?:group|peer)\/[\w-]+`];
 
   for (const item of whitelistOptions) {
     if (regexMagicSymbols.test(item)) {
