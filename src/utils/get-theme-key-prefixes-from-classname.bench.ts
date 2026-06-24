@@ -2,19 +2,47 @@
 
 import { bench, describe } from "vitest";
 
-describe("Faster way to find which starts with...", () => {
+describe("Faster way to find which starts with a single possibility", () => {
   const candidates =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc facilisis diam libero, sit amet mollis nisl vestibulum sed. Quisque imperdiet enim id dui porttitor, eget maximus quam pharetra. Nunc maximus porttitor libero, non consectetur lectus semper a. Aenean diam elit, sollicitudin eget neque quis, venenatis scelerisque erat. Proin bibendum risus a urna venenatis, eget feugiat libero dapibus. Mauris cursus neque metus, eu interdum sem faucibus ut. Sed a eros est. Proin porta accumsan vestibulum. Praesent mattis ultricies ante, ac ultrices libero luctus sollicitudin. Praesent in fringilla velit, elementum vestibulum dolor. Duis gravida elementum orci. Aliquam non lorem sem. In laoreet mi vitae est vehicula auctor. Quisque ut erat sed mauris dictum vehicula ac et nibh. Sed imperdiet libero eu felis tincidunt blandit vel at velit."
       .replace(".", "")
       .split(" ");
-  const usingRegex = () => {
+  const usingSingleRegex = () => {
+    for (const candidate of candidates) {
+      if (/^(?:px)-/.test(candidate)) {
+        continue;
+      }
+    }
+  };
+  const usingSingleStartsWith = () => {
+    for (const candidate of candidates) {
+      if (candidate.startsWith("px-")) {
+        continue;
+      }
+    }
+  };
+
+  bench("usingSingleRegex", () => {
+    usingSingleRegex();
+  });
+  bench("usingSingleStartsWith", () => {
+    usingSingleStartsWith();
+  });
+});
+
+describe("Faster way to find which starts with multiple possibilities", () => {
+  const candidates =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc facilisis diam libero, sit amet mollis nisl vestibulum sed. Quisque imperdiet enim id dui porttitor, eget maximus quam pharetra. Nunc maximus porttitor libero, non consectetur lectus semper a. Aenean diam elit, sollicitudin eget neque quis, venenatis scelerisque erat. Proin bibendum risus a urna venenatis, eget feugiat libero dapibus. Mauris cursus neque metus, eu interdum sem faucibus ut. Sed a eros est. Proin porta accumsan vestibulum. Praesent mattis ultricies ante, ac ultrices libero luctus sollicitudin. Praesent in fringilla velit, elementum vestibulum dolor. Duis gravida elementum orci. Aliquam non lorem sem. In laoreet mi vitae est vehicula auctor. Quisque ut erat sed mauris dictum vehicula ac et nibh. Sed imperdiet libero eu felis tincidunt blandit vel at velit."
+      .replace(".", "")
+      .split(" ");
+  const usingComplexRegex = () => {
     for (const candidate of candidates) {
       if (/^(?:p|px|py|ps|pe|pbs|pbe|pt|pr|pb|pl)-/.test(candidate)) {
         continue;
       }
     }
   };
-  const usingStartsWith = () => {
+  const usingMultipleStartsWith = () => {
     for (const candidate of candidates) {
       if (
         candidate.startsWith("p-") ||
@@ -34,10 +62,10 @@ describe("Faster way to find which starts with...", () => {
     }
   };
 
-  bench("usingRegex", () => {
-    usingRegex();
+  bench("usingComplexRegex", () => {
+    usingComplexRegex();
   });
-  bench("usingStartsWith", () => {
-    usingStartsWith();
+  bench("usingMultipleStartsWith", () => {
+    usingMultipleStartsWith();
   });
 });
