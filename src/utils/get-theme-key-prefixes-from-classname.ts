@@ -46,7 +46,7 @@ export const getThemeKeyPrefixesFromClassname = (
     case baseClass.startsWith("inline-"): {
       return new Set(["--container-"]);
     }
-    case /^(inset|top|right|bottom|left)-/.test(baseClass): {
+    case /^(?:inset|top|right|bottom|left)-/.test(baseClass): {
       return new Set(["--inset-"]);
     }
     case baseClass.startsWith("z-"): {
@@ -88,10 +88,10 @@ export const getThemeKeyPrefixesFromClassname = (
     /*
      * Spacing
      */
-    case /^(p|px|py|ps|pe|pbs|pbe|pt|pr|pb|pl)-/.test(baseClass): {
+    case /^(?:p|px|py|ps|pe|pbs|pbe|pt|pr|pb|pl)-/.test(baseClass): {
       return new Set(["--padding-"]);
     }
-    case /^(m|mx|my|ms|me|mbs|mbe|mt|mr|mb|ml)-/.test(baseClass): {
+    case /^(?:m|mx|my|ms|me|mbs|mbe|mt|mr|mb|ml)-/.test(baseClass): {
       return new Set(["--margin-"]);
     }
     /*
@@ -312,10 +312,10 @@ export const getThemeKeyPrefixesFromClassname = (
     case baseClass.startsWith("cursor-"): {
       return new Set(["--cursor-"]);
     }
-    case /^scroll-(m|mx|my|ms|me|mbs|mbe|mt|mr|mb|ml)-/.test(baseClass): {
+    case /^scroll-(?:m|mx|my|ms|me|mbs|mbe|mt|mr|mb|ml)-/.test(baseClass): {
       return new Set(["--scroll-margin-"]);
     }
-    case /^scroll-(p|px|py|ps|pe|pbs|pbe|pt|pr|pb|pl)-/.test(baseClass): {
+    case /^scroll-(?:p|px|py|ps|pe|pbs|pbe|pt|pr|pb|pl)-/.test(baseClass): {
       return new Set(["--scroll-padding-"]);
     }
     /*
