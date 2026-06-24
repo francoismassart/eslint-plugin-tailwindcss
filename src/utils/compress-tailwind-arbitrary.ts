@@ -14,7 +14,7 @@ export const compressTailwindArbitrary = (value: string): string => {
       .replaceAll(/^_+|_+$/g, "")
       // 2. Remove underscores around operators: , ( ) / + *
       //    Using a wrapper group lets us clean both sides in one go
-      .replaceAll(/_*([,()\/+*])_*/g, "$1")
+      .replaceAll(/_*([,()/+*])_*/g, "$1")
       // 3. Collapse any remaining multiple underscores into a single underscore
       .replaceAll(/_{2,}/g, "_")
   );
