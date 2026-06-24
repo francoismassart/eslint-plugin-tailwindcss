@@ -1,5 +1,10 @@
 # Changelog
 
+## `4.0.4`
+
+- minor: add [shadcn ui](https://ui.shadcn.com/)'s `cn` inside `functions` default values of the [settings](https://github.com/francoismassart/eslint-plugin-tailwindcss#settings)
+- fix: `peer` & `peer/...` are now [considered valid classnames](https://github.com/francoismassart/eslint-plugin-tailwindcss/blob/v4/src/rules/no-custom-classname.spec.ts#L63)
+
 ## `4.0.0`
 
 ### Made for Tailwind CSS v4
