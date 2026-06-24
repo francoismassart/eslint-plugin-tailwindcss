@@ -60,7 +60,7 @@ type ParsedCandidate = {
 export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
   padding: {
     // p, px, py, pt, pb, pl, pr, ps, pe, pbs, pbe
-    pattern: /^(?<negative>)(?<prefix>p[xytbrlse]?|p(bs|be))-(?<value>.+)$/,
+    pattern: /^(?<negative>)(?<prefix>p[xytbrlse]?|p(?:bs|be))-(?<value>.+)$/,
     strategies: {
       px: [
         ["pl", "pr"],
@@ -75,7 +75,7 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
   },
   margin: {
     // m, mx, my, mt, mb, ml, mr, ms, me, mbs, mbe
-    pattern: /^(?<negative>-?)(?<prefix>m[xytbrlse]?|m(bs|be))-(?<value>.+)$/,
+    pattern: /^(?<negative>-?)(?<prefix>m[xytbrlse]?|m(?:bs|be))-(?<value>.+)$/,
     strategies: {
       mx: [
         ["ml", "mr"],
@@ -113,7 +113,7 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
   border: {
     // border-width, border-color
     pattern:
-      /^(?<negative>)(?<prefix>border-[xytbrlse]|border-(bs|be))(-(?<value>.+))?$/,
+      /^(?<negative>)(?<prefix>border-[xytbrlse]|border-(?:bs|be))(-(?<value>.+))?$/,
     strategies: {
       "border-y": [
         ["border-t", "border-b"],
@@ -187,7 +187,7 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
   },
   scrollMargin: {
     pattern:
-      /^(?<negative>-?)(?<prefix>scroll-m[xytbrlse]?|scroll-m(bs|be))-(?<value>.+)$/,
+      /^(?<negative>-?)(?<prefix>scroll-m[xytbrlse]?|scroll-m(?:bs|be))-(?<value>.+)$/,
     strategies: {
       "scroll-mx": [
         ["scroll-ml", "scroll-mr"],
@@ -202,7 +202,7 @@ export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
   },
   scrollPadding: {
     pattern:
-      /^(?<negative>)(?<prefix>scroll-p[xytbrlse]?|scroll-p(bs|be))-(?<value>.+)$/,
+      /^(?<negative>)(?<prefix>scroll-p[xytbrlse]?|scroll-p(?:bs|be))-(?<value>.+)$/,
     strategies: {
       "scroll-px": [
         ["scroll-pl", "scroll-pr"],

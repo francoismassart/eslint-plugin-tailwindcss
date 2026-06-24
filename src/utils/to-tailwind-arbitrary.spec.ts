@@ -29,6 +29,7 @@ test(`Convert raw values to Tailwind CSS arbitrary values`, () => {
     ["0 35px 35px rgba(0, 0, 0, 0.25)", "0_35px_35px_rgba(0,0,0,0.25)"],
     ["wiggle 1s ease-in-out infinite", "wiggle_1s_ease-in-out_infinite"],
     ["0% 10%", "0%_10%"],
+    ["'Hello world!'", "'Hello_world!'"],
   ].map(([input, output]) => {
     expect(toTailwindArbitrary(input)).toEqual(output);
   });
