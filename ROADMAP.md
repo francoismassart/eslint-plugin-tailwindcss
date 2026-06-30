@@ -35,6 +35,8 @@
   ```
 - `no-unnecessary-arbitrary-value` rule:
   - enhance the rule in order to work with the `spacing` based values instead of an exact match in the config
+- `avoid-space-utility` rule:
+  - you should [avoid using `space-` between, use `flex` & `gap` instead](https://tailwindcss.com/docs/upgrade-guide#space-between-selector)
 
 # June 2026
 
