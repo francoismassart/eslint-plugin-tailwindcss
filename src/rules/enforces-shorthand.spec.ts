@@ -3,6 +3,7 @@ import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 
 import {
   generalSettings,
+  prefixedSettings,
   withAngularParser,
 } from "../utils/parser/test-helpers";
 import { enforcesShorthand, MessageIds, RULE_NAME } from "./enforces-shorthand";
@@ -204,6 +205,12 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       code: `ctl(\`scroll-pr-3 scroll-pl-3 w-[\${width}]\`)`,
       errors: mapErrors(["scroll-pr-3", "scroll-pl-3"], "scroll-px-3"),
       output: [`ctl(\`scroll-px-3 w-[\${width}]\`)`],
+    },
+    {
+      code: `ctl(\`tw:mt-2 tw:mb-2\`)`,
+      settings: { tailwindcss: { ...prefixedSettings } },
+      errors: mapErrors(["tw:mt-2", "tw:mb-2"], "tw:my-2"),
+      output: [`ctl(\`tw:my-2\`)`],
     },
   ],
 });

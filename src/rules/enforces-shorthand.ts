@@ -230,6 +230,7 @@ const STRATEGY_ENTRIES = Object.entries(SHORTHAND_RULES);
 const detectShorthands = (
   settings: PluginSettings,
   context: GenericRuleContext,
+  modifiersGroup: string,
   classNames: Array<string>,
   shorthandRule: ShorthandRule,
 ): Map<string, Array<string>> => {
@@ -290,7 +291,7 @@ const detectShorthands = (
 
         if (matchEntireCombo) {
           // e.g. `-mx-foo` for the combo `["ml", "mr"]` with the key `mx`
-          const shorthandClass = `${negative}${key}${suffixValue}`;
+          const shorthandClass = `${modifiersGroup}${negative}${key}${suffixValue}`;
 
           // Final check e.g. for `size-screen` which does not exist
           if (
@@ -307,7 +308,8 @@ const detectShorthands = (
             length: totalComboParts,
           });
           for (let index = 0; index < totalComboParts; index++) {
-            longhandClasses[index] = `${negative}${combo[index]}${suffixValue}`;
+            longhandClasses[index] =
+              `${modifiersGroup}${negative}${combo[index]}${suffixValue}`;
           }
           // e.g. `-mx-foo` => `["-ml-foo", "-mr-foo"]`
           shorthands.set(shorthandClass, longhandClasses);
@@ -349,7 +351,7 @@ const replaceByShorthands = (
 
     const groups = groupByModifiersPrefix(classNames);
 
-    for (const [modifiers, baseCls] of groups.entries()) {
+    for (const [modifiersGroup, baseCls] of groups.entries()) {
       if (baseCls.length <= 1) continue;
 
       const total = STRATEGY_ENTRIES.length;
@@ -359,17 +361,16 @@ const replaceByShorthands = (
         const foundReplacement = detectShorthands(
           settings,
           genericContext,
+          modifiersGroup,
           baseCls,
           STRATEGY_ENTRIES[index][1],
         );
 
         for (const [shorthand, longhands] of foundReplacement) {
           // Prepend the modifiers to the longhands
-          const fullObsolete = new Set(
-            longhands.map((c) => `${modifiers}${c}`),
-          );
+          const fullObsolete = new Set(longhands.map((c) => `${c}`));
           // Prepend the modifiers to the shorthand
-          const newShorthand = `${modifiers}${shorthand}`;
+          const newShorthand = `${shorthand}`;
           const joinedObsolete = [...fullObsolete];
 
           // Filter out the longhand classnames from the original classnames
