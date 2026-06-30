@@ -57,6 +57,7 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
     `<p class="to-[2.5px] to-transparent">Issue 271</p>`,
     `<p class="![width:_0] [height:_0]">Issue 269</p>`,
     `<p class="bg-[size:20px_20px] bg-[position:right_16px_center]">Issue 321</p>`,
+    // `<p class="divide-red-800 border-blue-500">Issue 461</p>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
     languageOptions: withAngularParser,
