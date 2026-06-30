@@ -1,5 +1,10 @@
 # Changelog
 
+## `4.0.5`
+
+- fix: missing `eslint` as peer dependency [#463](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/463)
+- fix: `enforces-shorthand` did not work when prefixed [#462](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/462)
+
 ## `4.0.4`
 
 - minor: add [shadcn ui](https://ui.shadcn.com/)'s `cn` inside `functions` default values of the [settings](https://github.com/francoismassart/eslint-plugin-tailwindcss#settings)
