@@ -57,7 +57,7 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
     `<p class="to-[2.5px] to-transparent">Issue 271</p>`,
     `<p class="![width:_0] [height:_0]">Issue 269</p>`,
     `<p class="bg-[size:20px_20px] bg-[position:right_16px_center]">Issue 321</p>`,
-    // `<p class="divide-red-800 border-blue-500">Issue 461</p>`,
+    `<p class="divide-red-800 border-blue-500">Issue 461</p>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
     languageOptions: withAngularParser,
@@ -78,6 +78,13 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
         suggest("flex", `<h1 class="flex">display</h1>`, ["block"]),
       ],
       languageOptions: withAngularParser,
+    },
+    {
+      code: `ctl(\`lg:w-full lg:w-1/2\`);`,
+      errors: [
+        suggest("lg:w-full", `ctl(\`lg:w-full\`);`, ["lg:w-1/2"]),
+        suggest("lg:w-1/2", `ctl(\`lg:w-1/2\`);`, ["lg:w-full"]),
+      ],
     },
     {
       code: `ctl(\`w-[\${width}] block flex h-[\${height}] rounded\`);`,
