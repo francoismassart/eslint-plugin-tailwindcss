@@ -1,5 +1,9 @@
 # Changelog
 
+## `4.0.6`
+
+- fix: false positives with `border` and `divide` by `no-contradicting-classname` rule [#461](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/461)
+
 ## `4.0.5`
 
 - fix: missing `eslint` as peer dependency [#463](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/463)

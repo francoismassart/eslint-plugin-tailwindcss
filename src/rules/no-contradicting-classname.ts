@@ -85,12 +85,16 @@ const getCompiledGroup = (
     }
 
     const flattenedSelectors = flattenNestingWorker(cssRule);
-    const hasValidSelector = flattenedSelectors.some(
-      // Ignore rules that only have pseudo selectors (e.g. `::before`, `::after`)
-      (selector) => !selector.includes("::"),
+    const hasExoticSelector = flattenedSelectors.some(
+      // Detect complex selectors
+      // examples:
+      // `no-marker` → will include `::before`, `::after`
+      // `space-x-0` → will include `:where(.space-x-0 > :not(:last-child))`)
+      (selector) => selector.includes("::") || selector.includes(" "),
     );
 
-    if (!hasValidSelector) {
+    if (hasExoticSelector) {
+      // Ignore the complex selectors, we focus on `.single-simple-class-names`
       cssPropertiesCache.set(fullClassName, undefined);
       continue;
     }
