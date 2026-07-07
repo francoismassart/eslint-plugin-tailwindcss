@@ -76,9 +76,6 @@ const checkArbitraryClassnames = (
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
 
-    const debug = originalClassNamesValue.includes("my-[2px]");
-    // ---------------------------------------------^^^^^^^^
-
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
 

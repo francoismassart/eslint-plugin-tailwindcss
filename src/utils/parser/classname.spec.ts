@@ -2,11 +2,11 @@ import { expect, test, vi } from "vitest";
 
 import {
   allowsGenericNumbers,
-  supportsSpacing,
   getBaseClassname,
   getModifiersPrefix,
-  passRegexTest,
   hasPxNativePreset,
+  passRegexTest,
+  supportsSpacing,
 } from "./classname";
 
 test("getBaseClassname", () => {
