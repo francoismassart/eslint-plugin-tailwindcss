@@ -19,8 +19,11 @@ import {
   PluginSettings,
 } from "../utils/parse-plugin-settings";
 import {
+  allowsGenericNumbers,
   getBaseClassname,
   getModifiersPrefix,
+  hasPxNativePreset,
+  supportsSpacing,
 } from "../utils/parser/classname";
 import {
   dissectAtomicNode,
@@ -35,6 +38,7 @@ import {
 } from "../utils/rule";
 import { loadThemeWorker } from "../utils/tailwindcss-api";
 import { toTailwindArbitrary } from "../utils/to-tailwind-arbitrary";
+import { convertStringValueToPx } from "../utils/units";
 
 export { ESLintUtils } from "@typescript-eslint/utils";
 
@@ -56,7 +60,7 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const arbitraryRegEx = /^(?<classPrefix>.*?)-\[(?<arbitraryValue>.*)\]$/u;
+const arbitraryRegEx = /^(?<classPrefix>[^[]+)-\[(?<arbitraryValue>[^\]]+)\]$/u;
 
 const checkArbitraryClassnames = (
   context: RuleContext,
@@ -72,38 +76,53 @@ const checkArbitraryClassnames = (
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
 
+    const debug = originalClassNamesValue.includes("my-[2px]");
+    // ---------------------------------------------^^^^^^^^
+
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
 
     for (const [index, targetClassName] of classNames.entries()) {
-      // Early escape hatch
+      // Very early escape hatch
       if (!targetClassName.includes("[")) continue;
 
+      // e.g. "dark:-m-[5px]" → "-m-[5px]"
       const baseClass = getBaseClassname(targetClassName);
       const negativePrefix = baseClass.startsWith("-") ? "-" : "";
+      // e.g. "-m-[5px]" → "m-[5px]"
       const absBaseClass = negativePrefix ? baseClass.slice(1) : baseClass;
 
+      // e.g. "m-[5px]" → { classPrefix: "m", arbitraryValue: "5px" }
       const match = absBaseClass.match(arbitraryRegEx);
       if (!match?.groups) continue;
 
+      // e.g. "dark:-m-[5px]" → "dark:"
       const modifiers = getModifiersPrefix(targetClassName);
 
       // Get the config prefix based on the classname
+      // e.g. "divide-x-abc" → ["--color-", "--border-color-", "--divide-color-"]
       const prefixes = getThemeKeyPrefixesFromClassname(absBaseClass);
+
+      // Should not happen, but just in case
       if (prefixes.size === 0) continue;
 
-      // Retrieves all the keys for the config prefix
-      const presets = getThemePresetsFromPrefixes(theme, prefixes);
-      // Early exit if no presets exist for this prefix
-      if (presets.size === 0) continue;
+      // Retrieves all the possible keys
+      const presetKeys = getThemePresetsFromPrefixes(theme, prefixes);
+
+      const acceptGenericNumberSuffix = allowsGenericNumbers(absBaseClass);
+
+      // No chance of finding a match
+      if (presetKeys.size === 0 && !acceptGenericNumberSuffix) continue;
 
       const { classPrefix = "", arbitraryValue = "" } = match.groups;
+
       const compressedArbitraryValue =
         compressTailwindArbitrary(arbitraryValue);
       const matchingPresets: Array<string> = [];
 
+      // 1. Highest priority: Looking into the defined presets for EXACT matches
       for (const prefix of prefixes) {
-        for (const [presetKey, presetValue] of presets.entries()) {
+        for (const [presetKey, presetValue] of presetKeys.entries()) {
           // Does not match
           if (!presetKey.startsWith(prefix)) continue;
 
@@ -114,6 +133,65 @@ const checkArbitraryClassnames = (
               `${modifiers}${negativePrefix}${classPrefix}-${presetName}`,
             );
           }
+        }
+      }
+
+      if (matchingPresets.length === 0 && !acceptGenericNumberSuffix) continue;
+
+      // 2. Check against generic numbers e.g. `z-[0]`
+      if (/^-?\d+(?:\.\d+)?$/.test(compressedArbitraryValue)) {
+        let computedValue = compressedArbitraryValue;
+        let isNegative = !!negativePrefix;
+        // Faster than `.startsWith("-")`
+        // eslint-disable-next-line unicorn/prefer-code-point
+        if (compressedArbitraryValue.charCodeAt(0) === 45) {
+          computedValue = computedValue.slice(1);
+          isNegative = !isNegative;
+        }
+        matchingPresets.push(
+          `${modifiers}${isNegative ? "-" : ""}${classPrefix}-${computedValue}`,
+        );
+      }
+
+      // 3. Check for px native presets e.g. `my-[1px]` → `my-px`
+      if (
+        matchingPresets.length === 0 &&
+        ["-1px", "1px"].includes(compressedArbitraryValue) &&
+        hasPxNativePreset(absBaseClass)
+      ) {
+        let isNegative = !!negativePrefix;
+        // Faster than `.startsWith("-")`
+        // eslint-disable-next-line unicorn/prefer-code-point
+        if (compressedArbitraryValue.charCodeAt(0) === 45)
+          isNegative = !isNegative;
+        matchingPresets.push(
+          `${modifiers}${isNegative ? "-" : ""}${classPrefix}-px`,
+        );
+      }
+
+      // 4. Finally, check for spacing based presets e.g. `my-[2px]` → `my-2` (if spacing is 1px)
+      if (matchingPresets.length === 0 && supportsSpacing(absBaseClass)) {
+        // TODO 1. compressedArbitraryValue compatible ? <number>px, <number>rem, <number>, etc.
+        const spacingPresets = getThemePresetsFromPrefixes(
+          theme,
+          new Set(["--spacing"]),
+        );
+        let spacingValue = "0.25rem"; // Fallback default
+        if (spacingPresets.has("--spacing")) {
+          spacingValue = spacingPresets.get("--spacing") as string;
+        }
+
+        // Convert spacingValue to px
+        const spacingValueInPx = convertStringValueToPx(spacingValue);
+        // Convert compressedArbitraryValue to px
+        const valueInPx = convertStringValueToPx(compressedArbitraryValue);
+        if (valueInPx === undefined || spacingValueInPx === undefined) continue;
+        const genericPresetValue = valueInPx / spacingValueInPx;
+        // Only accepts integer values for now
+        if (Number.isInteger(genericPresetValue)) {
+          matchingPresets.push(
+            `${modifiers}${negativePrefix}${classPrefix}-${genericPresetValue}`,
+          );
         }
       }
 

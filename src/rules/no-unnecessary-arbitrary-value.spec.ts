@@ -64,7 +64,7 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
       // Not an arbitrary value
       "ctl('m-0')",
       // Not an existing preset
-      "ctl('m-[123456789px]')",
+      "ctl('m-[calc(123456789px)]')",
     ].map((testedJsxCode) => ({
       code: testedJsxCode,
       settings: { tailwindcss: withAllPresetsSettings },

@@ -54,6 +54,7 @@
     "docs:init": "eslint-doc-generator --init-rule-docs",
     "docs:update": "eslint-doc-generator",
     "test": "vitest",
+    "wip": "vitest src/rules/no-unnecessary-arbitrary-value.wip.spec.ts",
     "tsc": "tsc --noEmit"
   },
   "dependencies": {

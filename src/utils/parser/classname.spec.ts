@@ -1,9 +1,12 @@
 import { expect, test, vi } from "vitest";
 
 import {
+  allowsGenericNumbers,
+  supportsSpacing,
   getBaseClassname,
   getModifiersPrefix,
   passRegexTest,
+  hasPxNativePreset,
 } from "./classname";
 
 test("getBaseClassname", () => {
@@ -43,4 +46,47 @@ test("passRegexTest", () => {
     expect.any(SyntaxError),
   );
   spy.mockRestore();
+});
+
+test("allowsGenericNumbers", () => {
+  expect(allowsGenericNumbers(`m-4`)).toBe(true);
+  expect(allowsGenericNumbers(`aspect-16/9`)).toBe(false);
+});
+test("supportsSpacing", () => {
+  for (const classname of [
+    `m-4`,
+    `p-4`,
+    `border-spacing-4`,
+    `w-4`,
+    `h-4`,
+    `inline-4`,
+    `block-4`,
+    `text-4/5`,
+    `leading-4`,
+    `inset-4`,
+    `top-4`,
+    `right-4`,
+    `bottom-4`,
+    `left-4`,
+    `gap-4`,
+  ]) {
+    expect(supportsSpacing(classname)).toBe(true);
+  }
+  expect(supportsSpacing(`custom-class`)).toBe(false);
+});
+test("hasPxNativePreset", () => {
+  for (const classname of [
+    `inset-4`,
+    `top-0`,
+    `m-[1px]`,
+    `pbe-0`,
+    `px-1`,
+    `w-[1px]`,
+    `size-[1px]`,
+  ]) {
+    expect(hasPxNativePreset(classname)).toBe(true);
+  }
+  for (const classname of [`border-4`]) {
+    expect(hasPxNativePreset(classname)).toBe(false);
+  }
 });
