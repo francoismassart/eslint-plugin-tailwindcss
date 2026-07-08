@@ -72,6 +72,22 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
       languageOptions: withAngularParser,
     },
     {
+      code: `<h1 class="!w-10 w-20!">≠ widths</h1>`,
+      errors: [
+        suggest("!w-10", `<h1 class="!w-10">≠ widths</h1>`, ["w-20!"]),
+        suggest("w-20!", `<h1 class="w-20!">≠ widths</h1>`, ["!w-10"]),
+      ],
+      languageOptions: withAngularParser,
+    },
+    {
+      code: `<h1 class="w-10! w-20">≠ widths</h1>`,
+      errors: [
+        suggest("w-10!", `<h1 class="w-10!">≠ widths</h1>`, ["w-20"]),
+        suggest("w-20", `<h1 class="w-20">≠ widths</h1>`, ["w-10!"]),
+      ],
+      languageOptions: withAngularParser,
+    },
+    {
       code: `<h1 class="block flex">display</h1>`,
       errors: [
         suggest("block", `<h1 class="block">display</h1>`, ["flex"]),
