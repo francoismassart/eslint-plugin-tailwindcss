@@ -43,7 +43,7 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 export const createRule = RuleCreator(urlCreator);
 
 // Matches classnames that contain arbitrary values (e.g., m-[5px])
-const REGEX_PATTERN = /^[-a-z]+-\[.*\]$/;
+const REGEX_PATTERN = /^!?[-a-z]+-\[.*\]!?$/;
 
 const arbitraryClassnames = (
   context: RuleContext,

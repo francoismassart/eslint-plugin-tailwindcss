@@ -55,6 +55,8 @@ type ParsedCandidate = {
   negative: string;
   value: string;
   prefixes: Set<string>;
+  // `true` = important at head, `false` = important at tail, `undefined` = not important
+  importants: Array<boolean | undefined>;
 };
 
 export const SHORTHAND_RULES: Record<string, ShorthandRule> = {
@@ -236,11 +238,29 @@ const detectShorthands = (
 ): Map<string, Array<string>> => {
   const shorthands = new Map<string, Array<string>>();
   const candidates = new Map<string, ParsedCandidate>();
+  let hasImportantHead = false;
+  let hasImportantTail = false;
 
   // Step 1: Indexing in O(N)
   for (let index = 0, total = classNames.length; index < total; index++) {
-    // e.g. `-mx-foo`
-    const currentClass = classNames[index];
+    // e.g. `-mx-preset` or `-mx-[2px]`
+    let currentClass = classNames[index];
+    hasImportantHead = false;
+    hasImportantTail = false;
+
+    const currentClassLength = currentClass.length;
+    // eslint-disable-next-line unicorn/prefer-code-point
+    if (currentClassLength > 0 && currentClass.charCodeAt(0) === 33 /* ! */) {
+      currentClass = currentClass.slice(1);
+      hasImportantHead = true;
+    } else if (
+      currentClassLength > 0 &&
+      // eslint-disable-next-line unicorn/prefer-code-point
+      currentClass.charCodeAt(currentClassLength - 1) === 33 /* ! */
+    ) {
+      currentClass = currentClass.slice(0, Math.max(0, currentClassLength - 1));
+      hasImportantTail = true;
+    }
 
     const match = currentClass.match(shorthandRule.pattern);
     if (!match?.groups) continue;
@@ -248,19 +268,29 @@ const detectShorthands = (
     // e.g. `negative`: `-`, `prefix`: `mx`, `value`: `foo`
     const { negative = "", prefix, value = "" } = match.groups;
 
-    // e.g. `groupKey`: `-foo`
-    const groupKey = `${negative}${value}`;
+    // e.g. `groupKey`: `-preset` or `-[2px]!`
+    const groupKey = `${negative}${value}${hasImportantHead || hasImportantTail ? "!" : ""}`;
     let groupData = candidates.get(groupKey);
     if (!groupData) {
-      groupData = { negative, value, prefixes: new Set() };
+      groupData = {
+        negative,
+        value,
+        prefixes: new Set(),
+        importants: [],
+      };
       candidates.set(groupKey, groupData);
     }
-    // e.g. `mx` is added to prefixes for the group value `-foo`
+    // e.g. `mx` is added to prefixes for the group value `-preset` or `-[2px]`
     groupData.prefixes.add(prefix);
+    let importantValue: boolean | undefined = undefined;
+    if (hasImportantHead) importantValue = true;
+    if (hasImportantTail) importantValue = false;
+    groupData.importants.push(importantValue);
   }
 
   // Step 2: Check combinations only on valid candidates
-  // `candidates` keys be like `-foo` with prefixes like `Set { "mx", "my" }`)
+  // `candidates` keys be like `-preset` or `-[2px]` with prefixes like `Set { "mx", "my" }`)
+
   for (const currentCandidate of candidates.values()) {
     const { negative, value, prefixes } = currentCandidate;
     const suffixValue = value ? `-${value}` : "";
@@ -290,8 +320,8 @@ const detectShorthands = (
         }
 
         if (matchEntireCombo) {
-          // e.g. `-mx-foo` for the combo `["ml", "mr"]` with the key `mx`
-          const shorthandClass = `${modifiersGroup}${negative}${key}${suffixValue}`;
+          // e.g. `-mx-preset` for the combo `["ml", "mr"]` with the key `mx`
+          const shorthandClass = `${modifiersGroup}${negative}${key}${suffixValue}${hasImportantHead ? "!" : ""}`;
 
           // Final check e.g. for `size-screen` which does not exist
           if (
@@ -308,10 +338,14 @@ const detectShorthands = (
             length: totalComboParts,
           });
           for (let index = 0; index < totalComboParts; index++) {
+            const preBang =
+              currentCandidate.importants[index] === true ? "!" : "";
+            const postBang =
+              currentCandidate.importants[index] === false ? "!" : "";
             longhandClasses[index] =
-              `${modifiersGroup}${negative}${combo[index]}${suffixValue}`;
+              `${modifiersGroup}${preBang}${negative}${combo[index]}${suffixValue}${postBang}`;
           }
-          // e.g. `-mx-foo` => `["-ml-foo", "-mr-foo"]`
+          // e.g. `-mx-preset` => `["-ml-preset", "-mr-preset"]`
           shorthands.set(shorthandClass, longhandClasses);
         }
       }
