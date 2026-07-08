@@ -43,6 +43,14 @@ ruleTester.run(RULE_NAME, noArbitraryValue, {
         code: `ctl('dark:m-[10px]')`,
         invalidClass: "dark:m-[10px]",
       },
+      {
+        code: `ctl('dark:!m-[10px]')`,
+        invalidClass: "dark:!m-[10px]",
+      },
+      {
+        code: `ctl('dark:m-[10px]!')`,
+        invalidClass: "dark:m-[10px]!",
+      },
     ].map(({ code, invalidClass }) => ({
       code: code,
       errors: [generateError(invalidClass)],

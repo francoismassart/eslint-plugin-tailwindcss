@@ -59,6 +59,7 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       `<h1 class="group/name">group/name</h1>`,
       `<h1 class="dark">dark generates no classes</h1>`,
       `<h1 class="flex md:block">modifiers</h1>`,
+      `<h1 class="flex! md:!block">!modifiers!</h1>`,
       `<h1 class="js-custom">js-</h1>`,
       `<h1 class="peer peer/menu">peer generates no classes</h1>`,
       `<h1 class="i-heroicons:chevron-up-solid">Issue 284</h1>`,

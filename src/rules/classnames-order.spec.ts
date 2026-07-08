@@ -561,8 +561,8 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       {
         code: `
       ctl(\`
-        m-0
-        absolute
+        m-0!
+        !absolute
         w-[\${width}]
         rounded
         blur-2xl
@@ -571,8 +571,8 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       \`);`,
         output: `
       ctl(\`
-        absolute
-        m-0
+        !absolute
+        m-0!
         w-[\${width}]
         flex
         rounded

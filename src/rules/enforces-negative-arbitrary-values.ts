@@ -64,7 +64,7 @@ const propertiesPattern = [
 ].join("|");
 
 const NEGATIVE_ARBITRARY_REGEX = new RegExp(
-  `^-(?<property>${propertiesPattern})-\\[(?<arbitraryValue>[^\\]]+)\\]$`,
+  `^!?-(?<property>${propertiesPattern})-\\[(?<arbitraryValue>[^\\]]+)\\]!?$`,
 );
 
 const negativeArbitraryClassnames = (
@@ -88,6 +88,8 @@ const negativeArbitraryClassnames = (
       const targetClassName = classNames[index];
       const baseClass = getBaseClassname(targetClassName);
       const match = baseClass.match(NEGATIVE_ARBITRARY_REGEX);
+      const bang =
+        baseClass.startsWith("!") || baseClass.endsWith("!") ? "!" : "";
 
       if (!match?.groups) continue;
 
@@ -99,7 +101,7 @@ const negativeArbitraryClassnames = (
         ? arbitraryValue.slice(1)
         : "-" + arbitraryValue;
 
-      const patchedClass = `${modifiers}${property}-[${arbitraryValuePatched}]`;
+      const patchedClass = `${modifiers}${property}-[${arbitraryValuePatched}]${bang}`;
 
       const patchedLoc = generateLocForClassname(
         node,
