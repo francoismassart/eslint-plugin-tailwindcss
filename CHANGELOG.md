@@ -1,5 +1,9 @@
 # Changelog
 
+## `...`
+
+- fix: respect the optional `!` important modifiers in the fixers
+
 ## `4.0.6`
 
 - fix: false positives with `border` and `divide` by `no-contradicting-classname` rule [#461](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/461)
