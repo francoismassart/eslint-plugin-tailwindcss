@@ -63,6 +63,16 @@ export const createRule = RuleCreator(urlCreator);
 const arbitraryRegEx =
   /^(?<classPrefix>[^[]+)-\[(?<arbitraryValue>[^\]]+)\]!?$/u;
 
+/**
+ * Determines final signs and absolute text fragments from arbitrary value configurations.
+ */
+function resolveValueSign(value: string, initiallyNegative: boolean) {
+  const isHyphen = value.charCodeAt(0) === 45; // '-'
+  const finalIsNegative = isHyphen ? !initiallyNegative : initiallyNegative;
+  const cleanedValue = isHyphen ? value.slice(1) : value;
+  return { minusSign: finalIsNegative ? "-" : "", cleanedValue };
+}
+
 const checkArbitraryClassnames = (
   context: RuleContext,
   settings: PluginSettings,
@@ -70,7 +80,6 @@ const checkArbitraryClassnames = (
   literals: Array<AtomicNode>,
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
-
   const theme = loadThemeWorker(settings.cssConfigPath, context.filename);
 
   for (const node of literals) {
@@ -87,6 +96,7 @@ const checkArbitraryClassnames = (
       // e.g. "dark:-m-[5px]" → "-m-[5px]"
       let baseClass = getBaseClassname(targetClassName);
       let bang = "";
+
       if (baseClass.startsWith("!")) {
         bang = "!";
         baseClass = baseClass.slice(1);
@@ -95,11 +105,10 @@ const checkArbitraryClassnames = (
         bang = "!";
         baseClass = baseClass.slice(0, -1);
       }
+
       const negativePrefix = baseClass.startsWith("-") ? "-" : "";
       // e.g. "-m-[5px]" → "m-[5px]"
       const absBaseClass = negativePrefix ? baseClass.slice(1) : baseClass;
-
-      const debug = absBaseClass === "my-[2px]!";
 
       // e.g. "m-[5px]" → { classPrefix: "m", arbitraryValue: "5px" }
       const match = absBaseClass.match(arbitraryRegEx);
@@ -111,63 +120,45 @@ const checkArbitraryClassnames = (
       // Get the config prefix based on the classname
       // e.g. "divide-x-abc" → ["--color-", "--border-color-", "--divide-color-"]
       const prefixes = getThemeKeyPrefixesFromClassname(absBaseClass);
-
       // Should not happen, but just in case
       if (prefixes.size === 0) continue;
 
       // Retrieves all the possible keys
       const presetKeys = getThemePresetsFromPrefixes(theme, prefixes);
-
       const acceptGenericNumberSuffix = allowsGenericNumbers(absBaseClass);
-
       const { classPrefix = "", arbitraryValue = "" } = match.groups;
-
       const compressedArbitraryValue =
         compressTailwindArbitrary(arbitraryValue);
       const matchingPresets: Array<string> = [];
 
-      if (debug)
-        console.log("compressedArbitraryValue", [compressedArbitraryValue]);
-
-      // 1. Check for px native presets e.g. `my-[1px]` → `my-px` (lowest specificity)
+      // 1. Check for px native presets e.g. `my-[1px]` → `my-px`
       if (
         ["-1px", "1px"].includes(compressedArbitraryValue) &&
         hasPxNativePreset(absBaseClass)
       ) {
-        if (debug) console.log("#1");
-        let isNegative = !!negativePrefix;
-        // Faster than `.startsWith("-")`
-        // eslint-disable-next-line unicorn/prefer-code-point
-        if (compressedArbitraryValue.charCodeAt(0) === 45)
-          isNegative = !isNegative;
-        const minus = isNegative ? "-" : "";
-        matchingPresets.push(`${modifiers}${minus}${classPrefix}-px`);
+        const { minusSign } = resolveValueSign(
+          compressedArbitraryValue,
+          !!negativePrefix,
+        );
+        matchingPresets.push(`${modifiers}${minusSign}${classPrefix}-px`);
       }
 
       // 2. Looking into the defined presets for EXACT preset matches
-      for (const prefix of prefixes) {
+      for (const currentPrefix of prefixes) {
         for (const [presetKey, presetValue] of presetKeys.entries()) {
           // Does not match
-          if (!presetKey.startsWith(prefix)) continue;
+          if (!presetKey.startsWith(currentPrefix)) continue;
 
           const compressedPresetValue = toTailwindArbitrary(presetValue);
-          let computedValue = compressedArbitraryValue;
-          let isNegative = !!negativePrefix;
-          // Faster than `.startsWith("-")`
-          // eslint-disable-next-line unicorn/prefer-code-point
-          if (compressedArbitraryValue.charCodeAt(0) === 45) {
-            computedValue = computedValue.slice(1);
-            isNegative = !isNegative;
-          }
-          if (compressedPresetValue === computedValue) {
-            const presetName = presetKey.slice(prefix.length);
-            const minus = isNegative ? "-" : "";
-            if (debug) {
-              console.log("#2", [presetKey], [presetValue], [presetName]);
-              console.log([`${modifiers}${minus}${classPrefix}-${presetName}`]);
-            }
+          const { minusSign, cleanedValue } = resolveValueSign(
+            compressedArbitraryValue,
+            !!negativePrefix,
+          );
+
+          if (compressedPresetValue === cleanedValue) {
+            const presetName = presetKey.slice(currentPrefix.length);
             matchingPresets.push(
-              `${modifiers}${minus}${classPrefix}-${presetName}${bang}`,
+              `${modifiers}${minusSign}${classPrefix}-${presetName}${bang}`,
             );
           }
         }
@@ -178,59 +169,44 @@ const checkArbitraryClassnames = (
         acceptGenericNumberSuffix &&
         /^-?\d+(?:\.\d+)?$/.test(compressedArbitraryValue)
       ) {
-        let computedValue = compressedArbitraryValue;
-        let isNegative = !!negativePrefix;
-        // Faster than `.startsWith("-")`
-        // eslint-disable-next-line unicorn/prefer-code-point
-        if (compressedArbitraryValue.charCodeAt(0) === 45) {
-          computedValue = computedValue.slice(1);
-          isNegative = !isNegative;
-        }
-        const minus = isNegative ? "-" : "";
+        const { minusSign, cleanedValue } = resolveValueSign(
+          compressedArbitraryValue,
+          !!negativePrefix,
+        );
         matchingPresets.push(
-          `${modifiers}${minus}${classPrefix}-${computedValue}${bang}`,
+          `${modifiers}${minusSign}${classPrefix}-${cleanedValue}${bang}`,
         );
       }
 
-      // 4. Finally, check for spacing based presets e.g. `my-[2px]` → `my-2` (if spacing is 1px)
+      // 4. Check for spacing based presets e.g. `my-[2px]` → `my-2`
       if (supportsSpacing(absBaseClass)) {
-        if (debug) console.log("#4");
         const spacingPresets = getThemePresetsFromPrefixes(
           theme,
           new Set(["--spacing"]),
         );
-        let spacingValue = "0.25rem"; // Fallback default
-        if (spacingPresets.has("--spacing")) {
-          spacingValue = spacingPresets.get("--spacing") as string;
-        }
+        const spacingValue = spacingPresets.get("--spacing") || "0.25rem";
 
-        let computedValue = compressedArbitraryValue;
-        let isNegative = !!negativePrefix;
-        // Faster than `.startsWith("-")`
-        // eslint-disable-next-line unicorn/prefer-code-point
-        if (compressedArbitraryValue.charCodeAt(0) === 45) {
-          computedValue = computedValue.slice(1);
-          isNegative = !isNegative;
-        }
+        const { minusSign, cleanedValue } = resolveValueSign(
+          compressedArbitraryValue,
+          !!negativePrefix,
+        );
 
-        // Convert spacingValue to px
         const spacingValueInPx = convertStringValueToPx(spacingValue);
-        // Convert computedValue to px
-        const valueInPx = convertStringValueToPx(computedValue);
-        if (valueInPx === undefined || spacingValueInPx === undefined) continue;
-        const genericPresetValue = valueInPx / spacingValueInPx;
-        // Only accepts integer values for now
-        if (Number.isInteger(genericPresetValue)) {
-          const minus = isNegative ? "-" : "";
-          matchingPresets.push(
-            `${modifiers}${minus}${classPrefix}-${genericPresetValue}${bang}`,
-          );
+        const valueInPx = convertStringValueToPx(cleanedValue);
+
+        if (valueInPx !== undefined && spacingValueInPx !== undefined) {
+          const genericPresetValue = valueInPx / spacingValueInPx;
+
+          if (Number.isInteger(genericPresetValue)) {
+            matchingPresets.push(
+              `${modifiers}${minusSign}${classPrefix}-${genericPresetValue}${bang}`,
+            );
+          }
         }
       }
 
       if (matchingPresets.length === 0) continue;
 
-      // The location of the problematic classname
       const patchedLoc = generateLocForClassname(
         node,
         targetClassName,
@@ -248,32 +224,30 @@ const checkArbitraryClassnames = (
           arbitraryClass: targetClassName,
           presetClasses: verbosePatches,
         },
-        suggest: matchingPresets.map((cls) => {
-          return {
-            messageId: "fix:unnecessary-arbitrary",
-            data: {
-              arbitraryClass: targetClassName,
-              presetClass: cls,
-            },
-            fix: (fixer) => {
-              const clonedClassNames = [...classNames];
-              // Patch the problematic classname
-              clonedClassNames[index] = cls;
-              // Generates the "cleaned" attribute value
-              const patchedValue = joiner({
-                classNames: clonedClassNames,
-                whitespaces,
-                headSpace,
-                tailSpace,
-                validator: (candidate) => candidate !== targetClassName,
-              });
-              return fixer.replaceTextRange(
-                [start, end],
-                prefix + patchedValue + suffix,
-              );
-            },
-          };
-        }),
+        suggest: matchingPresets.map((cls) => ({
+          messageId: "fix:unnecessary-arbitrary",
+          data: {
+            arbitraryClass: targetClassName,
+            presetClass: cls,
+          },
+          fix: (fixer) => {
+            const clonedClassNames = [...classNames];
+            clonedClassNames[index] = cls;
+
+            const patchedValue = joiner({
+              classNames: clonedClassNames,
+              whitespaces,
+              headSpace,
+              tailSpace,
+              validator: (candidate) => candidate !== targetClassName,
+            });
+
+            return fixer.replaceTextRange(
+              [start, end],
+              prefix + patchedValue + suffix,
+            );
+          },
+        })),
       });
     }
   }
