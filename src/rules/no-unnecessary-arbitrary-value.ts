@@ -67,6 +67,7 @@ const arbitraryRegEx =
  * Determines final signs and absolute text fragments from arbitrary value configurations.
  */
 function resolveValueSign(value: string, initiallyNegative: boolean) {
+  // eslint-disable-next-line unicorn/prefer-code-point
   const isHyphen = value.charCodeAt(0) === 45; // '-'
   const finalIsNegative = isHyphen ? !initiallyNegative : initiallyNegative;
   const cleanedValue = isHyphen ? value.slice(1) : value;
