@@ -2,6 +2,10 @@
 
 ## `...`
 
+- feat(no-unnecessary-arbitrary-value): additional checks (related to [#366](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/366))
+  - using native preset `px` (e.g. `inset-[1px]` can be replaced by `inset-px`)
+  - using unitless values (e.g. `z-[123]` can be replaced by `z-123`)
+  - using `spacing` based values (e.g. with default `--spacing: 0.25rem; /* 4px */`, `m-[4px]` can be replaced by `m-1`)
 - fix: respect the optional `!` important modifiers in the fixers
 
 ## `4.0.6`

@@ -2,7 +2,10 @@ import * as Parser from "@typescript-eslint/parser";
 import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 
 import { joinListElements } from "../utils/list-formatter";
-import { withAllPresetsSettings } from "../utils/parser/test-helpers";
+import {
+  emptySettings,
+  withAllPresetsSettings,
+} from "../utils/parser/test-helpers";
 import {
   type MessageIds,
   noUnnecessaryArbitraryValue,
@@ -65,12 +68,13 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
       "ctl('m-0')",
       // Not an existing preset
       "ctl('m-[calc(123456789px)]')",
+      `<div class="my-[3.14px] ml-1 mr-px">Issue #366</div>`,
     ].map((testedJsxCode) => ({
       code: testedJsxCode,
       settings: { tailwindcss: withAllPresetsSettings },
     })),
   invalid: [
-    // Single errors
+    // Single errors + withAllPresetsSettings
     ...[
       {
         code: `ctl('aspect-[4/3]')`,
@@ -99,19 +103,138 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
           `ctl('aspect-one-to-one w-[\${width}]')`,
         ],
       },
-      /*/
       {
-        code: `<div class="mt-[1px] mr-[0.25rem] mb-1">Issue #366</div>`,
+        code: `<div class="mt-[1px] mb-1">Issue #366</div>`,
         invalidClass: "mt-[1px]",
-        replacementClass: ["mt-1"],
-        output: [`<div class="mt-1 mr-[0.25rem] mb-1">Issue #366</div>`],
+        replacementClass: ["mt-px", "mt-1px-margin", "mt-1"],
+        output: [
+          `<div class="mt-px mb-1">Issue #366</div>`,
+          `<div class="mt-1px-margin mb-1">Issue #366</div>`,
+          `<div class="mt-1 mb-1">Issue #366</div>`,
+        ],
       },
-      //*/
+
+      {
+        // Issue #366 Existing preset (exact match)
+        code: "ctl('mr-[8rem]')",
+        invalidClass: "mr-[8rem]",
+        replacementClass: [
+          // "mr-[8rem]",
+          "mr-huge",
+          "mr-128",
+        ],
+        output: [`ctl('mr-huge')`, `ctl('mr-128')`],
+      },
+      {
+        // Issue #366 Unitless value positive
+        code: "ctl('sm:z-[1]')",
+        invalidClass: "sm:z-[1]",
+        replacementClass: ["sm:z-1"],
+        output: ["ctl('sm:z-1')"],
+      },
+      {
+        // Issue #366 Unitless negative value
+        code: "ctl('md:z-[-2]')",
+        invalidClass: "md:z-[-2]",
+        replacementClass: ["md:-z-2"],
+        output: ["ctl('md:-z-2')"],
+      },
+      {
+        // Issue #366 Unitless double negative
+        code: "ctl('lg:dark:-z-[-2]')",
+        invalidClass: "lg:dark:-z-[-2]",
+        replacementClass: ["lg:dark:z-2"],
+        output: ["ctl('lg:dark:z-2')"],
+      },
+      {
+        // Issue #366 px native preset
+        code: "ctl('my-[1px]')",
+        invalidClass: "my-[1px]",
+        // From weakest to strongest
+        // my-px, (my-[1px]), my-1px-margin, my-1
+        replacementClass: [
+          "my-px",
+          // "my-[1px]",
+          "my-1px-margin",
+          "my-1",
+        ],
+        output: ["ctl('my-px')", "ctl('my-1px-margin')", "ctl('my-1')"],
+      },
+      {
+        // Issue #366 px native preset
+        code: "ctl('dark:my-[1px]')",
+        invalidClass: "dark:my-[1px]",
+        replacementClass: [
+          "dark:my-px",
+          // "dark:my-[1px]",
+          "dark:my-1px-margin",
+          "dark:my-1",
+        ],
+        output: [
+          "ctl('dark:my-px')",
+          "ctl('dark:my-1px-margin')",
+          "ctl('dark:my-1')",
+        ],
+      },
+      {
+        // Issue #366 negative px native preset
+        code: "ctl('dark:my-[-1px]')",
+        invalidClass: "dark:my-[-1px]",
+        replacementClass: [
+          "dark:-my-px",
+          // "dark:my-[-1px]",
+          "dark:-my-1px-margin",
+          "dark:-my-1",
+        ],
+        output: [
+          "ctl('dark:-my-px')",
+          "ctl('dark:-my-1px-margin')",
+          "ctl('dark:-my-1')",
+        ],
+      },
+      {
+        // Issue #366 double negative px native preset
+        code: "ctl('-my-[-1px]')",
+        invalidClass: "-my-[-1px]",
+        replacementClass: ["my-px", "my-1px-margin", "my-1"],
+        output: ["ctl('my-px')", "ctl('my-1px-margin')", "ctl('my-1')"],
+      },
+      {
+        // Issue #366 spacing based value
+        code: "ctl('my-[2px]')",
+        invalidClass: "my-[2px]",
+        replacementClass: ["my-2"],
+        output: ["ctl('my-2')"],
+      },
+      {
+        // Issue #366 important! spacing based value
+        code: "ctl('my-[2px]!')",
+        invalidClass: "my-[2px]!",
+        replacementClass: ["my-2!"],
+        output: ["ctl('my-2!')"],
+      },
+      {
+        // Issue #366 !important spacing based value
+        code: "ctl('!my-[2px]')",
+        invalidClass: "!my-[2px]",
+        replacementClass: ["my-2!"],
+        output: ["ctl('my-2!')"],
+      },
     ].map(({ code, invalidClass, replacementClass, output }) => ({
       code: code,
       settings: { tailwindcss: withAllPresetsSettings },
       errors: [suggest(invalidClass, replacementClass, output)],
     })),
+
+    {
+      // Issue #366 Unitless value positive (w/o config)
+      code: "ctl('z-[0]')",
+      settings: {
+        tailwindcss: emptySettings,
+      },
+      errors: [suggest("z-[0]", ["z-0"], [`ctl('z-0')`])],
+    },
+
     // Multiple unnecessary arbitrary values in the same className attribute
     ...[
       {

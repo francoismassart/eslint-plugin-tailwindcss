@@ -39,6 +39,7 @@
    */
   --padding-safe: 3rem; /* p-safe px-safe ... */
   --margin-huge: 8rem; /* m-huge mx-huge ... */
+  --margin-1px-margin: 1px; /* m-1px-margin mx-1px-margin ... */
   /*
    * Sizing
    */
