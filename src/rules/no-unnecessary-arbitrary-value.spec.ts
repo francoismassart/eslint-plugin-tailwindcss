@@ -2,10 +2,7 @@ import * as Parser from "@typescript-eslint/parser";
 import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 
 import { joinListElements } from "../utils/list-formatter";
-import {
-  emptySettings,
-  withAllPresetsSettings,
-} from "../utils/parser/test-helpers";
+import { withAllPresetsSettings } from "../utils/parser/test-helpers";
 import {
   type MessageIds,
   noUnnecessaryArbitraryValue,
