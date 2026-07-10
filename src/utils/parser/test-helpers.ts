@@ -7,7 +7,7 @@ import { TSESTree } from "@typescript-eslint/utils";
 import * as VueParser from "vue-eslint-parser";
 import { VStartTag } from "vue-eslint-parser/ast/index";
 
-import { GenericElement, TextAttribute } from "../../types";
+import type { GenericElement, TextAttribute } from "../../types";
 import { PluginSettings } from "../parse-plugin-settings";
 
 // This file exposes utils only used during the tests
@@ -34,6 +34,12 @@ export const prefixedSettings: PluginSettings = {
   cssConfigPath:
     // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
     `${import.meta.dirname}/../../../tests/stubs/css/tiny-prefixed.css`,
+};
+
+export const emptySettings: PluginSettings = {
+  cssConfigPath:
+    // @ts-expect-error The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.ts(1470)
+    `${import.meta.dirname}/../../../tests/stubs/css/empty.css`,
 };
 
 export const daisySettings: PluginSettings = {

@@ -28,14 +28,14 @@ const suggest = (
       presetClasses: joinListElements(quoted),
     },
     // e.g. "No need for arbitrary 'aspect-[1/1]', use 'aspect-square' or 'aspect-one-to-one' instead"
-    suggestions: presetClasses.map((cls, index) => {
+    suggestions: presetClasses.slice(1).map((cls, index) => {
       return {
         messageId: "fix:unnecessary-arbitrary",
         data: {
           arbitraryClass,
           presetClass: cls,
         },
-        output: output[index],
+        output: output[index + 1],
       };
     }),
   };
@@ -64,13 +64,14 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
       // Not an arbitrary value
       "ctl('m-0')",
       // Not an existing preset
-      "ctl('m-[123456789px]')",
+      "ctl('m-[calc(123456789px)]')",
+      `<div class="my-[3.14px] ml-1 mr-px">Issue #366</div>`,
     ].map((testedJsxCode) => ({
       code: testedJsxCode,
       settings: { tailwindcss: withAllPresetsSettings },
     })),
   invalid: [
-    // Single errors
+    // Single errors + withAllPresetsSettings
     ...[
       {
         code: `ctl('aspect-[4/3]')`,
@@ -99,57 +100,164 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
           `ctl('aspect-one-to-one w-[\${width}]')`,
         ],
       },
-      /*/
       {
-        code: `<div class="mt-[1px] mr-[0.25rem] mb-1">Issue #366</div>`,
+        code: `<div class="mt-[1px] mb-1">Issue #366</div>`,
         invalidClass: "mt-[1px]",
-        replacementClass: ["mt-1"],
-        output: [`<div class="mt-1 mr-[0.25rem] mb-1">Issue #366</div>`],
+        replacementClass: ["mt-px", "mt-1px-margin", "mt-1"],
+        output: [
+          `<div class="mt-px mb-1">Issue #366</div>`,
+          `<div class="mt-1px-margin mb-1">Issue #366</div>`,
+          `<div class="mt-1 mb-1">Issue #366</div>`,
+        ],
       },
-      //*/
+
+      {
+        // Issue #366 Existing preset (exact match)
+        code: "ctl('mr-[8rem]')",
+        invalidClass: "mr-[8rem]",
+        replacementClass: [
+          // "mr-[8rem]",
+          "mr-huge",
+          "mr-128",
+        ],
+        output: [`ctl('mr-huge')`, `ctl('mr-128')`],
+      },
+      {
+        // Issue #366 Unitless value positive
+        code: "ctl('sm:z-[1]')",
+        invalidClass: "sm:z-[1]",
+        replacementClass: ["sm:z-1"],
+        output: ["ctl('sm:z-1')"],
+      },
+      {
+        // Issue #366 Unitless negative value
+        code: "ctl('md:z-[-2]')",
+        invalidClass: "md:z-[-2]",
+        replacementClass: ["md:-z-2"],
+        output: ["ctl('md:-z-2')"],
+      },
+      {
+        // Issue #366 Unitless double negative
+        code: "ctl('lg:dark:-z-[-2]')",
+        invalidClass: "lg:dark:-z-[-2]",
+        replacementClass: ["lg:dark:z-2"],
+        output: ["ctl('lg:dark:z-2')"],
+      },
+      {
+        // Issue #366 px native preset
+        code: "ctl('my-[1px]')",
+        invalidClass: "my-[1px]",
+        // From weakest to strongest
+        // my-px, (my-[1px]), my-1px-margin, my-1
+        replacementClass: [
+          "my-px",
+          // "my-[1px]",
+          "my-1px-margin",
+          "my-1",
+        ],
+        output: ["ctl('my-px')", "ctl('my-1px-margin')", "ctl('my-1')"],
+      },
+      {
+        // Issue #366 px native preset
+        code: "ctl('dark:my-[1px]')",
+        invalidClass: "dark:my-[1px]",
+        replacementClass: [
+          "dark:my-px",
+          // "dark:my-[1px]",
+          "dark:my-1px-margin",
+          "dark:my-1",
+        ],
+        output: [
+          "ctl('dark:my-px')",
+          "ctl('dark:my-1px-margin')",
+          "ctl('dark:my-1')",
+        ],
+      },
+      {
+        // Issue #366 negative px native preset
+        code: "ctl('dark:my-[-1px]')",
+        invalidClass: "dark:my-[-1px]",
+        replacementClass: [
+          "dark:-my-px",
+          // "dark:my-[-1px]",
+          "dark:-my-1px-margin",
+          "dark:-my-1",
+        ],
+        output: [
+          "ctl('dark:-my-px')",
+          "ctl('dark:-my-1px-margin')",
+          "ctl('dark:-my-1')",
+        ],
+      },
+      {
+        // Issue #366 double negative px native preset
+        code: "ctl('-my-[-1px]')",
+        invalidClass: "-my-[-1px]",
+        replacementClass: ["my-px", "my-1px-margin", "my-1"],
+        output: ["ctl('my-px')", "ctl('my-1px-margin')", "ctl('my-1')"],
+      },
+      {
+        // Issue #366 spacing based value
+        code: "ctl('my-[2px]')",
+        invalidClass: "my-[2px]",
+        replacementClass: ["my-2"],
+        output: ["ctl('my-2')"],
+      },
+      {
+        // Issue #366 important! spacing based value
+        code: "ctl('my-[2px]!')",
+        invalidClass: "my-[2px]!",
+        replacementClass: ["my-2!"],
+        output: ["ctl('my-2!')"],
+      },
+      {
+        // Issue #366 !important spacing based value
+        code: "ctl('!my-[2px]')",
+        invalidClass: "!my-[2px]",
+        replacementClass: ["my-2!"],
+        output: ["ctl('my-2!')"],
+      },
+      {
+        // Issue #366 Unitless value positive (w/o config)
+        code: "ctl('z-[0]')",
+        invalidClass: "z-[0]",
+        replacementClass: ["z-0"],
+        output: ["ctl('z-0')"],
+      },
     ].map(({ code, invalidClass, replacementClass, output }) => ({
       code: code,
       settings: { tailwindcss: withAllPresetsSettings },
+      output: output[0],
       errors: [suggest(invalidClass, replacementClass, output)],
     })),
+
     // Multiple unnecessary arbitrary values in the same className attribute
-    ...[
-      {
-        code: `
-        ctl(\`
-          lg:columns-[16rem]
-          aspect-auto
-          -top-[3.14px]
-        \`)`,
-        invalidClasses: ["lg:columns-[16rem]", "-top-[3.14px]"],
-        replacementClasses: [["lg:columns-side-menu"], ["-top-pi"]],
-        output: [
-          [
-            `
-        ctl(\`
-          lg:columns-side-menu
-          aspect-auto
-          -top-[3.14px]
-        \`)`,
-          ],
-          [
-            `
-        ctl(\`
-          lg:columns-[16rem]
-          aspect-auto
-          -top-pi
-        \`)`,
-          ],
-        ],
-      },
-    ].map(({ code, invalidClasses, replacementClasses, output }) => {
-      return {
-        code: code,
-        settings: { tailwindcss: withAllPresetsSettings },
-        errors: invalidClasses.map((invalidClass, index) =>
-          suggest(invalidClass, replacementClasses[index], output[index]),
-        ),
-      };
-    }),
+    {
+      code: `
+      ctl(\`
+        lg:columns-[16rem]
+        aspect-auto
+        -top-[3.14px]
+      \`)`,
+      settings: { tailwindcss: withAllPresetsSettings },
+      output: [
+        `
+      ctl(\`
+        lg:columns-side-menu
+        aspect-auto
+        -top-[3.14px]
+      \`)`,
+        `
+      ctl(\`
+        lg:columns-side-menu
+        aspect-auto
+        -top-pi
+      \`)`,
+      ],
+      errors: [
+        suggest("lg:columns-[16rem]", ["lg:columns-side-menu"], [""]),
+        suggest("-top-[3.14px]", ["-top-pi"], [""]),
+      ],
+    },
   ],
 });

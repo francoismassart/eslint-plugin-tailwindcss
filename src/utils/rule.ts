@@ -2,7 +2,7 @@ import { TSESTree } from "@typescript-eslint/utils";
 import { RuleListener } from "@typescript-eslint/utils/ts-eslint";
 import { AST as VueAST } from "vue-eslint-parser";
 
-import { TextAttribute } from "../types";
+import type { TextAttribute } from "../types";
 import type { PluginSettings } from "./parse-plugin-settings";
 import {
   getTagNameFromTaggedTemplateExpression,

@@ -1,6 +1,20 @@
 # Changelog
 
-## `...`
+## `v4.1.0`
+
+### 🚀 Features
+
+[`no-unnecessary-arbitrary-value`](./docs/rules/no-unnecessary-arbitrary-value.md): Expanded checks to catch and replace redundant arbitrary values (resolves [#366](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/366)).
+
+**💡 What's new:** Prior to `v4.1.0`, this rule _only flagged exact string matches_ between an arbitrary value and a preset. The rule is now smart enough to resolve unit conversions and spacing configurations.
+
+The plugin will now suggest cleaner native alternatives for:
+
+- **Native presets:** Replaces `inset-[1px]` with `inset-px` (previously ignored because `px` preset is not declared in the config, yet it exists).
+- **Unitless values:** Replaces `z-[123]` with `z-123`.
+- **Spacing-based values:** Replaces `m-[8px]` with `m-2` by intelligently parsing your Tailwind v4's configuration (`--spacing: 0.25rem; /* 4px */`).
+
+### 🐞 Fixes
 
 - fix: respect the optional `!` important modifiers in the fixers
 

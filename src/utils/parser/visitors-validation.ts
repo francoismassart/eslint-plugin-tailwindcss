@@ -1,8 +1,7 @@
 import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
 import { AST as VueAST } from "vue-eslint-parser";
 
-import { TextAttribute } from "../../types";
-import { SupportedAttribute } from "../../types";
+import type { SupportedAttribute, TextAttribute } from "../../types";
 import { type PluginSettings } from "../parse-plugin-settings";
 import { getJSXAttributeName, getVAttributeName } from "./node";
 

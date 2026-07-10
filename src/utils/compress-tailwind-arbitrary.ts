@@ -10,12 +10,16 @@ export const compressTailwindArbitrary = (value: string): string => {
 
   return (
     value
-      // 1. Trim underscores from the start and end
+      // 1. Remove whitespace around operators: , ( ) / + * and trim the string
+      .replaceAll(/\s*([,()/+*-])\s*/g, "$1")
+      // 2. Trim underscores from the start and end
       .replaceAll(/^_+|_+$/g, "")
-      // 2. Remove underscores around operators: , ( ) / + *
+      // 3. Remove underscores around operators: , ( ) / + *
       //    Using a wrapper group lets us clean both sides in one go
-      .replaceAll(/_*([,()/+*])_*/g, "$1")
-      // 3. Collapse any remaining multiple underscores into a single underscore
+      .replaceAll(/_*([,()/+*-])_*/g, "$1")
+      // 4. Collapse any remaining multiple underscores into a single underscore
       .replaceAll(/_{2,}/g, "_")
+      // 5. remove the leading '+'
+      .replace(/^\+/, "")
   );
 };
