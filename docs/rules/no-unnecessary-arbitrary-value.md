@@ -13,13 +13,13 @@ Enable this rule if you want to avoid arbitrary classname when a [Tailwind CSS](
 Examples of **incorrect** code for this rule:
 
 ```html
-<video class="aspect-[16/9]">player</video>
+<video class="inset-[1px] aspect-[16/9] z-[123] m-[-8px]">player</video>
 ```
 
 Examples of **correct** code for this rule:
 
 ```html
-<video class="aspect-video">player</video>
+<video class="inset-px aspect-video z-123 -m-2">player</video>
 ```
 
 Prior to `v4.1.0`, this rule _only flagged exact string matches_ between an arbitrary value and a preset. The rule is now smart enough to resolve unit conversions and spacing configurations (`rem` & `px`).
