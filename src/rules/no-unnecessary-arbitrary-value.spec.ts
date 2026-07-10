@@ -31,14 +31,14 @@ const suggest = (
       presetClasses: joinListElements(quoted),
     },
     // e.g. "No need for arbitrary 'aspect-[1/1]', use 'aspect-square' or 'aspect-one-to-one' instead"
-    suggestions: presetClasses.map((cls, index) => {
+    suggestions: presetClasses.slice(1).map((cls, index) => {
       return {
         messageId: "fix:unnecessary-arbitrary",
         data: {
           arbitraryClass,
           presetClass: cls,
         },
-        output: output[index],
+        output: output[index + 1],
       };
     }),
   };
@@ -220,59 +220,47 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
         replacementClass: ["my-2!"],
         output: ["ctl('my-2!')"],
       },
+      {
+        // Issue #366 Unitless value positive (w/o config)
+        code: "ctl('z-[0]')",
+        invalidClass: "z-[0]",
+        replacementClass: ["z-0"],
+        output: ["ctl('z-0')"],
+      },
     ].map(({ code, invalidClass, replacementClass, output }) => ({
       code: code,
       settings: { tailwindcss: withAllPresetsSettings },
+      output: output[0],
       errors: [suggest(invalidClass, replacementClass, output)],
     })),
 
-    {
-      // Issue #366 Unitless value positive (w/o config)
-      code: "ctl('z-[0]')",
-      settings: {
-        tailwindcss: emptySettings,
-      },
-      errors: [suggest("z-[0]", ["z-0"], [`ctl('z-0')`])],
-    },
-
     // Multiple unnecessary arbitrary values in the same className attribute
-    ...[
-      {
-        code: `
-        ctl(\`
-          lg:columns-[16rem]
-          aspect-auto
-          -top-[3.14px]
-        \`)`,
-        invalidClasses: ["lg:columns-[16rem]", "-top-[3.14px]"],
-        replacementClasses: [["lg:columns-side-menu"], ["-top-pi"]],
-        output: [
-          [
-            `
-        ctl(\`
-          lg:columns-side-menu
-          aspect-auto
-          -top-[3.14px]
-        \`)`,
-          ],
-          [
-            `
-        ctl(\`
-          lg:columns-[16rem]
-          aspect-auto
-          -top-pi
-        \`)`,
-          ],
-        ],
-      },
-    ].map(({ code, invalidClasses, replacementClasses, output }) => {
-      return {
-        code: code,
-        settings: { tailwindcss: withAllPresetsSettings },
-        errors: invalidClasses.map((invalidClass, index) =>
-          suggest(invalidClass, replacementClasses[index], output[index]),
-        ),
-      };
-    }),
+    {
+      code: `
+      ctl(\`
+        lg:columns-[16rem]
+        aspect-auto
+        -top-[3.14px]
+      \`)`,
+      settings: { tailwindcss: withAllPresetsSettings },
+      output: [
+        `
+      ctl(\`
+        lg:columns-side-menu
+        aspect-auto
+        -top-[3.14px]
+      \`)`,
+        `
+      ctl(\`
+        lg:columns-side-menu
+        aspect-auto
+        -top-pi
+      \`)`,
+      ],
+      errors: [
+        suggest("lg:columns-[16rem]", ["lg:columns-side-menu"], [""]),
+        suggest("-top-[3.14px]", ["-top-pi"], [""]),
+      ],
+    },
   ],
 });

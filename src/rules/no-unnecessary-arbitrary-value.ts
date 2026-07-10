@@ -4,7 +4,10 @@
  */
 
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
-import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
+import {
+  RuleContext as TSESLintRuleContext,
+  RuleFixer,
+} from "@typescript-eslint/utils/ts-eslint";
 
 import urlCreator from "../url-creator";
 import { compressTailwindArbitrary } from "../utils/compress-tailwind-arbitrary";
@@ -218,6 +221,27 @@ const checkArbitraryClassnames = (
       const withQuotes = matchingPresets.map((cls) => `'${cls}'`);
       const verbosePatches = joinListElements(withQuotes);
 
+      const generateFixer = (cls: string) => {
+        const fixer = (fixer: RuleFixer) => {
+          const clonedClassNames = [...classNames];
+          clonedClassNames[index] = cls;
+
+          const patchedValue = joiner({
+            classNames: clonedClassNames,
+            whitespaces,
+            headSpace,
+            tailSpace,
+            validator: (candidate) => candidate !== targetClassName,
+          });
+
+          return fixer.replaceTextRange(
+            [start, end],
+            prefix + patchedValue + suffix,
+          );
+        };
+        return fixer;
+      };
+
       context.report({
         loc: patchedLoc,
         messageId: "issue:unnecessary-arbitrary",
@@ -225,29 +249,18 @@ const checkArbitraryClassnames = (
           arbitraryClass: targetClassName,
           presetClasses: verbosePatches,
         },
-        suggest: matchingPresets.map((cls) => ({
+        fix:
+          matchingPresets.length === 0
+            ? undefined
+            : generateFixer(matchingPresets[0]),
+
+        suggest: matchingPresets.slice(1).map((cls) => ({
           messageId: "fix:unnecessary-arbitrary",
           data: {
             arbitraryClass: targetClassName,
             presetClass: cls,
           },
-          fix: (fixer) => {
-            const clonedClassNames = [...classNames];
-            clonedClassNames[index] = cls;
-
-            const patchedValue = joiner({
-              classNames: clonedClassNames,
-              whitespaces,
-              headSpace,
-              tailSpace,
-              validator: (candidate) => candidate !== targetClassName,
-            });
-
-            return fixer.replaceTextRange(
-              [start, end],
-              prefix + patchedValue + suffix,
-            );
-          },
+          fix: generateFixer(cls),
         })),
       });
     }
