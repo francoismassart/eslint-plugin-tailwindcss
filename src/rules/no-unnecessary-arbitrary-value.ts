@@ -43,8 +43,6 @@ import { loadThemeWorker } from "../utils/tailwindcss-api";
 import { toTailwindArbitrary } from "../utils/to-tailwind-arbitrary";
 import { convertStringValueToPx } from "../utils/units";
 
-export { ESLintUtils } from "@typescript-eslint/utils";
-
 export const RULE_NAME = "no-unnecessary-arbitrary-value";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way

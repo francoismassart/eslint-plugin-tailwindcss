@@ -28,8 +28,6 @@ import {
   createTemplateVisitors,
 } from "../utils/rule";
 
-export { ESLintUtils } from "@typescript-eslint/utils";
-
 export const RULE_NAME = "enforces-negative-arbitrary-values";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way

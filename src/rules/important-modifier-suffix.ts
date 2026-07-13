@@ -30,8 +30,6 @@ import {
   createTemplateVisitors,
 } from "../utils/rule";
 
-export { ESLintUtils } from "@typescript-eslint/utils";
-
 export const RULE_NAME = "important-modifier-suffix";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way
@@ -98,7 +96,6 @@ const importantPrefixClassnames = (
 
     const fixable = node.type !== TSESTree.AST_NODE_TYPES.Identifier;
 
-    // Emit reports
     for (const invalidClass of invalidClassesInNode) {
       const patchedLoc = generateLocForClassname(
         node,
