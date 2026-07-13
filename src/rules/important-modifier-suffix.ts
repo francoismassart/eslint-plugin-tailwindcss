@@ -56,62 +56,50 @@ const importantPrefixClassnames = (
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
 
-  // Session cache to avoid re-testing identical classes within the same node/file
-  const checkedClasses = new Set<string>();
-
   const totalLiterals = literals.length;
   for (let index = 0; index < totalLiterals; index++) {
     const node = literals[index];
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
 
-    // Early escape if the value is falsy or doesn't contain any brackets (no arbitrary value possible)
-    if (!originalClassNamesValue || !originalClassNamesValue.includes("!"))
+    // Early escape if the value is falsy or doesn't contain "!"
+    if (!originalClassNamesValue || !originalClassNamesValue.includes("!")) {
       continue;
-
-    // 1. Gather invalid classes in the node
-    const invalidClassesInNode: Array<{
-      classname: string;
-      patched: string;
-      type: string;
-    }> = [];
+    }
 
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
+
+    const invalidClassesInNode: Array<{
+      index: number; // Keep track of its position for surgical fixing
+      classname: string;
+      patched: string;
+    }> = [];
+
     const classNamesLength = classNames.length;
-    const patchedClassNames = [...classNames];
+    for (let index_ = 0; index_ < classNamesLength; index_++) {
+      const targetClassName = classNames[index_];
 
-    for (let index = 0; index < classNamesLength; index++) {
-      const targetClassName = classNames[index];
-
-      // Individual early escape for classnames that don't contain brackets
       if (!targetClassName.includes("!")) continue;
 
-      // Local cache
-      if (checkedClasses.has(targetClassName)) continue;
-      checkedClasses.add(targetClassName);
-
-      const modifiers = getModifiersPrefix(targetClassName);
       const baseClass = getBaseClassname(targetClassName);
+      if (!baseClass.startsWith("!")) continue;
 
-      if (!baseClass.startsWith("!")) {
-        continue;
-      }
+      const patched = `${getModifiersPrefix(targetClassName)}${baseClass.slice(1)}!`;
 
-      const patched = `${modifiers}${baseClass.slice(1)}!`;
       invalidClassesInNode.push({
+        index: index_,
         classname: targetClassName,
-        patched: patched,
-        type: node.type,
+        patched,
       });
-      patchedClassNames[index] = patched;
     }
-    // All classes are valid, skip to the next node
+
     if (invalidClassesInNode.length === 0) continue;
 
-    // 2. Emit reports with a surgical fix (one class targeted)
+    const fixable = node.type !== TSESTree.AST_NODE_TYPES.Identifier;
+
+    // Emit reports
     for (const invalidClass of invalidClassesInNode) {
-      const fixable = invalidClass.type !== TSESTree.AST_NODE_TYPES.Identifier;
       const patchedLoc = generateLocForClassname(
         node,
         invalidClass.classname,
@@ -119,18 +107,6 @@ const importantPrefixClassnames = (
         genericContext,
       );
 
-      // Generate the fix exclusive to THIS iteration of the class
-      let patchedValue: string;
-      if (fixable) {
-        patchedValue = joiner({
-          classNames: patchedClassNames,
-          whitespaces,
-          headSpace,
-          tailSpace,
-        });
-
-        patchedValue = prefix + patchedValue + suffix;
-      }
       context.report({
         loc: patchedLoc,
         messageId: "issue:important-modifier-prefix",
@@ -139,7 +115,23 @@ const importantPrefixClassnames = (
           patchedClassName: invalidClass.patched,
         },
         fix: fixable
-          ? (fixer) => fixer.replaceTextRange([start, end], patchedValue)
+          ? (fixer) => {
+              // Create a fresh clone of the classNames array for THIS specific fix
+              const localPatchedClassNames = [...classNames];
+              localPatchedClassNames[invalidClass.index] = invalidClass.patched;
+
+              const patchedValue =
+                prefix +
+                joiner({
+                  classNames: localPatchedClassNames,
+                  whitespaces,
+                  headSpace,
+                  tailSpace,
+                }) +
+                suffix;
+
+              return fixer.replaceTextRange([start, end], patchedValue);
+            }
           : undefined,
       });
     }

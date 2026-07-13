@@ -65,12 +65,20 @@ ruleTester.run(RULE_NAME, importantModifierSuffix, {
         \`)`,
         invalidClasses: ["lg:!block", "!-m-2"],
         suffixedClasses: ["lg:block!", "-m-2!"],
-        output: `
+        output: [
+          `
+        ctl(\`
+          lg:block!
+          dark:bg-white
+          !-m-2
+        \`)`,
+          `
         ctl(\`
           lg:block!
           dark:bg-white
           -m-2!
         \`)`,
+        ],
       },
     ].map(({ code, invalidClasses, suffixedClasses, output }) => ({
       code: code,
