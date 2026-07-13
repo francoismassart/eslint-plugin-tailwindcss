@@ -46,7 +46,7 @@
 | [classnames-order](docs/rules/classnames-order.md)                                     | Enforces a consistent order for the Tailwind CSS classnames, based on the compiler. |     | ✅  | 🔧  |     |
 | [enforces-negative-arbitrary-values](docs/rules/enforces-negative-arbitrary-values.md) | Warns about `-` prefixed classnames using arbitrary values.                         |     | ✅  | 🔧  |     |
 | [enforces-shorthand](docs/rules/enforces-shorthand.md)                                 | Avoid using multiple Tailwind CSS classnames when not required.                     |     | ✅  | 🔧  |     |
-| [important-modifier-suffix](docs/rules/important-modifier-suffix.md)                   | In v4 you should place the `!` at the very end of the class name.                   |     | ✅  |     |     |
+| [important-modifier-suffix](docs/rules/important-modifier-suffix.md)                   | In v4 you should place the `!` at the very end of the class name.                   |     | ✅  | 🔧  |     |
 | [no-arbitrary-value](docs/rules/no-arbitrary-value.md)                                 | Forbid using arbitrary values in classnames.                                        |     |     |     |     |
 | [no-contradicting-classname](docs/rules/no-contradicting-classname.md)                 | Avoid contradicting Tailwind CSS classnames.                                        | ✅  |     |     | 💡  |
 | [no-custom-classname](docs/rules/no-custom-classname.md)                               | Detects classnames which do not belong to Tailwind CSS.                             |     | ✅  |     | 💡  |

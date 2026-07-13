@@ -2,6 +2,8 @@
 
 ⚠️ This rule _warns_ in the ✅ `recommended` config.
 
+🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+
 <!-- end auto-generated rule header -->
 
 As explained in the official documentation about the [important modifier](https://tailwindcss.com/docs/upgrade-guide#the-important-modifier):
