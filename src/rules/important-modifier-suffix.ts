@@ -1,8 +1,10 @@
 /**
- * @fileoverview Warns about `-` prefixed classnames using arbitrary values.
+ * @fileoverview In v3 you could mark a utility as important by placing an `!` at the beginning of the utility name (but after any variants).
+ * In v4 you should place the `!` at the very end of the class name instead. The old way is still supported for compatibility but is deprecated.
  * @author François Massart
  */
 
+import { TSESTree } from "@typescript-eslint/utils";
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
@@ -28,10 +30,10 @@ import {
   createTemplateVisitors,
 } from "../utils/rule";
 
-export const RULE_NAME = "enforces-negative-arbitrary-values";
+export const RULE_NAME = "important-modifier-suffix";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way
-export type MessageIds = "fix:irregular-negative";
+export type MessageIds = "issue:important-modifier-prefix";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type RuleOptions = {};
@@ -44,28 +46,7 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const propertiesPattern = [
-  "(?:inset|scale)(?:-[xy])?",
-  "m",
-  "top",
-  "right",
-  "bottom",
-  "left",
-  "z",
-  "order",
-  "tracking",
-  "indent",
-  "(?:backdrop-)?hue-rotate",
-  "space-[xy]",
-  "scroll-m(?:[xyse]|bs|be|t|r|b|l)?",
-  "(?:skew|translate|rotate)(?:-[xyz])?",
-].join("|");
-
-const NEGATIVE_ARBITRARY_REGEX = new RegExp(
-  `^!?-(?<property>${propertiesPattern})-\\[(?<arbitraryValue>[^\\]]+)\\]!?$`,
-);
-
-const negativeArbitraryClassnames = (
+const importantPrefixClassnames = (
   context: RuleContext,
   settings: PluginSettings,
   options: RuleOptions,
@@ -73,81 +54,97 @@ const negativeArbitraryClassnames = (
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
 
-  for (const node of literals) {
+  const totalLiterals = literals.length;
+  for (let index = 0; index < totalLiterals; index++) {
+    const node = literals[index];
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
+
+    // Early escape if the value is falsy or doesn't contain "!"
+    if (!originalClassNamesValue || !originalClassNamesValue.includes("!")) {
+      continue;
+    }
 
     const { classNames, whitespaces, headSpace, tailSpace } =
       getClassnamesFromValue(originalClassNamesValue);
 
-    const classNamesCount = classNames.length;
+    const invalidClassesInNode: Array<{
+      index: number; // Keep track of its position for surgical fixing
+      classname: string;
+      patched: string;
+    }> = [];
 
-    for (let index = 0; index < classNamesCount; index++) {
-      const targetClassName = classNames[index];
+    const classNamesLength = classNames.length;
+    for (let index_ = 0; index_ < classNamesLength; index_++) {
+      const targetClassName = classNames[index_];
+
+      if (!targetClassName.includes("!")) continue;
+
       const baseClass = getBaseClassname(targetClassName);
-      const match = baseClass.match(NEGATIVE_ARBITRARY_REGEX);
-      const bang =
-        baseClass.startsWith("!") || baseClass.endsWith("!") ? "!" : "";
+      if (!baseClass.startsWith("!")) continue;
 
-      if (!match?.groups) continue;
+      const patched = `${getModifiersPrefix(targetClassName)}${baseClass.slice(1)}!`;
 
-      const { property = "", arbitraryValue = "" } = match.groups;
-      const modifiers = getModifiersPrefix(targetClassName);
+      invalidClassesInNode.push({
+        index: index_,
+        classname: targetClassName,
+        patched,
+      });
+    }
 
-      // Invert the arbitrary value (-10px -> 10px or 10px -> -10px)
-      const arbitraryValuePatched = arbitraryValue.startsWith("-")
-        ? arbitraryValue.slice(1)
-        : "-" + arbitraryValue;
+    if (invalidClassesInNode.length === 0) continue;
 
-      const patchedClass = `${modifiers}${property}-[${arbitraryValuePatched}]${bang}`;
+    const fixable = node.type !== TSESTree.AST_NODE_TYPES.Identifier;
 
+    for (const invalidClass of invalidClassesInNode) {
       const patchedLoc = generateLocForClassname(
         node,
-        targetClassName,
+        invalidClass.classname,
         originalClassNamesValue,
         genericContext,
       );
 
-      // Temporary mutation instead of cloning [...classNames] at each iteration for memory optimization
-      classNames[index] = patchedClass;
-
-      let patchedValue = joiner({
-        classNames,
-        whitespaces,
-        headSpace,
-        tailSpace,
-        validator: (candidate) => candidate !== targetClassName,
-      });
-
-      // Restore the original array immediately for the next iteration
-      classNames[index] = targetClassName;
-
-      patchedValue = prefix + patchedValue + suffix;
-
       context.report({
         loc: patchedLoc,
-        messageId: "fix:irregular-negative",
+        messageId: "issue:important-modifier-prefix",
         data: {
-          oldClassName: targetClassName,
-          newClassName: patchedClass,
+          className: invalidClass.classname,
+          patchedClassName: invalidClass.patched,
         },
-        fix: (fixer) => fixer.replaceTextRange([start, end], patchedValue),
+        fix: fixable
+          ? (fixer) => {
+              // Create a fresh clone of the classNames array for THIS specific fix
+              const localPatchedClassNames = [...classNames];
+              localPatchedClassNames[invalidClass.index] = invalidClass.patched;
+
+              const patchedValue =
+                prefix +
+                joiner({
+                  classNames: localPatchedClassNames,
+                  whitespaces,
+                  headSpace,
+                  tailSpace,
+                }) +
+                suffix;
+
+              return fixer.replaceTextRange([start, end], patchedValue);
+            }
+          : undefined,
       });
     }
   }
 };
 
-export const enforcesNegativeArbitraryValues = createRule<Options, MessageIds>({
+export const importantModifierSuffix = createRule<Options, MessageIds>({
   name: RULE_NAME,
   meta: {
     docs: {
       description:
-        "Warns about `-` prefixed classnames using arbitrary values.",
+        "In v4 you should place the `!` at the very end of the class name.",
     },
-    hasSuggestions: false,
     messages: {
-      "fix:irregular-negative":
-        "Replace '{{oldClassName}}' by '{{newClassName}}'",
+      "issue:important-modifier-prefix":
+        "Class '{{className}}' should place '!' at the very end ('{{patchedClassName}}')",
     },
     fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`
@@ -168,27 +165,27 @@ export const enforcesNegativeArbitraryValues = createRule<Options, MessageIds>({
    * - If some configuration is provided as the second argument, `defaultOptions` is ignored completely (not merged)
    * - In other words, the `defaultOptions` is only used when the rule is used WITHOUT any configuration
    */
+
   defaultOptions: [{}],
   create: (context, options) => {
     // Merged settings
     const settings = parsePluginSettings(context.settings);
-    const genericContext = context as unknown as Readonly<GenericRuleContext>;
 
     return defineVisitors(
-      genericContext,
+      context as unknown as Readonly<GenericRuleContext>,
       // Template visitor is only used within Vue SFC files (inside <template> section).
       createTemplateVisitors(
         context,
         settings,
         options,
-        negativeArbitraryClassnames,
+        importantPrefixClassnames,
       ),
       // Script visitor is used within both JSX and Vue SFC files (inside <script> section).
       createScriptVisitors(
         context,
         settings,
         options,
-        negativeArbitraryClassnames,
+        importantPrefixClassnames,
       ),
     );
   },

@@ -14,6 +14,10 @@ import {
   RULE_NAME as ENFORCES_SHORTHAND,
 } from "./rules/enforces-shorthand";
 import {
+  importantModifierSuffix,
+  RULE_NAME as IMPORTANT_MODIFIER_SUFFIX,
+} from "./rules/important-modifier-suffix";
+import {
   noArbitraryValue,
   RULE_NAME as NO_ARBITRARY_VALUE,
 } from "./rules/no-arbitrary-value";
@@ -55,6 +59,7 @@ const plugin = {
     [CLASSNAMES_ORDER]: classnamesOrder,
     [ENFORCES_NEGATIVE_ARBITRARY_VALUES]: enforcesNegativeArbitraryValues,
     [ENFORCES_SHORTHAND]: enforcesShorthand,
+    [IMPORTANT_MODIFIER_SUFFIX]: importantModifierSuffix,
     [NO_ARBITRARY_VALUE]: noArbitraryValue,
     [NO_CUSTOM_CLASSNAME]: noCustomClassname,
     [NO_CONTRADICTING_CLASSNAME]: noContradictingClassname,
@@ -66,6 +71,7 @@ const recommended = {
   [CLASSNAMES_ORDER]: "warn",
   [ENFORCES_NEGATIVE_ARBITRARY_VALUES]: "warn",
   [ENFORCES_SHORTHAND]: "warn",
+  [IMPORTANT_MODIFIER_SUFFIX]: "warn",
   [NO_ARBITRARY_VALUE]: "off",
   [NO_CUSTOM_CLASSNAME]: "warn",
   [NO_CONTRADICTING_CLASSNAME]: "error",

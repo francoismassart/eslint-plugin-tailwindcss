@@ -11,7 +11,7 @@
 
 - Best practices & consistency since 2021
 - [Made for Tailwind CSS v4](./CHANGELOG.md#made-for-tailwind-css-v4)
-- [7 rules available](#rules) and more on the way
+- [8 rules available](#rules) and more on the way
 - What's new? [Changelog](./CHANGELOG.md) | [Release notes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases) | [Roadmap](./ROADMAP.md)
 - [Upgrade guide](./UPGRADE.md) from `v3` to `v4`
 
@@ -46,6 +46,7 @@
 | [classnames-order](docs/rules/classnames-order.md)                                     | Enforces a consistent order for the Tailwind CSS classnames, based on the compiler. |     | ✅  | 🔧  |     |
 | [enforces-negative-arbitrary-values](docs/rules/enforces-negative-arbitrary-values.md) | Warns about `-` prefixed classnames using arbitrary values.                         |     | ✅  | 🔧  |     |
 | [enforces-shorthand](docs/rules/enforces-shorthand.md)                                 | Avoid using multiple Tailwind CSS classnames when not required.                     |     | ✅  | 🔧  |     |
+| [important-modifier-suffix](docs/rules/important-modifier-suffix.md)                   | In v4 you should place the `!` at the very end of the class name.                   |     | ✅  |     |     |
 | [no-arbitrary-value](docs/rules/no-arbitrary-value.md)                                 | Forbid using arbitrary values in classnames.                                        |     |     |     |     |
 | [no-contradicting-classname](docs/rules/no-contradicting-classname.md)                 | Avoid contradicting Tailwind CSS classnames.                                        | ✅  |     |     | 💡  |
 | [no-custom-classname](docs/rules/no-custom-classname.md)                               | Detects classnames which do not belong to Tailwind CSS.                             |     | ✅  |     | 💡  |

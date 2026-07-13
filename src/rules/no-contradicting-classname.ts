@@ -33,8 +33,6 @@ import {
   flattenNestingWorker,
 } from "../utils/tailwindcss-api";
 
-export { ESLintUtils } from "@typescript-eslint/utils";
-
 export const RULE_NAME = "no-contradicting-classname";
 
 // Message IDs don't need to be prefixed, I just find it easier to keep track of them this way
