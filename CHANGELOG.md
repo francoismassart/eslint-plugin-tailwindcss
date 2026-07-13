@@ -4,7 +4,7 @@
 
 ### 🚀 Features
 
-New rule [`important-modifier-suffix`](./docs/rules/important-modifier-suffix.md): Makes sure the `!` important modifier is at the end of the class names. The former `!` location (between the modifiers and the class name hes been deprecated).
+New rule [`important-modifier-suffix`](./docs/rules/important-modifier-suffix.md): Makes sure the `!` important modifier is at the end of the class names. The former `!` location (between the modifiers and the class name is deprecated).
 
 ## `v4.1.0`
 

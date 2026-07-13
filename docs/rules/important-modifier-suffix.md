@@ -26,7 +26,7 @@ Examples of **correct** code for this rule:
 <h1 class="block!">Demo</h1>
 ```
 
-### Why using shorthands?
+### Why using `!` at the end?
 
 - 🤓 Move **away from deprecated** old way
 
