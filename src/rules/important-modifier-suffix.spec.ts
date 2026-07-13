@@ -46,11 +46,15 @@ ruleTester.run(RULE_NAME, importantModifierSuffix, {
         code: `ctl('dark:!m-[10px]')`,
         importantPrefixedClass: "dark:!m-[10px]",
         importantSuffixedClass: "dark:m-[10px]!",
+        output: `ctl('dark:m-[10px]!')`,
       },
-    ].map(({ code, importantPrefixedClass, importantSuffixedClass }) => ({
-      code: code,
-      errors: [generateError(importantPrefixedClass, importantSuffixedClass)],
-    })),
+    ].map(
+      ({ code, importantPrefixedClass, importantSuffixedClass, output }) => ({
+        code: code,
+        output,
+        errors: [generateError(importantPrefixedClass, importantSuffixedClass)],
+      }),
+    ),
     ...[
       {
         code: `
@@ -61,9 +65,16 @@ ruleTester.run(RULE_NAME, importantModifierSuffix, {
         \`)`,
         invalidClasses: ["lg:!block", "!-m-2"],
         suffixedClasses: ["lg:block!", "-m-2!"],
+        output: `
+        ctl(\`
+          lg:block!
+          dark:bg-white
+          -m-2!
+        \`)`,
       },
-    ].map(({ code, invalidClasses, suffixedClasses }) => ({
+    ].map(({ code, invalidClasses, suffixedClasses, output }) => ({
       code: code,
+      output,
       errors: invalidClasses.map((importantPrefixedClass, index) =>
         generateError(importantPrefixedClass, suffixedClasses[index]),
       ),

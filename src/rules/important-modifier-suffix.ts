@@ -4,15 +4,20 @@
  * @author François Massart
  */
 
+import { TSESTree } from "@typescript-eslint/utils";
 import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
 import urlCreator from "../url-creator";
+import { joiner } from "../utils/joiner";
 import {
   parsePluginSettings,
   PluginSettings,
 } from "../utils/parse-plugin-settings";
-import { getBaseClassname } from "../utils/parser/classname";
+import {
+  getBaseClassname,
+  getModifiersPrefix,
+} from "../utils/parser/classname";
 import {
   dissectAtomicNode,
   generateLocForClassname,
@@ -57,14 +62,24 @@ const importantPrefixClassnames = (
   const totalLiterals = literals.length;
   for (let index = 0; index < totalLiterals; index++) {
     const node = literals[index];
-    const { originalClassNamesValue } = dissectAtomicNode(node, genericContext);
+    const { originalClassNamesValue, start, end, prefix, suffix } =
+      dissectAtomicNode(node, genericContext);
 
     // Early escape if the value is falsy or doesn't contain any brackets (no arbitrary value possible)
     if (!originalClassNamesValue || !originalClassNamesValue.includes("!"))
       continue;
 
-    const { classNames } = getClassnamesFromValue(originalClassNamesValue);
+    // 1. Gather invalid classes in the node
+    const invalidClassesInNode: Array<{
+      classname: string;
+      patched: string;
+      type: string;
+    }> = [];
+
+    const { classNames, whitespaces, headSpace, tailSpace } =
+      getClassnamesFromValue(originalClassNamesValue);
     const classNamesLength = classNames.length;
+    const patchedClassNames = [...classNames];
 
     for (let index = 0; index < classNamesLength; index++) {
       const targetClassName = classNames[index];
@@ -76,26 +91,56 @@ const importantPrefixClassnames = (
       if (checkedClasses.has(targetClassName)) continue;
       checkedClasses.add(targetClassName);
 
+      const modifiers = getModifiersPrefix(targetClassName);
       const baseClass = getBaseClassname(targetClassName);
 
       if (!baseClass.startsWith("!")) {
         continue;
       }
 
+      const patched = `${modifiers}${baseClass.slice(1)}!`;
+      invalidClassesInNode.push({
+        classname: targetClassName,
+        patched: patched,
+        type: node.type,
+      });
+      patchedClassNames[index] = patched;
+    }
+    // All classes are valid, skip to the next node
+    if (invalidClassesInNode.length === 0) continue;
+
+    // 2. Emit reports with a surgical fix (one class targeted)
+    for (const invalidClass of invalidClassesInNode) {
+      const fixable = invalidClass.type !== TSESTree.AST_NODE_TYPES.Identifier;
       const patchedLoc = generateLocForClassname(
         node,
-        targetClassName,
+        invalidClass.classname,
         originalClassNamesValue,
         genericContext,
       );
 
+      // Generate the fix exclusive to THIS iteration of the class
+      let patchedValue: string;
+      if (fixable) {
+        patchedValue = joiner({
+          classNames: patchedClassNames,
+          whitespaces,
+          headSpace,
+          tailSpace,
+        });
+
+        patchedValue = prefix + patchedValue + suffix;
+      }
       context.report({
         loc: patchedLoc,
         messageId: "issue:important-modifier-prefix",
         data: {
-          className: targetClassName,
-          patchedClassName: targetClassName,
+          className: invalidClass.classname,
+          patchedClassName: invalidClass.patched,
         },
+        fix: fixable
+          ? (fixer) => fixer.replaceTextRange([start, end], patchedValue)
+          : undefined,
       });
     }
   }
@@ -108,11 +153,11 @@ export const importantModifierSuffix = createRule<Options, MessageIds>({
       description:
         "In v4 you should place the `!` at the very end of the class name.",
     },
-    hasSuggestions: false,
     messages: {
       "issue:important-modifier-prefix":
-        "Class '{{className}}' should place '!' at the very end ('{{className}}')",
+        "Class '{{className}}' should place '!' at the very end ('{{patchedClassName}}')",
     },
+    fixable: "code",
     // Schema is also parsed by `eslint-doc-generator`
     schema: [
       {
