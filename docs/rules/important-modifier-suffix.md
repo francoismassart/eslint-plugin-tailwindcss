@@ -10,6 +10,26 @@ As explained in the official documentation about the [important modifier](https:
 >
 > In `v4` you should place the `!` at the very end of the class name instead.
 
+**The old way is still supported for compatibility but is deprecated.**
+
+## Rule Details
+
+Examples of **incorrect** code for this rule:
+
+```html
+<h1 class="!block">Demo</h1>
+```
+
+Examples of **correct** code for this rule:
+
+```html
+<h1 class="block!">Demo</h1>
+```
+
+### Why using shorthands?
+
+- 🤓 Move **away from deprecated** old way
+
 ## Options
 
 <!-- begin auto-generated rule options list -->
