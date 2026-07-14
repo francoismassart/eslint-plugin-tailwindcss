@@ -4,6 +4,7 @@ import * as Parser from "@typescript-eslint/parser";
 import { TestLanguageOptions } from "@typescript-eslint/rule-tester";
 import { simpleTraverse } from "@typescript-eslint/typescript-estree";
 import { TSESTree } from "@typescript-eslint/utils";
+import svelteParser from "svelte-eslint-parser";
 import * as VueParser from "vue-eslint-parser";
 import { VStartTag } from "vue-eslint-parser/ast/index";
 
@@ -18,6 +19,10 @@ export const withJSX = {
 
 export const withAngularParser: TestLanguageOptions = {
   parser: AngularParser,
+};
+
+export const withSvelteParser: TestLanguageOptions = {
+  parser: svelteParser,
 };
 
 export const withVueParser: TestLanguageOptions = {

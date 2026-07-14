@@ -1,9 +1,14 @@
 import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
+import { AST as SvelteAST } from "svelte-eslint-parser";
 import { AST as VueAST } from "vue-eslint-parser";
 
 import type { SupportedAttribute, TextAttribute } from "../../types";
 import { type PluginSettings } from "../parse-plugin-settings";
-import { getJSXAttributeName, getVAttributeName } from "./node";
+import {
+  getJSXAttributeName,
+  getSvelteAttributeName,
+  getVAttributeName,
+} from "./node";
 
 /**
  * Validates a `JSXAttribute` for `eslint-plugin-tailwindcss`
@@ -30,6 +35,25 @@ export const isValidJSXAttribute = (
     }
   }
   // Valid JSXAttribute
+  return true;
+};
+
+/**
+ * Validates a `SvelteAttribute` for `eslint-plugin-tailwindcss`
+ * @returns `false` if the `SvelteAttribute` can be skipped.
+ */
+export const isValidSvelteAttribute = (
+  node: SvelteAST.SvelteAttribute,
+  settings: PluginSettings,
+): boolean => {
+  const attributes = (settings && settings.attributes) || [];
+  // Ignored SvelteAttribute
+  if (!attributes.includes(getSvelteAttributeName(node))) return false;
+  // No value
+  if (!node.value) return false;
+  if (node.value.length === 0) return false;
+  if (node.value.length === 1 && node.value[0].type !== "SvelteLiteral")
+    return false;
   return true;
 };
 

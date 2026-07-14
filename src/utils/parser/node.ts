@@ -1,4 +1,5 @@
 import { AST_NODE_TYPES, TSESTree } from "@typescript-eslint/utils";
+import { AST as SvelteAST } from "svelte-eslint-parser";
 import { AST as VueAST } from "vue-eslint-parser";
 
 import { AtomicNode } from "../rule";
@@ -144,6 +145,17 @@ export const getJSXAttributeName = (node: TSESTree.JSXAttribute): string => {
 
 /**
  * @example
+ * getSvelteAttributeName(<div class="flex" />); // class
+ * getSvelteAttributeName(<div ns:demo="flex" />); // ns:demo
+ */
+export const getSvelteAttributeName = (
+  node: SvelteAST.SvelteAttribute,
+): string => {
+  return node.key.name;
+};
+
+/**
+ * @example
  * getVAttributeName(<template><p class="flex"></p></template>); // class
  * getVAttributeName(<template><p v-bind:class="classes"></p></template>); // class
  */
@@ -200,6 +212,13 @@ export const dissectAtomicNode = (
       [start, end] = node.range;
       start++;
       end--;
+      break;
+    }
+    case "SvelteLiteral": {
+      if (typeof node.value !== "string") break;
+      if (node.value === "") break;
+      originalClassNamesValue = "" + node.value;
+      [start, end] = node.range;
       break;
     }
     case TSESTree.AST_NODE_TYPES.TemplateElement: {
