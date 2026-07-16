@@ -221,6 +221,13 @@ export const dissectAtomicNode = (
       [start, end] = node.range;
       break;
     }
+    case "SvelteName": {
+      if (typeof node.name !== "string") break;
+      if (node.name === "") break;
+      originalClassNamesValue = "" + node.name;
+      [start, end] = node.range;
+      break;
+    }
     case TSESTree.AST_NODE_TYPES.TemplateElement: {
       originalClassNamesValue = node.value.raw;
       if (originalClassNamesValue === "") break;
