@@ -52,8 +52,7 @@ export const isValidSvelteAttribute = (
   // No value
   if (!node.value) return false;
   if (node.value.length === 0) return false;
-  if (node.value.length === 1 && node.value[0].type !== "SvelteLiteral")
-    return false;
+  // TODO Svelte
   return true;
 };
 
