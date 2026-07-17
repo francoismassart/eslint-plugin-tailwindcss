@@ -54,7 +54,6 @@
     "docs:init": "eslint-doc-generator --init-rule-docs",
     "docs:update": "eslint-doc-generator",
     "test": "vitest",
-    "wip": "vitest src/rules/classnames-order.wip.spec.ts",
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
