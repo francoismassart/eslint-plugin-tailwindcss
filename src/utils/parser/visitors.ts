@@ -39,3 +39,23 @@ export const defineVisitors = (
     scriptVisitor,
   );
 };
+
+/**
+ * Append work to the end of a file traversal without replacing a parser's own
+ * `Program:exit` listener (Vue uses one internally for template visitors).
+ */
+export const appendProgramExitVisitor = (
+  visitors: RuleListener,
+  callback: () => void,
+): RuleListener => {
+  const originalProgramExit = visitors["Program:exit"];
+  return {
+    ...visitors,
+    "Program:exit": (node) => {
+      if (typeof originalProgramExit === "function") {
+        originalProgramExit(node);
+      }
+      callback();
+    },
+  };
+};

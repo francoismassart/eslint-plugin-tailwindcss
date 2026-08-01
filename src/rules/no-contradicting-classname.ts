@@ -8,7 +8,6 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
 import urlCreator from "../url-creator";
-import { getPropertiesFromCssRule } from "../utils/get-properties-from-css-rule";
 import { joiner } from "../utils/joiner";
 import { mapGetKeyFromSetValues } from "../utils/map";
 import {
@@ -22,16 +21,17 @@ import {
   getClassnamesFromValue,
   getRangeFromAtomicNode,
 } from "../utils/parser/node";
-import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
+import {
+  appendProgramExitVisitor,
+  defineVisitors,
+  GenericRuleContext,
+} from "../utils/parser/visitors";
 import {
   AtomicNode,
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
-import {
-  candidatesToCssWorker,
-  flattenNestingWorker,
-} from "../utils/tailwindcss-api";
+import { getClassPropertiesWorker } from "../utils/tailwindcss-api";
 
 export const RULE_NAME = "no-contradicting-classname";
 
@@ -49,57 +49,17 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-const cssPropertiesCache = new Map<string, Set<string> | undefined>();
-
 const getCompiledGroup = (
   modifiers: string,
   baseClasses: Array<string>,
-  settings: PluginSettings,
-  context: GenericRuleContext,
+  propertiesByClassName: Map<string, Set<string> | undefined>,
 ) => {
   const groupMembers = new Map<string, Set<string>>();
 
   for (const baseClass of baseClasses) {
     const fullClassName = `${modifiers}${baseClass}`;
-
-    if (cssPropertiesCache.has(fullClassName)) {
-      const cachedProperties = cssPropertiesCache.get(fullClassName);
-      if (cachedProperties) {
-        groupMembers.set(fullClassName, cachedProperties);
-      }
-      continue;
-    }
-
-    const cssRules = candidatesToCssWorker(
-      settings.cssConfigPath,
-      context.filename,
-      fullClassName,
-    );
-    const cssRule = cssRules[0];
-
-    if (!cssRule) {
-      cssPropertiesCache.set(fullClassName, undefined);
-      continue;
-    }
-
-    const flattenedSelectors = flattenNestingWorker(cssRule);
-    const hasExoticSelector = flattenedSelectors.some(
-      // Detect complex selectors
-      // examples:
-      // `no-marker` → will include `::before`, `::after`
-      // `space-x-0` → will include `:where(.space-x-0 > :not(:last-child))`)
-      (selector) => selector.includes("::") || selector.includes(" "),
-    );
-
-    if (hasExoticSelector) {
-      // Ignore the complex selectors, we focus on `.single-simple-class-names`
-      cssPropertiesCache.set(fullClassName, undefined);
-      continue;
-    }
-
-    const cssProperties = getPropertiesFromCssRule(cssRule);
-    cssPropertiesCache.set(fullClassName, cssProperties);
-    groupMembers.set(fullClassName, cssProperties);
+    const properties = propertiesByClassName.get(fullClassName);
+    if (properties) groupMembers.set(fullClassName, properties);
   }
   return groupMembers;
 };
@@ -126,18 +86,59 @@ const getContradictions = (
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
 
-  for (const node of literals) {
-    const { originalClassNamesValue, start, end, prefix, suffix } =
-      dissectAtomicNode(node, genericContext);
+  const preparedNodes = literals.map((node) => {
+    const dissected = dissectAtomicNode(node, genericContext);
+    const parsed = getClassnamesFromValue(dissected.originalClassNamesValue);
+    const groups = groupByModifiersPrefix(parsed.classNames);
+    return { node, ...dissected, ...parsed, groups };
+  });
 
-    const { classNames, whitespaces, headSpace, tailSpace } =
-      getClassnamesFromValue(originalClassNamesValue);
+  const classNamesToCompile = [
+    ...new Set(
+      preparedNodes.flatMap(({ groups }) =>
+        [...groups.entries()].flatMap(([modifiers, baseClasses]) =>
+          baseClasses.length <= 1
+            ? []
+            : baseClasses.map((baseClass) => `${modifiers}${baseClass}`),
+        ),
+      ),
+    ),
+  ];
+  const compiledProperties = getClassPropertiesWorker(
+    settings.cssConfigPath,
+    context.filename,
+    classNamesToCompile,
+    settings,
+  );
+  const propertiesByClassName = new Map<
+    string,
+    Set<string> | undefined
+  >();
+  for (const [index, className] of classNamesToCompile.entries()) {
+    propertiesByClassName.set(
+      className,
+      compiledProperties[index],
+    );
+  }
+
+  for (const preparedNode of preparedNodes) {
+    const {
+      node,
+      originalClassNamesValue,
+      start,
+      end,
+      prefix,
+      suffix,
+      classNames,
+      whitespaces,
+      headSpace,
+      tailSpace,
+      groups,
+    } = preparedNode;
 
     // Skip empty/Single className
     if (classNames.length <= 1) continue;
 
-    // Group by modifier
-    const groups = groupByModifiersPrefix(classNames);
     const conflictingsClassNames: Array<Array<string>> = [];
 
     // Generate all rules and save the affected CSS properties for each rule
@@ -148,8 +149,7 @@ const getContradictions = (
       const groupMembers = getCompiledGroup(
         modifiers,
         baseCls,
-        settings,
-        genericContext,
+        propertiesByClassName,
       );
 
       // If the resolved group doesn't have at least 2 valid members, no conflict is possible
@@ -261,12 +261,24 @@ export const noContradictingClassname = createRule<Options, MessageIds>({
     // Merged settings
     const settings = parsePluginSettings(context.settings);
 
-    return defineVisitors(
+    const literals: Array<AtomicNode> = [];
+    const collectLiterals = (
+      _context: RuleContext,
+      _settings: PluginSettings,
+      _options: RuleOptions,
+      foundLiterals: Array<AtomicNode>,
+    ) => literals.push(...foundLiterals);
+
+    const visitors = defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,
       // Template visitor is only used within Vue SFC files (inside <template> section).
-      createTemplateVisitors(context, settings, options, getContradictions),
+      createTemplateVisitors(context, settings, options[0], collectLiterals),
       // Script visitor is used within both JSX and Vue SFC files (inside <script> section).
-      createScriptVisitors(context, settings, options, getContradictions),
+      createScriptVisitors(context, settings, options[0], collectLiterals),
+    );
+
+    return appendProgramExitVisitor(visitors, () =>
+      getContradictions(context, settings, options[0], literals),
     );
   },
 });

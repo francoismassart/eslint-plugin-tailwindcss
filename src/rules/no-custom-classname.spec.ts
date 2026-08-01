@@ -215,6 +215,19 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       errors: [suggest("unknownreact", `ctl(\`relative\`)`)],
     },
     {
+      code: `ctl("unknown-first flex"); ctl("unknown-second block");`,
+      errors: [
+        suggest(
+          "unknown-first",
+          `ctl("flex"); ctl("unknown-second block");`,
+        ),
+        suggest(
+          "unknown-second",
+          `ctl("unknown-first flex"); ctl("block");`,
+        ),
+      ],
+    },
+    {
       code: `
       ctl(\`
         unknownreact
