@@ -36,6 +36,13 @@ const candidatesToCssWorkerRaw: (
   require.resolve("./worker/candidates-to-css.mjs"),
 );
 
+const canonicalizeCandidatesWorkerRaw: (
+  cssConfigPath: string,
+  classNames: Array<string>,
+) => Array<string> = createSyncFn(
+  require.resolve("./worker/canonicalize-candidates.mjs"),
+);
+
 const flattenNestingWorkerRaw: (cssRule: string) => Array<string> =
   createSyncFn(require.resolve("./worker/flatten-nesting.mjs"));
 
@@ -45,6 +52,7 @@ const themeCache = new Map<string, Theme>();
 const sortedClassNamesCache = new Map<string, Array<string>>();
 const validClassNameCache = new Map<string, boolean>();
 const candidatesToCssCache = new Map<string, Array<string | null>>();
+const canonicalCandidateCache = new Map<string, string>();
 const flattenNestingCache = new Map<string, Array<string>>();
 
 const convertToAbsolutePath = (
@@ -126,6 +134,41 @@ export const candidatesToCssWorker = (
   return result;
 };
 
+/**
+ * Only the classnames which are still unknown are sent over, as a single batch,
+ * so a node costs at most one round trip no matter how many classnames it holds.
+ */
+export const canonicalizeCandidatesWorker = (
+  cssConfigPath: string,
+  contextFilename: string,
+  classNames: Array<string>,
+): Array<string> => {
+  const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
+  const cacheKeyOf = (className: string) => `[${absolutePath}]${className}`;
+
+  const missing = [
+    ...new Set(
+      classNames.filter(
+        (className) => !canonicalCandidateCache.has(cacheKeyOf(className)),
+      ),
+    ),
+  ];
+
+  if (missing.length > 0) {
+    const resolved = canonicalizeCandidatesWorkerRaw(absolutePath, missing);
+    for (const [index, className] of missing.entries()) {
+      canonicalCandidateCache.set(
+        cacheKeyOf(className),
+        resolved[index] ?? className,
+      );
+    }
+  }
+
+  return classNames.map(
+    (className) => canonicalCandidateCache.get(cacheKeyOf(className))!,
+  );
+};
+
 export const flattenNestingWorker = (cssRule: string): Array<string> => {
   if (flattenNestingCache.has(cssRule)) {
     return flattenNestingCache.get(cssRule)!;
@@ -144,5 +187,6 @@ export const clearWorkerCaches = (): void => {
   sortedClassNamesCache.clear();
   validClassNameCache.clear();
   candidatesToCssCache.clear();
+  canonicalCandidateCache.clear();
   flattenNestingCache.clear();
 };
