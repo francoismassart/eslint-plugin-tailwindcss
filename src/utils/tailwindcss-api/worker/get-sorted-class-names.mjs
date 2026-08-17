@@ -19,7 +19,7 @@ runAsWorker(
      */
     unorderedClassNames,
   ) => {
-    const utils = new TailwindUtils();
+    const utils = new TailwindUtils({ paths: [import.meta.url] });
     await utils.loadConfigV4(cssConfigPath);
     if (!utils.context) {
       throw new Error(
