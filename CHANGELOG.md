@@ -1,5 +1,11 @@
 # Changelog
 
+## WIP
+
+### 🐞 Fixes
+
+- fix: [add `import.meta.url` to paths in TailwindUtils](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/470) (by [jeremy-code](https://github.com/jeremy-code) 🙏)
+
 ## `v4.3.0`
 
 ### 🚀 Features
