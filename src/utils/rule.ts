@@ -1,5 +1,8 @@
 import { TSESTree } from "@typescript-eslint/utils";
 import { RuleListener } from "@typescript-eslint/utils/ts-eslint";
+import type ESTree from "estree";
+import { ConditionalExpression } from "estree";
+import { AST as SvelteAST } from "svelte-eslint-parser";
 import { AST as VueAST } from "vue-eslint-parser";
 
 import type { TextAttribute } from "../types";
@@ -13,6 +16,7 @@ import {
   isValidCallExpression,
   isValidExpressionAttributeValue,
   isValidJSXAttribute,
+  isValidSvelteAttribute,
   isValidTextAttribute,
   isValidVAttribute,
 } from "./parser/visitors-validation";
@@ -22,8 +26,20 @@ export type AtomicNode =
   | TSESTree.Identifier
   | TSESTree.Literal
   | TSESTree.TemplateElement
+  | SvelteAST.SvelteLiteral
+  | SvelteAST.SvelteName
   | VueAST.VAttribute
   | VueAST.VLiteral;
+
+type ParsingNode =
+  | ESTree.Expression
+  | TSESTree.Node
+  | SvelteAST.SvelteAttribute
+  | SvelteAST.SvelteDirective
+  | SvelteAST.SvelteLiteral
+  | SvelteAST.SvelteMustacheTag
+  | SvelteAST.SvelteName
+  | VueAST.VAttribute;
 
 /**
  * Recursively extracts literal nodes from the given AST node.
@@ -38,8 +54,8 @@ export type AtomicNode =
 export const getLiteralsFromNode = <TRuleContext>(
   settings: PluginSettings,
   context: TRuleContext,
-  node: TSESTree.Node | VueAST.VAttribute,
-  rootNode: TSESTree.Node | VueAST.VAttribute,
+  node: ParsingNode,
+  rootNode: ParsingNode,
   depth: number = 0,
   targetKeys: Array<string> = [],
 ): Array<AtomicNode> => {
@@ -167,6 +183,7 @@ export const getLiteralsFromNode = <TRuleContext>(
     case TSESTree.AST_NODE_TYPES.Literal: {
       if (typeof node.value !== "string") break;
       if (node.value === "") break;
+      // @ts-expect-error Property 'parent' is missing in type 'SimpleLiteral' but required in type 'StringLiteral'
       literals.push(node);
       break;
     }
@@ -185,10 +202,11 @@ export const getLiteralsFromNode = <TRuleContext>(
     case TSESTree.AST_NODE_TYPES.ObjectExpression: {
       if (rootNode === undefined) return [];
 
-      const useKeys = isWithinCallee(
-        rootNode as TSESTree.Node,
-        settings.parseKeyFunctions, // clsx, classnames, etc.
-      );
+      const useKeys =
+        isWithinCallee(
+          rootNode as TSESTree.Node,
+          settings.parseKeyFunctions, // clsx, classnames, etc.
+        ) || rootNode.type === "SvelteAttribute";
       const isVue =
         rootNode.type === "VAttribute" &&
         rootNode.key &&
@@ -265,6 +283,47 @@ export const getLiteralsFromNode = <TRuleContext>(
 
       break;
     }
+    case "SvelteAttribute": {
+      if (!isValidSvelteAttribute(node, settings)) break;
+      for (const element of node.value) {
+        if (!element) continue;
+        literals.push(
+          ...getLiteralsFromNode(
+            settings,
+            context,
+            element,
+            rootNode,
+            depth + 1,
+            targetKeys,
+          ),
+        );
+      }
+      break;
+    }
+    case "SvelteLiteral": {
+      if (typeof node.value !== "string") break;
+      if (node.value === "") break;
+      literals.push(node);
+      break;
+    }
+    case "SvelteMustacheTag": {
+      literals.push(
+        ...getLiteralsFromNode(
+          settings,
+          context,
+          node.expression as ConditionalExpression,
+          rootNode,
+          depth + 1,
+        ),
+      );
+      break;
+    }
+    case "SvelteName": {
+      if (typeof node.name !== "string") break;
+      if (node.name === "") break;
+      literals.push(node);
+      break;
+    }
   }
   return literals.filter((literal) => {
     if ("value" in literal) {
@@ -294,7 +353,6 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
     literals: Array<AtomicNode>,
   ) => void,
 ): RuleListener => {
-  // console.log(options);
   return {
     /**
      * In JSX + inside <script> section of Vue SFC…
@@ -335,6 +393,26 @@ export const createScriptVisitors = <TRuleContext, TOptions>(
         context,
         jsxAttributeNode,
         jsxAttributeNode,
+        0,
+      );
+      lintLiterals(context, settings, options, literals);
+    },
+
+    SvelteAttribute(node: SvelteAST.SvelteAttribute) {
+      const literals = getLiteralsFromNode(settings, context, node, node, 0);
+      lintLiterals(context, settings, options, literals);
+    },
+
+    SvelteDirective(node: SvelteAST.SvelteDirective) {
+      if (node.kind !== "Class") return;
+      if (node.key.type !== "SvelteDirectiveKey") return;
+      if (node.key.name.type !== "SvelteName") return;
+      if (!node.key.name.name) return;
+      const literals = getLiteralsFromNode(
+        settings,
+        context,
+        node.key.name,
+        node.key.name,
         0,
       );
       lintLiterals(context, settings, options, literals);

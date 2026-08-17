@@ -126,7 +126,10 @@ const detectCustomClassnames = (
 
     // 2. Emit reports with a surgical fix (one class targeted)
     for (const invalidClass of invalidClassesInNode) {
-      const fixable = invalidClass.type !== TSESTree.AST_NODE_TYPES.Identifier;
+      const fixable = ![
+        TSESTree.AST_NODE_TYPES.Identifier,
+        "SvelteName",
+      ].includes(invalidClass.type);
       const patchedLoc = generateLocForClassname(
         node,
         invalidClass.classname,

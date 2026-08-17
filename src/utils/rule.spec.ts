@@ -1,5 +1,8 @@
 import { parse } from "@typescript-eslint/parser";
 import { TSESTree } from "@typescript-eslint/utils";
+import { Literal } from "estree";
+import * as SvelteParser from "svelte-eslint-parser";
+import { SvelteName } from "svelte-eslint-parser/lib/ast";
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_SETTINGS, type PluginSettings } from "./parse-plugin-settings";
@@ -26,6 +29,40 @@ const getClassNameJSXAttributeNode = (ast: TSESTree.Program) => {
       attribute.name.type === "JSXIdentifier" &&
       attribute.name.name === "className",
   ) as TSESTree.JSXAttribute;
+};
+
+/**
+ * @example `<h1 className={...}>getClassNameSvelteAttributeNode</h1>`
+ */
+const getClassNameSvelteAttributeNode = (
+  ast: SvelteParser.AST.SvelteProgram,
+) => {
+  return (
+    (ast.body[0] as SvelteParser.AST.SvelteElement)
+      .startTag as SvelteParser.AST.SvelteStartTag
+  ).attributes.find(
+    (attribute) =>
+      attribute.type === "SvelteAttribute" &&
+      attribute.key.type === "SvelteName" &&
+      attribute.key.name === "class",
+  ) as SvelteParser.AST.SvelteAttribute;
+};
+
+/**
+ * @example `<h1 className={...}>getClassNameSvelteDirectiveNode</h1>`
+ */
+const getClassNameSvelteDirectiveNode = (
+  ast: SvelteParser.AST.SvelteProgram,
+) => {
+  return (
+    (ast.body[0] as SvelteParser.AST.SvelteElement)
+      .startTag as SvelteParser.AST.SvelteStartTag
+  ).attributes.find(
+    (attribute) =>
+      attribute.type === "SvelteDirective" &&
+      attribute.kind === "Class" &&
+      attribute.key.type === "SvelteDirectiveKey",
+  ) as SvelteParser.AST.SvelteDirective;
 };
 
 /**
@@ -73,6 +110,88 @@ describe("getLiteralsFromNode", () => {
 
       const result = getLiteralsFromNode(mockSettings, mockContext, node, node);
       expect(result.length).toBe(1);
+    });
+  });
+
+  describe("Using Svelte", () => {
+    describe("SvelteAttribute", () => {
+      it(`Simple: \`<div class="block absolute">...</div>\``, () => {
+        const parsed = SvelteParser.parseForESLint(
+          `<div class="block absolute">...</div>`,
+        );
+        const attribute = getClassNameSvelteAttributeNode(parsed.ast);
+        const result = getLiteralsFromNode(
+          mockSettings,
+          mockContext,
+          attribute,
+          attribute,
+        );
+        expect(result.length).toBe(1);
+        expect((result[0] as Literal).value).toBe("block absolute");
+      });
+    });
+    describe("SvelteDirective", () => {
+      it(`Simple: \`<div class:lg:block={true}>...</div>\``, () => {
+        const parsed = SvelteParser.parseForESLint(
+          `<div class:lg:block={true}>...</div>`,
+        );
+        const attribute = getClassNameSvelteDirectiveNode(parsed.ast);
+        const result = getLiteralsFromNode(
+          mockSettings,
+          mockContext,
+          // @ts-expect-error ...
+          attribute.key.name,
+          attribute.key.name,
+        );
+        expect(result.length).toBe(1);
+        expect((result[0] as SvelteName).name).toBe("lg:block");
+      });
+    });
+    describe("SvelteMustacheTag", () => {
+      it(`Object: \`class={{ "block absolute": shown, "size-0 invisible": !shown }}\``, () => {
+        const parsed = SvelteParser.parseForESLint(
+          `<div class={{ "block absolute": shown, "size-0 invisible": !shown }}>...</div>`,
+        );
+        const attribute = getClassNameSvelteAttributeNode(parsed.ast);
+        const result = getLiteralsFromNode(
+          mockSettings,
+          mockContext,
+          attribute,
+          attribute,
+        );
+        expect(result.length).toBe(2);
+        expect((result[0] as Literal).value).toBe("block absolute");
+        expect((result[1] as Literal).value).toBe("size-0 invisible");
+      });
+      it(`Array: \`class={[faded && 'saturate-0 opacity-50', large && 'scale-200']}\``, () => {
+        const parsed = SvelteParser.parseForESLint(
+          `<div class={[faded && 'saturate-0 opacity-50', large && 'scale-200']}>...</div>`,
+        );
+        const attribute = getClassNameSvelteAttributeNode(parsed.ast);
+        const result = getLiteralsFromNode(
+          mockSettings,
+          mockContext,
+          attribute,
+          attribute,
+        );
+        expect(result.length).toBe(2);
+        expect((result[0] as Literal).value).toBe("saturate-0 opacity-50");
+        expect((result[1] as Literal).value).toBe("scale-200");
+      });
+      it(`Array: \`class={['block absolute', props.class]}\``, () => {
+        const parsed = SvelteParser.parseForESLint(
+          `<div class={['block absolute', props.class]}>...</div>`,
+        );
+        const attribute = getClassNameSvelteAttributeNode(parsed.ast);
+        const result = getLiteralsFromNode(
+          mockSettings,
+          mockContext,
+          attribute,
+          attribute,
+        );
+        expect(result.length).toBe(1);
+        expect((result[0] as Literal).value).toBe("block absolute");
+      });
     });
   });
 
