@@ -1,5 +1,22 @@
 # Changelog
 
+## `v4.3.0`
+
+### 🚀 Features
+
+🌈 Enhanced support for Svelte projects, here are few examples:
+
+- `class="flex"`
+- `class:lg:block={true}`
+- `class={{ "block absolute": shown, "size-0 invisible": !shown }}`
+- `class={[faded && 'saturate-0 opacity-50', large && 'scale-200']}`
+- `class={['block absolute', props.class]}`
+
+### 🔍 Minor
+
+- docs: update getting started configuration to use flat config
+- docs: changelog, roadmap and a new one time sponsor ❤️
+
 ## `v4.2.0`
 
 ### 🚀 Features
