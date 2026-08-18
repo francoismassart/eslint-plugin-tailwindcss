@@ -82,7 +82,11 @@ const checkArbitraryClassnames = (
   literals: Array<AtomicNode>,
 ) => {
   const genericContext = context as unknown as GenericRuleContext;
-  const theme = loadThemeWorker(settings.cssConfigPath, context.filename);
+  const theme = loadThemeWorker(
+    settings.cssConfigPath,
+    context.filename,
+    settings,
+  );
 
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =

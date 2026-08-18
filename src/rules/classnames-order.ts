@@ -8,7 +8,6 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils";
 import { RuleContext as TSESLintRuleContext } from "@typescript-eslint/utils/ts-eslint";
 
 import urlCreator from "../url-creator";
-import { getCacheSettings, resetCache } from "../utils/cache";
 import { joiner } from "../utils/joiner";
 import {
   parsePluginSettings,
@@ -19,16 +18,17 @@ import {
   generateLocForClassname,
   getClassnamesFromValue,
 } from "../utils/parser/node";
-import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
+import {
+  appendProgramExitVisitor,
+  defineVisitors,
+  GenericRuleContext,
+} from "../utils/parser/visitors";
 import {
   AtomicNode,
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
-import {
-  clearWorkerCaches,
-  getSortedClassNamesWorker,
-} from "../utils/tailwindcss-api/index";
+import { getSortedClassNameListsWorker } from "../utils/tailwindcss-api/index";
 
 export const RULE_NAME = "classnames-order";
 
@@ -46,68 +46,59 @@ type RuleContext = TSESLintRuleContext<MessageIds, Options>;
 // The parameter passed into RuleCreator is a URL generator function.
 export const createRule = RuleCreator(urlCreator);
 
-/**
- * Save the correct classnames order in a cache.
- * We only keep a string of classnames (with whitespaces)
- * @example "absolute flex"
- */
-const correctClassOrderCache = new Set<string>();
-let cacheCreationTime = Date.now();
-
 const sortClassnames = (
   context: RuleContext,
   settings: PluginSettings,
   options: RuleOptions,
   literals: Array<AtomicNode>,
 ) => {
-  // Cache settings
-  const { cacheMaxSize, cacheMaxAge } = getCacheSettings(settings);
-  // Clear the cache if it exceeds the maximum size or is too old
-  const lastResetCorrect = resetCache(
-    correctClassOrderCache,
-    { cacheMaxSize, cacheMaxAge },
-    cacheCreationTime,
+  const preparedNodes = literals.map((node) => {
+    const dissected = dissectAtomicNode(
+      node,
+      context as unknown as GenericRuleContext,
+    );
+    const parsed = getClassnamesFromValue(dissected.originalClassNamesValue);
+    const firstClass = dissected.ignoreFirst
+      ? parsed.classNames.shift()
+      : undefined;
+    const lastClass = dissected.ignoreLast
+      ? parsed.classNames.pop()
+      : undefined;
+    return { node, ...dissected, ...parsed, firstClass, lastClass };
+  });
+
+  const orderedClassNameLists = getSortedClassNameListsWorker(
+    settings.cssConfigPath,
+    context.filename,
+    preparedNodes.map(({ classNames }) => classNames),
+    settings,
   );
-  if (lastResetCorrect !== -1) {
-    correctClassOrderCache.clear();
-    cacheCreationTime = Date.now();
-    clearWorkerCaches();
-  }
+
   // Main logic to check and report classnames order
-  for (const node of literals) {
+  for (const [preparedNodeIndex, preparedNode] of preparedNodes.entries()) {
     const {
+      node,
       originalClassNamesValue,
       start,
       end,
       prefix,
       suffix,
-      ignoreFirst,
-      ignoreLast,
-    } = dissectAtomicNode(node, context as unknown as GenericRuleContext);
-
-    // Process the extracted classnames and report
-    const { classNames, whitespaces, headSpace, tailSpace } =
-      getClassnamesFromValue(originalClassNamesValue);
-
-    const firstClass = ignoreFirst ? classNames.shift() : undefined;
-    const lastClass = ignoreLast ? classNames.pop() : undefined;
+      classNames,
+      whitespaces,
+      headSpace,
+      tailSpace,
+      firstClass,
+      lastClass,
+    } = preparedNode;
 
     // Skip empty/Single className
     if (classNames.length <= 1) continue;
 
+    const orderedClassNames = orderedClassNameLists[preparedNodeIndex];
+
     const cacheKey = classNames.join(" ");
-
-    if (correctClassOrderCache.has(cacheKey)) continue;
-
-    const orderedClassNames = getSortedClassNamesWorker(
-      settings.cssConfigPath,
-      context.filename,
-      classNames,
-    );
-
     const orderedClassNamesKey = orderedClassNames.join(" ");
     if (cacheKey === orderedClassNamesKey) {
-      correctClassOrderCache.add(cacheKey);
       continue; // Correct order -> next node now
     }
 
@@ -196,12 +187,24 @@ export const classnamesOrder = createRule<Options, MessageIds>({
     // Merged settings
     const settings = parsePluginSettings(context.settings);
 
-    return defineVisitors(
+    const literals: Array<AtomicNode> = [];
+    const collectLiterals = (
+      _context: RuleContext,
+      _settings: PluginSettings,
+      _options: RuleOptions,
+      foundLiterals: Array<AtomicNode>,
+    ) => literals.push(...foundLiterals);
+
+    const visitors = defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,
       // Template visitor is only used within Vue SFC files (inside <template> section).
-      createTemplateVisitors(context, settings, options, sortClassnames),
+      createTemplateVisitors(context, settings, options[0], collectLiterals),
       // Script visitor is used within both JSX and Vue SFC files (inside <script> section).
-      createScriptVisitors(context, settings, options, sortClassnames),
+      createScriptVisitors(context, settings, options[0], collectLiterals),
+    );
+
+    return appendProgramExitVisitor(visitors, () =>
+      sortClassnames(context, settings, options[0], literals),
     );
   },
 });

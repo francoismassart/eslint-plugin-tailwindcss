@@ -179,5 +179,14 @@ ruleTester.run(RULE_NAME, noContradictingClassname, {
       ],
       languageOptions: withAngularParser,
     },
+    {
+      code: `ctl("block flex"); ctl("w-10 w-20");`,
+      errors: [
+        suggest("block", `ctl("block"); ctl("w-10 w-20");`, ["flex"]),
+        suggest("flex", `ctl("flex"); ctl("w-10 w-20");`, ["block"]),
+        suggest("w-10", `ctl("block flex"); ctl("w-10");`, ["w-20"]),
+        suggest("w-20", `ctl("block flex"); ctl("w-20");`, ["w-10"]),
+      ],
+    },
   ],
 });
