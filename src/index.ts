@@ -86,7 +86,14 @@ const configBase: FlatConfig.Config = {
   settings: {
     tailwindcss: {},
   },
-  files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  files: [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.svelte",
+    "**/*.vue",
+  ],
   languageOptions: {
     parserOptions: {
       ecmaVersion: "latest",

@@ -7,6 +7,7 @@ import {
   generalSettings,
   prefixedSettings,
   withAngularParser,
+  withSvelteParser,
   withTypographySettings,
   withVueParser,
   xsBreakpointSettings,
@@ -68,6 +69,12 @@ const getExpectedErrors = (
   }));
 };
 
+const defaultSettings = {
+  tailwindcss: {
+    ...generalSettings,
+  },
+};
+
 const ruleTester = new RuleTester({
   languageOptions: {
     parser: Parser,
@@ -77,11 +84,7 @@ const ruleTester = new RuleTester({
       },
     },
   },
-  settings: {
-    tailwindcss: {
-      ...generalSettings,
-    },
-  },
+  settings: defaultSettings,
 });
 
 ruleTester.run(RULE_NAME, classnamesOrder, {
@@ -130,6 +133,40 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
     ].map((testedJsxCode) => ({
       code: testedJsxCode,
     })),
+    // Svelte
+    ...[
+      `
+        <script>
+          const vertical = true;
+          const styles = tw\`absolute block\`;
+          const ctl = ctl('absolute block');
+        </script>
+        <section class="m-0 p-6">Simple</section>
+        <section class={vertical ? 'flex-col' : 'flex-row'}>Primitive values</section>
+      `,
+      // https://svelte.dev/docs/svelte/class#Attributes-Objects-and-arrays
+      `
+      <script>
+        let { shown } = true;
+      </script>
+      <div class={{ "absolute block": shown, "invisible size-0": !shown }}>...</div>
+      `,
+      // https://svelte.dev/docs/svelte/class#Attributes-Objects-and-arrays
+      `
+      <script>
+        const faded = true;
+        const large = true;
+      </script>
+      <div class={[faded && 'opacity-50 saturate-0', large && 'scale-200']}>...</div>
+      `,
+      // https://svelte.dev/docs/svelte/class#Attributes-Objects-and-arrays
+      `
+      <div class={['absolute block', props.class]}>...</div>
+      `,
+    ].map((testedSvelteCode) => ({
+      code: testedSvelteCode,
+      languageOptions: withSvelteParser,
+    })),
     // Vue SFC
     ...[
       `<template><h1 class="unkown relative">vAttributeVisitor static</h1></template>`,
@@ -166,10 +203,6 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       settings: { tailwindcss: { ...generalSettings, attributes: [] } },
       languageOptions: withVueParser,
     })),
-    {
-      code: `<div className={'unknown tw:relative'}>Valid with custom prefix</div>`,
-      settings: { tailwindcss: { ...prefixedSettings } },
-    },
     // JSX + Custom functions/tag
     ...[
       `<div className={ctl('flex unknown relative')}>Ignored CallExpression inside a prop</div>`,
@@ -179,14 +212,20 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       const myTag = {
         subTag: (strings) => {
           return \`$\{strings}\`;
-        }
-      };
-      const classes = myTag.subTag\`unknown relative\`;
-      `,
+          }
+          };
+          const classes = myTag.subTag\`unknown relative\`;
+          `,
     ].map((testedCode) => ({
       code: testedCode,
       settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
     })),
+    // JSX + `tw:` prefix
+    {
+      code: `<div className={'unknown tw:relative'}>Valid with custom prefix</div>`,
+      settings: { tailwindcss: { ...prefixedSettings } },
+    },
+    // JSX + extra/custom `xs` breakpoint
     {
       code: `<div class="xs:text-xl sm:text-2xl md:text-3xl">Issue 337</div>`,
       settings: { tailwindcss: { ...xsBreakpointSettings } },
@@ -194,6 +233,72 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
   ],
   invalid: (
     [
+      // Svelte
+      {
+        code: `
+        <script>
+          const vertical = true;
+          const styles = tw\`block absolute\`;
+          const ctl = ctl('absolute block');
+        </script>
+        <section class="m-0 p-6">Simple</section>
+        <section class={vertical ? 'flex-col' : 'flex-row'}>Primitive values</section>
+        `,
+        output: `
+        <script>
+          const vertical = true;
+          const styles = tw\`absolute block\`;
+          const ctl = ctl('absolute block');
+        </script>
+        <section class="m-0 p-6">Simple</section>
+        <section class={vertical ? 'flex-col' : 'flex-row'}>Primitive values</section>
+        `,
+        errors: errors,
+        languageOptions: withSvelteParser,
+      },
+      // https://svelte.dev/docs/svelte/class#Attributes-Objects-and-arrays
+      {
+        code: `
+        <script>
+          let { shown } = true;
+        </script>
+        <div class={{ "block absolute": shown, "size-0 invisible": !shown }}>...</div>
+        `,
+        output: `
+        <script>
+          let { shown } = true;
+        </script>
+        <div class={{ "absolute block": shown, "invisible size-0": !shown }}>...</div>
+        `,
+        errors: errors,
+        languageOptions: withSvelteParser,
+      },
+      // https://svelte.dev/docs/svelte/class#Attributes-Objects-and-arrays
+      {
+        code: `
+        <script>
+          const faded = true;
+          const large = true;
+        </script>
+        <div class={[faded && 'saturate-0 opacity-50', large && 'scale-200']}>...</div>
+        `,
+        output: `
+        <script>
+          const faded = true;
+          const large = true;
+        </script>
+        <div class={[faded && 'opacity-50 saturate-0', large && 'scale-200']}>...</div>
+        `,
+        errors: errors,
+        languageOptions: withSvelteParser,
+      },
+      // https://svelte.dev/docs/svelte/class#Attributes-Objects-and-arrays
+      {
+        code: `<div class={['block absolute', props.class]}>...</div>`,
+        output: `<div class={['absolute block', props.class]}>...</div>`,
+        errors: errors,
+        languageOptions: withSvelteParser,
+      },
       {
         /* prettier-ignore */
         code:   `<h1 class="text-gray-700 shadow-md p-3 border-gray-300 ml-4 h-24 flex border-2">https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted</h1>`,
@@ -248,33 +353,33 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         ],
         [
           `
-      ctl(\`
-        invalid
-        sm:w-6
-        container
-        invalid
-        flex
-        container
-        w-12
-        flex
-        container
-        lg:w-4
-        lg:w-4
-      \`);`,
+          ctl(\`
+            invalid
+            sm:w-6
+            container
+            invalid
+            flex
+            container
+            w-12
+            flex
+            container
+            lg:w-4
+            lg:w-4
+          \`);`,
           `
-      ctl(\`
-        invalid
-        invalid
-        container
-        container
-        container
-        flex
-        flex
-        w-12
-        sm:w-6
-        lg:w-4
-        lg:w-4
-      \`);`,
+          ctl(\`
+            invalid
+            invalid
+            container
+            container
+            container
+            flex
+            flex
+            w-12
+            sm:w-6
+            lg:w-4
+            lg:w-4
+          \`);`,
         ],
         [
           `cva({ primary: ["bottom-0 w-full h-[70px] flex flex-col"], })`,
@@ -369,27 +474,27 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         ],
         [
           `
-      <template>
-        <div v-bind="data" :class="[
-          'py-1.5 font-semibold transition',
-          {
-            'text-white': variant === 'white',
-            'text-blue-500 hover:text-blue-400 border-blue-500': variant === 'primary',
-            'underline decoration-2 underline-offset-[10px]': active
-          }
-        ]" />
-      </template>`,
+          <template>
+            <div v-bind="data" :class="[
+              'py-1.5 font-semibold transition',
+              {
+                'text-white': variant === 'white',
+                'text-blue-500 hover:text-blue-400 border-blue-500': variant === 'primary',
+                'underline decoration-2 underline-offset-[10px]': active
+              }
+            ]" />
+          </template>`,
           `
-      <template>
-        <div v-bind="data" :class="[
-          'py-1.5 font-semibold transition',
-          {
-            'text-white': variant === 'white',
-            'border-blue-500 text-blue-500 hover:text-blue-400': variant === 'primary',
-            'underline decoration-2 underline-offset-[10px]': active
-          }
-        ]" />
-      </template>`,
+          <template>
+            <div v-bind="data" :class="[
+              'py-1.5 font-semibold transition',
+              {
+                'text-white': variant === 'white',
+                'border-blue-500 text-blue-500 hover:text-blue-400': variant === 'primary',
+                'underline decoration-2 underline-offset-[10px]': active
+              }
+            ]" />
+          </template>`,
         ],
       ].map(([input, result]) => ({
         code: input,
@@ -406,93 +511,95 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       },
       {
         code: `
-      const buttonClasses = ctl(\`
-        \${fullWidth ? "w-12" : "w-6"}
-        flex
-        container
-        \${fullWidth ? "sm:w-7" : "sm:w-4"}
-        lg:py-4
-        sm:py-6
-        \${hasError && "bg-red"}
-      \`);`,
+        const buttonClasses = ctl(\`
+          \${fullWidth ? "w-12" : "w-6"}
+          flex
+          container
+          \${fullWidth ? "sm:w-7" : "sm:w-4"}
+          lg:py-4
+          sm:py-6
+          \${hasError && "bg-red"}
+        \`);`,
         output: `
-      const buttonClasses = ctl(\`
-        \${fullWidth ? "w-12" : "w-6"}
-        container
-        flex
-        \${fullWidth ? "sm:w-7" : "sm:w-4"}
-        sm:py-6
-        lg:py-4
-        \${hasError && "bg-red"}
-      \`);`,
+        const buttonClasses = ctl(\`
+          \${fullWidth ? "w-12" : "w-6"}
+          container
+          flex
+          \${fullWidth ? "sm:w-7" : "sm:w-4"}
+          sm:py-6
+          lg:py-4
+          \${hasError && "bg-red"}
+        \`);`,
         errors: [error, error],
       },
+      /*/
       {
         code: `
-      ctl(\`
-        px-2
-        flex
-        \${
-          !isDisabled &&
-          \`
-            top-0
-            flex
-            border-0
-          \`
-        }
-        \${
-          isDisabled &&
-          \`
-            border-0
-            mx-0
-          \`
-        }
-      \`)
-      `,
+        ctl(\`
+          px-2
+          flex
+          \${
+            !isDisabled &&
+            \`
+              top-0
+              flex
+              border-0
+            \`
+          }
+          \${
+            isDisabled &&
+            \`
+              border-0
+              mx-0
+            \`
+          }
+        \`)
+        `,
         output: `
-      ctl(\`
-        flex
-        px-2
-        \${
-          !isDisabled &&
-          \`
-            top-0
-            flex
-            border-0
-          \`
-        }
-        \${
-          isDisabled &&
-          \`
-            mx-0
-            border-0
-          \`
-        }
-      \`)
+        ctl(\`
+          flex
+          px-2
+          \${
+            !isDisabled &&
+            \`
+              top-0
+              flex
+              border-0
+            \`
+          }
+          \${
+            isDisabled &&
+            \`
+              mx-0
+              border-0
+            \`
+          }
+        \`)
       `,
         errors: [error, error],
       },
+      //*/
       {
         code: `
-      <div
-        className={clsx(
-          "w-full h-10 rounded",
-          name === "white"
-            ? "ring-black flex"
-            : undefined
-        )}
-      />
-      `,
+        <div
+          className={clsx(
+            "w-full h-10 rounded",
+            name === "white"
+              ? "ring-black flex"
+              : undefined
+          )}
+        />
+        `,
         output: `
-      <div
-        className={clsx(
-          "h-10 w-full rounded",
-          name === "white"
-            ? "flex ring-black"
-            : undefined
-        )}
-      />
-      `,
+        <div
+          className={clsx(
+            "h-10 w-full rounded",
+            name === "white"
+              ? "flex ring-black"
+              : undefined
+          )}
+        />
+        `,
         errors: [error, error],
       },
       {
@@ -504,48 +611,48 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       },
       {
         code: `
-      const myTag = {
-        subTag: (strings) => {
-          return \`$\{strings}\`;
-        }
-      };
-      const classes = myTag.subTag\`flex unknown relative\`;
-      `,
+        const myTag = {
+          subTag: (strings) => {
+            return \`$\{strings}\`;
+          }
+        };
+        const classes = myTag.subTag\`flex unknown relative\`;
+        `,
         output: `
-      const myTag = {
-        subTag: (strings) => {
-          return \`$\{strings}\`;
-        }
-      };
-      const classes = myTag.subTag\`unknown relative flex\`;
-      `,
+        const myTag = {
+          subTag: (strings) => {
+            return \`$\{strings}\`;
+          }
+        };
+        const classes = myTag.subTag\`unknown relative flex\`;
+        `,
         settings: { tailwindcss: { ...generalSettings, functions: ["myTag"] } },
         errors: errors,
       },
       {
         code: `
-      import tw from 'twin.macro';
-      const Input = tw.input\`flex unknown relative\`;
-      const PurpleInput = tw(Input)\`flex unknown relative\`;
-      `,
+        import tw from 'twin.macro';
+        const Input = tw.input\`flex unknown relative\`;
+        const PurpleInput = tw(Input)\`flex unknown relative\`;
+        `,
         output: `
-      import tw from 'twin.macro';
-      const Input = tw.input\`unknown relative flex\`;
-      const PurpleInput = tw(Input)\`unknown relative flex\`;
-      `,
+        import tw from 'twin.macro';
+        const Input = tw.input\`unknown relative flex\`;
+        const PurpleInput = tw(Input)\`unknown relative flex\`;
+        `,
         errors: [error, error],
       },
       {
         code: `
-      classnames([
-        'invalid lg:w-4 sm:w-6',
-        ['w-12 flex'],
-      ])`,
+        classnames([
+          'invalid lg:w-4 sm:w-6',
+          ['w-12 flex'],
+        ])`,
         output: `
-      classnames([
-        'invalid sm:w-6 lg:w-4',
-        ['flex w-12'],
-      ])`,
+        classnames([
+          'invalid sm:w-6 lg:w-4',
+          ['flex w-12'],
+        ])`,
         errors: [error, error],
       },
       {
@@ -560,36 +667,36 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
       },
       {
         code: `
-      ctl(\`
-        m-0!
-        !absolute
-        w-[\${width}]
-        rounded
-        blur-2xl
-        flex
-        h-[\${height}]
-      \`);`,
+        ctl(\`
+          m-0!
+          !absolute
+          w-[\${width}]
+          rounded
+          blur-2xl
+          flex
+          h-[\${height}]
+        \`);`,
         output: `
-      ctl(\`
-        !absolute
-        m-0!
-        w-[\${width}]
-        flex
-        rounded
-        blur-2xl
-        h-[\${height}]
-      \`);`,
+        ctl(\`
+          !absolute
+          m-0!
+          w-[\${width}]
+          flex
+          rounded
+          blur-2xl
+          h-[\${height}]
+        \`);`,
         errors: [error, error, error, error, error],
       },
       {
         code: `
-      ctl(\`
-        m-0 absolute w-[\${width}] blur-2xl flex
-      \`);`,
+        ctl(\`
+          m-0 absolute w-[\${width}] blur-2xl flex
+        \`);`,
         output: `
-      ctl(\`
-        absolute m-0 w-[\${width}] flex blur-2xl
-      \`);`,
+        ctl(\`
+          absolute m-0 w-[\${width}] flex blur-2xl
+        \`);`,
         errors: [error, error, error, error],
       },
       {

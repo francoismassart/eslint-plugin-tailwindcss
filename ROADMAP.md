@@ -33,10 +33,17 @@
   // --text-tiny--font-weight: 500; /* text-tiny-font-weight */
   // check for unnecessary line-height, letter-spacing and font-weight classnames
   ```
-- `no-unnecessary-arbitrary-value` rule:
-  - enhance the rule in order to work with the `spacing` based values instead of an exact match in the config
 - `avoid-space-utility` rule:
   - you should [avoid using `space-` between, use `flex` & `gap` instead](https://tailwindcss.com/docs/upgrade-guide#space-between-selector)
+
+# August 2026
+
+- Enhanced support for Svelte
+
+# July 2026
+
+- `no-unnecessary-arbitrary-value` rule:
+  - enhance the rule in order to work with the `spacing` based values instead of an exact match in the config
 
 # June 2026
 

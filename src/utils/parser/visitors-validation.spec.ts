@@ -1,4 +1,5 @@
 import { TSESTree } from "@typescript-eslint/utils";
+import { SvelteAttribute } from "svelte-eslint-parser/lib/ast";
 import { expect, test } from "vitest";
 
 import { parsePluginSettings, PluginSettings } from "../parse-plugin-settings";
@@ -6,6 +7,7 @@ import {
   _callExpression,
   _htmlAttribute,
   _jsxAttribute,
+  _svelteAttribute,
   _vAttribute,
 } from "./test-helpers";
 import {
@@ -13,6 +15,7 @@ import {
   isValidCallExpression,
   isValidExpressionAttributeValue,
   isValidJSXAttribute,
+  isValidSvelteAttribute,
   isValidTextAttribute,
   isValidVAttribute,
 } from "./visitors-validation";
@@ -45,6 +48,40 @@ test("isValidJSXAttribute", () => {
   valid.map(([input, settings]) => {
     const node = _jsxAttribute(input);
     expect(isValidJSXAttribute(node, settings)).toBe(true);
+  });
+});
+
+test("isValidSvelteAttribute", () => {
+  type TestConfig = [string, PluginSettings];
+  // Valid expressions
+  const valid: Array<TestConfig> = [
+    // Defaults
+    [`<p class="value">p</p>`, defaultSettings],
+    [
+      `<p class={{ "block absolute": shown, "size-0 invisible": !shown }}>p</p>`,
+      defaultSettings,
+    ],
+    [
+      `<div class={[faded && 'saturate-0 opacity-50', large && 'scale-200']}>...</div>`,
+      defaultSettings,
+    ],
+    [`<div class={['block absolute', props.class]}>...</div>`, defaultSettings],
+  ];
+  valid.map(([input, settings]) => {
+    const node = _svelteAttribute(input);
+    expect(isValidSvelteAttribute(node as SvelteAttribute, settings)).toBe(
+      true,
+    );
+  });
+  const invalid: Array<TestConfig> = [
+    // Defaults
+    [`<img alt src />`, defaultSettings],
+  ];
+  invalid.map(([input, settings]) => {
+    const node = _svelteAttribute(input);
+    expect(isValidSvelteAttribute(node as SvelteAttribute, settings)).toBe(
+      false,
+    );
   });
 });
 
