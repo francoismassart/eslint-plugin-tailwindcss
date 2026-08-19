@@ -19,6 +19,7 @@ type WorkerOperation =
   | "is-valid-class-names"
   | "get-class-properties"
   | "candidates-to-css"
+  | "canonicalize-candidates"
   | "flatten-nesting"
   | "load-theme";
 
@@ -38,6 +39,7 @@ const sortedClassNamesCache = new Map<string, Array<string>>();
 const validClassNameCache = new Map<string, boolean>();
 const classPropertiesCache = new Map<string, Set<string> | undefined>();
 const candidatesToCssCache = new Map<string, string | null>();
+const canonicalCandidateCache = new Map<string, string>();
 const flattenNestingCache = new Map<string, Array<string>>();
 let cacheCreationTime = Date.now();
 
@@ -97,11 +99,9 @@ export const getSortedClassNameListsWorker = (
   }
 
   if (missingLists.size > 0) {
-    const result = tailwindWorkerRaw(
-      "sort-class-name-lists",
-      absolutePath,
-      [...missingLists.values()],
-    ) as Array<Array<string>>;
+    const result = tailwindWorkerRaw("sort-class-name-lists", absolutePath, [
+      ...missingLists.values(),
+    ]) as Array<Array<string>>;
     let index = 0;
     for (const cacheKey of missingLists.keys()) {
       sortedClassNamesCache.set(cacheKey, result[index]);
@@ -109,10 +109,11 @@ export const getSortedClassNameListsWorker = (
     }
   }
 
-  return classNameLists.map((classNames) =>
-    sortedClassNamesCache.get(
-      getCacheKey(absolutePath, JSON.stringify(classNames)),
-    )!,
+  return classNameLists.map(
+    (classNames) =>
+      sortedClassNamesCache.get(
+        getCacheKey(absolutePath, JSON.stringify(classNames)),
+      )!,
   );
 };
 
@@ -175,7 +176,8 @@ export const isValidClassNamesWorker = (
     }
   }
   return classNames.map(
-    (className) => validClassNameCache.get(getCacheKey(absolutePath, className))!,
+    (className) =>
+      validClassNameCache.get(getCacheKey(absolutePath, className))!,
   );
 };
 
@@ -247,6 +249,45 @@ export const candidatesToCssWorker = (
   return [candidatesToCssCache.get(cacheKey) as string | null];
 };
 
+/**
+ * Only the classnames which are still unknown are sent over, as a single batch,
+ * so a node costs at most one round trip no matter how many classnames it holds.
+ */
+export const canonicalizeCandidatesWorker = (
+  cssConfigPath: string,
+  contextFilename: string,
+  classNames: Array<string>,
+): Array<string> => {
+  const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
+  const cacheKeyOf = (className: string) => `[${absolutePath}]${className}`;
+
+  const missing = [
+    ...new Set(
+      classNames.filter(
+        (className) => !canonicalCandidateCache.has(cacheKeyOf(className)),
+      ),
+    ),
+  ];
+
+  if (missing.length > 0) {
+    const resolved = tailwindWorkerRaw(
+      "canonicalize-candidates",
+      absolutePath,
+      missing,
+    ) as Array<Array<string>>;
+    for (const [index, className] of missing.entries()) {
+      canonicalCandidateCache.set(
+        cacheKeyOf(className),
+        resolved[index] ?? className,
+      );
+    }
+  }
+
+  return classNames.map(
+    (className) => canonicalCandidateCache.get(cacheKeyOf(className))!,
+  );
+};
+
 export const flattenNestingWorker = (
   cssRule: string,
   settings?: PluginSettings,
@@ -268,6 +309,7 @@ export const clearWorkerCaches = (): void => {
   validClassNameCache.clear();
   classPropertiesCache.clear();
   candidatesToCssCache.clear();
+  canonicalCandidateCache.clear();
   flattenNestingCache.clear();
   tailwindWorkerRaw("clear");
   cacheCreationTime = Date.now();
