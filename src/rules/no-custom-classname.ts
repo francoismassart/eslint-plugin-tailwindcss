@@ -19,13 +19,17 @@ import {
   generateLocForClassname,
   getClassnamesFromValue,
 } from "../utils/parser/node";
-import { defineVisitors, GenericRuleContext } from "../utils/parser/visitors";
+import {
+  appendProgramExitVisitor,
+  defineVisitors,
+  GenericRuleContext,
+} from "../utils/parser/visitors";
 import {
   AtomicNode,
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
-import { isValidClassNameWorker } from "../utils/tailwindcss-api";
+import { isValidClassNamesWorker } from "../utils/tailwindcss-api";
 
 export const RULE_NAME = "no-custom-classname";
 
@@ -85,38 +89,53 @@ const detectCustomClassnames = (
   );
   const genericContext = context as unknown as GenericRuleContext;
 
-  for (const node of literals) {
+  const preparedNodes = literals.map((node) => {
+    const dissected = dissectAtomicNode(node, genericContext);
+    const parsed = getClassnamesFromValue(dissected.originalClassNamesValue);
+    const candidates = parsed.classNames.filter((customClass, index) => {
+      if (index === 0 && dissected.ignoreFirst) return false;
+      if (index === parsed.classNames.length - 1 && dissected.ignoreLast)
+        return false;
+      if (exactMatches.has(customClass)) return false;
+      return !regexPatterns.some((pattern) =>
+        passRegexTest(pattern, customClass),
+      );
+    });
+    return { node, ...dissected, ...parsed, candidates };
+  });
+
+  const candidates = preparedNodes.flatMap((node) => node.candidates);
+  const validity = isValidClassNamesWorker(
+    settings.cssConfigPath,
+    context.filename,
+    candidates,
+    settings,
+  );
+  const validByClassName = new Map<string, boolean>();
+  for (const [index, candidate] of candidates.entries()) {
+    validByClassName.set(candidate, validity[index]);
+  }
+
+  for (const preparedNode of preparedNodes) {
     const {
+      node,
       originalClassNamesValue,
       start,
       end,
       prefix,
       suffix,
-      ignoreFirst,
-      ignoreLast,
-    } = dissectAtomicNode(node, genericContext);
-
-    const { classNames, whitespaces, headSpace, tailSpace } =
-      getClassnamesFromValue(originalClassNamesValue);
+      classNames,
+      whitespaces,
+      headSpace,
+      tailSpace,
+      candidates: nodeCandidates,
+    } = preparedNode;
 
     // 1. Gather invalid classes in the node
     const invalidClassesInNode: Array<{ classname: string; type: string }> = [];
 
-    for (let index = 0; index < classNames.length; index++) {
-      const customClass = classNames[index];
-      if (index === 0 && ignoreFirst) continue;
-      if (index === classNames.length - 1 && ignoreLast) continue;
-      if (exactMatches.has(customClass)) continue;
-      if (regexPatterns.some((pattern) => passRegexTest(pattern, customClass)))
-        continue;
-      if (
-        isValidClassNameWorker(
-          settings.cssConfigPath,
-          context.filename,
-          customClass,
-        )
-      )
-        continue;
+    for (const customClass of nodeCandidates) {
+      if (validByClassName.get(customClass)) continue;
 
       invalidClassesInNode.push({ classname: customClass, type: node.type });
     }
@@ -126,7 +145,10 @@ const detectCustomClassnames = (
 
     // 2. Emit reports with a surgical fix (one class targeted)
     for (const invalidClass of invalidClassesInNode) {
-      const fixable = invalidClass.type !== TSESTree.AST_NODE_TYPES.Identifier;
+      const fixable = ![
+        TSESTree.AST_NODE_TYPES.Identifier,
+        "SvelteName",
+      ].includes(invalidClass.type);
       const patchedLoc = generateLocForClassname(
         node,
         invalidClass.classname,
@@ -210,22 +232,34 @@ export const noCustomClassname = createRule<Options, MessageIds>({
     // Merged settings
     const settings = parsePluginSettings(context.settings);
 
-    return defineVisitors(
+    const literals: Array<AtomicNode> = [];
+    const collectLiterals = (
+      _context: RuleContext,
+      _settings: PluginSettings,
+      _options: RuleOptions,
+      foundLiterals: Array<AtomicNode>,
+    ) => literals.push(...foundLiterals);
+
+    const visitors = defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,
       // Template visitor is only used within Vue SFC files (inside <template> section).
       createTemplateVisitors(
         context,
         settings,
         options[0],
-        detectCustomClassnames,
+        collectLiterals,
       ),
       // Script visitor is used within both JSX and Vue SFC files (inside <script> section).
       createScriptVisitors(
         context,
         settings,
         options[0],
-        detectCustomClassnames,
+        collectLiterals,
       ),
+    );
+
+    return appendProgramExitVisitor(visitors, () =>
+      detectCustomClassnames(context, settings, options[0], literals),
     );
   },
 });

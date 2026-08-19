@@ -72,21 +72,24 @@
 Here is a very basic example:
 
 ```js
-// 1. import the plugin
+// 1. Import the plugin and defineConfig helper
 import eslintPluginTailwindcss from "eslint-plugin-tailwindcss";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
+  // 2. Include the recommended config
+  eslintPluginTailwindcss.configs["flat/recommended"] ||
+    eslintPluginTailwindcss.configs.recommended,
+
+  // 3. Define your own settings
   {
-    // 2. Optional: extend an existing config preset
-    extends: [eslintPluginTailwindcss.configs.recommended],
     settings: {
-      // 3. Define the tailwindcss settings with the MANDATORY cssConfigPath
+      // Define the tailwindcss settings with the MANDATORY `cssConfigPath`
       tailwindcss: {
         cssConfigPath: "./src/styles/tailwind.css",
       },
     },
-    // 4. Optional: customize the rules to your needs
+    // Optional: Customize the rules to your needs
     rules: {
       "tailwindcss/classnames-order": "warn",
       "tailwindcss/no-arbitrary-value": "warn",

@@ -40,6 +40,10 @@ ruleTester.run(RULE_NAME, noArbitraryValue, {
   invalid: [
     ...[
       {
+        code: `<div class={"w-[10px]" satisfies string}>Arbitrary width!</div>`,
+        invalidClass: "w-[10px]",
+      },
+      {
         code: `ctl('dark:m-[10px]')`,
         invalidClass: "dark:m-[10px]",
       },

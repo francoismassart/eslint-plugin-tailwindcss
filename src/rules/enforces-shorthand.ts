@@ -327,6 +327,7 @@ const detectShorthands = (
               settings.cssConfigPath,
               context.filename,
               shorthandClass,
+              settings,
             )
           )
             continue;

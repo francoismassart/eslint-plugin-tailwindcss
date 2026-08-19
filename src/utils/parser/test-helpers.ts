@@ -4,6 +4,7 @@ import * as Parser from "@typescript-eslint/parser";
 import { TestLanguageOptions } from "@typescript-eslint/rule-tester";
 import { simpleTraverse } from "@typescript-eslint/typescript-estree";
 import { TSESTree } from "@typescript-eslint/utils";
+import svelteParser from "svelte-eslint-parser";
 import * as VueParser from "vue-eslint-parser";
 import { VStartTag } from "vue-eslint-parser/ast/index";
 
@@ -18,6 +19,10 @@ export const withJSX = {
 
 export const withAngularParser: TestLanguageOptions = {
   parser: AngularParser,
+};
+
+export const withSvelteParser: TestLanguageOptions = {
+  parser: svelteParser,
 };
 
 export const withVueParser: TestLanguageOptions = {
@@ -98,12 +103,33 @@ const getFirstJSXOpeningElement = (code: string) => {
   return body.expression.openingElement;
 };
 
+const getFirstSvelteOpeningElement = (code: string) => {
+  const parsed = svelteParser.parseForESLint(code);
+  const body = parsed.ast.body.at(0);
+  if (body === undefined) {
+    throw new Error("No Body found");
+  }
+  if (body.type !== "SvelteElement") {
+    throw new Error("No SvelteElement found");
+  }
+  if (body.startTag.type !== "SvelteStartTag") {
+    throw new Error("No SvelteStartTag found");
+  }
+  return body.startTag;
+};
+
 const getJSXAttribute = (node: TSESTree.JSXOpeningElement) => {
   const jsxAttribute = node.attributes.at(0);
   if (jsxAttribute === undefined) throw new Error("No JSXAttribute found");
   if (jsxAttribute.type === TSESTree.AST_NODE_TYPES.JSXSpreadAttribute)
     throw new Error("Unsupported JSXSpreadAttribute found");
   return jsxAttribute;
+};
+
+const getSvelteAttribute = (node: svelteParser.AST.SvelteStartTag) => {
+  const svelteAttribute = node.attributes.at(0);
+  if (svelteAttribute === undefined) throw new Error("No SvelteElement found");
+  return svelteAttribute;
 };
 
 const getFirstVOpeningElement = (code: string) => {
@@ -133,6 +159,11 @@ export const _htmlAttribute = (code: string) => {
 export const _jsxAttribute = (code: string) => {
   const jsxElement = getFirstJSXOpeningElement(code);
   return getJSXAttribute(jsxElement);
+};
+
+export const _svelteAttribute = (code: string) => {
+  const svelteElement = getFirstSvelteOpeningElement(code);
+  return getSvelteAttribute(svelteElement);
 };
 
 export const _vAttribute = (code: string) => {

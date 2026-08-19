@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwindcss",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "publishConfig": {
     "publish-branch": "v4"
   },
@@ -50,11 +50,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "bench": "vitest bench",
-    "build": "unbuild --config unbuild.config.ts  && rsync src/utils/tailwindcss-api/worker/*.mjs lib/worker",
+    "bench:rules": "pnpm build && node scripts/benchmark-rules.mjs",
+    "build": "unbuild --config unbuild.config.ts && mkdir -p lib/worker && rsync src/utils/tailwindcss-api/worker/*.mjs lib/worker/",
     "docs:init": "eslint-doc-generator --init-rule-docs",
     "docs:update": "eslint-doc-generator",
     "test": "vitest",
-    "wip": "vitest src/rules/no-unnecessary-arbitrary-value.wip.spec.ts",
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
@@ -69,6 +69,7 @@
     "@eslint/js": "^9.16.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/eslint": "^8.56.10",
+    "@types/estree": "^1.0.9",
     "@typescript-eslint/parser": "^8.37.0",
     "@typescript-eslint/rule-tester": "^8.37.0",
     "daisyui": "^5.5.23",
@@ -80,6 +81,8 @@
     "eslint-plugin-unicorn": "^56.0.1",
     "globals": "^15.13.0",
     "prettier": "^3.5.3",
+    "svelte": "^5.56.4",
+    "svelte-eslint-parser": "^1.8.0",
     "tailwindcss": "^4.3.1",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.42.0",
