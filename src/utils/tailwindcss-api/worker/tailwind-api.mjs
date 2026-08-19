@@ -1,7 +1,7 @@
 /**
  * Persistent Tailwind API worker.
  *
- * A Tailwind design system is expensive to create, so keep one instance per
+ * A Tailwind CSS design system is expensive to create, so keep one instance per
  * absolute CSS config path and reuse it for every operation in the ESLint
  * process.
  */
@@ -93,7 +93,7 @@ const getProperties = async (cssRule) => {
 
 runAsWorker(
   async (
-    /** @type {"clear" | "sort-class-name-lists" | "is-valid-class-names" | "get-class-properties" | "candidates-to-css" | "flatten-nesting" | "load-theme"} */
+    /** @type {"clear" | "sort-class-name-lists" | "is-valid-class-names" | "get-class-properties" | "candidates-to-css" | "canonicalize-candidates" | "flatten-nesting" | "load-theme"} */
     operation,
     /** @type {string | undefined} */
     cssConfigPath,
@@ -133,6 +133,20 @@ runAsWorker(
         /** @type {Array<string>} */
         const classNames = values;
         return context.candidatesToCss(classNames);
+      }
+      case "canonicalize-candidates": {
+        // TODO
+        // `canonicalizeCandidates` was introduced in Tailwind CSS v4.3.0.
+        // Older versions matching our `^4.0.0` peer range simply have nothing to suggest.
+        if (typeof context.canonicalizeCandidates !== "function") {
+          return values;
+        }
+        /** @type {Array<string>} */
+        const classNames = values;
+        const canonical = context.canonicalizeCandidates(classNames);
+        return classNames.map(
+          (className, index) => canonical[index] ?? className,
+        );
       }
       case "get-class-properties": {
         /** @type {Array<string>} */
