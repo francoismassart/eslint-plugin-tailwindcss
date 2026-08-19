@@ -4,7 +4,8 @@
 
 ### 🚀 Features
 
-- [Enhanced perfs](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/472) (by [Celtian](https://github.com/Celtian) 🙏)
+- perf: [Enhanced linting speed](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/472) (by [Celtian](https://github.com/Celtian) 🙏)
+- feat(rule): add [`enforces-canonical-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/475) (by [rsmple](https://github.com/rsmple) 🙏)
 
 ### 🐞 Fixes
 
