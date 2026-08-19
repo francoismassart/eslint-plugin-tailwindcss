@@ -2,9 +2,14 @@
 
 ## WIP
 
+### 🚀 Features
+
+- [Enhanced perfs](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/472) (by [Celtian](https://github.com/Celtian) 🙏)
+
 ### 🐞 Fixes
 
 - fix: [add `import.meta.url` to paths in TailwindUtils](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/470) (by [jeremy-code](https://github.com/jeremy-code) 🙏)
+- [Support for `satisfies` opeartor in TypeScript](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/397) (based on PR by [Celtian](https://github.com/rendob) 🙏)
 
 ## `v4.3.0`
 

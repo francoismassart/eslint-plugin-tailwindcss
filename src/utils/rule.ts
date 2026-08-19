@@ -283,6 +283,12 @@ export const getLiteralsFromNode = <TRuleContext>(
 
       break;
     }
+    case TSESTree.AST_NODE_TYPES.TSSatisfiesExpression: {
+      if (node.expression.type === TSESTree.AST_NODE_TYPES.Literal) {
+        literals.push(node.expression);
+      }
+      break;
+    }
     case "SvelteAttribute": {
       if (!isValidSvelteAttribute(node, settings)) break;
       for (const element of node.value) {

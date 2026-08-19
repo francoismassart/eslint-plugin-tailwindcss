@@ -704,6 +704,41 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         output: `<h1 className={\`absolute m-0 w-[\${width}] absolute m-0 h-[\${height}] flex blur-2xl\`}>Issue 277</h1>`,
         errors: [error, error, error, error, error, error],
       },
+      {
+        code: `
+        export interface FakePropsInterface {
+          readonly name?: string;
+        }
+        function Fake({
+          name = 'yolo'
+        }: FakeProps) {
+          return (
+            <>
+              <h1 className={"absolute bottom-0 w-full flex flex-col" satisfies string}>Welcome {name}</h1>
+              <p>Bye {name}</p>
+            </>
+          );
+        }
+        export default Fake;
+        `,
+        output: `
+        export interface FakePropsInterface {
+          readonly name?: string;
+        }
+        function Fake({
+          name = 'yolo'
+        }: FakeProps) {
+          return (
+            <>
+              <h1 className={"absolute bottom-0 flex w-full flex-col" satisfies string}>Welcome {name}</h1>
+              <p>Bye {name}</p>
+            </>
+          );
+        }
+        export default Fake;
+        `,
+        errors: errors,
+      },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as Array<any>
   ).map((testCase) => ({
