@@ -25,7 +25,14 @@ const getUtils = (cssConfigPath) => {
   if (cached) return cached;
 
   const loading = (async () => {
-    const utils = new TailwindUtils();
+    /**
+     * `tailwind-api-utils` attempts to load `tailwindcss` via the `local-pkg`
+     * package, which will attempt to resolve `tailwindcss` relative to its
+     * own `import.meta.url`. In a pnpm monorepo, where direct access to
+     * transitive dependencies in workspace packages is forbidden,
+     * `TailwindUtils` will fail to find the package if ran at the root
+     */
+    const utils = new TailwindUtils({ paths: [import.meta.url] });
     await utils.loadConfigV4(cssConfigPath);
     if (!utils.context) {
       throw new Error(
