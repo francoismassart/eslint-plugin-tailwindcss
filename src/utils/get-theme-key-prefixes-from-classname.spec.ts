@@ -4,6 +4,7 @@ import { withAllPresetsSettings } from "../utils/parser/test-helpers";
 import { loadThemeWorker } from "../utils/tailwindcss-api";
 import {
   getThemeKeyPrefixesFromClassname,
+  getThemePresetNamesByArbitraryValue,
   getThemePresetsFromPrefixes,
 } from "./get-theme-key-prefixes-from-classname";
 
@@ -622,4 +623,48 @@ test(`Get the preset keys/values from prefixes`, () => {
   ].map(({ prefixes, presets }) => {
     expect(getThemePresetsFromPrefixes(theme, prefixes)).toEqual(presets);
   });
+});
+
+test(`Get the theme preset names by arbitrary value`, () => {
+  [
+    // `--aspect-square: 1 / 1` and `--aspect-one-to-one: 1/1` normalize to the
+    // same value, so both are suggested, in theme order
+    {
+      prefix: "--aspect-",
+      arbitraryValue: "1/1",
+      presetNames: ["square", "one-to-one"],
+    },
+    {
+      prefix: "--aspect-",
+      arbitraryValue: "4/3",
+      presetNames: ["retro"],
+    },
+    // A nested key keeps the rest of its name
+    {
+      prefix: "--stroke-",
+      arbitraryValue: "0.5",
+      presetNames: ["width-hairline"],
+    },
+    // Spaces within a value become underscores
+    {
+      prefix: "--text-",
+      arbitraryValue: "1.5rem",
+      presetNames: ["tiny--line-height"],
+    },
+    // No preset uses this value
+    {
+      prefix: "--aspect-",
+      arbitraryValue: "16/10",
+      presetNames: undefined,
+    },
+  ].map(({ prefix, arbitraryValue, presetNames }) => {
+    expect(
+      getThemePresetNamesByArbitraryValue(theme, prefix).get(arbitraryValue),
+    ).toEqual(presetNames);
+  });
+
+  // The index is memoized per theme + prefix
+  expect(getThemePresetNamesByArbitraryValue(theme, "--aspect-")).toBe(
+    getThemePresetNamesByArbitraryValue(theme, "--aspect-"),
+  );
 });

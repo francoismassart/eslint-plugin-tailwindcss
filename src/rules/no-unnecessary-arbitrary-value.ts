@@ -13,7 +13,7 @@ import urlCreator from "../url-creator";
 import { compressTailwindArbitrary } from "../utils/compress-tailwind-arbitrary";
 import {
   getThemeKeyPrefixesFromClassname,
-  getThemePresetsFromPrefixes,
+  getThemePresetNamesByArbitraryValue,
 } from "../utils/get-theme-key-prefixes-from-classname";
 import { joiner } from "../utils/joiner";
 import { joinListElements } from "../utils/list-formatter";
@@ -40,7 +40,6 @@ import {
   createTemplateVisitors,
 } from "../utils/rule";
 import { loadThemeWorker } from "../utils/tailwindcss-api";
-import { toTailwindArbitrary } from "../utils/to-tailwind-arbitrary";
 import { convertStringValueToPx } from "../utils/units";
 
 export const RULE_NAME = "no-unnecessary-arbitrary-value";
@@ -88,6 +87,11 @@ const checkArbitraryClassnames = (
     settings,
   );
 
+  // Only depends on the theme, so resolve it once
+  const spacingValue =
+    `${theme.values.get("--spacing")?.value ?? ""}` || "0.25rem";
+  const spacingValueInPx = convertStringValueToPx(spacingValue);
+
   for (const node of literals) {
     const { originalClassNamesValue, start, end, prefix, suffix } =
       dissectAtomicNode(node, genericContext);
@@ -129,12 +133,14 @@ const checkArbitraryClassnames = (
       // Should not happen, but just in case
       if (prefixes.size === 0) continue;
 
-      // Retrieves all the possible keys
-      const presetKeys = getThemePresetsFromPrefixes(theme, prefixes);
       const acceptGenericNumberSuffix = allowsGenericNumbers(absBaseClass);
       const { classPrefix = "", arbitraryValue = "" } = match.groups;
       const compressedArbitraryValue =
         compressTailwindArbitrary(arbitraryValue);
+      const { minusSign, cleanedValue } = resolveValueSign(
+        compressedArbitraryValue,
+        !!negativePrefix,
+      );
       const matchingPresets: Array<string> = [];
 
       // 1. Check for px native presets e.g. `my-[1px]` → `my-px`
@@ -142,31 +148,21 @@ const checkArbitraryClassnames = (
         ["-1px", "1px"].includes(compressedArbitraryValue) &&
         hasPxNativePreset(absBaseClass)
       ) {
-        const { minusSign } = resolveValueSign(
-          compressedArbitraryValue,
-          !!negativePrefix,
-        );
         matchingPresets.push(`${modifiers}${minusSign}${classPrefix}-px`);
       }
 
       // 2. Looking into the defined presets for EXACT preset matches
       for (const currentPrefix of prefixes) {
-        for (const [presetKey, presetValue] of presetKeys.entries()) {
-          // Does not match
-          if (!presetKey.startsWith(currentPrefix)) continue;
+        const presetNames = getThemePresetNamesByArbitraryValue(
+          theme,
+          currentPrefix,
+        ).get(cleanedValue);
+        if (presetNames === undefined) continue;
 
-          const compressedPresetValue = toTailwindArbitrary(presetValue);
-          const { minusSign, cleanedValue } = resolveValueSign(
-            compressedArbitraryValue,
-            !!negativePrefix,
+        for (const presetName of presetNames) {
+          matchingPresets.push(
+            `${modifiers}${minusSign}${classPrefix}-${presetName}${bang}`,
           );
-
-          if (compressedPresetValue === cleanedValue) {
-            const presetName = presetKey.slice(currentPrefix.length);
-            matchingPresets.push(
-              `${modifiers}${minusSign}${classPrefix}-${presetName}${bang}`,
-            );
-          }
         }
       }
 
@@ -175,10 +171,6 @@ const checkArbitraryClassnames = (
         acceptGenericNumberSuffix &&
         /^-?\d+(?:\.\d+)?$/.test(compressedArbitraryValue)
       ) {
-        const { minusSign, cleanedValue } = resolveValueSign(
-          compressedArbitraryValue,
-          !!negativePrefix,
-        );
         matchingPresets.push(
           `${modifiers}${minusSign}${classPrefix}-${cleanedValue}${bang}`,
         );
@@ -186,18 +178,6 @@ const checkArbitraryClassnames = (
 
       // 4. Check for spacing based presets e.g. `my-[2px]` → `my-2`
       if (supportsSpacing(absBaseClass)) {
-        const spacingPresets = getThemePresetsFromPrefixes(
-          theme,
-          new Set(["--spacing"]),
-        );
-        const spacingValue = spacingPresets.get("--spacing") || "0.25rem";
-
-        const { minusSign, cleanedValue } = resolveValueSign(
-          compressedArbitraryValue,
-          !!negativePrefix,
-        );
-
-        const spacingValueInPx = convertStringValueToPx(spacingValue);
         const valueInPx = convertStringValueToPx(cleanedValue);
 
         if (valueInPx !== undefined && spacingValueInPx !== undefined) {

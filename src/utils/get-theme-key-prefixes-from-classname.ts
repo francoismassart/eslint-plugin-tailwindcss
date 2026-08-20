@@ -1,5 +1,12 @@
 import { getBaseClassname } from "./parser/classname";
 import { type Theme } from "./tailwindcss-api/types";
+import { toTailwindArbitrary } from "./to-tailwind-arbitrary";
+
+// A `Theme` never changes once loaded, so anything derived from it is memoized.
+const themePresetNamesByValueCache = new WeakMap<
+  Theme,
+  Map<string, Map<string, Array<string>>>
+>();
 
 /**
  * Retrieves the possible theme key prefixes for a given classname.
@@ -360,4 +367,40 @@ export const getThemePresetsFromPrefixes = (
     }
   }
   return presets;
+};
+
+/**
+ * Maps each preset value, in its arbitrary form, to the preset names using it,
+ * so matching a class against the theme is a lookup instead of a full scan.
+ * @param theme The theme object.
+ * @param prefix The theme key prefix, e.g. `--aspect-`.
+ * @returns A shared, read-only map of arbitrary values to preset names.
+ * @example `--aspect-video: 16 / 9` would return `Map { "16/9" => ["video"] }`
+ */
+export const getThemePresetNamesByArbitraryValue = (
+  theme: Theme,
+  prefix: string,
+): Map<string, Array<string>> => {
+  let cachedByPrefix = themePresetNamesByValueCache.get(theme);
+  if (cachedByPrefix === undefined) {
+    cachedByPrefix = new Map();
+    themePresetNamesByValueCache.set(theme, cachedByPrefix);
+  }
+  const cached = cachedByPrefix.get(prefix);
+  if (cached !== undefined) return cached;
+
+  const presetNamesByValue = new Map<string, Array<string>>();
+  for (const [key, preset] of theme.values) {
+    if (!key.startsWith(prefix)) continue;
+    const arbitraryValue = toTailwindArbitrary(`${preset.value}`);
+    const presetName = key.slice(prefix.length);
+    const presetNames = presetNamesByValue.get(arbitraryValue);
+    if (presetNames === undefined) {
+      presetNamesByValue.set(arbitraryValue, [presetName]);
+    } else {
+      presetNames.push(presetName);
+    }
+  }
+  cachedByPrefix.set(prefix, presetNamesByValue);
+  return presetNamesByValue;
 };
