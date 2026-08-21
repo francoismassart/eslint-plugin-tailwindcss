@@ -1,16 +1,18 @@
 # Changelog
 
-## WIP
+## `v4.4.0`
 
 ### 🚀 Features
 
 - perf: [Enhanced linting speed](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/472) (by [Celtian](https://github.com/Celtian) 🙏)
 - feat(rule): add [`enforces-canonical-classname`](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/475) (by [rsmple](https://github.com/rsmple) 🙏)
 
+  ⚠️ Only available if you are using Tailwind CSS `v4.3.0` or above.
+
 ### 🐞 Fixes
 
 - fix: [add `import.meta.url` to paths in TailwindUtils](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/470) (by [jeremy-code](https://github.com/jeremy-code) 🙏)
-- [Support for `satisfies` opeartor in TypeScript](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/397) (based on PR by [Celtian](https://github.com/rendob) 🙏)
+- [Support for `satisfies` opeartor in TypeScript](https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/397) (based on PR by [rendob](https://github.com/rendob) 🙏)
 
 ## `v4.3.0`
 

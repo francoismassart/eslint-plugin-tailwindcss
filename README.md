@@ -11,7 +11,7 @@
 
 - Best practices & consistency since 2021
 - [Made for Tailwind CSS v4](./CHANGELOG.md#made-for-tailwind-css-v4)
-- [8 rules available](#rules) and more on the way
+- [9 rules available](#rules) and more on the way
 - What's new? [Changelog](./CHANGELOG.md) | [Release notes](https://github.com/francoismassart/eslint-plugin-tailwindcss/releases) | [Roadmap](./ROADMAP.md)
 - [Upgrade guide](./UPGRADE.md) from `v3` to `v4`
 
