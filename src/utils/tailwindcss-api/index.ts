@@ -15,18 +15,19 @@ const require = createRequire(import.meta.url);
 
 type WorkerOperation =
   | "clear"
+  | "flatten-nesting"
   | "sort-class-name-lists"
   | "is-valid-class-names"
   | "get-class-properties"
   | "candidates-to-css"
   | "canonicalize-candidates"
-  | "flatten-nesting"
   | "load-theme";
 
 type TailwindWorker = (
   operation: WorkerOperation,
   cssConfigPath?: string,
   values?: Array<string> | Array<Array<string>>,
+  settings?: PluginSettings,
 ) => unknown;
 
 const tailwindWorkerRaw = createSyncFn<TailwindWorker>(
@@ -39,6 +40,12 @@ const sortedClassNamesCache = new Map<string, Array<string>>();
 const validClassNameCache = new Map<string, boolean>();
 const classPropertiesCache = new Map<string, Set<string> | undefined>();
 const candidatesToCssCache = new Map<string, string | null>();
+/**
+ * @example
+ * Map(1) {
+ *  '[/some/path/to/css/config.css][&>*]:flex-1' => '*:flex-1'
+ * }
+ */
 const canonicalCandidateCache = new Map<string, string>();
 const flattenNestingCache = new Map<string, Array<string>>();
 let cacheCreationTime = Date.now();
@@ -99,9 +106,12 @@ export const getSortedClassNameListsWorker = (
   }
 
   if (missingLists.size > 0) {
-    const result = tailwindWorkerRaw("sort-class-name-lists", absolutePath, [
-      ...missingLists.values(),
-    ]) as Array<Array<string>>;
+    const result = tailwindWorkerRaw(
+      "sort-class-name-lists",
+      absolutePath,
+      [...missingLists.values()],
+      settings,
+    ) as Array<Array<string>>;
     let index = 0;
     for (const cacheKey of missingLists.keys()) {
       sortedClassNamesCache.set(cacheKey, result[index]);
@@ -127,7 +137,12 @@ export const loadThemeWorker = (
   const cached = themeCache.get(absolutePath);
   if (cached) return cached;
 
-  const result = tailwindWorkerRaw("load-theme", absolutePath) as Theme;
+  const result = tailwindWorkerRaw(
+    "load-theme",
+    absolutePath,
+    undefined,
+    settings,
+  ) as Theme;
   themeCache.set(absolutePath, result);
   return result;
 };
@@ -167,6 +182,7 @@ export const isValidClassNamesWorker = (
       "is-valid-class-names",
       absolutePath,
       missingClassNames,
+      settings,
     ) as Array<boolean>;
     for (const [index, className] of missingClassNames.entries()) {
       validClassNameCache.set(
@@ -216,6 +232,7 @@ export const getClassPropertiesWorker = (
       "get-class-properties",
       absolutePath,
       missingClassNames,
+      settings,
     ) as Array<Array<string> | undefined>;
     for (const [index, className] of missingClassNames.entries()) {
       const properties = result[index];
@@ -241,9 +258,12 @@ export const candidatesToCssWorker = (
   const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
   const cacheKey = getCacheKey(absolutePath, className);
   if (!candidatesToCssCache.has(cacheKey)) {
-    const [result] = tailwindWorkerRaw("candidates-to-css", absolutePath, [
-      className,
-    ]) as Array<string | null>;
+    const [result] = tailwindWorkerRaw(
+      "candidates-to-css",
+      absolutePath,
+      [className],
+      settings,
+    ) as Array<string | null>;
     candidatesToCssCache.set(cacheKey, result);
   }
   return [candidatesToCssCache.get(cacheKey) as string | null];
@@ -257,10 +277,11 @@ export const canonicalizeCandidatesWorker = (
   cssConfigPath: string,
   contextFilename: string,
   classNames: Array<string>,
+  settings?: PluginSettings,
 ): Array<string> => {
   const absolutePath = convertToAbsolutePath(cssConfigPath, contextFilename);
   const cacheKeyOf = (className: string) => `[${absolutePath}]${className}`;
-
+  // Array with the missing classnames which are not yet cached
   const missing = [
     ...new Set(
       classNames.filter(
@@ -270,11 +291,18 @@ export const canonicalizeCandidatesWorker = (
   ];
 
   if (missing.length > 0) {
+    /**
+     * @example
+     * // Input:  ['[&>*]:flex-1']
+     * // Output: ['*:flex-1']
+     */
     const resolved = tailwindWorkerRaw(
       "canonicalize-candidates",
       absolutePath,
       missing,
-    ) as Array<Array<string>>;
+      settings,
+    ) as Array<string>;
+    // Save the resolved classnames in the cache
     for (const [index, className] of missing.entries()) {
       canonicalCandidateCache.set(
         cacheKeyOf(className),
@@ -282,7 +310,7 @@ export const canonicalizeCandidatesWorker = (
       );
     }
   }
-
+  // List of canonical classnames
   return classNames.map(
     (className) => canonicalCandidateCache.get(cacheKeyOf(className))!,
   );
@@ -295,9 +323,12 @@ export const flattenNestingWorker = (
   ensureCacheLimits(settings);
   const cached = flattenNestingCache.get(cssRule);
   if (cached) return cached;
-  const [result] = tailwindWorkerRaw("flatten-nesting", undefined, [
-    cssRule,
-  ]) as Array<Array<string>>;
+  const [result] = tailwindWorkerRaw(
+    "flatten-nesting",
+    undefined,
+    [cssRule],
+    settings,
+  ) as Array<Array<string>>;
   flattenNestingCache.set(cssRule, result);
   return result;
 };

@@ -13,14 +13,35 @@ import postcssNested from "postcss-nested";
 import { runAsWorker } from "synckit";
 import { TailwindUtils } from "tailwind-api-utils";
 
+/**
+ * @param {Array<string> | Array<Array<string>>} array
+ * @returns {Array<string>}
+ */
+const asArrayOfString = (array) => {
+  if (array.length === 0) return [];
+  // @ts-expect-error Type 'string[][]' is not assignable to type 'string[]'
+  return typeof array[0] === "string" ? array : [];
+};
+
+/**
+ * @param {Array<string> | Array<Array<string>>} array
+ * @returns {Array<Array<string>>}
+ */
+const asArrayOfArrayOfString = (array) => {
+  if (array.length === 0) return [];
+  // @ts-expect-error Type 'string[][]' is not assignable to type 'string[]'
+  return Array.isArray(array[0]) ? array : [];
+};
+
 /** @type {Map<string, Promise<TailwindUtils>>} */
 const utilsByConfigPath = new Map();
 
 /**
  * @param {string} cssConfigPath
+ * @param {{ useLocalPkgWorkaround?: boolean }} [options]
  * @returns {Promise<TailwindUtils>}
  */
-const getUtils = (cssConfigPath) => {
+const getUtils = (cssConfigPath, options) => {
   const cached = utilsByConfigPath.get(cssConfigPath);
   if (cached) return cached;
 
@@ -32,7 +53,10 @@ const getUtils = (cssConfigPath) => {
      * transitive dependencies in workspace packages is forbidden,
      * `TailwindUtils` will fail to find the package if ran at the root
      */
-    const utils = new TailwindUtils({ paths: [import.meta.url] });
+    const utilsOptions = options?.useLocalPkgWorkaround
+      ? { paths: [import.meta.url] }
+      : undefined;
+    const utils = new TailwindUtils(utilsOptions);
     await utils.loadConfigV4(cssConfigPath);
     if (!utils.context) {
       throw new Error(
@@ -73,6 +97,7 @@ const getProperties = async (cssRule) => {
   const result = await postcss([postcssNested]).process(cssRule, {
     from: undefined,
   });
+  /** @type {Set<string>} */
   const properties = new Set();
   let hasExoticSelector = false;
 
@@ -85,7 +110,11 @@ const getProperties = async (cssRule) => {
     ) {
       hasExoticSelector = true;
     }
-    rule.walkDecls((declaration) => properties.add(declaration.prop));
+    rule.walkDecls((declaration) => {
+      if (declaration.prop) {
+        properties.add(`${declaration.prop}`);
+      }
+    });
   });
 
   return hasExoticSelector ? undefined : [...properties];
@@ -99,6 +128,8 @@ runAsWorker(
     cssConfigPath,
     /** @type {Array<string> | Array<Array<string>>} */
     values = [],
+    /** @type {{ useLocalPkgWorkaround?: boolean }} */
+    options = {},
   ) => {
     if (operation === "clear") {
       utilsByConfigPath.clear();
@@ -106,51 +137,49 @@ runAsWorker(
     }
 
     if (operation === "flatten-nesting") {
-      /** @type {Array<string>} */
-      const cssRules = values;
+      const cssRules = asArrayOfString(values);
       return Promise.all(cssRules.map((cssRule) => flattenNesting(cssRule)));
     }
 
     if (!cssConfigPath) throw new Error("A CSS config path is required");
-    const utils = await getUtils(cssConfigPath);
+    const utils = await getUtils(cssConfigPath, options);
     const context = utils.context;
     if (!context) throw new Error("Tailwind design system is unavailable");
 
     switch (operation) {
       case "sort-class-name-lists": {
-        /** @type {Array<Array<string>>} */
-        const classNameLists = values;
+        const classNameLists = asArrayOfArrayOfString(values);
         return classNameLists.map((classNames) =>
           utils.getSortedClassNames(classNames),
         );
       }
       case "is-valid-class-names": {
-        /** @type {Array<string>} */
-        const classNames = values;
+        const classNames = asArrayOfString(values);
         return utils.isValidClassName(classNames);
       }
       case "candidates-to-css": {
-        /** @type {Array<string>} */
-        const classNames = values;
+        const classNames = asArrayOfString(values);
         return context.candidatesToCss(classNames);
       }
       case "canonicalize-candidates": {
-        // TODO
         // `canonicalizeCandidates` was introduced in Tailwind CSS v4.3.0.
         // Older versions matching our `^4.0.0` peer range simply have nothing to suggest.
+        // @ts-expect-error `canonicalizeCandidates` is not declared in the type definitions
         if (typeof context.canonicalizeCandidates !== "function") {
+          // Unsupported versions of Tailwind CSS
           return values;
         }
         /** @type {Array<string>} */
-        const classNames = values;
-        const canonical = context.canonicalizeCandidates(classNames);
+        const classNames = asArrayOfString(values);
+        // @ts-expect-error `canonicalizeCandidates` is not declared in the type definitions
+        const canonicals = context.canonicalizeCandidates(classNames);
         return classNames.map(
-          (className, index) => canonical[index] ?? className,
+          // Replace the original class name with the canonical
+          (className, index) => canonicals[index] ?? className,
         );
       }
       case "get-class-properties": {
-        /** @type {Array<string>} */
-        const classNames = values;
+        const classNames = asArrayOfString(values);
         const cssRules = await context.candidatesToCss(classNames);
         return Promise.all(
           cssRules.map((cssRule) =>
@@ -159,6 +188,7 @@ runAsWorker(
         );
       }
       case "load-theme": {
+        // @ts-expect-error `theme` is not declared in the type definitions
         return context.theme;
       }
       default: {

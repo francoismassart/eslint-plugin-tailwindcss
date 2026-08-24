@@ -5,6 +5,7 @@
 ### 🐞 Fixes
 
 - fix: [`enforces-shorthand` autofix drops the important modifier when written in `v4` suffix position](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/476)
+- fix: add an option to avoid using `import.meta.url` to paths in TailwindUtils
 
 ## `v4.4.0`
 

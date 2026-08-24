@@ -22,5 +22,6 @@ test(`parsePluginSettings`, () => {
     functions: ["customFunction"],
     parseKeyFunctions: ["customFunction"],
     ignoredKeys: ["defaultVariants", "compoundVariants", "compoundSlots"],
+    useLocalPkgWorkaround: true,
   });
 });

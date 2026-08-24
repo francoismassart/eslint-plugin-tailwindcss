@@ -71,6 +71,7 @@ const nonCanonicalClassnames = (
       settings.cssConfigPath,
       context.filename,
       classNames,
+      settings,
     );
 
     const nonCanonicalClassesInNode: Array<{
@@ -172,7 +173,12 @@ export const enforcesCanonicalClassname = createRule<Options, MessageIds>({
     return defineVisitors(
       context as unknown as Readonly<GenericRuleContext>,
       // Template visitor is only used within Vue SFC files (inside <template> section).
-      createTemplateVisitors(context, settings, options, nonCanonicalClassnames),
+      createTemplateVisitors(
+        context,
+        settings,
+        options,
+        nonCanonicalClassnames,
+      ),
       // Script visitor is used within both JSX and Vue SFC files (inside <script> section).
       createScriptVisitors(context, settings, options, nonCanonicalClassnames),
     );
