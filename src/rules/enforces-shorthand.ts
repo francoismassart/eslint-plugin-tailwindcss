@@ -319,7 +319,7 @@ const detectShorthands = (
 
         if (matchEntireCombo) {
           // e.g. `-mx-preset` for the combo `["ml", "mr"]` with the key `mx`
-          const shorthandClass = `${modifiersGroup}${negative}${key}${suffixValue}${hasImportantHead ? "!" : ""}`;
+          const shorthandClass = `${modifiersGroup}${negative}${key}${suffixValue}${hasImportantHead || hasImportantTail ? "!" : ""}`;
 
           // Final check e.g. for `size-screen` which does not exist
           if (

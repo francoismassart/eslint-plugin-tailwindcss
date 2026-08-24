@@ -1,5 +1,11 @@
 # Changelog
 
+## WIP `v4.4.1`
+
+### 🐞 Fixes
+
+- fix: [`enforces-shorthand` autofix drops the important modifier when written in `v4` suffix position](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/476)
+
 ## `v4.4.0`
 
 ### 🚀 Features
