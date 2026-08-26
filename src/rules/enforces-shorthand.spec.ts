@@ -60,6 +60,7 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
     `<h1 class="rounded-b-xl rounded-tr-xl">Issue 327</h1>`,
     `<h1 class="w-full w-full">Issue 349</h1>`,
     `<h1 class="mt-2 !mb-2">Important</h1>`,
+    `<h1 class="mt-2 mb-2!">Important</h1>`,
   ].map((testedNgCode) => ({
     code: testedNgCode,
     languageOptions: withAngularParser,
@@ -218,6 +219,23 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
       settings: { tailwindcss: { ...prefixedSettings } },
       errors: mapErrors(["tw:!-mt-2", "tw:!-mb-2"], "tw:-my-2!"),
       output: [`ctl(\`tw:-my-2!\`)`],
+    },
+    {
+      code: `ctl(\`!w-7 !h-7\`)`,
+      errors: mapErrors(["!w-7", "!h-7"], "size-7!"),
+      output: [`ctl(\`size-7!\`)`],
+    },
+    {
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/476
+      code: `ctl(\`w-7! h-7!\`)`,
+      errors: mapErrors(["w-7!", "h-7!"], "size-7!"),
+      output: [`ctl(\`size-7!\`)`],
+    },
+    {
+      // https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/476
+      code: `ctl(\`!w-7 h-7!\`)`,
+      errors: mapErrors(["!w-7", "h-7!"], "size-7!"),
+      output: [`ctl(\`size-7!\`)`],
     },
   ],
 });

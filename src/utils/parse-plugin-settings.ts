@@ -21,6 +21,8 @@ export type PluginSettings = {
   cacheMaxSize?: number;
   // Max age of the cache in milliseconds
   cacheMaxAge?: number;
+  // Using `import.meta.url` to `paths` in TailwindUtils
+  useLocalPkgWorkaround?: boolean;
 };
 
 /**
@@ -73,6 +75,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   cacheMaxSize: 250_000,
   // Max age of the cache in milliseconds
   cacheMaxAge: 10 * 60 * 1000, // 10 minutes
+  // Workaround for `import.meta.url` in TailwindUtils
+  useLocalPkgWorkaround: true,
 };
 
 /**
@@ -126,6 +130,11 @@ export const sharedSettingsSchema: Record<keyof PluginSettings, JSONSchema4> = {
     type: "number",
     minimum: 30_000,
     default: DEFAULT_SETTINGS.cacheMaxAge,
+  },
+  useLocalPkgWorkaround: {
+    description: "Workaround for `import.meta.url` in TailwindUtils",
+    type: "boolean",
+    default: DEFAULT_SETTINGS.useLocalPkgWorkaround,
   },
 };
 
