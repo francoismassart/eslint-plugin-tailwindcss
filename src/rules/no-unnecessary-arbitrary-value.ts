@@ -39,7 +39,10 @@ import {
   createScriptVisitors,
   createTemplateVisitors,
 } from "../utils/rule";
-import { loadThemeWorker } from "../utils/tailwindcss-api";
+import {
+  isValidClassNameWorker,
+  loadThemeWorker,
+} from "../utils/tailwindcss-api";
 import { toTailwindArbitrary } from "../utils/to-tailwind-arbitrary";
 import { convertStringValueToPx } from "../utils/units";
 
@@ -179,9 +182,18 @@ const checkArbitraryClassnames = (
           compressedArbitraryValue,
           !!negativePrefix,
         );
-        matchingPresets.push(
-          `${modifiers}${minusSign}${classPrefix}-${cleanedValue}${bang}`,
-        );
+        const genericPreset = `${modifiers}${minusSign}${classPrefix}-${cleanedValue}${bang}`;
+        if (
+          !cleanedValue.includes(".") ||
+          isValidClassNameWorker(
+            settings.cssConfigPath,
+            context.filename,
+            genericPreset,
+            settings,
+          )
+        ) {
+          matchingPresets.push(genericPreset);
+        }
       }
 
       // 4. Check for spacing based presets e.g. `my-[2px]` → `my-2`
