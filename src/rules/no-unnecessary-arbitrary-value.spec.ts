@@ -2,7 +2,10 @@ import * as Parser from "@typescript-eslint/parser";
 import { RuleTester, TestCaseError } from "@typescript-eslint/rule-tester";
 
 import { joinListElements } from "../utils/list-formatter";
-import { withAllPresetsSettings } from "../utils/parser/test-helpers";
+import {
+  emptySettings,
+  withAllPresetsSettings,
+} from "../utils/parser/test-helpers";
 import {
   type MessageIds,
   noUnnecessaryArbitraryValue,
@@ -62,14 +65,25 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
     // JSX
     [
       // Not an arbitrary value
-      "ctl('m-0')",
+      {
+        code: "ctl('m-0')",
+        settings: { tailwindcss: withAllPresetsSettings },
+      },
       // Not an existing preset
-      "ctl('m-[calc(123456789px)]')",
-      `<div class="my-[3.14px] ml-1 mr-px">Issue #366</div>`,
-    ].map((testedJsxCode) => ({
-      code: testedJsxCode,
-      settings: { tailwindcss: withAllPresetsSettings },
-    })),
+      {
+        code: "ctl('m-[calc(123456789px)]')",
+        settings: { tailwindcss: withAllPresetsSettings },
+      },
+      {
+        code: `<div class="my-[3.14px] ml-1 mr-px">Issue #366</div>`,
+        settings: { tailwindcss: withAllPresetsSettings },
+      },
+      // `leading-1.125` is not a valid Tailwind CSS v4 class (Issue #469).
+      {
+        code: `<div class="leading-[1.125]">Issue #469</div>`,
+        settings: { tailwindcss: emptySettings },
+      },
+    ],
   invalid: [
     // Single errors + withAllPresetsSettings
     ...[
