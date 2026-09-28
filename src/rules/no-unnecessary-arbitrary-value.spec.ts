@@ -66,6 +66,9 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
       // Not an existing preset
       "ctl('m-[calc(123456789px)]')",
       `<div class="my-[3.14px] ml-1 mr-px">Issue #366</div>`,
+      // `--text-tiny--*` sub-properties are not font-size presets
+      "ctl('text-[1.5rem]')",
+      "ctl('text-[0.125rem]')",
     ].map((testedJsxCode) => ({
       code: testedJsxCode,
       settings: { tailwindcss: withAllPresetsSettings },
@@ -223,6 +226,12 @@ ruleTester.run(RULE_NAME, noUnnecessaryArbitraryValue, {
         invalidClass: "z-[0]",
         replacementClass: ["z-0"],
         output: ["ctl('z-0')"],
+      },
+      {
+        code: "ctl('text-[0.625rem]')",
+        invalidClass: "text-[0.625rem]",
+        replacementClass: ["text-tiny"],
+        output: ["ctl('text-tiny')"],
       },
     ].map(({ code, invalidClass, replacementClass, output }) => ({
       code: code,
