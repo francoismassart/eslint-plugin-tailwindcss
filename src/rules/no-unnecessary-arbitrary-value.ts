@@ -155,6 +155,10 @@ const checkArbitraryClassnames = (
           // Does not match
           if (!presetKey.startsWith(currentPrefix)) continue;
 
+          const presetName = presetKey.slice(currentPrefix.length);
+          // Sub-property of another preset e.g. `--text-xs--line-height`
+          if (presetName.includes("--")) continue;
+
           const compressedPresetValue = toTailwindArbitrary(presetValue);
           const { minusSign, cleanedValue } = resolveValueSign(
             compressedArbitraryValue,
@@ -162,7 +166,6 @@ const checkArbitraryClassnames = (
           );
 
           if (compressedPresetValue === cleanedValue) {
-            const presetName = presetKey.slice(currentPrefix.length);
             matchingPresets.push(
               `${modifiers}${minusSign}${classPrefix}-${presetName}${bang}`,
             );
