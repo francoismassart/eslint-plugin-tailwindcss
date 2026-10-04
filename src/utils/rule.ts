@@ -144,6 +144,15 @@ export const getLiteralsFromNode = <TRuleContext>(
     case TSESTree.AST_NODE_TYPES.Identifier: {
       const parseKeyFunctions = settings.parseKeyFunctions || [];
       if (parseKeyFunctions.length === 0) break;
+      // Only an object key is a class name, e.g. clsx({ foo: true }). A variable passed to the
+      // function, used in an array or as a computed key, e.g. clsx(className), is a value.
+      const parent = node.parent;
+      if (
+        parent?.type !== TSESTree.AST_NODE_TYPES.Property ||
+        parent.key !== node ||
+        parent.computed
+      )
+        break;
       if (isWithinCallee(node, parseKeyFunctions)) {
         literals.push(node);
       }

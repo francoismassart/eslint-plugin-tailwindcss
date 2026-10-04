@@ -183,6 +183,12 @@ ruleTester.run(RULE_NAME, noCustomClassname, {
       code: jsx,
       settings: { tailwindcss: { ...daisySettings } },
     })),
+    // Issue 481 Variables passed to a class helper are not class names
+    `clsx('p-4', className);`,
+    `clsx(['p-4', className]);`,
+    `clsx('p-4', isActive && className);`,
+    `clsx({ [className]: true });`,
+    `clsx({ 'p-4': true }, className);`,
   ],
   invalid: [
     // Angular / Native HTML + static text
