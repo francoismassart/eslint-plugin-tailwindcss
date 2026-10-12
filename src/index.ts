@@ -10,6 +10,10 @@ import {
   RULE_NAME as ENFORCES_CANONICAL_CLASSNAME,
 } from "./rules/enforces-canonical-classname";
 import {
+  enforcesCssVariableShorthand,
+  RULE_NAME as ENFORCES_CSS_VARIABLE_SHORTHAND,
+} from "./rules/enforces-css-variable-shorthand";
+import {
   enforcesNegativeArbitraryValues,
   RULE_NAME as ENFORCES_NEGATIVE_ARBITRARY_VALUES,
 } from "./rules/enforces-negative-arbitrary-values";
@@ -62,6 +66,7 @@ const plugin = {
   rules: {
     [CLASSNAMES_ORDER]: classnamesOrder,
     [ENFORCES_CANONICAL_CLASSNAME]: enforcesCanonicalClassname,
+    [ENFORCES_CSS_VARIABLE_SHORTHAND]: enforcesCssVariableShorthand,
     [ENFORCES_NEGATIVE_ARBITRARY_VALUES]: enforcesNegativeArbitraryValues,
     [ENFORCES_SHORTHAND]: enforcesShorthand,
     [IMPORTANT_MODIFIER_SUFFIX]: importantModifierSuffix,
@@ -75,6 +80,7 @@ const plugin = {
 const recommended = {
   [CLASSNAMES_ORDER]: "warn",
   [ENFORCES_CANONICAL_CLASSNAME]: "warn",
+  [ENFORCES_CSS_VARIABLE_SHORTHAND]: "warn",
   [ENFORCES_NEGATIVE_ARBITRARY_VALUES]: "warn",
   [ENFORCES_SHORTHAND]: "warn",
   [IMPORTANT_MODIFIER_SUFFIX]: "warn",
