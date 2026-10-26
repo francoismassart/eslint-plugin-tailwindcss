@@ -143,9 +143,16 @@ runAsWorker(
         }
         /** @type {Array<string>} */
         const classNames = values;
-        const canonical = context.canonicalizeCandidates(classNames);
+        // `canonicalizeCandidates` collects its results in a Set, so batch
+        // classnames sharing a canonical form collapse into fewer entries
+        // than the batch, and mapping them back by index shifts every
+        // following classname onto a neighbour's canonical form.
+        // Canonicalizing one classname at a time keeps the output aligned
+        // with the input; the caller caches each classname, so each one is
+        // only resolved once per config.
         return classNames.map(
-          (className, index) => canonical[index] ?? className,
+          (className) =>
+            context.canonicalizeCandidates([className])[0] ?? className,
         );
       }
       case "get-class-properties": {

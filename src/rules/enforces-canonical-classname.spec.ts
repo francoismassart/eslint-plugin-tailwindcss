@@ -105,6 +105,15 @@ ruleTester.run(RULE_NAME, enforcesCanonicalClassname, {
       ],
     },
     {
+      // `hover:-mt-[0.25em]` and `-mt-[0.25em]` both canonicalize to
+      // `mt-[-0.25em]`; the already-canonical spelling must not be reported,
+      // and the batch must not shift its results onto other classnames
+      // (issue #490)
+      code: `ctl('-mt-[0.25em] grid mt-[-0.25em] md:px-6')`,
+      output: `ctl('mt-[-0.25em] grid mt-[-0.25em] md:px-6')`,
+      errors: [generateError("-mt-[0.25em]", "mt-[-0.25em]")],
+    },
+    {
       // Whitespaces of a multiline template literal survive the fix
       code: `
       ctl(\`

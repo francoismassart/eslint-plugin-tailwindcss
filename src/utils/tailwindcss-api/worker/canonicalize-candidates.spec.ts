@@ -41,3 +41,17 @@ test(`Preserves the input order when the batch repeats classnames`, () => {
     "wrap-break-word",
   ]);
 });
+
+test(`Keeps the batch aligned when two classnames share a canonical form`, () => {
+  // `hover:-mt-[0.25em]` canonicalizes to `hover:mt-[-0.25em]`, which the
+  // compiler collapses into a single result. The output must stay aligned
+  // with the input positions regardless (issue #490).
+  expect(
+    canonicalize(["hover:-mt-[0.25em]", "grid", "hover:mt-[-0.25em]", "md:px-6"]),
+  ).toEqual([
+    "hover:mt-[-0.25em]",
+    "grid",
+    "hover:mt-[-0.25em]",
+    "md:px-6",
+  ]);
+});
