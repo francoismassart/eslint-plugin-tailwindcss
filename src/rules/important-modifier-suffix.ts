@@ -57,7 +57,7 @@ const importantPrefixClassnames = (
   const totalLiterals = literals.length;
   for (let index = 0; index < totalLiterals; index++) {
     const node = literals[index];
-    const { originalClassNamesValue, start, end, prefix, suffix } =
+    const { originalClassNamesValue, start, end, rebuild } =
       dissectAtomicNode(node, genericContext);
 
     // Early escape if the value is falsy or doesn't contain "!"
@@ -117,15 +117,14 @@ const importantPrefixClassnames = (
               const localPatchedClassNames = [...classNames];
               localPatchedClassNames[invalidClass.index] = invalidClass.patched;
 
-              const patchedValue =
-                prefix +
+              const patchedValue = rebuild(
                 joiner({
                   classNames: localPatchedClassNames,
                   whitespaces,
                   headSpace,
                   tailSpace,
-                }) +
-                suffix;
+                }),
+              );
 
               return fixer.replaceTextRange([start, end], patchedValue);
             }

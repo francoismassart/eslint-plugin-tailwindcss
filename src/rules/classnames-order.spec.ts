@@ -739,6 +739,37 @@ ruleTester.run(RULE_NAME, classnamesOrder, {
         `,
         errors: errors,
       },
+      // Escape sequences in string literals survive the fix
+      ...[
+        [
+          String.raw`cva('size-8 border rounded-sm bg-muted [&_svg:not([class*=\'size-\'])]:size-4')`,
+          String.raw`cva('bg-muted size-8 rounded-sm border [&_svg:not([class*=\'size-\'])]:size-4')`,
+        ],
+        [
+          String.raw`ctl("flex absolute content-[\"x\"]")`,
+          String.raw`ctl("absolute flex content-[\"x\"]")`,
+        ],
+        [
+          String.raw`ctl('flex absolute content-[\'\\2014\']')`,
+          String.raw`ctl('absolute flex content-[\'\\2014\']')`,
+        ],
+        [
+          String.raw`ctl('flex\nabsolute')`,
+          String.raw`ctl('absolute\nflex')`,
+        ],
+        [
+          String.raw`<h1 className="flex absolute content-['\2014']">JSX attribute strings have no escapes</h1>`,
+          String.raw`<h1 className="absolute flex content-['\2014']">JSX attribute strings have no escapes</h1>`,
+        ],
+        [
+          "ctl(`flex absolute content-['\\`']`)",
+          "ctl(`absolute flex content-['\\`']`)",
+        ],
+      ].map(([input, result]) => ({
+        code: input,
+        output: result,
+        errors: errors,
+      })),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as Array<any>
   ).map((testCase) => ({

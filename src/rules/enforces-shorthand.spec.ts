@@ -66,6 +66,11 @@ ruleTester.run(RULE_NAME, enforcesShorthand, {
   })),
   invalid: [
     {
+      code: String.raw`ctl('ml-2 mr-2 content-[\'x\']')`,
+      errors: mapErrors(["ml-2", "mr-2"], "mx-2"),
+      output: String.raw`ctl('content-[\'x\'] mx-2')`,
+    },
+    {
       code: `ctl("overflow-x-hidden overflow-y-hidden")`,
       errors: mapErrors(
         ["overflow-x-hidden", "overflow-y-hidden"],

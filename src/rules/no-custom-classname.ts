@@ -122,8 +122,7 @@ const detectCustomClassnames = (
       originalClassNamesValue,
       start,
       end,
-      prefix,
-      suffix,
+      rebuild,
       classNames,
       whitespaces,
       headSpace,
@@ -159,16 +158,16 @@ const detectCustomClassnames = (
       // Generate the fix exclusive to THIS iteration of the class
       let patchedValue: string;
       if (fixable) {
-        patchedValue = joiner({
-          classNames,
-          whitespaces,
-          headSpace,
-          tailSpace,
-          // Only remove the current class, other invalid ones remain
-          validator: (candidate) => candidate !== invalidClass.classname,
-        });
-
-        patchedValue = prefix + patchedValue + suffix;
+        patchedValue = rebuild(
+          joiner({
+            classNames,
+            whitespaces,
+            headSpace,
+            tailSpace,
+            // Only remove the current class, other invalid ones remain
+            validator: (candidate) => candidate !== invalidClass.classname,
+          }),
+        );
       }
       context.report({
         loc: patchedLoc,

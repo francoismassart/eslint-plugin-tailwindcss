@@ -89,7 +89,7 @@ const checkArbitraryClassnames = (
   );
 
   for (const node of literals) {
-    const { originalClassNamesValue, start, end, prefix, suffix } =
+    const { originalClassNamesValue, start, end, rebuild } =
       dissectAtomicNode(node, genericContext);
 
     const { classNames, whitespaces, headSpace, tailSpace } =
@@ -236,10 +236,7 @@ const checkArbitraryClassnames = (
             validator: (candidate) => candidate !== targetClassName,
           });
 
-          return fixer.replaceTextRange(
-            [start, end],
-            prefix + patchedValue + suffix,
-          );
+          return fixer.replaceTextRange([start, end], rebuild(patchedValue));
         };
         return fixer;
       };

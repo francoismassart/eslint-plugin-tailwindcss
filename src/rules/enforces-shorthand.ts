@@ -368,8 +368,7 @@ const replaceByShorthands = (
       originalClassNamesValue,
       start,
       end,
-      prefix,
-      suffix,
+      rebuild,
       ignoreFirst,
       ignoreLast,
     } = dissectAtomicNode(node, genericContext);
@@ -441,15 +440,14 @@ const replaceByShorthands = (
                 if (lastClass) {
                   patchedClassNames.push(lastClass);
                 }
-                const validatedValue =
-                  prefix +
+                const validatedValue = rebuild(
                   joiner({
                     classNames: patchedClassNames,
                     whitespaces: classNamesObject.whitespaces,
                     headSpace: classNamesObject.headSpace,
                     tailSpace: classNamesObject.tailSpace,
-                  }) +
-                  suffix;
+                  }),
+                );
                 return fixer.replaceTextRange([start, end], validatedValue);
               },
             });

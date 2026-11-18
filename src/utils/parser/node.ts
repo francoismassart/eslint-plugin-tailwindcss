@@ -175,6 +175,27 @@ export const getVAttributeName = (node: VueAST.VAttribute): string => {
   return "";
 };
 
+const stringLiteralEscapes: Record<string, string> = {
+  "\\": String.raw`\\`,
+  "\n": String.raw`\n`,
+  "\r": String.raw`\r`,
+};
+
+/**
+ * Escapes a string value so it can be written back between the quotes of a JS string literal.
+ * @example
+ * escapeStringLiteralValue(`[class*='size-']`, "'"); // `[class*=\'size-\']`
+ * escapeStringLiteralValue(`[class*='size-']`, '"'); // `[class*='size-']`
+ */
+const escapeStringLiteralValue =(value: string, quote: string) =>
+  value.replaceAll(
+    /[\n\r"'\\]/g,
+    (char) =>
+      stringLiteralEscapes[char] ?? (char === quote ? `\\${char}` : char),
+  );
+
+const noEscape = (value: string) => value;
+
 /**
  * @example
  * // Given a TemplateElement ` absolute ${` returns
@@ -182,8 +203,7 @@ export const getVAttributeName = (node: VueAST.VAttribute): string => {
  *   originalClassNamesValue: " absolute ",
  *   start: 0, // index of the first backtick
  *   end: 15, // length of the template element
- *   prefix: "`", // used for rebuilding
- *   suffix: "${", // used for rebuilding
+ *   rebuild: (value) => "`" + value + "${",
  *   ignoreFirst: false
  *   ignoreLast: false
  * }
@@ -197,6 +217,7 @@ export const dissectAtomicNode = (
   let end = 0;
   let prefix = "";
   let suffix = "";
+  let escape = noEscape;
   let ignoreFirst = false;
   let ignoreLast = false;
   switch (node.type) {
@@ -210,6 +231,12 @@ export const dissectAtomicNode = (
       if (node.value === "") break;
       originalClassNamesValue = "" + node.value;
       [start, end] = node.range;
+      // `node.value` is unescaped: escape it again when writing it back.
+      // JSX attribute strings have no escape sequences.
+      if (node.parent?.type !== TSESTree.AST_NODE_TYPES.JSXAttribute) {
+        const quote = context.sourceCode.text[start];
+        escape = (value) => escapeStringLiteralValue(value, quote);
+      }
       start++;
       end--;
       break;
@@ -279,8 +306,8 @@ export const dissectAtomicNode = (
     originalClassNamesValue,
     start,
     end,
-    prefix,
-    suffix,
+    /** Turns a class string back into the source text replacing `[start, end]`. */
+    rebuild: (value: string) => prefix + escape(value) + suffix,
     ignoreFirst,
     ignoreLast,
   };

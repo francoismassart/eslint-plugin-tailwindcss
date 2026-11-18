@@ -127,8 +127,7 @@ const getContradictions = (
       originalClassNamesValue,
       start,
       end,
-      prefix,
-      suffix,
+      rebuild,
       classNames,
       whitespaces,
       headSpace,
@@ -185,14 +184,15 @@ const getContradictions = (
           .map((cn) => `'${cn}'`)
           .join(", ");
 
-        let patchedValue = joiner({
-          classNames,
-          whitespaces,
-          headSpace,
-          tailSpace,
-          validator: (cls) => !otherClassnames.includes(cls),
-        });
-        patchedValue = prefix + patchedValue + suffix;
+        const patchedValue = rebuild(
+          joiner({
+            classNames,
+            whitespaces,
+            headSpace,
+            tailSpace,
+            validator: (cls) => !otherClassnames.includes(cls),
+          }),
+        );
 
         const patchedLoc = generateLocForClassname(
           node,
