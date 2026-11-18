@@ -81,8 +81,7 @@ const sortClassnames = (
       originalClassNamesValue,
       start,
       end,
-      prefix,
-      suffix,
+      rebuild,
       classNames,
       whitespaces,
       headSpace,
@@ -113,14 +112,14 @@ const sortClassnames = (
     }
 
     // At this point, we are sure the order is invalid.
-    let validatedClassNamesValue = joiner({
-      classNames: patchedOrderedClassNames,
-      whitespaces,
-      headSpace,
-      tailSpace,
-    });
-
-    validatedClassNamesValue = prefix + validatedClassNamesValue + suffix;
+    const validatedClassNamesValue = rebuild(
+      joiner({
+        classNames: patchedOrderedClassNames,
+        whitespaces,
+        headSpace,
+        tailSpace,
+      }),
+    );
 
     let fixApplied = false;
     // Report each classname that is not in the correct order

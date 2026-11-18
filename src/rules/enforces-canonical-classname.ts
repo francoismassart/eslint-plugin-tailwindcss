@@ -54,8 +54,7 @@ const nonCanonicalClassnames = (
       originalClassNamesValue,
       start,
       end,
-      prefix,
-      suffix,
+      rebuild,
       ignoreFirst,
       ignoreLast,
     } = dissectAtomicNode(node, genericContext);
@@ -123,15 +122,14 @@ const nonCanonicalClassnames = (
               localPatchedClassNames[nonCanonicalClass.index] =
                 nonCanonicalClass.patched;
 
-              const patchedValue =
-                prefix +
+              const patchedValue = rebuild(
                 joiner({
                   classNames: localPatchedClassNames,
                   whitespaces,
                   headSpace,
                   tailSpace,
-                }) +
-                suffix;
+                }),
+              );
 
               return fixer.replaceTextRange([start, end], patchedValue);
             }

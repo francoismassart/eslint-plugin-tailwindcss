@@ -74,7 +74,7 @@ const negativeArbitraryClassnames = (
   const genericContext = context as unknown as GenericRuleContext;
 
   for (const node of literals) {
-    const { originalClassNamesValue, start, end, prefix, suffix } =
+    const { originalClassNamesValue, start, end, rebuild } =
       dissectAtomicNode(node, genericContext);
 
     const { classNames, whitespaces, headSpace, tailSpace } =
@@ -111,18 +111,18 @@ const negativeArbitraryClassnames = (
       // Temporary mutation instead of cloning [...classNames] at each iteration for memory optimization
       classNames[index] = patchedClass;
 
-      let patchedValue = joiner({
-        classNames,
-        whitespaces,
-        headSpace,
-        tailSpace,
-        validator: (candidate) => candidate !== targetClassName,
-      });
+      const patchedValue = rebuild(
+        joiner({
+          classNames,
+          whitespaces,
+          headSpace,
+          tailSpace,
+          validator: (candidate) => candidate !== targetClassName,
+        }),
+      );
 
       // Restore the original array immediately for the next iteration
       classNames[index] = targetClassName;
-
-      patchedValue = prefix + patchedValue + suffix;
 
       context.report({
         loc: patchedLoc,
